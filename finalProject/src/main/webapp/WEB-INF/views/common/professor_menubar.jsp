@@ -54,7 +54,7 @@
         list-style-type: none;
     }
     #nav>li{
-        width: 12%;
+        width: 10%;
         height: 100%;
         display: inline-block;
         line-height: 70px;
@@ -95,7 +95,7 @@
 	        <table id="user_log">
                  <tr>
                      <td>
-						김와플 님 환영합니다.
+						${loginUser.professorName} 님 환영합니다.
                      </td>
                      <td style="padding-left: 50px;">
                          <button id="logout-btn" onclick="">로그아웃</button>
@@ -106,12 +106,12 @@
 	</div>
 	<div id="menubar">
 	    <ul id="nav">
-            <li><a href="">홈</a></li>
-            <li><a href="">등록/장학</a></li>
-            <li><a href="">학사관리</a></li>
-            <li><a href="">상담관리</a></li>
-            <li><a href="">강의관리</a></li>
-            <li><a href="">수업관리</a></li>
+            <li><a href="#">홈</a></li>
+            <li><a href="#">등록/장학</a></li>
+            <li><a href="#">학사관리</a></li>
+            <li><a href="#">상담관리</a></li>
+            <li><a href="#">강의관리</a></li>
+            <li><a href="#">수업관리</a></li>
         </ul>
 	</div>
 </body>
