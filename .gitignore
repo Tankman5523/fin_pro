@@ -16,6 +16,7 @@ pom.properties
 .recommenders
 .classpath
 .project
+MANIFEST.MF
 # External tool builders
 .externalToolBuilders/
 
