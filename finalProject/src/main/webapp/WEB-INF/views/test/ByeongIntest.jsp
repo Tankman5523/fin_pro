@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h1>병인 테스트</h1>
+	<h1>수지 테스트</h1>
 </body>
 </html>
