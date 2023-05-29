@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+
+	 <!-- DB연결 설정 3단계 -->
+	 <!-- 1단계. DB연결을 위한 도구를 설정한다. -->
+	 <bean class="org.apache.commons.dbcp.BasicDataSource" id="dataSource">
+	 	<!-- 어느 DB에 접속할 것인지 작성 -->
+	 	<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+	 	<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+	 	<property name="username" value="FINAL"/>
+	 	<property name="password" value="FINAL"/>
+	 </bean>
+	 
+	 <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactory">
+	 	<!-- Mybatis 설정 파일들의 위치를 지정   *classpath는 resources 폴더를 의미 -->
+	 	<property name="configLocation" value="classpath:/mybatis-config.xml"/>
+<!-- 	 	<property name="mapperLocations" value="classpath:/mappers/test-mapper.xml"/> -->
+	 	<!-- 연결을 위한 참조 -->
+	 	<property name="dataSource" ref="dataSource"/>
+	 </bean>
+	 
+	 <bean class="org.mybatis.spring.SqlSessionTemplate" id="sqlSession">
+	 	<!-- SQL명령어 실행을 위한 도구에 대한 참조 설정 -->
+	 	<constructor-arg ref="sqlSessionFactory"/>
+	 </bean>
+
+	 <tx:annotation-driven/>
+	 <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	 	<property name="dataSource" ref="dataSource"></property>
+	 </bean>
+	 
+	 <!-- use-default-filters="false": 기본스캔을 하지 않게 하는 설정 -->
+	 <context:component-scan base-package="com.univ.fin" use-default-filters="false">
+	 	<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+	 	<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+	 </context:component-scan>
+	 
+	 
+</beans>
