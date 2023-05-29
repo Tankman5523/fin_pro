@@ -1,5 +1,5 @@
 package com.univ.fin.member.model.service;
 
-public interface MemberService {
-
+public class testService {
+//삭제가능
 }

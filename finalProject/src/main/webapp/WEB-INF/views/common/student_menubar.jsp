@@ -54,7 +54,7 @@
         list-style-type: none;
     }
     #nav>li{
-        width: 12%;
+        width: 10%;
         height: 100%;
         display: inline-block;
         line-height: 70px;
@@ -112,6 +112,7 @@
 	        <li><a href="">상담관리</a></li>
 	        <li><a href="">수강신청</a></li>
 	        <li><a href="">수업관리</a></li>
+	        
 	    </ul>
 	</div>
 </body>
