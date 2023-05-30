@@ -12,7 +12,7 @@
         <div id="content">
             <div id="category">
                 <div id="cate_title">
-                    <h3>큰제목</h3>
+                    <span style="margin: 0 auto;">큰제목</span>
                 </div>
                 <div class="child_title">
                     <a href="#">소제목</a>
