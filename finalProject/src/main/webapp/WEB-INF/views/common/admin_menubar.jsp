@@ -17,18 +17,16 @@
 </head>
 <body>
 	<div id="header">
-	    <div id="header_1">
-	        <table id="user_log">
-                 <tr>
-                     <td>
-						${loginUser.professorName} 님 환영합니다.
-                     </td>
-                     <td style="padding-left: 50px;">
-                         <button id="logout-btn" onclick="">로그아웃</button>
-                     </td>
-                 </tr>
-             </table>
-	    </div>
+		<table id="user_log">
+	        <tr>
+	            <td>
+					${loginUser.professorName} 님 환영합니다.
+		        </td>
+		        <td style="padding-left: 50px;">
+		            <button type="button" class="btn btn-primary" onclick="">로그아웃</button>
+		        </td>
+	    	</tr>
+		</table>
 	</div>
 	<div id="menubar">
 	    <ul id="nav">

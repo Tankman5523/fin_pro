@@ -5,7 +5,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<!-- <link rel="stylesheet" href="/fin/resources/css/category.css"> -->
 </head>
 <body>
     <div class="wrap">
@@ -13,7 +12,7 @@
         <div id="content">
             <div id="category">
                 <div id="cate_title">
-                    <h3>큰제목</h3>
+                    <span style="margin: 0 auto;">큰제목</span>
                 </div>
                 <div class="child_title">
                     <a href="#">소제목</a>
