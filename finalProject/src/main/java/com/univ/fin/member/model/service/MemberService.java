@@ -11,4 +11,7 @@ public interface MemberService {
 	//임직원 로그인
 	Professor loginProfessor(Professor pr);
 
+	//ID조회 (이메일 방식) - 학생
+	int checkEmail(Student st);
+
 }
