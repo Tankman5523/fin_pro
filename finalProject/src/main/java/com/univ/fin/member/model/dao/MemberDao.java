@@ -18,5 +18,10 @@ public class MemberDao {
 	public Professor loginProfessor(SqlSessionTemplate sqlSession, Professor pr) {
 		return sqlSession.selectOne("memberMapper.loginProfessor", pr);
 	}
+	
+	//ID조회 (이메일 방식) - 학생
+	public int checkEmail(SqlSessionTemplate sqlSession, Student st) {
+		return sqlSession.selectOne("memberMapper.checkEmail", st);
+	}
 
 }

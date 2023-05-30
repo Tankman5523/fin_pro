@@ -35,4 +35,13 @@ public class MemberServiceImpl implements MemberService{
 		return loginUser;
 	}
 
+	//ID조회 (이메일 방식) - 학생
+	@Override
+	public int checkEmail(Student st) {
+		
+		int result = memberDao.checkEmail(sqlSession,st);
+		
+		return result;
+	}
+
 }

@@ -53,4 +53,12 @@
   		WHERE PROFESSOR_NO = #{professorNo}
   	</select>
   
+  	<select id="checkEmail" resultType="_int">
+  		SELECT COUNT(*) COUNT
+  		FROM STUDENT
+  		WHERE STUDENT_NAME = #{studentName}
+  		AND PHONE = #{phone}
+  		AND STATUS = '재학'
+  	</select>
+  
   </mapper>
