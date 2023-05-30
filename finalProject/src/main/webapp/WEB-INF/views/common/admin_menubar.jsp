@@ -4,91 +4,17 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>종합정보시스템</title>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+<!-- jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+<!-- Popper JS -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="/fin/resources/css/adminPageStylesheet.css">
 </head>
-<style>
-	div{
-	    box-sizing: border-box;
-	}
-	.wrap{
-	    width: 1400px;
-	    height: 1400px;
-	    margin: auto;
-	    border: 1px solid lightblue;
-	}
-	.wrap>div{
-	    width: 100%;
-	}
-	#header{
-	    height: 10%;
-	    background-color: red;
-	}
-	#menubar{
-	    height: 5%;
-	    background-color: orange;
-	}
-	#content{
-	    width: 100%;
-	    height: 90%;
-	    background-color: yellow;
-	}
-	#header_1{
-	    height: 65%;
-	}
-	#category{
-	    width: 20%;
-	    height: 100%;
-	    background-color: aqua;
-	    float: left;
-	}
-	#content_1{
-	    width: 80%;
-	    height: 100%;
-	    float: right;
-	    background-color: blueviolet;
-	}
-	/*=========메뉴바 영역===========*/
-    #nav{
-        margin: 0%;
-        padding: 0%;
-        list-style-type: none;
-    }
-    #nav>li{
-        width: 10%;
-        height: 100%;
-        display: inline-block;
-        line-height: 70px;
-        text-align: center;
-        vertical-align: top;
-    }
-    #menubar a{
-        width: 100%;
-        height: 100%;
-        display: block;
-        text-decoration: none;
-        font-size: 23px;
-        font-weight: bold;
-        color: black;
-    }
-    /*===============로그인 유저============*/
-	#user_log{
-	    margin: 0 50px;
-	    float: right;
-	    line-height: 137px;
-	}
-	#user_log td{
-	    text-align: right;
-	}
-	#logout-btn{
-	    width: 80px;
-	    height: 30px;
-	    border: none;
-	    border-radius: 5px;
-	    background-color: #4fc7ff;
-	    /* color: white; */
-	    font-weight: bold;
-	}
-</style>	
 <body>
 	<div id="header">
 	    <div id="header_1">
