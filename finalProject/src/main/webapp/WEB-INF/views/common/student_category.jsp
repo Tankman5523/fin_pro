@@ -16,7 +16,7 @@
                     <h3>큰제목</h3>
                 </div>
                 <div class="child_title">
-                    <a href="">소제목</a>
+                    <a href="#">소제목</a>
                 </div>
             </div>
             <div id="content_1">
