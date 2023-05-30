@@ -8,6 +8,8 @@ import com.univ.fin.member.model.dao.MemberDao;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
 public class MemberServiceImpl implements MemberService{
 
@@ -43,5 +45,5 @@ public class MemberServiceImpl implements MemberService{
 		
 		return result;
 	}
-
+	
 }

@@ -60,6 +60,8 @@
                 <br>
                 <div id="checkDiv">
                     <span class="left_span"><label for="checkEmail">인증 번호</label></span>
+                    <span id="timer"></span>
+                    <button onclick="plusTime();">시간연장</button>
                     <input type="number" name="checkEmail" id="checkEmail" placeholder="인증번호 6자리를 입력해주세요">
                 </div>
             </div>
@@ -85,28 +87,38 @@
 				function backForm(){
 					$("#content01").show();
 					$("#content02").hide();
+					$("#footer_btn").show();
+					$("#footer_btn2").hide();
                     $("#checkDiv").hide();
+                    clearInterval(timer);
+                    $("#checkDiv>#timer").html("");
+                    $("#studentName").val("");
+                    $("#phone").val("");
 				};
 
                 function checkEmail(){
                     $.ajax({
                         
-                        url : "checkEmail.me",
+                        url : "checkEmail.st",
 
                         data : {
                         	studentName : $("#studentName").val(),
-                            phone : $("#phone").val(),
+                            phone : $("#phone").val()
                         },
                         
                         success : function(result){
-                            
-                        	console.log("gd");
                         	
                             if(result > 0){
+                            	
                                 $("#checkDiv").show();
                                 $("#footer_btn").hide();
                                 $("#footer_btn2").show();
-                            }
+                                
+                                startTimer();
+                                
+                            }else{
+                            	alert("잘못된 학생 정보입니다.");
+                            };
                             
                         },
                         
@@ -116,7 +128,45 @@
                         
                     });
                 };
-
+                
+                var timer;
+                
+                function startTimer(){
+                	
+                	clearInterval(timer);
+                	
+                    var time = 30;
+                    var min = "";
+                    var sec = "";
+                    
+                    timer = setInterval(function(){
+                    	
+                    	min = parseInt(time/60);
+                    	
+                    	sec = time%60;
+                    	
+                    	$("#checkDiv>#timer").html(min+"분"+sec+"초");
+                    	
+                    	time--;
+                    	
+                    	if(time < 0){
+                    		clearInterval(timer);
+                    		hide();
+                    	}
+                    	
+                    },1000);
+                };
+                
+                function hide(){
+                	$("#checkDiv").hide();
+                	$("#footer_btn2").hide();
+                	$("#footer_btn").show();
+                	$("#checkDiv>#checkEmail").val("");
+                };
+                
+                function plusTime(){
+                	startTimer();
+                };
          	</script>
     </div>
 </body>
