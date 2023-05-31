@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,8 +31,14 @@ public class MemberController {
 	@Autowired
 	private JavaMailSender mailSender;
 	
+	@GetMapping("login.me")
+	public String loginForm() {
+		
+		return "redirect:/";
+	}
+	
 	//로그인 메소드
-	@RequestMapping("login.me")
+	@PostMapping("login.me")
 	public ModelAndView loginUser(ModelAndView mv,String userNo,String userPwd
 								 ,String saveId,HttpSession session,HttpServletResponse response) {
 		
@@ -58,7 +66,7 @@ public class MemberController {
 			session.setAttribute("loginUser", loginUser);
 			mv.setViewName("common/student_category");
 			
-		}else { //임직원 로그인
+		}else if(userNo.charAt(0) == 'P'){ //임직원 로그인
 			
 			Professor pr = Professor.builder().professorNo(userNo).professorPwd(userPwd).build();
 			
@@ -89,6 +97,9 @@ public class MemberController {
 				session.setAttribute("loginUser", loginUser);
 				mv.setViewName("common/admin_category");
 			}
+		}else {
+			session.setAttribute("alertMsg", "잘못 입력하셨습니다. 다시 입력해주세요");
+			mv.setViewName("common/login");
 		}
 		
 		return mv;
