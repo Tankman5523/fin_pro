@@ -1,0 +1,122 @@
+.wrap{
+    width: 1400px;
+    height: 900px;
+    margin: auto;
+}
+
+.content{
+    position: relative;
+    width: 500px;
+    height: 500px;
+    margin: auto;
+    margin-top: 40px;
+}
+
+h2{
+    text-align: center;
+    position: relative;
+    padding: 20px;
+    letter-spacing: 1px;
+    font-size: 28px;
+}
+
+#button_area{
+    text-align: center;
+}
+
+#button_area>button{
+    position: relative;
+    width: 45%;
+    height: 45px;
+    border-radius: 8px;
+    background-color: rgb(52, 152, 219);
+    border: 0;
+    color: white;
+}
+
+#button_area>button:hover{
+    box-shadow: 1px 1px 2px #000000;
+    text-shadow: 1px 1px 1px #000000;
+}
+
+#login_footer{
+    text-align: center;
+    margin-top: 15px;
+}
+
+#login_footer2{
+    text-align: center;
+    margin-top: 15px;
+}
+
+#login_footer>button{
+    width: 90%;
+    height: 40px;
+    border-radius: 8px;
+    border : 1px solid rgb(52, 152, 219);
+    background-color: white;
+    margin-top: 15px;
+}
+
+#login_footer2>button{
+    position: relative;
+    width: 45%;
+    height: 40px;
+    border-radius: 8px;
+    border : 1px solid rgb(52, 152, 219);
+    background-color: white;
+    margin-top: 15px;
+}
+
+#login_footer>button:hover{
+    box-shadow: 1px 1px 2px #000000;
+}
+
+#login_footer2>button:hover{
+    box-shadow: 1px 1px 2px #000000;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
+
+#text{
+    position: relative;
+    left: 25px;
+    font-size: 14px;
+    line-height: 25px;
+}
+
+#input_area{
+    text-align: center;
+}
+
+#input_area>input{
+    width: 90%;
+    margin-top: 15px;
+    height: 30px;
+    border : 2px solid rgb(52, 152, 219);
+    border-radius: 5px;
+    margin-bottom: 10px;
+    text-indent: 15px;
+}
+
+#input_area>input:hover{
+    box-shadow: 1px 1px ;
+}
+
+#content02{
+    display: none;
+}
+
+#login_footer2>#footer_btn{
+    background-color: rgb(52, 152, 219);
+    color: white;
+}
+
+.left_span{
+    position: relative;
+    float: left;
+    left: 20px;
+}

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="memberMapper">
+	
+	<resultMap type="student" id="loginStudentMap">
+		<result column="STUDENT_NO" property="studentNo"/>
+		<result column="DEPARTMENT_NO" property="departmentNo"/>
+		<result column="COLLEGE_NO" property="collegeNo"/>
+		<result column="FILE_NO" property="fileNo"/>
+		<result column="STUDENT_NAME" property="studentName"/>
+		<result column="STUDENT_PWD" property="studentPwd"/>
+		<result column="ENTRANCE_DATE" property="entranceDate"/>
+		<result column="GRADUATION_DATE" property="graduationDate"/>
+		<result column="CLASS_LEVEL" property="classLevel"/>
+		<result column="PHONE" property="phone"/>
+		<result column="EMAIL" property="email"/>
+		<result column="POST" property="post"/>
+		<result column="ADDRESS" property="address"/>
+		<result column="STATUS" property="status"/>
+	</resultMap>
+  
+  	<resultMap type="professor" id="loginProfessorMap">
+  		<result column="PROFESSOR_NO" property="professorNo"/>
+  		<result column="FILE_NO" property="fileNo"/>
+  		<result column="DEPARTMENT_NO" property="departmentNo"/>
+  		<result column="COLLEGE_NO" property="collegeNo"/>
+  		<result column="PROFESSOR_NAME" property="professorName"/>
+  		<result column="PROFESSOR_PWD" property="professorPwd"/>
+  		<result column="POSITION" property="position"/>
+  		<result column="ENTRANCE_DATE" property="entranceDate"/>
+  		<result column="EMAIL" property="email"/>
+  		<result column="POST" property="post"/>
+  		<result column="ADDRESS" property="address"/>
+  		<result column="ACCOUNT_NO" property="accountNo"/>
+  		<result column="ADMIN" property="admin"/>
+  	</resultMap>
+  
+  	<!-- 학생 로그인 -->
+  	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
+  		SELECT *
+  		FROM STUDENT
+  		WHERE STUDENT_NO = #{studentNo}
+  	</select>
+  	
+  	<!-- 임직원 로그인 -->
+  	<select id="loginProfessor" parameterType="professor" resultMap="loginProfessorMap">
+  		SELECT PROFESSOR_NO,FILE_NO,DEPARTMENT_NO,COLLEGE_NO,PROFESSOR_NAME
+  			  ,PROFESSOR_PWD,POSITION,ENTRANCE_DATE,EMAIL,POST,ADDRESS,ACCOUNT_NO,ADMIN
+  		FROM PROFESSOR
+  		WHERE PROFESSOR_NO = #{professorNo}
+  	</select>
+  
+  	<select id="checkEmail" resultType="_int">
+  		SELECT COUNT(*) COUNT
+  		FROM STUDENT
+  		WHERE STUDENT_NAME = #{studentName}
+  		AND PHONE = #{phone}
+  		AND STATUS = '재학'
+  	</select>
+  
+  </mapper>
