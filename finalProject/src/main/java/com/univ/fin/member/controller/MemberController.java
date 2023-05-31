@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
@@ -31,6 +32,7 @@ public class MemberController {
 	@Autowired
 	private JavaMailSender mailSender;
 	
+	//로그인 폼 메소드
 	@GetMapping("login.me")
 	public String loginForm() {
 		
@@ -105,27 +107,56 @@ public class MemberController {
 		return mv;
 	}
 	
-	//ID찾기 뷰 메소드
+	//ID찾기 폼 메소드
 	@RequestMapping("searchIdForm.me")
 	public String searchIdForm() {
 		
 		return "common/searchIdForm";
 	}
 	
-	//ID조회 (이메일 방식) - 학생
+	//ID조회 (이메일 방식)
 	@ResponseBody
-	@RequestMapping(value="checkEmail.st")
-	public String checkEmail(Student st,HttpServletRequest request) throws MessagingException {
+	@RequestMapping(value="checkEmail.me")
+	public String checkEmail(String name,String phone,HttpServletRequest request) throws MessagingException {
 		
-		int result = memberService.checkEmail(st);
+		Student st = Student.builder().studentName(name).phone(phone).build();
 		
-		if(result > 0) { //해당하는 학생이 존재한다면 메일 발송
+		//학생 조회
+		Student member = memberService.checkEmail(st);
+		
+		//최종 이메일 담을 변수(null 또는 값)
+		String resultEmail = null;
+		
+		Professor member2 = null;
+		
+		if(member != null) { //학생 조회결과가 있다면
+			resultEmail = member.getEmail();
+		}else { //교수 조회
+			Professor pr = Professor.builder().professorName(name).phone(phone).build();
+			
+			//교수 조회
+			member2 = memberService.checkEmail2(pr);
+			if(member2 != null) {
+				resultEmail = member2.getEmail();
+			}
+		}
+		
+		//랜덤값 담을 변수 생성
+		String ranNum = null;
+		
+		JsonObject obj = null;
+		
+		if(resultEmail != null) { //조회된 값이 있다면 
+			
+			//랜덤값 생성(인증번호)
+			ranNum = Integer.toString((int)(Math.random()*900000)+10000);
+			
 			String setFrom = "jungwoo343@naver.com"; //발송자의 이메일 
-			String toMail = "jungwoo343@naver.com"; //받는사용자의 이메일
-			String title = "제목";
+			String toMail = "jungwoo343@naver.com"; //받는사용자의 이메일(resultEmail 변수 들어갈 곳)
+			String title = "그럴싸한 대학교";
 			String content = "<h1>그럴싸한 대학교 </h1>"
 							+"<br>"
-							+"회원님의 인증번호는 : 000000 입니다."
+							+"인증번호 : "+ ranNum
 							+"<br>"
 							+"해당 인증번호를 인증번호 확인란에 기입하여 주시길 바랍니다.";
 			
@@ -136,9 +167,17 @@ public class MemberController {
 			messageHelper.setSubject(title);
 			messageHelper.setText(content,true); //true설정으로 html형식 전송
 			mailSender.send(message);
+			
+			obj = new JsonObject();
+			if(member2 == null) { //학생일 경우
+				obj.addProperty("resultNo", member.getStudentNo());
+			}else { //임직원일 경우
+				obj.addProperty("resultNo", member2.getProfessorNo());
+			}
+			obj.addProperty("ranNum", ranNum);
 		}
 		
-		return new Gson().toJson(result);
+		return new Gson().toJson(obj);
 	}
 	
 	//비밀번호 재설정 뷰 메소드
