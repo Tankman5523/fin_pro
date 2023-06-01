@@ -1,4 +1,4 @@
-package com.univ.fin.scholarship.controller;
+package com.univ.fin.money.controller;
 
 import org.springframework.stereotype.Controller;
 
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 public class ScholarshipController {
 	
 	
-	public String insertScholar(){ //장학금 생성
+	public String insertScholar(){ //장학금 생성(관리자)
 		
 		return "";
 	}

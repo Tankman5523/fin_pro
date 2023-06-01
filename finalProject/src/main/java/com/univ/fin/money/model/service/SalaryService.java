@@ -1,8 +1,8 @@
-package com.univ.fin.salary.model.service;
+package com.univ.fin.money.model.service;
 
 import java.util.ArrayList;
 
-import com.univ.fin.salary.model.vo.Salary;
+import com.univ.fin.money.model.vo.Salary;
 
 public interface SalaryService {
 	

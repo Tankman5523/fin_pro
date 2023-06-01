@@ -1,4 +1,4 @@
-package com.univ.fin.scholarship.model.dao;
+package com.univ.fin.money.model.dao;
 
 import org.springframework.stereotype.Repository;
 

@@ -1,12 +1,12 @@
-package com.univ.fin.salary.controller;
+package com.univ.fin.money.controller;
 
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.univ.fin.salary.model.service.SalaryService;
-import com.univ.fin.salary.model.vo.Salary;
+import com.univ.fin.money.model.service.SalaryService;
+import com.univ.fin.money.model.vo.Salary;
 
 @Controller
 public class SalaryController {

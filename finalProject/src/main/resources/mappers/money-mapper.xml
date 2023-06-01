@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="moneyMapper">
+	
+	<resultMap type="registPay" id="registPayResultSet">
+		<result column="STUDENT_NO" property="studentNo"/>
+		<result column="" property="regAccountNo"/>
+		<result column="" property="mustPay"/>
+		<result column="" property="inputPay"/>
+		<result column="" property="classYear"/>
+		<result column="" property="classTerm"/>
+		<result column="" property="payAccountNo"/>
+		<result column="" property="payDate"/>
+		<result column="" property="startDate"/>
+		<result column="" property="endDate"/>
+		<result column="" property="payStatus"/>
+		<result column="" property="status"/>
+		
+		<result column="" property="NonPaidAmount"/>
+		
+	</resultMap>
+	
+	<resultMap type="salary" id="salaryResultSet">
+		<result column="" property="payNo"/>
+		<result column="" property="professorNo"/>
+		<result column="" property="paymentDate"/>
+		
+		<result column="" property="basePay"/>
+		<result column="" property="positionPay"/>
+		<result column="" property="extensionPay"/>
+		<result column="" property="holidayPay"/>
+		<result column="" property="researchPay"/>
+		<result column="" property="paymentTotal"/>
+		
+		<result column="" property="nationalTax"/>
+		<result column="" property="healthTax"/>
+		<result column="" property="employTax"/>
+		<result column="" property="incomeTax"/>
+		<result column="" property="deductTotal"/>
+		
+		<result column="" property="realPay"/>
+		<result column="" property="status"/>
+		
+	</resultMap>
+	
+	<resultMap type="scholarship" id="scholarshipResultSet">
+		<result column="" property="schNo"/>
+		<result column="" property="studentNo"/>
+		<result column="" property="schCategoryNo"/>
+		<result column="" property="schAmount"/>
+		<result column="" property="classYear"/>
+		<result column="" property="classTerm"/>
+		<result column="" property="proDate"/>
+		<result column="" property="status"/>
+		<result column="" property="etc"/>
+		
+	</resultMap>
+	
+</mapper>

@@ -1,4 +1,4 @@
-package com.univ.fin.scholarship.model.vo;
+package com.univ.fin.money.model.vo;
 
 import java.sql.Date;
 

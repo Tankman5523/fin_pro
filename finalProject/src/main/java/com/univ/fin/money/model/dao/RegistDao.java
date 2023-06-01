@@ -1,8 +1,8 @@
-package com.univ.fin.salary.model.dao;
+package com.univ.fin.money.model.dao;
 
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class SalaryDao {
+public class RegistDao {
 	
 }

@@ -1,4 +1,4 @@
-package com.univ.fin.salary.model.service;
+package com.univ.fin.money.model.service;
 
 import java.util.ArrayList;
 
@@ -6,8 +6,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.univ.fin.salary.model.dao.SalaryDao;
-import com.univ.fin.salary.model.vo.Salary;
+import com.univ.fin.money.model.dao.SalaryDao;
+import com.univ.fin.money.model.vo.Salary;
 
 @Service
 public class SalaryServiceImpl implements SalaryService{
@@ -20,20 +20,24 @@ public class SalaryServiceImpl implements SalaryService{
 	
 	@Override
 	public int insertSalary() {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		int result=0;
+		
+		return result;
 	}
 
 	@Override
 	public int updateSalary() {
-		// TODO Auto-generated method stub
-		return 0;
+		int result=0;
+		
+		return result;
 	}
 
 	@Override
 	public int deleteSalary() {
-		// TODO Auto-generated method stub
-		return 0;
+		int result=0;
+		
+		return result;
 	}
 
 	@Override

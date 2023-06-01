@@ -1,4 +1,4 @@
-package com.univ.fin.salary.model.vo;
+package com.univ.fin.money.model.vo;
 
 import java.sql.Date;
 
@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 @Data
 @AllArgsConstructor
