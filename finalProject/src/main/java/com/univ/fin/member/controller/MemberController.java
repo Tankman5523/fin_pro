@@ -153,12 +153,16 @@ public class MemberController {
 			
 			String setFrom = "jungwoo343@naver.com"; //발송자의 이메일 
 			String toMail = "jungwoo343@naver.com"; //받는사용자의 이메일(resultEmail 변수 들어갈 곳)
-			String title = "그럴싸한 대학교";
-			String content = "<h1>그럴싸한 대학교 </h1>"
+			String title = "[FEASIBLE UNIVERSITY] 로그인ID조회 - 이메일 인증 번호 ";
+			String content = "귀하의 이메일 인증 번호는 다음과 같습니다."
 							+"<br>"
-							+"인증번호 : "+ ranNum
+							+"<h3>인증번호 : "+ ranNum +"</h3>"
 							+"<br>"
-							+"해당 인증번호를 인증번호 확인란에 기입하여 주시길 바랍니다.";
+							+"해당 인증번호를 인증번호 확인란에 기입하여 주시길 바랍니다."
+							+"<br><br>"
+							+"인증 번호는 일정 시간 내에서만 유효하며, 그 이후 인증 번호는 무효화 됩니다."
+							+"<br><br>"
+							+"인증 번호가 무효화 되었을 경우, 새롭게 인증 번호를 요청하십시오.";
 			
 			MimeMessage message = mailSender.createMimeMessage();
 			MimeMessageHelper messageHelper = new MimeMessageHelper(message,true,"UTF-8"); //multipart형식 전달 가능
