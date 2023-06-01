@@ -50,26 +50,32 @@
 	                <br>
 	         
             <div id="input_area">
-                <span class="left_span"><label for="studentName">이름</label></span>
-                <br>
-            	<input name="studentName" id=studentName placeholder="이름" required>
-                <br>
-                <span class="left_span"><label for="phone">휴대폰 번호</label></span>
-                <br>
-            	<input type="number" name="phone" id="phone" placeholder="- 을 제외하고 입력해주세요" required>
-                <br>
+            	<div id="inputDiv">
+	                <span class="left_span"><label for="name">이름</label></span>
+	                <br>
+	            	<input name="name" id=name placeholder="이름" required>
+	                <br>
+	                <span class="left_span"><label for="phone">휴대폰 번호</label></span>
+	                <br>
+	            	<input type="number" name="phone" id="phone" placeholder="- 을 제외하고 숫자만 입력해주세요" required>
+	                <br>
+                </div>
                 <div id="checkDiv">
                     <span class="left_span"><label for="checkEmail">인증 번호</label></span>
                     <span id="timer"></span>
                     <button onclick="plusTime();">시간연장</button>
-                    <input type="number" name="checkEmail" id="checkEmail" placeholder="인증번호 6자리를 입력해주세요">
+                    <input type="number" name="checkNum" id="checkNum" placeholder="인증번호 6자리를 입력해주세요">
                 </div>
+                
+				<div id="emailDiv">
+					<h2>아이디 : <span id="submitEmail"></span></h2>
+                </div>
+                <input type="hidden" id="ranNum">
+                <input type="hidden" id="resultNo">
             </div>
 
             <div id="login_footer2">
                 <button onclick="checkEmail();" id="footer_btn">인증요청</button>
-                
-                <!-- 메일인증 후 번호 확인 완료되면 학번 표시 -->
                 
                 <button onclick="checkSubmit();" id="footer_btn2">인증완료</button>
                 <button type="button" onclick="backForm();">돌아가기</button>
@@ -89,32 +95,39 @@
 					$("#content02").hide();
 					$("#footer_btn").show();
 					$("#footer_btn2").hide();
+					$("#inputDiv").show();
                     $("#checkDiv").hide();
+                    $("#emailDiv").hide();
                     clearInterval(timer);
                     $("#checkDiv>#timer").html("");
-                    $("#studentName").val("");
+                    $("#name").val("");
                     $("#phone").val("");
 				};
 
                 function checkEmail(){
+                	
                     $.ajax({
                         
-                        url : "checkEmail.st",
+                        url : "checkEmail.me",
 
                         data : {
-                        	studentName : $("#studentName").val(),
+                        	name : $("#name").val(),
                             phone : $("#phone").val()
                         },
                         
-                        success : function(result){
+                        success : function(obj){
                         	
-                            if(result > 0){
+                             if(obj != "null"){
+                            	 
+                            	var result = JSON.parse(obj);
                             	
+                            	$("#ranNum").val(result.ranNum);
+                            	$("#resultNo").val(result.resultNo);
                                 $("#checkDiv").show();
                                 $("#footer_btn").hide();
                                 $("#footer_btn2").show();
                                 
-                                startTimer();
+                                startTimer(); 
                                 
                             }else{
                             	alert("잘못된 학생 정보입니다.");
@@ -123,7 +136,7 @@
                         },
                         
                         error : function(){
-                            alert("잘못된 학생 정보입니다.");
+                            console.log("이메일조회 실패.");
                         }
                         
                     });
@@ -135,7 +148,7 @@
                 	
                 	clearInterval(timer);
                 	
-                    var time = 30;
+                    var time = 300;
                     var min = "";
                     var sec = "";
                     
@@ -161,11 +174,34 @@
                 	$("#checkDiv").hide();
                 	$("#footer_btn2").hide();
                 	$("#footer_btn").show();
-                	$("#checkDiv>#checkEmail").val("");
+                	$("#checkDiv>#checkNum").val("");
                 };
                 
                 function plusTime(){
                 	startTimer();
+                };
+                
+                function checkSubmit(){
+                	
+                	var num = $("#ranNum").val();
+                	var num2 = $("#checkNum").val();
+                	
+                	if(num == num2){
+                		$("#emailDiv").show();
+                		$("#checkDiv").hide();
+                        $("#inputDiv").hide();
+                		clearInterval(timer);
+                		$("#footer_btn2").attr("disabled",true);
+                        $("#name").val("");
+                        $("#phone").val("");
+                        
+                		var str = $("#resultNo").val();
+                		$("#submitEmail").text(str);
+                		
+                	}else{
+                		alert("인증번호를 다시 입력해 주세요");
+                	}
+                	
                 };
          	</script>
     </div>

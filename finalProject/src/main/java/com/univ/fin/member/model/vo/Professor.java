@@ -22,6 +22,7 @@ public class Professor {
 	PROFESSOR_PWD		VARCHAR2(30 BYTE)
 	POSITION			VARCHAR2(10 BYTE)
 	ENTRANCE_DATE		DATE
+	PHONE				VARCHAR2(15 BYTE)
 	EMAIL				VARCHAR2(30 BYTE)
 	POST				NUMBER
 	ADDRESS				VARCHAR2(50 BYTE)
@@ -37,6 +38,7 @@ public class Professor {
 	private String professorPwd;
 	private String position;
 	private Date entranceDate;
+	private String phone;
 	private String email;
 	private int post;
 	private String address;
