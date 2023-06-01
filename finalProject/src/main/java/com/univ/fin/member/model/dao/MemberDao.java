@@ -20,8 +20,13 @@ public class MemberDao {
 	}
 	
 	//ID조회 (이메일 방식) - 학생
-	public int checkEmail(SqlSessionTemplate sqlSession, Student st) {
+	public Student checkEmail(SqlSessionTemplate sqlSession, Student st) {
 		return sqlSession.selectOne("memberMapper.checkEmail", st);
+	}
+
+	//ID조회 (이메일 방식) - 임직원
+	public Professor checkEmail2(SqlSessionTemplate sqlSession, Professor pr) {
+		return sqlSession.selectOne("memberMapper.checkEmail2", pr);
 	}
 
 }

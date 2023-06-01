@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,8 +16,19 @@
     <div class="wrap">
         <div class="content">
 
-			<script>
+		 	<c:if test="${not empty alertMsg}">
+			
+				<script>
+					alert("${alertMsg}");
+				</script>
+				
+				<c:remove var="alertMsg" scope="session"/>
+				
+			</c:if>
+	
+	 		<script>
 				$(function(){
+					
 					var saveId = "${cookie.userNo.value}";
 					
 					if(saveId != ""){
@@ -24,7 +36,7 @@
 						$("#save_userNo").attr("checked",true);
 					}
 				});
-			</script>
+			</script> 
 
             <form action="login.me" method="post">
             
