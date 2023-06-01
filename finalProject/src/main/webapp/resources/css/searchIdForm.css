@@ -130,3 +130,7 @@ input[type="number"]::-webkit-inner-spin-button{
 #input_area>#checkDiv,#login_footer2>#footer_btn2{
     display: none;
 }
+
+#emailDiv{
+    display: none;
+}
