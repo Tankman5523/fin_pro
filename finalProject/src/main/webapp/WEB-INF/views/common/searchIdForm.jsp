@@ -62,6 +62,7 @@
                 </div>
                 <div id="checkDiv">
                     <span class="left_span"><label for="checkEmail">인증 번호</label></span>
+                    <span id="restTime">남은시간 : </span>
                     <span id="timer"></span>
                     <button onclick="plusTime();">시간연장</button>
                     <input type="number" name="checkNum" id="checkNum" placeholder="인증번호 6자리를 입력해주세요">
