@@ -37,7 +37,7 @@ public class MemberController {
 	@GetMapping("login.me")
 	public String loginForm() {
 		
-		return "redirect:/";
+		return "member/login";
 	}
 	
 	//로그인 메소드
@@ -102,7 +102,7 @@ public class MemberController {
 			}
 		}else {
 			session.setAttribute("alertMsg", "잘못 입력하셨습니다. 다시 입력해주세요");
-			mv.setViewName("common/login");
+			mv.setViewName("member/login");
 		}
 		
 		return mv;
@@ -112,7 +112,7 @@ public class MemberController {
 	@RequestMapping("searchIdForm.me")
 	public String searchIdForm() {
 		
-		return "common/searchIdForm";
+		return "member/searchIdForm";
 	}
 	
 	//ID조회 (이메일 방식)

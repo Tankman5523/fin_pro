@@ -16,7 +16,7 @@
 	
 	<%-- <jsp:include page="WEB-INF/views/common/student_category.jsp"/> --%>
 	
-		<jsp:include page="WEB-INF/views/common/login.jsp"/>
+		<jsp:include page="WEB-INF/views/member/login.jsp"/>
 	
 	
 </body>
