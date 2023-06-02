@@ -37,7 +37,7 @@ public class MemberServiceImpl implements MemberService{
 		return loginUser;
 	}
 
-	//ID조회 (이메일 방식) - 학생
+	//ID조회 - 학생
 	@Override
 	public Student checkEmail(Student st) {
 		
@@ -46,7 +46,7 @@ public class MemberServiceImpl implements MemberService{
 		return member;
 	}
 
-	//ID조회 (이메일 방식) - 임직원
+	//ID조회 - 임직원
 	@Override
 	public Professor checkEmail2(Professor pr) {
 		

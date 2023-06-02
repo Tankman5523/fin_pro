@@ -54,18 +54,18 @@
   		WHERE PROFESSOR_NO = #{professorNo}
   	</select>
   
-  	<!-- ID조회 (이메일 방식) - 학생 -->
+  	<!-- ID조회 - 학생 -->
   	<select id="checkEmail" parameterType="student" resultMap="loginStudentMap">
-  		SELECT STUDENT_NO,EMAIL
+  		SELECT STUDENT_NO,PHONE,EMAIL
   		FROM STUDENT
   		WHERE STUDENT_NAME = #{studentName}
   		AND PHONE = #{phone}
   		AND STATUS = '재학'
   	</select>
   	
-  	<!-- ID조회 (이메일 방식) - 임직원 -->
+  	<!-- ID조회 - 임직원 -->
   	<select id="checkEmail2" parameterType="professor" resultMap="loginProfessorMap">
-  		SELECT PROFESSOR_NO,EMAIL
+  		SELECT PROFESSOR_NO,PHONE,EMAIL
   		FROM PROFESSOR
   		WHERE PROFESSOR_NAME = #{professorName}
   		AND PHONE = #{phone}
