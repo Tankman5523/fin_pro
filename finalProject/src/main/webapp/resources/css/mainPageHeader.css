@@ -1,0 +1,73 @@
+@charset "UTF-8";
+
+/*=================header 기본 영역 설정=================*/
+#header{
+    width: 100%;
+    height: 20%;
+}
+
+/*=================header 세부 영역 설정=================*/
+#logo_header{
+    width: 100%;
+    height: 70%;
+    border-bottom: 1px solid lightgray;
+}
+#menubar{
+    width: 100%;
+    height: 30%;
+    margin: 0%;
+    display: flex;
+    align-items: center;
+}
+
+
+/*=================logo 설정=================*/
+#logo_header{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#logo_header img{
+    width: 250px;
+}
+
+/*=================menubar 설정=================*/
+#nav{
+    display: block;
+    width: 100%;
+    margin: 0%;
+    padding: 0%;
+    list-style-type: none;
+    text-align: center;
+}
+#nav>li{
+    position: relative;
+    height: 100%;
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    margin: auto 5%;
+}
+#menubar a{
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+}
+#menubar li::after{
+    display: block;
+    position: absolute;
+    content: "";
+    width: 0;
+    left: 50%;
+    border-bottom: 3px solid rgb(59, 193, 255);
+    transition: all 250ms ease-in-out;
+}
+#menubar li:hover::after{
+    transition: all 250ms ease-in-out;
+    left: 0%;
+    width: 100%;
+}
+

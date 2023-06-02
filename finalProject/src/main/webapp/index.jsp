@@ -13,12 +13,14 @@
 <%-- 	<jsp:include page="WEB-INF/views/common/admin_category.jsp"/> --%>
 	
 <%-- 	<jsp:include page="WEB-INF/views/common/professor_category.jsp"/> --%>
-	<jsp:include page="WEB-INF/views/member/professor/gradeInsertView.jsp"/>
+<%-- 	<jsp:include page="WEB-INF/views/member/professor/gradeInsertView.jsp"/> --%>
 	
 <%-- 	<jsp:include page="WEB-INF/views/common/student_category.jsp"/> --%>
 <%-- 	<jsp:include page="WEB-INF/views/member/student/gradeListView.jsp"/> --%>
 	
-		<jsp:include page="WEB-INF/views/member/login.jsp"/>
+<%-- 		<jsp:include page="WEB-INF/views/member/login.jsp"/> --%>
+		
+		<jsp:include page="WEB-INF/views/main/mainPage.jsp"/>
 	
 	
 </body>
