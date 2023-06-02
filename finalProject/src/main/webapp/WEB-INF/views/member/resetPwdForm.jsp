@@ -35,7 +35,7 @@
             </div>
 
             <div id="login_footer">
-                <button type="button" onclick="location.href='login.me'">돌아가기</button>
+                <button type="button" onclick="location.href='${backPage}'">돌아가기</button>
             </div>
 			
         </div>
@@ -52,9 +52,9 @@
 	         
             <div id="input_area">
             	<div id="inputDiv">
-	                <span class="left_span"><label for="name">이름</label></span>
+	                <span class="left_span"><label for="name">아이디</label></span>
 	                <br>
-	            	<input name="name" id=name placeholder="이름" required>
+	            	<input name="name" id=name placeholder="직번/학번을 입력하세요" required>
 	                <br>
 	                <span class="left_span"><label for="phone">휴대폰 번호</label></span>
 	                <br>
@@ -70,19 +70,39 @@
                 </div>
                 
 				<div id="emailDiv">
-					<h2>아이디 : <span id="submitEmail"></span></h2>
-                </div>
+					<h2>비밀번호 변경</h2>
+					<div id="smsDiv_input_area">
+						<input type="password" name="emailPwd" id="emailPwd" onkeyup="checkPwd(1);" placeholder="새 비밀번호를 입력해주세요">
+						<br>
+						<input type="password" id="checkEmailPwd" onkeyup="checkPwd(1);" placeholder="새 비밀번호를 다시 입력해주세요">
+						<br>
+						<span id="comment_emailPwd"></span>	
+					</div>
+					
+					<div id="emailDiv_button_area">
+						<button onclick="changePwd(1);">
+						<img src="resources/icon/login_Button.png">
+						<br>
+							비밀번호 변경
+						</button>
+					</div>
+					
+					<div id="comment_area">
+						<p>- 9자리~20자리 이내로 입력해주세요.</p>
+						<p>- 비밀번호는 공백없이 입력해주세요.</p>
+						<p>- 영문,숫자,특수문자를 혼합하여 입력해주세요.</p>
+					</div>
+            	</div>
                 <input type="hidden" id="ranNum">
                 <input type="hidden" id="resultNo">
-            </div>
-
-            <div id="login_footer2">
-                <button onclick="checkEmail();" id="footer_btn">인증요청</button>
                 
-                <button onclick="checkSubmit(1);" id="footer_btn2">인증완료</button>
-                <button type="button" onclick="backForm(1);">돌아가기</button>
-            </div>
-            
+	            <div id="login_footer2">
+	                <button onclick="checkEmail();" id="footer_btn">인증요청</button>
+	                
+	                <button onclick="checkSubmit(1);" id="footer_btn2">인증완료</button>
+	                <button type="button" onclick="backForm(1);">돌아가기</button>
+	            </div>
+        	</div>
         </div>
         
         <div class="content" id="content03">
@@ -95,46 +115,46 @@
                 <br>
 			<div id="input_area2">
             	<div id="inputDiv2">
-	                <span class="left_span"><label for="name">아이디</label></span>
+	                <span class="left_span"><label for="name2">아이디</label></span>
 	                <br>
 	            	<input name="name" id=name2 placeholder="직번/학번을 입력하세요" required>
 	                <br>
-	                <span class="left_span"><label for="phone">휴대폰 번호</label></span>
+	                <span class="left_span"><label for="phone2">휴대폰 번호</label></span>
 	                <br>
 	            	<input type="number" name="phone" id="phone2" placeholder="- 을 제외하고 숫자만 입력해주세요" required>
 	                <br>
                 </div>
                 <div id="checkDiv2">
-                    <span class="left_span"><label for="checkSms">인증 번호</label></span>
+                    <span class="left_span"><label for="checkNum2">인증 번호</label></span>
                     <span id="restTime2">남은시간 : </span>
                     <span id="timer2"></span>
                     <input type="number" name="checkNum2" id="checkNum2" placeholder="인증번호 6자리를 입력해주세요">
                 </div>
                 
 				<div id="SmsDiv">
-						<h2>비밀번호 변경</h2>
-						<div id="smsDiv_input_area">
-							<input type="password" name="Pwd" id="Pwd" onkeyup="checkPwd();" placeholder="새 비밀번호를 입력해주세요">
-							<br>
-							<input type="password" id="checkPwd" onkeyup="checkPwd();" placeholder="새 비밀번호를 다시 입력해주세요">
-							<br>
-							<span id="comment_Pwd"></span>	
-						</div>
-						
-						<div id="smsDiv_button_area">
-							<button onclick="changePwd();">
-							<img src="resources/icon/login_Button.png">
-							<br>
-								비밀번호 변경
-							</button>
-						</div>
-						
-						<div id="comment_area">
-							<p>- 9자리~20자리 이내로 입력해주세요.</p>
-							<p>- 비밀번호는 공백없이 입력해주세요.</p>
-							<p>- 영문,숫자,특수문자를 혼합하여 입력해주세요.</p>
-						</div>
-	                </div>
+					<h2>비밀번호 변경</h2>
+					<div id="smsDiv_input_area">
+						<input type="password" name="Pwd" id="Pwd" onkeyup="checkPwd(2);" placeholder="새 비밀번호를 입력해주세요">
+						<br>
+						<input type="password" id="checkPwd" onkeyup="checkPwd(2);" placeholder="새 비밀번호를 다시 입력해주세요">
+						<br>
+						<span id="comment_Pwd"></span>	
+					</div>
+					
+					<div id="smsDiv_button_area">
+						<button onclick="changePwd(2);">
+						<img src="resources/icon/login_Button.png">
+						<br>
+							비밀번호 변경
+						</button>
+					</div>
+					
+					<div id="comment_area">
+						<p>- 9자리~20자리 이내로 입력해주세요.</p>
+						<p>- 비밀번호는 공백없이 입력해주세요.</p>
+						<p>- 영문,숫자,특수문자를 혼합하여 입력해주세요.</p>
+					</div>
+                </div>
                 <input type="hidden" id="resultSmsNo">
                 <input type="hidden" id="ranSmsNum">
             </div>
@@ -171,11 +191,11 @@
 	                    $("#emailDiv").hide();
 	                    $("#content02>#text").show();
 	                    clearInterval(timer);
-	                    $("#checkDiv>#timer").html("");
+	                    $("#checkDiv>#timer").text("");
 	                    $("#name").val("");
 	                    $("#phone").val("");
 	                    $("#checkNum").val("");
-	                    $("#footer_btn2").attr("disabled",false);
+	                    $("#footer_btn2").attr("disabled",false).css("cursor","pointer");
 					}else{
 						$("#content01").show();
 						$("#content03").hide();
@@ -189,8 +209,7 @@
 	                    $("#name2").val("");
 	                    $("#phone2").val("");
 	                    $("#checkNum2").val("");
-	                    $("#footer_SmsBtn2").attr("disabled",false);
-	                    $("#footer_SmsBtn2").css("cursor","pointer");
+	                    $("#footer_SmsBtn2").attr("disabled",false).css("cursor","pointer");
 					}
 				};
 				
@@ -199,10 +218,10 @@
                 	
                     $.ajax({
                         
-                        url : "checkEmail.me",
+                        url : "checkPwdEmail.me",
 
                         data : {
-                        	name : $("#name").val(),
+                        	memberNo : $("#name").val(),
                             phone : $("#phone").val()
                         },
                         
@@ -355,13 +374,9 @@
 	                        $("#inputDiv").hide();
 	                        $("#content02>#text").hide();
 	                		clearInterval(timer);
-	                		$("#footer_btn2").attr("disabled",true);
+	                		$("#footer_btn2").attr("disabled",true).css("cursor","auto");
 	                        $("#name").val("");
 	                        $("#phone").val("");
-	                        
-	                		var str = $("#resultNo").val();
-	                		$("#submitEmail").text(str);
-	                		
 	                	}else{
 	                		alert("인증번호를 다시 입력해 주세요");
 	                	}
@@ -387,55 +402,97 @@
                 	
                 };
                 
-                
                 /* 비밀번호 변경버튼 클릭 시 */
-                function changePwd(){
-                	
-                	$.ajax({
-                		url : "changePwd.me",
-                		data : {
-                			password : $("#Pwd").val(),
-                			memberNo : $("#resultSmsNo").val()
-                		},
-                		success : function(result){
-                			if(result > 0){
-                				location.href="login.me";
-                			}else{
-                				alert("비밀번호 변경 실패하였습니다.");
-                			}
-                			$("#Pwd").val("");
-            				$("#resultSmsNo").val("");
-                		},
-                		error : function(){
-                			console.log("비밀번호 변경 통신 실패");
-                		}
-                	});
-                	
-                }
+			    function changePwd(num){
+			                	
+			        if(num == 1){
+			            $.ajax({
+			                url : "changePwd.me",
+			                data : {
+			                    password : $("#emailPwd").val(),
+			                    memberNo : $("#resultNo").val()
+			                },
+			                success : function(result){
+			                    if(result > 0){
+			                        location.href="login.me";
+			                    }else{
+			                        alert("비밀번호 변경 실패하였습니다.");
+			                    }
+			                    $("#emailPwd").val("");
+			                    $("#resultNo").val("");
+			                },
+			                error : function(){
+			                    console.log("비밀번호 변경 통신 실패");
+			                }
+			            });
+			        }else{
+			        $.ajax({
+			            url : "changePwd.me",
+			            data : {
+			                password : $("#Pwd").val(),
+			                memberNo : $("#resultSmsNo").val()
+			            },
+			            success : function(result){
+			                if(result > 0){
+			                    location.href="login.me";
+			                }else{
+			                    alert("비밀번호 변경 실패하였습니다.");
+			                }
+			                $("#Pwd").val("");
+			                $("#resultSmsNo").val("");
+			            },
+			            error : function(){
+			                console.log("비밀번호 변경 통신 실패");
+			            }
+			        });
+			
+			        }
+			    }
                 
                 /* 비밀번호 확인 코멘트 */
-               	function checkPwd(){
-                	var pwd = $("#Pwd").val();
-                	var chPwd = $("#checkPwd").val();
-                	
-                	if(chPwd != ""){
-	                	if(pwd == chPwd){
-	                		$("#comment_Pwd").text("비밀번호가 일치합니다.").css("color","limegreen");
-	                		$("#smsDiv_button_area button").attr("disabled",false).css("cursor","pointer");
-	                	}else{
-	                		$("#comment_Pwd").text("비밀번호가 일치하지 않습니다.").css("color","crimson");
-	                		$("#smsDiv_button_area button").attr("disabled",true).css("cursor","auto");
-	                	}
-                	}
-                	if(pwd == "" || chPwd == ""){
-                		$("#comment_Pwd").text("");
-                		$("#smsDiv_button_area button").attr("disabled",true).css("cursor","auto");
-                	}
-                }
-                
-                $(function(){
-                	$("#smsDiv_button_area button").attr("disabled",true).css("cursor","auto");
-                });
+		    	function checkPwd(num){
+		
+		            if(num == 1){
+		                var pwd = $("#emailPwd").val();
+		                var chPwd = $("#checkEmailPwd").val();
+		                
+		                if(chPwd != ""){
+		                    if(pwd == chPwd){
+		                        $("#comment_emailPwd").text("비밀번호가 일치합니다.").css("color","limegreen");
+		                        $("#emailDiv_button_area button").attr("disabled",false).css("cursor","pointer");
+		                    }else{
+		                        $("#comment_emailPwd").text("비밀번호가 일치하지 않습니다.").css("color","crimson");
+		                        $("#emailDiv_button_area button").attr("disabled",true).css("cursor","auto");
+		                    }
+		                }
+		                if(pwd == "" || chPwd == ""){
+		                    $("#comment_emailPwd").text("");
+		                    $("#emailDiv_button_area button").attr("disabled",true).css("cursor","auto");
+		                }
+		            }else{
+		                var pwd = $("#Pwd").val();
+		                var chPwd = $("#checkPwd").val();
+		                
+		                if(chPwd != ""){
+		                    if(pwd == chPwd){
+		                        $("#comment_Pwd").text("비밀번호가 일치합니다.").css("color","limegreen");
+		                        $("#smsDiv_button_area button").attr("disabled",false).css("cursor","pointer");
+		                    }else{
+		                        $("#comment_Pwd").text("비밀번호가 일치하지 않습니다.").css("color","crimson");
+		                        $("#smsDiv_button_area button").attr("disabled",true).css("cursor","auto");
+		                    }
+		                }
+		                if(pwd == "" || chPwd == ""){
+		                    $("#comment_Pwd").text("");
+		                    $("#smsDiv_button_area button").attr("disabled",true).css("cursor","auto");
+		                }
+		            }
+		        }
+		    
+		        $(function(){
+		            $("#smsDiv_button_area button").attr("disabled",true).css("cursor","auto");
+		            $("#emailDiv_button_area button").attr("disabled",true).css("cursor","auto");
+		        }); 
                 
          	</script>
     </div>

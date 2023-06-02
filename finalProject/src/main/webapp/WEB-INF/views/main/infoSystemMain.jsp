@@ -17,8 +17,8 @@
 	            </div>
 	            <div id="login_area">
 	                <button type="button" id="login_btn" onclick="location.href='login.me'">로그인</button> <br>
-	            	<button type="button" class="forgot_btn" onclick="location.href='searchIdForm.me'">아이디 찾기</button> /
-	            	<button type="button" class="forgot_btn" onclick="location.href='resetPwdForm.me'">비밀번호 초기화</button>
+	            	<button type="button" class="forgot_btn" onclick="location.href='searchIdForm.me?num=1'">아이디 찾기</button> /
+	            	<button type="button" class="forgot_btn" onclick="location.href='resetPwdForm.me?num=1'">비밀번호 초기화</button>
 	            </div>
 	            <div>
 	                <p>(07212) 서울특별시 영등포구 선유동2로 57 이레빌딩</p>
