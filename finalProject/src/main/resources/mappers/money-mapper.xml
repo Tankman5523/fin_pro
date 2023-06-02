@@ -58,4 +58,11 @@
 		
 	</resultMap>
 	
+	<select id="selectMyScholarshipList" resultMap="scholarshipResultSet">
+		SELECT *
+		FROM SCHOLARSHIP
+		WHERE STUDENT_NO = #{studentNo}
+		AND CLASS_YEAR = #{classYear}
+		AND STATUS IN ('Y','W')
+	</select>	
 </mapper>

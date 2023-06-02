@@ -17,41 +17,45 @@ public class SalaryServiceImpl implements SalaryService{
 	
 	@Autowired
 	private SalaryDao salarydao;
-	
+
+	@Override
+	public Salary selectMySalary() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<Salary> selectMySalaryList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	@Override
 	public int insertSalary() {
-		
-		int result=0;
-		
-		return result;
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
 	public int updateSalary() {
-		int result=0;
-		
-		return result;
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
 	public int deleteSalary() {
-		int result=0;
-		
-		return result;
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
-	public ArrayList<Salary> selectSalaryList() {
-		
-		ArrayList<Salary> slist = null;
-		
-		return slist;
-	}
-
-	@Override
-	public Salary selectSalary() {
+	public ArrayList<Salary> selectAllSalaryList() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	
+	
+	
 
 }

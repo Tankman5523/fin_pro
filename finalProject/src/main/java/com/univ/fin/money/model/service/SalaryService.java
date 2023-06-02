@@ -6,13 +6,17 @@ import com.univ.fin.money.model.vo.Salary;
 
 public interface SalaryService {
 	
+	Salary selectMySalary();
+	
+	ArrayList<Salary> selectMySalaryList();
+	
 	int insertSalary();
 	
 	int updateSalary();
 	
 	int deleteSalary();
 	
-	ArrayList<Salary> selectSalaryList();
+	ArrayList<Salary> selectAllSalaryList();
 	
-	Salary selectSalary();
+	
 }

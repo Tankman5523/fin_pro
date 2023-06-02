@@ -21,4 +21,8 @@ public class Scholarship { //장학금
 	private Date proDate;
 	private String status;
 	private String etc;
+	
+	//학생 이름
+	private String stduentName;
+	
 }
