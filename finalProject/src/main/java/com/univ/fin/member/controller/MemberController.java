@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +33,9 @@ public class MemberController {
 	
 	@Autowired
 	private JavaMailSender mailSender;
+	
+	@Autowired
+	private BCryptPasswordEncoder bcryptPasswordEncoder;
 	
 	//로그인 폼 메소드
 	@GetMapping("login.me")
@@ -233,5 +237,87 @@ public class MemberController {
 		return new Gson().toJson(obj);
 	}
 	
+	//비밀번호 초기화 폼 메소드
+	@RequestMapping("resetPwdForm.me")
+	public String resetPwdForm() {
+		return "member/resetPwdForm";
+	}
+	
+	//비밀번호 초기화 (SMS 방식)
+	@ResponseBody
+	@RequestMapping("checkPwdPhone.me")
+	public String checkPwdPhone(String memberNo, String phone) {
+		//판별값 변수
+		Boolean check = false;
+		//랜덤값 변수
+		String ranNum = null;
+		//임직원 변수
+		Professor member2 = null;
+		//Sms 변수
+		Sms message = new Sms();
+		//Json객체 변수 생성
+		JsonObject obj = null;
+		/*
+		
+		//학생먼저 판별
+		Student st = Student.builder().studentNo(memberNo).phone(phone).build();
+		Student member = memberService.checkPwd(st);
+		
+		//입력한 값과 일치하는 학생존재 판별
+		if(member != null) { // 학생 존재함.
+			ranNum = Integer.toString((int)(Math.random()*900000)+100000);
+			//member.getPhone()을 첫 매개변수에 넣어주면 됨;
+			message.send_msg("01027552324", ranNum);
+			check = true;
+		}else { //임직원일 경우
+			Professor pr = Professor.builder().professorNo(memberNo).phone(phone).build();
+			member2 = memberService.checkPwd2(pr);
+			
+			if(member2 != null) { //임직원 존재함.(학생,임직원 둘다 아닐경우를 위해 판별)
+				ranNum = Integer.toString((int)(Math.random()*900000)+100000);
+				//member2.getPhone()을 첫번째 매개변수에 넣어주면 됨.
+				message.send_msg("01027552324", ranNum);
+				check = true;
+			}
+		}
+		
+		if(check == true){
+			obj = new JsonObject();
+			if(member2 == null) { //학생일 경우
+				obj.addProperty("resultNo", member.getStudentNo());
+			}else { //임직원일 경우
+				obj.addProperty("resultNo", member2.getProfessorNo());
+			}
+			obj.addProperty("ranNum", ranNum);
+		}
+		*/
+		obj = new JsonObject();
+		obj.addProperty("resultNo", "P00000000");
+		obj.addProperty("ranNum", "123456");
+		return new Gson().toJson(obj);
+	}
+	
+	//비밀번호 초기화 - 비밀번호 변경 메소드
+	@RequestMapping("changePwd.me")
+	public int changePwd(String password, String memberNo,HttpSession session) {
+		
+		int result = 0;
+		
+		String encPwd = bcryptPasswordEncoder.encode(password);
+		
+		if(memberNo.charAt(0) == 'S') { //학생일 경우
+			Student st = Student.builder().studentNo(memberNo).studentPwd(encPwd).build();
+			result = memberService.changePwd(st);
+		}else {
+			Professor pr = Professor.builder().professorNo(memberNo).professorPwd(encPwd).build();
+			result = memberService.changePwd2(pr);
+		}
+		
+		if(result > 0) {
+			session.setAttribute("alertMsg", "비밀번호 변경이 완료되었습니다.");
+		}
+		
+		return result;
+	}
 	
 }

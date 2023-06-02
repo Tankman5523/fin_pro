@@ -217,7 +217,7 @@
                 			phone : $("#phone2").val()
                 		},
                 		success : function(obj){
-                			console.log(obj);
+                			
                             if(obj != "null"){
                            	 
                             	var result = JSON.parse(obj);
