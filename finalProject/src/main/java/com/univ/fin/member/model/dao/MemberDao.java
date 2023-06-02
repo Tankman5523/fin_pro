@@ -28,5 +28,26 @@ public class MemberDao {
 	public Professor checkEmail2(SqlSessionTemplate sqlSession, Professor pr) {
 		return sqlSession.selectOne("memberMapper.checkEmail2", pr);
 	}
+	
+	//비밀번호 초기화 - 학생
+	public Student checkPwd(SqlSessionTemplate sqlSession, Student st) {
+		return sqlSession.selectOne("memberMapper.checkPwd", st);
+	}
+	
+	//비밀번호 초기화 - 임직원
+	public Professor checkPwd2(SqlSessionTemplate sqlSession, Professor pr) {
+		return sqlSession.selectOne("memberMapper.checkPwd2", pr);
+	}
+
+	//비밀번호 초기화 - 비밀번호 변경 메소드 (학생)
+	public int changePwd(SqlSessionTemplate sqlSession, Student st) {
+		return sqlSession.update("memberMapper.changePwd", st);
+	}
+
+	//비밀번호 초기화 - 비밀번호 변경 메소드 (임직원)
+	public int changePwd2(SqlSessionTemplate sqlSession, Professor pr) {
+		return sqlSession.update("memberMapper.changePwd2", pr);
+	}
+
 
 }

@@ -54,5 +54,43 @@ public class MemberServiceImpl implements MemberService{
 		
 		return member2;
 	}
+
+	//비밀번호 초기화 - 학생
+	@Override
+	public Student checkPwd(Student st) {
+		
+		Student member = memberDao.checkPwd(sqlSession,st);
+		
+		return member;
+	}
+
+	//비밀번호 초기화 - 임직원
+	@Override
+	public Professor checkPwd2(Professor pr) {
+		
+		Professor member2 = memberDao.checkPwd2(sqlSession,pr);
+		
+		return member2;
+	}
+	
+	//비밀번호 초기화 - 비밀번호 변경 메소드 (학생)
+	@Override
+	public int changePwd(Student st) {
+		
+		int result = memberDao.changePwd(sqlSession,st);
+		
+		return result;
+	}
+
+	//비밀번호 초기화 - 비밀번호 변경 메소드 (임직원)
+	@Override
+	public int changePwd2(Professor pr) {
+		
+		int result = memberDao.changePwd2(sqlSession,pr);
+		
+		return result;
+	}
+
+
 	
 }
