@@ -253,6 +253,7 @@ input[type="number"]::-webkit-inner-spin-button{
     position: relative;
     text-align: left;
     left: 15px;
+    font-size: 14px;
 }
 
 #smsDiv_button_area>button{
@@ -267,7 +268,20 @@ input[type="number"]::-webkit-inner-spin-button{
     font-weight: 600;
 }
 
-#content03>h2{
-    margin-bottom: 0px;
-    padding-bottom: 0px;
+#emailDiv_button_area>button{
+    background-color: rgb(52, 152, 219);
+    margin-top: 15px;
+    width: 502px;
+    height: 110px;
+    border-radius: 5px;
+    border: 0;
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+#SmsDiv h2,#emailDiv h2{
+    margin-top: 0px;
+    padding-top: 0px;
+    font-size: 26px;
 }

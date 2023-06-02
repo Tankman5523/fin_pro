@@ -34,7 +34,7 @@
             </div>
 
             <div id="login_footer">
-                <button type="button" onclick="location.href='login.me'">돌아가기</button>
+                <button type="button" onclick="location.href='${backPage}'">돌아가기</button>
             </div>
 			
         </div>
@@ -61,7 +61,7 @@
 	                <br>
                 </div>
                 <div id="checkDiv">
-                    <span class="left_span"><label for="checkEmail">인증 번호</label></span>
+                    <span class="left_span"><label for="checkNum">인증 번호</label></span>
                     <span id="restTime">남은시간 : </span>
                     <span id="timer"></span>
                     <button onclick="plusTime();">시간연장</button>
