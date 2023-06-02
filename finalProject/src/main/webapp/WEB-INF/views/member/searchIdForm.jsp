@@ -34,7 +34,7 @@
             </div>
 
             <div id="login_footer">
-                <button type="button" onclick="history.back();">돌아가기</button>
+                <button type="button" onclick="location.href='login.me'">돌아가기</button>
             </div>
 			
         </div>
@@ -217,7 +217,7 @@
                 			phone : $("#phone2").val()
                 		},
                 		success : function(obj){
-                			console.log(obj);
+                			
                             if(obj != "null"){
                            	 
                             	var result = JSON.parse(obj);
