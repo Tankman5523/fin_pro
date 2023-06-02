@@ -1,0 +1,102 @@
+@charset "UTF-8";
+
+/*=================div 기본 설정=================*/
+ div{
+    box-sizing: border-box;
+}
+.wrap{
+    width: 100%;
+    height: 100vh;
+    margin: auto;
+}
+.wrap>div{
+    width: 100%;
+    height: auto;
+}
+
+/*=================기본 영역 설정=================*/
+body {
+	margin: 0;
+	padding-top: 200px;
+}
+#header{
+	display: block;
+    position: fixed;
+    top: 0;
+	left: 0;
+	right: 0;
+	border-bottom: 2px solid rgb(59, 193, 255);
+}
+#content{
+    width: 100%;
+    height: auto;
+}
+
+/*=================content 세부 영역 설정=================*/
+h2, h3{
+    margin: 0%;
+}
+
+#content_title{
+	display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+	color: white;
+	background-color: rgb(59, 193, 255);
+}
+
+.title_area{
+	width: 100%;
+	height: 32px;
+	text-align: center;
+	margin: 50px 0;
+}
+
+#president_area{
+	width: 800px;
+    height: 300px;
+    margin: 50px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 50px;
+    border-top: 1px solid rgb(59, 193, 255);
+    border-bottom: 1px solid rgb(59, 193, 255);
+/*     background-color: lightpink; */
+}
+#president_area img{
+	width: auto;
+    height: 300px;
+    float: left;
+}
+#president_area p{
+    width: 60%;
+    text-align: center;
+    margin: 0 30px;
+}
+#span1{
+    font-size: 30px;
+    font-weight: 550;
+    color:  rgb(27, 132, 180);
+}
+#span2{
+    font-size: 20px; 
+}
+
+#uni_purpose{
+	width: 100%;
+	height: 100px;
+	display:flex;
+	align-items: center;
+	justify-content: center;
+/* 	background-color: lightblue; */
+}
+
+#uni_purpose p{
+    margin: 0%;
+    text-align: center;
+    font-size: 20px;
+    letter-spacing: 2px;
+    line-height: 30px;
+}

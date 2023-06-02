@@ -31,26 +31,22 @@
             <div id="content_1">
 				<div style="width: 90%;height: 90%;margin: 5%;">
                     <div>
-                        <button>장학금수혜내역</button> <button>장학금 수여</button>
+                        <button onclick="">장학금수혜내역</button> <button onclick="">장학금 수여</button>
                         <hr>
                         <h3>장학금 수혜내역 조회</h3>
                     </div>
                     
                     <div class="list">
-                        <!--loginUser 입학일자 기준으로 최근까지 / 변경시 ajax로 비동기처리-->
-                        <select class="classYear">
+                        <!--filer / 변경시 ajax로 비동기처리-->
+                        <select id="filter" name="filter">
                             <option value="0">==전체==</option>
-                            <option value="2023">2023</option>
-                            <option value="2022">2022</option>
-                            <option value="2021">2021</option>
-                            <option value="2020">2020</option>
-                            <option value="2019">2019</option>
-                            <option value="2018">2018</option>
-                            <option value="2017">2017</option>
+                            <option value="studentNo">학번</option>
+                            <option value="studentName">학생이름</option>
+                            <option value="classYear">학년도</option>
                         </select>
-                        <input type="text" id="keyword">
-                        <button onclick="">조회</button>
-                        <table border="1" style="width: 100%;">
+                        <input type="text" id="keyword" name="keyword">
+                        <button onclick="selectList();">조회</button>
+                        <table border="1" style="width: 100%;" id="schList">
                             <thead>
                                 <tr>
                                     <th>학번</th>
@@ -94,5 +90,45 @@
             </div>
         </div>
     </div>
+    
+    <script>
+    	function selectList(){
+    		$.ajax({
+    			
+    			url: "allList.sc",
+    			
+    			data: {
+    				classYear : $(".classYear").val(),
+    				keyword : $("#keyword").val()
+    			},
+    			
+    			success : function(list){
+    				var str = "";
+    				if(list !=null){
+    					for(var i=0;i<list.length;i++){
+    						str+="<tr>"
+    							
+    							//+"<td>"+${list[i].studentNo}+"</td>"
+    							//+"<td>"+${list[i].stduentName}+"</td>"
+    							//+"<td>"+${list[i].classYear}+"</td>"
+    							//+"<td>"+${list[i].classTerm}+"</td>"
+    							//+"<td>"+${list[i].schCategoryNo}+"</td>"
+    							//+"<td>"+${list[i].schAmount}+"</td>"
+    							
+    							+"</tr>"
+    					}
+    				}else{
+    					str+="<tr><td colspan='9'>데이터가 없습니다.</td></tr>"
+    				}
+    				$("#schList>tbody").html(str);
+    			},
+    			
+    			error : function(){
+    				alert("통신오류");
+    			}
+    		});
+    	}
+    </script>
+    
 </body>
 </html>
