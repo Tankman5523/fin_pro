@@ -11,10 +11,14 @@
 	<typeAliases>
 		<typeAlias type="com.univ.fin.member.model.vo.Student" alias="student"/>
 		<typeAlias type="com.univ.fin.member.model.vo.Professor" alias="professor"/>
+		<typeAlias type="com.univ.fin.money.model.vo.Salary" alias="salary"/>
+		<typeAlias type="com.univ.fin.money.model.vo.Scholarship" alias="scholarship"/>
+		<typeAlias type="com.univ.fin.money.model.vo.RegistPay" alias="registpay"/>
 	</typeAliases>
 	
 	<mappers>
 		<mapper resource="/mappers/member-mapper.xml"/>
+		<mapper resource="/mappers/money-mapper.xml"/>
 	</mappers>
 	
 </configuration>
