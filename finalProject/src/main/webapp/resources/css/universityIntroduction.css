@@ -21,3 +21,16 @@
 }
 
 /*=================content 세부 영역 설정=================*/
+h3{
+    margin: 0%;
+}
+
+#content_title{
+	display: flex;
+	
+	justify-align: center;
+	text-align: center;
+	color: white;
+	background-color: rgb(59, 193, 255);
+	height: 6%;
+}

@@ -12,5 +12,10 @@ public class MainPageController {
 		return "main/infoSystemMain";
 	}
 	
+	@GetMapping("universityIntro.mp")
+	public String universityIntro() {
+		return "main/universityIntoroduction";
+	}
+	
 	
 }
