@@ -6,63 +6,113 @@
 	
 	<resultMap type="registPay" id="registPayResultSet">
 		<result column="STUDENT_NO" property="studentNo"/>
-		<result column="" property="regAccountNo"/>
-		<result column="" property="mustPay"/>
-		<result column="" property="inputPay"/>
-		<result column="" property="classYear"/>
-		<result column="" property="classTerm"/>
-		<result column="" property="payAccountNo"/>
-		<result column="" property="payDate"/>
-		<result column="" property="startDate"/>
-		<result column="" property="endDate"/>
-		<result column="" property="payStatus"/>
-		<result column="" property="status"/>
+		<result column="REG_ACCOUNT_NO" property="regAccountNo"/>
+		<result column="MUST_PAY" property="mustPay"/>
+		<result column="INPUT_PAY" property="inputPay"/>
+		<result column="CLASS_YEAR" property="classYear"/>
+		<result column="CLASS_TERM" property="classTerm"/>
+		<result column="PAY_ACCOUNT_NO" property="payAccountNo"/>
+		<result column="PAY_DATE" property="payDate"/>
+		<result column="START_DATE" property="startDate"/>
+		<result column="END_DATE" property="endDate"/>
+		<result column="PAY_STATUS" property="payStatus"/>
+		<result column="STATUS" property="status"/>
 		
-		<result column="" property="NonPaidAmount"/>
+		<!-- MUST_PAY - INPUT_PAY -->
+		<result column="NON_PAID_AMOUNT" property="NonPaidAmount"/>
 		
 	</resultMap>
 	
 	<resultMap type="salary" id="salaryResultSet">
-		<result column="" property="payNo"/>
-		<result column="" property="professorNo"/>
-		<result column="" property="paymentDate"/>
+		<result column="PAY_NO" property="payNo"/>
+		<result column="PROFESSOR_NO" property="professorNo"/>
+		<result column="PAYMENT_DATE" property="paymentDate"/>
 		
-		<result column="" property="basePay"/>
-		<result column="" property="positionPay"/>
-		<result column="" property="extensionPay"/>
-		<result column="" property="holidayPay"/>
-		<result column="" property="researchPay"/>
-		<result column="" property="paymentTotal"/>
+		<result column="BASE_PAY" property="basePay"/>
+		<result column="POSITION_PAY" property="positionPay"/>
+		<result column="EXTENSION_PAY" property="extensionPay"/>
+		<result column="HOLIDAY_PAY" property="holidayPay"/>
+		<result column="RESEARCH_PAY" property="researchPay"/>
+		<result column="PAYMENT_TOTAL" property="paymentTotal"/>
 		
-		<result column="" property="nationalTax"/>
-		<result column="" property="healthTax"/>
-		<result column="" property="employTax"/>
-		<result column="" property="incomeTax"/>
-		<result column="" property="deductTotal"/>
+		<result column="NATIONAL_TAX" property="nationalTax"/>
+		<result column="HEALTH_TAX" property="healthTax"/>
+		<result column="EMPLOY_TAX" property="employTax"/>
+		<result column="INCOME_TAX" property="incomeTax"/>
+		<result column="DEDUCT_TOTAL" property="deductTotal"/>
 		
-		<result column="" property="realPay"/>
-		<result column="" property="status"/>
+		<result column="REAL_PAY" property="realPay"/>
+		<result column="STATUS" property="status"/>
 		
 	</resultMap>
 	
 	<resultMap type="scholarship" id="scholarshipResultSet">
-		<result column="" property="schNo"/>
-		<result column="" property="studentNo"/>
-		<result column="" property="schCategoryNo"/>
-		<result column="" property="schAmount"/>
-		<result column="" property="classYear"/>
-		<result column="" property="classTerm"/>
-		<result column="" property="proDate"/>
-		<result column="" property="status"/>
-		<result column="" property="etc"/>
+		<result column="SCH_NO" property="schNo"/>
+		<result column="STUDENT_NO" property="studentNo"/>
+		<result column="SCH_CATEGORY_NO" property="schCategoryNo"/>
+		<result column="SCH_AMOUNT" property="schAmount"/>
+		<result column="CLASS_YEAR" property="classYear"/>
+		<result column="CLASS_TERM" property="classTerm"/>
+		<result column="PRO_DATE" property="proDate"/>
+		<result column="SC.STATUS" property="status"/>
+		<result column="ETC" property="etc"/>
 		
+		<result column="STUDENT_NAME" property="studentName"/>
 	</resultMap>
 	
 	<select id="selectMyScholarshipList" resultMap="scholarshipResultSet">
-		SELECT *
-		FROM SCHOLARSHIP
+		SELECT SCH_NO
+		      ,STUDENT_NO
+		      ,SCH_CATEGORY_NO
+		      ,SCH_AMOUNT
+		      ,CLASS_YEAR
+		      ,CLASS_TERM
+		      ,PRO_DATE
+		      ,SC.STATUS
+		      ,ETC
+		      ,STUDENT_NAME
+        FROM SCHOLARSHIP SC
+		JOIN STUDENT USING(STUDENT_NO)
 		WHERE STUDENT_NO = #{studentNo}
 		AND CLASS_YEAR = #{classYear}
-		AND STATUS IN ('Y','W')
+		AND SC.STATUS IN ('Y','W')
 	</select>	
+	
+	<insert id="insertScholarship">
+		INSERT INTO SCHOLARSHIP
+		VALUES(SEQ_SCHNO.NEXTVAL,#{studentNo},#{schCategoryNo},#{schAmount},#{classYear},#{classTerm},null,'W',#{etc})
+	</insert>
+	
+	<delete id="deleteScholarship">
+		DELETE SCHOLARSHIP
+		WHERE STUDENT_NO = #{studentNo}
+		AND STATUS IN ('W','N')
+	</delete>
+	
+	<select id="selectOneScholarship" parameterType="_int" resultMap="scholarshipResultSet">
+		SELECT SCH_NO
+		      ,STUDENT_NO
+		      ,SCH_CATEGORY_NO
+		      ,SCH_AMOUNT
+		      ,CLASS_YEAR
+		      ,CLASS_TERM
+		      ,PRO_DATE
+		      ,SC.STATUS
+		      ,ETC
+		      ,STUDENT_NAME
+        FROM SCHOLARSHIP SC
+		JOIN STUDENT USING(STUDENT_NO)
+		WHERE SC.STATUS IN ('N','W')
+		AND SCH_NO = #{schNo}
+	</select>
+	
+	<update id="updateScholarship">
+		UPDATE SCHOLARSHIP
+		SET SCH_CATEGORY_NO = #{schCategoryNo}
+		   ,STUDENT_NO = #{studentNo}
+		   ,SCH_AMOUNT = #{schAmount}
+		   ,ETC = #{etc}
+		WHERE SCH_NO = #{schNo}
+	</update>
+	
 </mapper>

@@ -22,5 +22,25 @@ public class ScholarshipServiceImpl implements ScholarshipService{
 	public ArrayList<Scholarship> selectMyScholarshipList(Scholarship sc) {
 		return scholarshipDao.selectMyScholarshipList(sc,sqlSession);
 	}
+
+	@Override
+	public int insertScholarship(Scholarship sc) {
+		return scholarshipDao.insertScholarship(sc,sqlSession);
+	}
+
+	@Override
+	public int deleteScholarship(Scholarship sc) {
+		return scholarshipDao.deleteScholarship(sc,sqlSession);
+	}
+
+	@Override
+	public Scholarship selectOneScholarship(int schNo) {
+		return scholarshipDao.selectOneScholarship(schNo,sqlSession);
+	}
+
+	@Override
+	public int updateScholarship(Scholarship sc) {
+		return scholarshipDao.updateScholarship(sc,sqlSession);
+	}
 	
 }
