@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.univ.fin.common.template.Sms;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
@@ -119,37 +120,35 @@ public class MemberController {
 	@RequestMapping(value="checkEmail.me")
 	public String checkEmail(String name,String phone,HttpServletRequest request) throws MessagingException {
 		
+		//최종 이메일 담을 변수(null 또는 값)
+		String resultEmail = null;
+		//임직원 변수 생성
+		Professor member2 = null;
+		//랜덤값 담을 변수 생성
+		String ranNum = null;
+		//Json객체 변수 생성
+		JsonObject obj = null;
+		
 		Student st = Student.builder().studentName(name).phone(phone).build();
 		
 		//학생 조회
 		Student member = memberService.checkEmail(st);
 		
-		//최종 이메일 담을 변수(null 또는 값)
-		String resultEmail = null;
-		
-		Professor member2 = null;
-		
-		if(member != null) { //학생 조회결과가 있다면
+		if(member != null) { //학생 조회결과가 있다면.
 			resultEmail = member.getEmail();
 		}else { //교수 조회
 			Professor pr = Professor.builder().professorName(name).phone(phone).build();
-			
-			//교수 조회
 			member2 = memberService.checkEmail2(pr);
+			
 			if(member2 != null) {
 				resultEmail = member2.getEmail();
 			}
 		}
 		
-		//랜덤값 담을 변수 생성
-		String ranNum = null;
-		
-		JsonObject obj = null;
-		
-		if(resultEmail != null) { //조회된 값이 있다면 
+		if(resultEmail != null) { //학생,임직원 둘중 조회된 값이 있다면 
 			
 			//랜덤값 생성(인증번호)
-			ranNum = Integer.toString((int)(Math.random()*900000)+10000);
+			ranNum = Integer.toString((int)(Math.random()*900000)+100000);
 			
 			String setFrom = "jungwoo343@naver.com"; //발송자의 이메일 
 			String toMail = "jungwoo343@naver.com"; //받는사용자의 이메일(resultEmail 변수 들어갈 곳)
@@ -184,10 +183,55 @@ public class MemberController {
 		return new Gson().toJson(obj);
 	}
 	
-	//비밀번호 재설정 뷰 메소드
-	@RequestMapping("resetPwdForm.me")
-	public String resetPwdForm() {
-		return "common/resetPwdForm";
+	//ID조회 (SMS 방식)
+	@ResponseBody
+	@RequestMapping("checkPhone.me")
+	public String checkPhone(String name, String phone) {
+		//판별값 변수
+		Boolean check = false;
+		//랜덤값 변수
+		String ranNum = null;
+		//임직원 변수
+		Professor member2 = null;
+		//Sms 변수
+		Sms message = new Sms();
+		//Json객체 변수 생성
+		JsonObject obj = null;
+		
+		//학생먼저 판별
+		Student st = Student.builder().studentName(name).phone(phone).build();
+		Student member = memberService.checkEmail(st);
+		
+		//입력한 값과 일치하는 학생존재 판별
+		if(member != null) { // 학생 존재함.
+			ranNum = Integer.toString((int)(Math.random()*900000)+100000);
+			
+			//member.getPhone()을 첫 매개변수에 넣어주면 됨;
+			message.send_msg("01027552324", ranNum);
+			check = true;
+		}else { //임직원일 경우
+			Professor pr = Professor.builder().professorName(name).phone(phone).build();
+			member2 = memberService.checkEmail2(pr);
+			
+			if(member2 != null) { //임직원 존재함.(학생,임직원 둘다 아닐경우를 위해 판별)
+				ranNum = Integer.toString((int)(Math.random()*900000)+100000);
+				//member2.getPhone()을 첫번째 매개변수에 넣어주면 됨.
+				message.send_msg("01027552324", ranNum);
+				check = true;
+			}
+		}
+		
+		if(check == true){
+			obj = new JsonObject();
+			if(member2 == null) { //학생일 경우
+				obj.addProperty("resultNo", member.getStudentNo());
+			}else { //임직원일 경우
+				obj.addProperty("resultNo", member2.getProfessorNo());
+			}
+			obj.addProperty("ranNum", ranNum);
+		}
+		return new Gson().toJson(obj);
 	}
+	
 	
 }
