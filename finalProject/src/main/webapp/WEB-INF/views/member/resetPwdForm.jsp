@@ -294,6 +294,8 @@
 	                    	if(time < 0){
 	                    		clearInterval(timer);
 	                    		hide(1);
+	                    		$("#name1").val("");
+        	                    $("#phone1").val("");
 	                    	}
 	                    	
 	                    },1000);
@@ -312,6 +314,8 @@
 	                    	if(time < 0){
 	                    		clearInterval(timer);
 	                    		hide(2);
+	                    		$("#name2").val("");
+        	                    $("#phone2").val("");
 	                    	}
 	                    	
 	                    },1000);
@@ -417,19 +421,22 @@
                 	if(chPwd != ""){
 	                	if(pwd == chPwd){
 	                		$("#comment_Pwd").text("비밀번호가 일치합니다.").css("color","limegreen");
-	                		$("#smsDiv_button_area button").attr("disabled",false);
+	                		$("#smsDiv_button_area button").attr("disabled",false).css("cursor","pointer");
 	                	}else{
 	                		$("#comment_Pwd").text("비밀번호가 일치하지 않습니다.").css("color","crimson");
+	                		$("#smsDiv_button_area button").attr("disabled",true).css("cursor","auto");
 	                	}
                 	}
                 	if(pwd == "" || chPwd == ""){
                 		$("#comment_Pwd").text("");
+                		$("#smsDiv_button_area button").attr("disabled",true).css("cursor","auto");
                 	}
                 }
                 
                 $(function(){
-                	$("#smsDiv_button_area button").attr("disabled",true);
+                	$("#smsDiv_button_area button").attr("disabled",true).css("cursor","auto");
                 });
+                
          	</script>
     </div>
 </body>

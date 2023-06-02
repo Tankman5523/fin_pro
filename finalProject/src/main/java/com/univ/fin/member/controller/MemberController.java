@@ -257,7 +257,6 @@ public class MemberController {
 		Sms message = new Sms();
 		//Json객체 변수 생성
 		JsonObject obj = null;
-		/*
 		
 		//학생먼저 판별
 		Student st = Student.builder().studentNo(memberNo).phone(phone).build();
@@ -290,16 +289,17 @@ public class MemberController {
 			}
 			obj.addProperty("ranNum", ranNum);
 		}
-		*/
-		obj = new JsonObject();
-		obj.addProperty("resultNo", "P00000000");
-		obj.addProperty("ranNum", "123456");
+		
 		return new Gson().toJson(obj);
 	}
 	
 	//비밀번호 초기화 - 비밀번호 변경 메소드
+	@ResponseBody
 	@RequestMapping("changePwd.me")
-	public int changePwd(String password, String memberNo,HttpSession session) {
+	public String changePwd(String password, String memberNo,HttpSession session) {
+		
+		System.out.println(password);
+		System.out.println(memberNo);
 		
 		int result = 0;
 		
@@ -317,7 +317,7 @@ public class MemberController {
 			session.setAttribute("alertMsg", "비밀번호 변경이 완료되었습니다.");
 		}
 		
-		return result;
+		return new Gson().toJson(result);
 	}
 	
 }
