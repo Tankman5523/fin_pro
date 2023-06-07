@@ -1,8 +1,11 @@
 package com.univ.fin.member.model.dao;
 
+import java.util.ArrayList;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 
@@ -47,6 +50,11 @@ public class MemberDao {
 	//비밀번호 초기화 - 비밀번호 변경 메소드 (임직원)
 	public int changePwd2(SqlSessionTemplate sqlSession, Professor pr) {
 		return sqlSession.update("memberMapper.changePwd2", pr);
+	}
+
+	//수강신청 - 학부전공별 조회
+	public ArrayList<Classes> majorClass(SqlSessionTemplate sqlSession, int dno) {
+		return (ArrayList)sqlSession.selectList("memberMapper.majorClass", dno);
 	}
 
 

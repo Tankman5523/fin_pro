@@ -399,4 +399,6 @@ public class MemberController {
 		return new Gson().toJson(result);
 	}
 	
+
+	
 }
