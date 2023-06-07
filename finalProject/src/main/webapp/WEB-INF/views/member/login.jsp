@@ -68,10 +68,13 @@
                 </div>
 
                 <div id="login_footer">
-                    <span class="left_span"><a href="searchIdForm.me">ID찾기></a></span>
-                    <span class="right_span"><a href="resetPwdForm.me">비밀번호 초기화></a></span>
+                    <span class="left_span"><a href="searchIdForm.me?num=2">ID찾기></a></span>
+                    <span class="right_span"><a href="resetPwdForm.me?num=2">비밀번호 초기화></a></span>
                 </div>
                 
+                <div id="login_backButton">
+                	<button type="button" onclick="location.href='infoSystem.mp'">돌아가기</button>
+                </div>
             </form>
         </div>
     </div>
