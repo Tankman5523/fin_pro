@@ -320,4 +320,9 @@ public class MemberController {
 		return result;
 	}
 	
+	@RequestMapping("student_classManagement.bo")
+	public String student_classManagement() {
+		return "member/student/gradeListView";
+	}
+	
 }
