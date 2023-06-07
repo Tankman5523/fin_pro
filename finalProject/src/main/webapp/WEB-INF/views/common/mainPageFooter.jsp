@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="/fin/resources/css/mainPageFooter.css">
 </head>
 <body>
-	<div id="footer">
+	<div id="footer" style="height: 145px;">
 	    <div id="footer_1">
 	        <a href="">개인정보처리방침</a>
 	        <a href="">이용약관</a>
