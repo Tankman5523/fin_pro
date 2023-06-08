@@ -10,7 +10,7 @@
 
 	<properties>
 		<java-version>1.8</java-version>
-		<org.springframework-version>5.2.24.RELEASE</org.springframework-version>
+		<org.springframework-version>5.3.27</org.springframework-version>
 		<org.aspectj-version>1.6.10</org.aspectj-version>
 		<org.slf4j-version>1.6.6</org.slf4j-version>
 	</properties>
@@ -146,7 +146,7 @@
 		<dependency>
 		    <groupId>org.springframework</groupId>
 		    <artifactId>spring-jdbc</artifactId>
-		    <version>5.2.24.RELEASE</version>
+		    <version>${org.springframework-version}</version>
 		</dependency>
 		
 		<!-- mybatis -->
@@ -238,7 +238,7 @@
 		<dependency>
 		    <groupId>org.springframework</groupId>
 		    <artifactId>spring-context-support</artifactId>
-		    <version>5.2.24.RELEASE</version>
+		    <version>${org.springframework-version}</version>
 		</dependency>
 		
 	</dependencies>

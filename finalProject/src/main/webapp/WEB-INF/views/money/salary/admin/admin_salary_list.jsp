@@ -36,14 +36,16 @@
 			                <button>일괄지급</button>
 			            </div>
 			            <div id="search" style="float:right">
-			                <label for="keyword">이름검색</label> <input type="text" name="keyword">
-			                <select name="payStatus" id="">
-			                    <option value="0">=전체=</option>
-			                    <option value="1">미지급</option>
-			                    <option value="2">지급오류</option>
-			                    <option value="3">지급완료</option>
-			                </select>
-			                <input type="button" value="조회"> <input type="reset" value="초기화">
+				            <form>
+				                <label for="keyword">이름검색</label> <input type="text" name="keyword" id="keyword">
+				                <select name="payStatus" id="payStatus">
+				                    <option value="0">=전체=</option>
+				                    <option value="1">미지급</option>
+				                    <option value="2">지급오류</option>
+				                    <option value="3">지급완료</option>
+				                </select>
+				                <input type="button" value="조회" onclick="search();"> <input type="reset" value="초기화">
+				            </form>
 			            </div>
 			            <br>
 			            <div>
@@ -63,7 +65,8 @@
 			                        </tr>
 			                    </thead>
 			                    <tbody>
-			                    	<c:choose>
+			                    
+			                    	<%-- <c:choose>
 			                    		<c:when test="${not empty list}">
 			                    			<c:forEach var="s" items="list">
 						                        <tr>
@@ -85,13 +88,35 @@
 				                            	<td colspan="10">데이터가 없습니다.</td>
 				                       		</tr>
 			                        	</c:otherwise>
-			                        </c:choose>
+			                        </c:choose> --%>
+			                        
 			                    </tbody>
 			                    
 			                </table>
 			            </div>
 			        </div>
                 </div>
+                
+                <script>
+                	function search(){
+                		var keyword = $("#keyword").val();
+                		var payStatus = $("#payStatus").val();
+                		
+                		$.ajax({
+                			url : "allList.sl",
+                			data : {
+                				keyword : keyword,
+                				payStatus : payStatus
+                			},
+                			success : function(list){
+                				
+                			},
+                			error : function(){
+                				alert("통신오류");
+                			}
+                		});
+                	}
+                </script>
                 
             </div>
         </div>

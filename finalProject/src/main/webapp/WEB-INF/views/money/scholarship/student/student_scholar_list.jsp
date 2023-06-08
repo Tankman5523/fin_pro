@@ -40,7 +40,7 @@
                     </div>
                     <div class="list">
                         <!--loginUser 입학일자 기준으로 최근까지 / 변경시 ajax로 비동기처리-->
-                        <select class="classYear">
+                        <select id="classYear" onchange="">
                             <option value="0">==전체==</option>
                             <option value="2023">2023</option>
                             <option value="2022">2022</option>
@@ -49,6 +49,7 @@
                             <option value="2019">2019</option>
                             <option value="2018">2018</option>
                             <option value="2017">2017</option>
+                            <option value="2017">2016</option>
                         </select>
                         <table border="1" style="width: 100%;">
                             <thead>
@@ -63,7 +64,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            	<c:choose>
+                            	<%-- <c:choose>
                             		<c:when test="${not empty list}">
                             			<c:forEach var="s" items="list">
 		                           			<tr>
@@ -82,11 +83,48 @@
                             				<td colspan="7">데이터가 없습니다.</td>
                             			</tr>
                             		</c:otherwise>
-                            	</c:choose>
+                            	</c:choose> --%>
                             </tbody>
                         </table>
                         <span>* 장학금은 차학기 등록금에서 차감되며 금액초과시 입금통장으로 환급됩니다.</span>
                     </div>
+                    <script>
+                    	function yearChange(){
+                    		
+                    		var stuNo = ${loginUser.studentNo};
+                    		
+                    		$.ajax({
+                    			url : "list.sc",
+                    			data : {
+                    				classYear : $("#classYear").val(),
+                    				studentNo : stuNo
+                    			},
+                    			success: function(list){
+                    				var str = "";
+                    				if(list.isEmpty()){
+                    					for(var i in list){
+                    						str +="<tr>"
+                    							 +"<td>"+list[i].classYear+"</td>"
+                    							 +"<td>"+list[i].classTerm+"</td>"
+                    							 +"<td>"+list[i].schCategoryNo+"</td>"
+                    							 +"<td>"+list[i].schAmount+"</td>"
+                    							 +"<td>"+list[i].status+"</td>"
+                    							 +"<td>"+list[i].proDate+"</td>"
+                    							 +"<td>"+list[i].etc+"</td>"
+                    							 +"</tr>"
+                    					}
+                    				}else{
+                    					str += "<tr><td colspan='7'>데이터가 없습니다.</td></tr>" 
+                    				}
+                    			},
+                    			error : function(){
+									                    				
+                    			}
+                    			
+                    		});
+                    	}
+                    
+                    </script>
                 </div>
             </div>
             <!--컨텐트 영역 종료-->

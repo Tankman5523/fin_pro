@@ -115,4 +115,81 @@
 		WHERE SCH_NO = #{schNo}
 	</update>
 	
+	<select id="selectScholarshipListAll" resultMap="scholarshipResultSet" parameterType="hashmap">
+		SELECT SCH_NO
+		      ,STUDENT_NO
+		      ,SCH_CATEGORY_NO
+		      ,SCH_AMOUNT
+		      ,CLASS_YEAR
+		      ,CLASS_TERM
+		      ,PRO_DATE
+		      ,SC.STATUS
+		      ,ETC
+		      ,STUDENT_NAME
+		FROM SCHOLARSHIP SC
+		JOIN STUDENT USING(STUDENT_NO)
+		<choose>
+			<when test="filter=='classYear'">
+				WHERE CLASS_YEAR LIKE '%'||#{keyword}||'%'
+			</when>
+			<when test="filter=='studentNo'">
+				WHERE STUDENT_NO LIKE '%'||#{keyword}||'%'
+			</when>
+			<when test="filter=='studentName'">
+				WHERE STUDENT_NAME LIKE '%'||#{keyword}||'%'
+			</when>
+			<when test="filter=='all'">
+				WHERE CLASS_YEAR LIKE '%'||#{keyword}||'%' 
+				OR STUDENT_NO LIKE '%'||#{keyword}||'%' 
+				OR STUDENT_NAME LIKE '%'||#{keyword}||'%'
+			</when>
+		</choose>
+		ORDER BY SCH_NO DESC
+	</select>
+	
+	<select id="selectMySalary" resultMap="salaryResultSet">
+		SELECT PAY_NO
+			  ,PROFESSOR_NO
+			  ,PAYMENT_DATE
+			  ,BASE_PAY
+			  ,POSITION_PAY
+			  ,EXTENSION_PAY
+			  ,HOLIDAY_PAY
+			  ,RESEARCH_PAY
+			  ,PAYMENT_TOTAL
+			  ,NATIONAL_TAX
+			  ,HEALTH_TAX
+			  ,EMPLOY_TAX
+			  ,INCOME_TAX
+			  ,DEDUCT_TOTAL
+			  ,REAL_PAY
+			  ,STATUS
+		FROM PAY_STUB
+		WHERE PROFESSOR_NO = #{professorNo}
+		AND PAY_NO = #{payNo}
+		AND STATUS = 'Y'
+	</select>
+	
+	<select id="selectMySalaryList" resultMap="salaryResultSet">
+		SELECT PAY_NO
+			  ,PROFESSOR_NO
+			  ,PAYMENT_DATE
+			  ,BASE_PAY
+			  ,POSITION_PAY
+			  ,EXTENSION_PAY
+			  ,HOLIDAY_PAY
+			  ,RESEARCH_PAY
+			  ,PAYMENT_TOTAL
+			  ,NATIONAL_TAX
+			  ,HEALTH_TAX
+			  ,EMPLOY_TAX
+			  ,INCOME_TAX
+			  ,DEDUCT_TOTAL
+			  ,REAL_PAY
+			  ,STATUS 
+		FROM PAY_STUB
+		WHERE PROFESSOR_NO = #{professorNo}
+		AND PAYMENT_DATE BETWEEN #{startDate} AND #{endDate}	  
+	</select>
+	
 </mapper>

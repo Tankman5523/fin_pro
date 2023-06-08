@@ -38,5 +38,8 @@ public class Salary {
 	private String position; //직책
 	private String accountNo; //급여계좌
 	
+	private Date startDate; //조회용 기한
+	private Date endDate; //조회용 기한
+	
 	
 }

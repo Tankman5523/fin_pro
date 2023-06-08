@@ -19,7 +19,7 @@
                     <span style="margin: 0 auto;">급여관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="#">급여조회</a>
+                    <a href="mylist.sl">급여조회</a>
                 </div>
             </div>
             <!--내용 시작-->
@@ -44,9 +44,22 @@
                             </tr>
                             <tr>
                                 <!--기간 설정 후 조회 클릭-->
-                                <td colspan="4">조회기간 <input type="date" name="startDate" id="startDate"> ~ <input type="date" name="endDate" id="endDate"><button>조회</button></td>
+                                <td colspan="4">조회기간 
+                                <input type="date" name="startDate" id="startDate" value="${loginUser.entranceDate}"> ~ <input type="date" name="endDate" id="endDate" value="">
+                                <button onclick="">조회</button></td>
                             </tr>
                         </table>
+                        
+                        <script>
+                        /*현재 시간 추출*/
+                        $(function(){
+                        	var today = new Date();
+                       		$("#endDate").val(today);
+                        });
+							
+                        
+                        </script>
+                        
                     </div>
                     <br>
                     <div>
@@ -62,7 +75,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            	<c:choose>
+                            
+                            	<%-- <c:choose>
                             		<c:when test="${not empty list}">
                             			<c:forEach var="s" items="list">
 		                                <tr><!--tr 클릭시 급여명세서 페이지로 이동-->
@@ -82,9 +96,37 @@
 	                                		</td>
 	                                	</tr>
 	                                </c:otherwise>
-                                </c:choose>
+                                </c:choose> --%>
+                                
                             </tbody>
                         </table>
+                        
+                        <script>
+                        	function selectSalary(){
+                        		
+                        		var profNo = ${loginUser.professorNo}
+                        		
+                        		$.ajax({
+                        			
+                        			url : "mylist.sl",
+                        			
+                        			data : {
+                        				professorNo : profNo,
+                        				startDate : $("#startDate").val(),
+                        				endDate	: $("#endDate").val()
+                        			},
+                        			success : function(list){
+                        				console.log(list);
+                        				alert("잠시대기");
+                        			},
+                        			error : function(){
+                        				alert("통신오류");
+                        			}
+                        		});
+                        	}
+                        </script>
+                        
+                        
                     </div>
                 </div>
             </div>
