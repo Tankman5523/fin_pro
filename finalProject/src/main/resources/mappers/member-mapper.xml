@@ -39,10 +39,10 @@
   		<result column="ADMIN" property="admin"/>
   	</resultMap>
   
-  	<resultMap type="classes" id="majorClassMap">
+  	<resultMap type="classes" id="classResultMap">
   		<result column="CLASS_NO" property="classNo"/>
-  		<result column="PROFESSOR_NO" property="professorNo"/>
-  		<result column="DEPARTMENT_NO" property="departmentNo"/>
+  		<result column="PROFESSOR_NAME" property="professorNo"/>
+  		<result column="DEPARTMENT_NAME" property="departmentNo"/>
   		<result column="FILE_NO" property="fileNo"/>
   		<result column="CLASS_NAME" property="className"/>
   		<result column="CLASS_LEVEL" property="classLevel"/>
@@ -136,7 +136,7 @@
   	</select>
   	
   	<!-- 수강신청 - 학부전공별 조회 -->
-  	<select id="majorClass" parameterType="classes" resultMap="majorClassMap">
+  	<select id="majorClass" parameterType="classes" resultMap="classResultMap">
   		SELECT *
   		FROM CLASS
   		WHERE STATUS = 'Y'
@@ -145,5 +145,24 @@
   		</if>
   	</select>
   	
+  	<select id="selectDepartmentMajor" parameterType="hashmap" resultMap="classResultMap">
+  		SELECT CLASS_NO, PROFESSOR_NAME, DEPARTMENT_NAME, C.FILE_NO, CLASS_NAME, CLASS_LEVEL, CLASS_YEAR, CLASSROOM
+  				, DECODE(DAY, '1', '월', '2', '화', '3', '수', '4', '목', '5', '금') AS DAY
+  				, DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)||':00 ~ '||(DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)+CLASS_HOUR)||':00' AS PERIOD
+  				, CLASS_HOUR, CLASS_NOS, EXPLAIN, CREDIT, DIVISION, C.STATUS
+		FROM CLASS C
+		LEFT JOIN PROFESSOR P USING(PROFESSOR_NO)
+		LEFT JOIN DEPARTMENT D ON(C.DEPARTMENT_NO = D.DEPARTMENT_NO)
+		WHERE C.DEPARTMENT_NO = (SELECT DEPARTMENT_NO
+		                        FROM DEPARTMENT
+		                        WHERE DEPARTMENT_NAME = #{department})
+		      AND CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND C.STATUS = 'Y'
+		ORDER BY TO_CHAR(CLASS_LEVEL)
+  	</select>
   	
+  	<select id="selectClassTerm" resultType="string">
+  		SELECT CLASS_YEAR||'0'||CLASS_TERM
+		FROM CLASS
+		GROUP BY CLASS_YEAR, CLASS_TERM
+  	</select>
   </mapper>

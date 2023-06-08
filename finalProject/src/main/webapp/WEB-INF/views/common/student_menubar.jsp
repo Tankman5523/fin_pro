@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,10 +36,8 @@
 	        <li><a href="#">등록/장학</a></li>
 	        <li><a href="#">학사관리</a></li>
 	        <li><a href="#">상담관리</a></li>
-	        <li><a href="classListView.me">수강신청</a></li>
-	        <li><a href="classManagement.me">수업관리</a></li>
-	        <li><a href="registerClassForm.st">수강신청</a></li>
-	        <li><a href="#">수업관리</a></li>
+	        <li><a href="classListView.st">수강신청</a></li>
+	        <li><a href="classManagement.st">수업관리</a></li>
 	    </ul>
 	</div>
 </body>

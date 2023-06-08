@@ -1,7 +1,5 @@
 package com.univ.fin.member.controller;
 
-import java.util.ArrayList;
-
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.Cookie;
@@ -18,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -401,18 +398,5 @@ public class MemberController {
 		
 		return new Gson().toJson(result);
 	}
-	
-	// 학생 - 학기별 성적 조회 페이지로 이동
-	@RequestMapping("classManagement.me")
-	public String student_classManagement() {
-		return "member/student/gradeListView";
-	}
-	
-	// 학생 - 강의시간표 페이지로 이동
-	@RequestMapping("classListView.me")
-	public String classListView() {
-		return "member/student/classListView";
-	}
-	
 
 }
