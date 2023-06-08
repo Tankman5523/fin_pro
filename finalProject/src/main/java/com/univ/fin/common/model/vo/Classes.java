@@ -1,4 +1,4 @@
-package com.univ.fin.classes.model.vo;
+package com.univ.fin.common.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Class {
+public class Classes {
 	private int classNo;
 	private String professorNo;
 	private int departmentNo;

@@ -35,8 +35,8 @@
 	        <li><a href="#">등록/장학</a></li>
 	        <li><a href="#">학사관리</a></li>
 	        <li><a href="#">상담관리</a></li>
-	        <li><a href="#">수강신청</a></li>
-	        <li><a href="student_classManagement.bo">수업관리</a></li>
+	        <li><a href="classListView.me">수강신청</a></li>
+	        <li><a href="classManagement.me">수업관리</a></li>
 	    </ul>
 	</div>
 </body>

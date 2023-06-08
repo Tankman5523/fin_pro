@@ -1,5 +1,8 @@
 package com.univ.fin.member.model.service;
 
+import java.util.ArrayList;
+
+import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 
@@ -28,6 +31,8 @@ public interface MemberService {
 
 	//비밀번호 초기화 - 비밀번호 변경 메소드 (임직원)
 	int changePwd2(Professor pr);
+
+	ArrayList<String> selectDepertment(String college);
 
 
 

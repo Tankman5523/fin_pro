@@ -105,4 +105,13 @@
   		WHERE PROFESSOR_NO = #{professorNo} 
   		AND STATUS = 'Y'
   	</update>
+  	
+  	<!-- 단과대학 전공 조회  -->
+  	<select id="selectDepartment" resultType="string">
+  		SELECT DEPARTMENT_NAME
+		FROM DEPARTMENT
+		WHERE COLLEGE_NO = (SELECT COLLEGE_NO
+		                    FROM COLLEGE
+		                    WHERE COLLEGE_NAME = #{college})
+  	</select>
   </mapper>
