@@ -107,3 +107,7 @@ a{
     background-color: white;
     margin-top: 20px;
 }
+
+#main_content{
+    overflow: auto;
+}
