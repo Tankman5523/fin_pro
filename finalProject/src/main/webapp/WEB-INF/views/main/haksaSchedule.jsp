@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>학사일정 : Feasible University</title>
 <link rel="stylesheet" href="/fin/resources/css/haksaSchedule.css">
 </head>
 <body>

@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>학교소개 : Feasible University</title>
 <link rel="stylesheet" href="/fin/resources/css/universityIntroduction.css">
 </head>
 <body>

@@ -66,7 +66,7 @@ div{
 #user_log{
     margin: 0 50px;
     float: right;
-    line-height: 137px;
+/*     line-height: 137px; */
 }
 #user_log td{
     text-align: right;
@@ -112,3 +112,4 @@ div{
 .child_title:hover>a{
     color: white !important;
 }
+

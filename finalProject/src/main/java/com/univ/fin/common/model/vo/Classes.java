@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class Classes {
 	private int classNo;
 	private String professorNo;
-	private int departmentNo;
+	private String departmentNo;
 	private int fileNo;
 	private String className;
 	private String classLevel;
