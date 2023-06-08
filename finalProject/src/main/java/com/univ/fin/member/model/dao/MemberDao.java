@@ -56,5 +56,10 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectDepartment", college);
 	}
 
+	//수강신청 - 학부전공별 조회
+	public ArrayList<Classes> majorClass(SqlSessionTemplate sqlSession, int dno) {
+		return (ArrayList)sqlSession.selectList("memberMapper.majorClass", dno);
+	}
+
 
 }

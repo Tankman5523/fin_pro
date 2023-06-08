@@ -100,6 +100,15 @@ public class MemberServiceImpl implements MemberService{
 		return dList;
 	}
 
+	//수강신청 - 학부전공별 조회
+	@Override
+	public ArrayList<Classes> majorClass(int dno) {
+		
+		ArrayList<Classes> list = memberDao.majorClass(sqlSession,dno);
+		
+		return list;
+	}
+
 
 	
 }

@@ -414,25 +414,5 @@ public class MemberController {
 		return "member/student/classListView";
 	}
 	
-//	@ResponseBody
-//	@RequestMapping("selectDepart.me")
-//	public String selectDepartment(String college) {
-//		ArrayList<String> dList = memberService.selectDepertment(college);
-//		System.out.println(dList);
-//		
-//		return new Gson().toJson(dList);
-//	}
-	
-	@ResponseBody 
-//	@RequestMapping(value="selectDepart.me", produces="application/json; charset=UTF-8;")
-	@RequestMapping(value="selectDepart.me",method =RequestMethod.POST, produces = "application/json; charset=UTF-8;")
-	public String selectDepartment(String college) {
-		System.out.println(college);
-		ArrayList<String> dList = memberService.selectDepertment(college);
-		System.out.println(dList);
-		
-		return new Gson().toJson(dList);
-//		System.out.println("도착");
-//		return null;
-	}
+
 }

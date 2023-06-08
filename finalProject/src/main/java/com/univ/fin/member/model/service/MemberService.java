@@ -34,6 +34,9 @@ public interface MemberService {
 
 	ArrayList<String> selectDepertment(String college);
 
+	//수강신청 - 학부전공별 조회
+	ArrayList<Classes> majorClass(int dno);
+
 
 
 }

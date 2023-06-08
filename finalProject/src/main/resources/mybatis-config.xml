@@ -13,7 +13,8 @@
 		<typeAlias type="com.univ.fin.member.model.vo.Professor" alias="professor"/>
 		<typeAlias type="com.univ.fin.money.model.vo.Salary" alias="salary"/>
 		<typeAlias type="com.univ.fin.money.model.vo.Scholarship" alias="scholarship"/>
-		<typeAlias type="com.univ.fin.money.model.vo.RegistPay" alias="registPay"/>
+		<typeAlias type="com.univ.fin.money.model.vo.RegistPay" alias="registpay"/>
+		<typeAlias type="com.univ.fin.common.model.vo.Classes" alias="classes"/>
 	</typeAliases>
 	
 	<mappers>
