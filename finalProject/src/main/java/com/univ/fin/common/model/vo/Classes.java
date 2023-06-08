@@ -12,15 +12,15 @@ import lombok.NoArgsConstructor;
 public class Classes {
 	private int classNo;
 	private String professorNo;
-	private int departmentNo;
+	private String departmentNo;
 	private int fileNo;
 	private String className;
 	private String classLevel;
 	private String classYear;
 	private String classTerm;
 	private String classroom;
-	private int day;
-	private int period;
+	private String day;
+	private String period;
 	private int classHour;
 	private int classNos;
 	private String explain;

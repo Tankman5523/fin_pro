@@ -1,6 +1,7 @@
 package com.univ.fin.member.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.member.model.vo.Professor;
@@ -34,6 +35,16 @@ public interface MemberService {
 
 	//수강신청 - 학부전공별 조회
 	ArrayList<Classes> majorClass(int dno);
+	
+	// 수강신청 - 강의시간표 -> 학년도,학기 조회
+	ArrayList<String> selectClassTerm();
+	
+	// 수강신청 - 강의시간표 -> 단과대학별 전공 조회
+	ArrayList<String> selectDepertment(String college);
+
+	// 수강신청 - 강의시간표 -> 전공 선택 후 전공수업 조회
+	ArrayList<Classes> selectDepartmentMajor(HashMap<String, String> map);
+
 
 
 
