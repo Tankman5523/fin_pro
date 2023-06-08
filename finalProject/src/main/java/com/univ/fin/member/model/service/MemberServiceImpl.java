@@ -1,9 +1,12 @@
 package com.univ.fin.member.model.service;
 
+import java.util.ArrayList;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.member.model.dao.MemberDao;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
@@ -89,6 +92,15 @@ public class MemberServiceImpl implements MemberService{
 		int result = memberDao.changePwd2(sqlSession,pr);
 		
 		return result;
+	}
+
+	//수강신청 - 학부전공별 조회
+	@Override
+	public ArrayList<Classes> majorClass(int dno) {
+		
+		ArrayList<Classes> list = memberDao.majorClass(sqlSession,dno);
+		
+		return list;
 	}
 
 

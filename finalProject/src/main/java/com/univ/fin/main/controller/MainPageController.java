@@ -11,16 +11,28 @@ public class MainPageController {
 		return "main/mainPage";
 	}
 	
-	@GetMapping("infoSystem.mp")
-	public String infoSystemMain() {
-		
-		return "main/infoSystemMain";
-	}
-	
 	@GetMapping("universityIntro.mp")
 	public String universityIntro() {
 		return "main/universityIntoroduction";
 	}
 	
+	@GetMapping("haksaInfo.mp")
+	public String haksaInfo() {
+		return "main/haksaInfo";
+	}
 	
+	@GetMapping("haksaSchedule.mp")
+	public String haksaSchedule() {
+		return "main/haksaSchedule";
+	}
+	
+	@GetMapping("noticeBoard.mp")
+	public String noticeBoard() {
+		return "main/noticeBoard";
+	}
+	
+	@GetMapping("infoSystem.mp")
+	public String infoSystemMain() {
+		return "main/infoSystemMain";
+	}
 }

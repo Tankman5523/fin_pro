@@ -146,7 +146,7 @@
 		<dependency>
 		    <groupId>org.springframework</groupId>
 		    <artifactId>spring-jdbc</artifactId>
-		    <version>${org.springframework-version}</version>
+		    <version>5.3.27</version>
 		</dependency>
 		
 		<!-- mybatis -->
@@ -238,7 +238,7 @@
 		<dependency>
 		    <groupId>org.springframework</groupId>
 		    <artifactId>spring-context-support</artifactId>
-		    <version>${org.springframework-version}</version>
+		    <version>5.3.27</version>
 		</dependency>
 		
 	</dependencies>

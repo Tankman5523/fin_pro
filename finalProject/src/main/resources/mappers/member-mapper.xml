@@ -39,6 +39,26 @@
   		<result column="ADMIN" property="admin"/>
   	</resultMap>
   
+  	<resultMap type="classes" id="majorClassMap">
+  		<result column="CLASS_NO" property="classNo"/>
+  		<result column="PROFESSOR_NO" property="professorNo"/>
+  		<result column="DEPARTMENT_NO" property="departmentNo"/>
+  		<result column="FILE_NO" property="fileNo"/>
+  		<result column="CLASS_NAME" property="className"/>
+  		<result column="CLASS_LEVEL" property="classLevel"/>
+  		<result column="CLASS_YEAR" property="classYear"/>
+  		<result column="CLASS_TERM" property="classTerm"/>
+  		<result column="CLASSROOM" property="classroom"/>
+  		<result column="DAY" property="day"/>
+  		<result column="PERIOD" property="period"/>
+  		<result column="CLASS_HOUR" property="classHour"/>
+  		<result column="CLASS_NOS" property="classNos"/>
+  		<result column="EXPLAIN" property="explain"/>
+  		<result column="CREDIT" property="credit"/>
+  		<result column="DIVISION" property="division"/>
+  		<result column="STATUS" property="status"/>
+  	</resultMap>
+  
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
   		SELECT *
@@ -73,7 +93,7 @@
   	</select>
   	
   	<!-- 비밀번호 초기화 - 학생 -->
-  	<select id="checkPwd">
+  	<select id="checkPwd" parameterType="student" resultMap="loginStudentMap">
 		SELECT STUDENT_NO,PHONE,EMAIL
   		FROM STUDENT
   		WHERE STUDENT_NO = #{studentNo}
@@ -82,7 +102,7 @@
   	</select>
   	
   	<!-- 비밀번호 초기화 - 임직원 -->
-  	<select id="checkPwd2">
+  	<select id="checkPwd2" parameterType="professor" resultMap="loginProfessorMap">
   		SELECT PROFESSOR_NO,PHONE,EMAIL
   		FROM PROFESSOR
   		WHERE PROFESSOR_NO = #{professorNo}
@@ -105,4 +125,16 @@
   		WHERE PROFESSOR_NO = #{professorNo} 
   		AND STATUS = 'Y'
   	</update>
+  	
+  	<!-- 수강신청 - 학부전공별 조회 -->
+  	<select id="majorClass" parameterType="classes" resultMap="majorClassMap">
+  		SELECT *
+  		FROM CLASS
+  		WHERE STATUS = 'Y'
+  		<if test="dno != 0">
+ 		AND DEPARTMENT_NO = #{dno}
+  		</if>
+  	</select>
+  	
+  	
   </mapper>

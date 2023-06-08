@@ -12,6 +12,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,7 +52,7 @@ public class MemberController {
 		
 		if(userNo.charAt(0) == 'S') { //학생 로그인
 			
-			Student st = Student.builder().studentNo(userNo).studentPwd(userPwd).build();
+			Student st = Student.builder().studentNo(userNo).build();
 			
 			Student loginUser = memberService.loginStudent(st);
 			
@@ -114,7 +115,13 @@ public class MemberController {
 	
 	//ID찾기 폼 메소드
 	@RequestMapping("searchIdForm.me")
-	public String searchIdForm() {
+	public String searchIdForm(int num,Model model) {
+		
+		if(num == 1) { //종합정보시스템에서 ID찾기 들어갔을 경우
+			model.addAttribute("backPage", "infoSystem.mp");
+		}else { //로그인폼에서 ID찾기 들어갔을 경우
+			model.addAttribute("backPage", "login.me");
+		}
 		
 		return "member/searchIdForm";
 	}
@@ -239,8 +246,83 @@ public class MemberController {
 	
 	//비밀번호 초기화 폼 메소드
 	@RequestMapping("resetPwdForm.me")
-	public String resetPwdForm() {
+	public String resetPwdForm(int num,Model model) {
+		
+		if(num == 1) { //종합정보시스템에서 비밀번호초기화 들어갔을 경우
+			model.addAttribute("backPage", "infoSystem.mp");
+		}else { //로그인폼에서 비밀번호초기화 들어갔을 경우
+			model.addAttribute("backPage", "login.me");
+		}
+		
 		return "member/resetPwdForm";
+	}
+	
+	//비밀번호 초기화 (이메일 방식)
+	@ResponseBody
+	@RequestMapping("checkPwdEmail.me")
+	public String checkPwdEmail(String memberNo, String phone) throws MessagingException {
+		
+		//최종 이메일 담을 변수(null 또는 값)
+		String resultEmail = null;
+		//임직원 변수 생성
+		Professor member2 = null;
+		//랜덤값 담을 변수 생성
+		String ranNum = null;
+		//Json객체 변수 생성
+		JsonObject obj = null;
+		
+		Student st = Student.builder().studentNo(memberNo).phone(phone).build();
+		
+		//학생 조회
+		Student member = memberService.checkPwd(st);
+		
+		if(member != null) { //학생 조회결과가 있다면.
+			resultEmail = member.getEmail();
+		}else { //교수 조회
+			Professor pr = Professor.builder().professorNo(memberNo).phone(phone).build();
+			member2 = memberService.checkPwd2(pr);
+			
+			if(member2 != null) {
+				resultEmail = member2.getEmail();
+			}
+		}
+		
+		if(resultEmail != null) { //학생,임직원 둘중 조회된 값이 있다면 
+			
+			//랜덤값 생성(인증번호)
+			ranNum = Integer.toString((int)(Math.random()*900000)+100000);
+			
+			String setFrom = "jungwoo343@naver.com"; //발송자의 이메일 
+			String toMail = "jungwoo343@naver.com"; //받는사용자의 이메일(resultEmail 변수 들어갈 곳)
+			String title = "[FEASIBLE UNIVERSITY] 로그인ID조회 - 이메일 인증 번호 ";
+			String content = "귀하의 이메일 인증 번호는 다음과 같습니다."
+							+"<br>"
+							+"<h3>인증번호 : "+ ranNum +"</h3>"
+							+"<br>"
+							+"해당 인증번호를 인증번호 확인란에 기입하여 주시길 바랍니다."
+							+"<br><br>"
+							+"인증 번호는 일정 시간 내에서만 유효하며, 그 이후 인증 번호는 무효화 됩니다."
+							+"<br><br>"
+							+"인증 번호가 무효화 되었을 경우, 새롭게 인증 번호를 요청하십시오.";
+			
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper messageHelper = new MimeMessageHelper(message,true,"UTF-8"); //multipart형식 전달 가능
+			messageHelper.setFrom(setFrom);
+			messageHelper.setTo(toMail);
+			messageHelper.setSubject(title);
+			messageHelper.setText(content,true); //true설정으로 html형식 전송
+			mailSender.send(message);
+			
+			obj = new JsonObject();
+			if(member2 == null) { //학생일 경우
+				obj.addProperty("resultNo", member.getStudentNo());
+			}else { //임직원일 경우
+				obj.addProperty("resultNo", member2.getProfessorNo());
+			}
+			obj.addProperty("ranNum", ranNum);
+		}
+		
+		return new Gson().toJson(obj);
 	}
 	
 	//비밀번호 초기화 (SMS 방식)
@@ -257,7 +339,6 @@ public class MemberController {
 		Sms message = new Sms();
 		//Json객체 변수 생성
 		JsonObject obj = null;
-		/*
 		
 		//학생먼저 판별
 		Student st = Student.builder().studentNo(memberNo).phone(phone).build();
@@ -290,16 +371,14 @@ public class MemberController {
 			}
 			obj.addProperty("ranNum", ranNum);
 		}
-		*/
-		obj = new JsonObject();
-		obj.addProperty("resultNo", "P00000000");
-		obj.addProperty("ranNum", "123456");
+		
 		return new Gson().toJson(obj);
 	}
 	
 	//비밀번호 초기화 - 비밀번호 변경 메소드
+	@ResponseBody
 	@RequestMapping("changePwd.me")
-	public int changePwd(String password, String memberNo,HttpSession session) {
+	public String changePwd(String password, String memberNo,HttpSession session) {
 		
 		int result = 0;
 		
@@ -317,7 +396,9 @@ public class MemberController {
 			session.setAttribute("alertMsg", "비밀번호 변경이 완료되었습니다.");
 		}
 		
-		return result;
+		return new Gson().toJson(result);
 	}
+	
+
 	
 }
