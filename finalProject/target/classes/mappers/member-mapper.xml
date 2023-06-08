@@ -7,8 +7,8 @@
 	
 	<resultMap type="student" id="loginStudentMap">
 		<result column="STUDENT_NO" property="studentNo"/>
-		<result column="DEPARTMENT_NO" property="departmentNo"/>
-		<result column="COLLEGE_NO" property="collegeNo"/>
+		<result column="DEPARTMENT_NAME" property="departmentNo"/>
+		<result column="COLLEGE_NAME" property="collegeNo"/>
 		<result column="FILE_NO" property="fileNo"/>
 		<result column="STUDENT_NAME" property="studentName"/>
 		<result column="STUDENT_PWD" property="studentPwd"/>
@@ -25,8 +25,8 @@
   	<resultMap type="professor" id="loginProfessorMap">
   		<result column="PROFESSOR_NO" property="professorNo"/>
   		<result column="FILE_NO" property="fileNo"/>
-  		<result column="DEPARTMENT_NO" property="departmentNo"/>
-  		<result column="COLLEGE_NO" property="collegeNo"/>
+  		<result column="DEPARTMENT_NAME" property="departmentNo"/>
+  		<result column="COLLEGE_NAME" property="collegeNo"/>
   		<result column="PROFESSOR_NAME" property="professorName"/>
   		<result column="PROFESSOR_PWD" property="professorPwd"/>
   		<result column="POSITION" property="position"/>
@@ -41,8 +41,8 @@
   
   	<resultMap type="classes" id="majorClassMap">
   		<result column="CLASS_NO" property="classNo"/>
-  		<result column="PROFESSOR_NO" property="professorNo"/>
-  		<result column="DEPARTMENT_NO" property="departmentNo"/>
+  		<result column="PROFESSOR_NAME" property="professorNo"/>
+  		<result column="DEPARTMENT_NAME" property="departmentNo"/>
   		<result column="FILE_NO" property="fileNo"/>
   		<result column="CLASS_NAME" property="className"/>
   		<result column="CLASS_LEVEL" property="classLevel"/>
@@ -59,18 +59,35 @@
   		<result column="STATUS" property="status"/>
   	</resultMap>
   
+  	<resultMap type="registerClass" id="registerClassMap">
+  		<result column="COLLEGE_NAME" property="collegeName"/>
+  		<result column="CLASS_NO" property="classNo"/>
+  		<result column="CLASS_NAME" property="className"/>
+  		<result column="PROFESSOR_NAME" property="professorName"/>
+  		<result column="DEPARTMENT_NAME" property="departmentName"/>
+  		<result column="CREDIT_HOUR" property="creditHour"/>
+  		<result column="CLASS_NOS" property="classNos"/>
+  		<result column="CLASS_INFO" property="classInfo"/>
+  		<result column="CLASS_LEVEL" property="classLevel"/>
+  	</resultMap>
+  
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
-  		SELECT *
-  		FROM STUDENT
+  		SELECT STUDENT_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,FILE_NO,STUDENT_NAME,STUDENT_PWD,
+               ENTRANCE_DATE,GRADUATION_DATE,CLASS_LEVEL,PHONE,EMAIL,POST,ADDRESS
+  		FROM STUDENT S
+  		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO) 
+        JOIN COLLEGE C ON (S.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE STUDENT_NO = #{studentNo}
   	</select>
   	
   	<!-- 임직원 로그인 -->
   	<select id="loginProfessor" parameterType="professor" resultMap="loginProfessorMap">
-  		SELECT PROFESSOR_NO,FILE_NO,DEPARTMENT_NO,COLLEGE_NO,PROFESSOR_NAME
-  			  ,PROFESSOR_PWD,POSITION,ENTRANCE_DATE,EMAIL,POST,ADDRESS,ACCOUNT_NO,ADMIN
-  		FROM PROFESSOR
+  		SELECT PROFESSOR_NO,FILE_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,PROFESSOR_NAME
+  			  ,PROFESSOR_PWD,POSITION,ENTRANCE_DATE,PHONE,EMAIL,POST,ADDRESS,ACCOUNT_NO,ADMIN
+  		FROM PROFESSOR P
+        JOIN DEPARTMENT D ON (P.DEPARTMENT_NO = D.DEPARTMENT_NO)
+        JOIN COLLEGE C ON (P.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE PROFESSOR_NO = #{professorNo}
   	</select>
   
@@ -127,13 +144,21 @@
   	</update>
   	
   	<!-- 수강신청 - 학부전공별 조회 -->
-  	<select id="majorClass" parameterType="classes" resultMap="majorClassMap">
-  		SELECT *
-  		FROM CLASS
-  		WHERE STATUS = 'Y'
-  		<if test="dno != 0">
- 		AND DEPARTMENT_NO = #{dno}
-  		</if>
+  	<select id="majorClass" parameterType="classes" resultMap="registerClassMap">
+  		SELECT COLLEGE_NAME,CLASS_NO,CLASS_NAME,PROFESSOR_NAME,DEPARTMENT_NAME
+        ,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR",CLASS_NOS
+        ,(DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
+          DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
+                            2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) 
+		||' '|| CLASSROOM) "CLASS_INFO",
+		DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년') "CLASS_LEVEL"
+		FROM CLASS C
+		JOIN DEPARTMENT D ON (C.DEPARTMENT_NO = D.DEPARTMENT_NO)
+		JOIN COLLEGE CO ON (D.COLLEGE_NO = CO.COLLEGE_NO)
+		JOIN PROFESSOR P ON (P.PROFESSOR_NO = C.PROFESSOR_NO)
+		WHERE C.STATUS = 'Y'
+		AND DEPARTMENT_NAME = #{departmentName}
+		ORDER BY CLASS_NO
   	</select>
   	
   	

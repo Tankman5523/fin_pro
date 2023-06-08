@@ -53,8 +53,8 @@ public class MemberDao {
 	}
 
 	//수강신청 - 학부전공별 조회
-	public ArrayList<Classes> majorClass(SqlSessionTemplate sqlSession, int dno) {
-		return (ArrayList)sqlSession.selectList("memberMapper.majorClass", dno);
+	public ArrayList<Classes> majorClass(SqlSessionTemplate sqlSession, String departmentName) {
+		return (ArrayList)sqlSession.selectList("memberMapper.majorClass", departmentName);
 	}
 
 

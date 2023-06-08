@@ -21,7 +21,7 @@
 		<table id="user_log">
 	        <tr>
 	            <td>
-					${loginUser.professorName} 님 환영합니다.
+					${loginUser.professorName}님 환영합니다.
 		        </td>
 		        <td style="padding-left: 50px;">
 		            <button type="button" class="btn btn-primary" onclick="">로그아웃</button>

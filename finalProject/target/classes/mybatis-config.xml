@@ -15,6 +15,7 @@
 		<typeAlias type="com.univ.fin.money.model.vo.Scholarship" alias="scholarship"/>
 		<typeAlias type="com.univ.fin.money.model.vo.RegistPay" alias="registpay"/>
 		<typeAlias type="com.univ.fin.common.model.vo.Classes" alias="classes"/>
+		<typeAlias type="com.univ.fin.common.model.vo.RegisterClass" alias="registerClass"/>
 	</typeAliases>
 	
 	<mappers>

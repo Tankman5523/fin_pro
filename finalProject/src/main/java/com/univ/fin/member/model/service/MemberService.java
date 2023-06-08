@@ -33,7 +33,7 @@ public interface MemberService {
 	int changePwd2(Professor pr);
 
 	//수강신청 - 학부전공별 조회
-	ArrayList<Classes> majorClass(int dno);
+	ArrayList<Classes> majorClass(String departmentName);
 
 
 
