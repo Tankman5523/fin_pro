@@ -5,8 +5,10 @@ import java.util.HashMap;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.univ.fin.common.model.vo.Classes;
+import com.univ.fin.common.model.vo.Department;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 
@@ -72,6 +74,14 @@ public class MemberDao {
 	public ArrayList<Classes> selectDepartmentMajor(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectDepartmentMajor", map);
 	}
-
+	
+	//상담신청 - 학과별 교수 조회
+	@Transactional
+	public ArrayList<Professor> selectDepartProList(SqlSessionTemplate sqlSession, String departmentNo) {
+		
+		Department d =sqlSession.selectOne("memberMapper.selectDepartmentNo",departmentNo);
+		System.out.println(d);
+		return (ArrayList)sqlSession.selectList("memberMapper.selectDepartProList",d);
+	}
 
 }

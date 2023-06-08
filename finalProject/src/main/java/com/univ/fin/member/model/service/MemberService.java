@@ -45,6 +45,7 @@ public interface MemberService {
 	// 수강신청 - 강의시간표 -> 전공 선택 후 전공수업 조회
 	ArrayList<Classes> selectDepartmentMajor(HashMap<String, String> map);
 
-
+	//상담신청 - 학과별 교수 전부 조회
+	ArrayList<Professor> selectDepartProList(String departmentNo);
 
 }
