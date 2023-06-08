@@ -215,10 +215,10 @@
 	                	var $year = e.value;
 	                	
 	                	for(var i=0;i<arr.length;i++) {
-	                		console.log(arr[i].substring(0,5));
-	                		if(arr[i].substring(0,5).includes($year)) {
-	                			console.log(arr[i]);
-	                		}
+	                		console.log(arr[i].substr(0,5));
+// 	                		if(arr[i].substring(0,5).includes($year)) {
+// 	                			console.log(arr[i]);
+// 	                		}
 	                	}
 	                }
 	
