@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Classes;
+import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.template.DepartmentCategory;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
@@ -28,7 +29,7 @@ public class StudentController {
 		return "member/student/registerClass";
 	}
 	
-	//수강신청 -전공 카테고리조회
+	//수강신청 - 수강신청(전공 카테고리조회)
 	@ResponseBody
 	@RequestMapping(value="selectCollegeNo.st",produces = "application/json; charset=UTF-8")
 	public String selectCollegeNo(int cno) {
@@ -40,12 +41,12 @@ public class StudentController {
 		return new Gson().toJson(list);
 	}
 	
-	//수강신청 - 학부전공별 조회
+	//수강신청 - 수강신청 (학부전공별 조회)
 	@ResponseBody
 	@RequestMapping(value="majorClass.st",produces = "application/json; charset=UTF-8")
 	public String majorClassList(String departmentName) {
 		
-		ArrayList<Classes> list = memberService.majorClass(departmentName);
+		ArrayList<RegisterClass> list = memberService.majorClass(departmentName);
 		
 		return new Gson().toJson(list);
 	}
