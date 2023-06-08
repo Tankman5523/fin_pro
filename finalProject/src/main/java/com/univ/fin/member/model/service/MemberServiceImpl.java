@@ -125,6 +125,13 @@ public class MemberServiceImpl implements MemberService{
 		return cList;
 	}
 
-
+	//상담신청 - 학과별 교수 조회
+	@Override
+	public ArrayList<Professor> selectDepartProList(String departmentNo) {
+		
+		ArrayList<Professor> list = memberDao.selectDepartProList(sqlSession,departmentNo);
+		
+		return list;
+	}
 	
 }
