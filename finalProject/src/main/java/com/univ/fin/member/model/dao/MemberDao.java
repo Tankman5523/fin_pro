@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Department;
+import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 
@@ -55,8 +56,8 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.changePwd2", pr);
 	}
 
-	//수강신청 - 학부전공별 조회
-	public ArrayList<Classes> majorClass(SqlSessionTemplate sqlSession, String departmentName) {
+	//수강신청 - 수강신청 (학부전공별 조회)
+	public ArrayList<RegisterClass> majorClass(SqlSessionTemplate sqlSession, String departmentName) {
 		return (ArrayList)sqlSession.selectList("memberMapper.majorClass", departmentName);
 	}
 	
