@@ -52,5 +52,13 @@ public interface MemberService {
 	//상담신청 - 학과별 교수 전부 조회
 	ArrayList<Professor> selectDepartProList(String departmentNo);
 
+	//학적정보 수정 (학생)
+	int updateStudent(Student st);
+	
+	//학적정보 수정 (교수)
+	int updateProfessor(Professor pr);
 
+	// 회원추가 (학생)
+	int insertStudent(Student st);
+	
 }
