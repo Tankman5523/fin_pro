@@ -1,6 +1,7 @@
 package com.univ.fin.member.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,13 +97,41 @@ public class MemberServiceImpl implements MemberService{
 
 	//수강신청 - 학부전공별 조회
 	@Override
-	public ArrayList<Classes> majorClass(int dno) {
+	public ArrayList<Classes> majorClass(String departmentName) {
 		
-		ArrayList<Classes> list = memberDao.majorClass(sqlSession,dno);
+		ArrayList<Classes> list = memberDao.majorClass(sqlSession,departmentName);
 		
 		return list;
 	}
+	
+	// 수강신청 - 강의시간표 -> 학년도,학기 조회
+	@Override
+	public ArrayList<String> selectClassTerm() {
+		ArrayList<String> classTerm = memberDao.selectClassTerm(sqlSession);
+		return classTerm;
+	}
+	
+	// 수강신청 - 강의시간표 -> 단과대학별 전공 조회
+	@Override
+	public ArrayList<String> selectDepertment(String college) {
+		ArrayList<String> dList = memberDao.selectDepartment(sqlSession, college);
+		return dList;
+	}
 
+	// 수강신청 - 강의시간표 -> 전공 선택 후 전공수업 조회
+	@Override
+	public ArrayList<Classes> selectDepartmentMajor(HashMap<String, String> map) {
+		ArrayList<Classes> cList = memberDao.selectDepartmentMajor(sqlSession, map);
+		return cList;
+	}
 
+	//상담신청 - 학과별 교수 조회
+	@Override
+	public ArrayList<Professor> selectDepartProList(String departmentNo) {
+		
+		ArrayList<Professor> list = memberDao.selectDepartProList(sqlSession,departmentNo);
+		
+		return list;
+	}
 	
 }

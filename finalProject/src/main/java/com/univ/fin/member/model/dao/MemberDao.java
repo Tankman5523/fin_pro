@@ -1,11 +1,14 @@
 package com.univ.fin.member.model.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.univ.fin.common.model.vo.Classes;
+import com.univ.fin.common.model.vo.Department;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 
@@ -53,9 +56,32 @@ public class MemberDao {
 	}
 
 	//수강신청 - 학부전공별 조회
-	public ArrayList<Classes> majorClass(SqlSessionTemplate sqlSession, int dno) {
-		return (ArrayList)sqlSession.selectList("memberMapper.majorClass", dno);
+	public ArrayList<Classes> majorClass(SqlSessionTemplate sqlSession, String departmentName) {
+		return (ArrayList)sqlSession.selectList("memberMapper.majorClass", departmentName);
+	}
+	
+	// 수강신청 - 강의시간표 -> 학년도,학기 조회
+	public ArrayList<String> selectClassTerm(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectClassTerm");
+	}
+	
+	// 수강신청 - 강의시간표 -> 단과대학별 전공 조회
+	public ArrayList<String> selectDepartment(SqlSessionTemplate sqlSession, String college) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectDepartment", college);
 	}
 
+	// 수강신청 - 강의시간표 -> 전공 선택 후 전공수업 조회
+	public ArrayList<Classes> selectDepartmentMajor(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectDepartmentMajor", map);
+	}
+	
+	//상담신청 - 학과별 교수 조회
+	@Transactional
+	public ArrayList<Professor> selectDepartProList(SqlSessionTemplate sqlSession, String departmentNo) {
+		
+		Department d =sqlSession.selectOne("memberMapper.selectDepartmentNo",departmentNo);
+		System.out.println(d);
+		return (ArrayList)sqlSession.selectList("memberMapper.selectDepartProList",d);
+	}
 
 }
