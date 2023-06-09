@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.univ.fin.common.model.vo.Classes;
+import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.member.model.dao.MemberDao;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
@@ -93,30 +94,30 @@ public class MemberServiceImpl implements MemberService{
 		return result;
 	}
 
-	//수강신청 - 학부전공별 조회
+	//수강신청 - 수강신청 (학부전공별 조회)
 	@Override
-	public ArrayList<Classes> majorClass(String departmentName) {
+	public ArrayList<RegisterClass> majorClass(String departmentName) {
 		
-		ArrayList<Classes> list = memberDao.majorClass(sqlSession,departmentName);
+		ArrayList<RegisterClass> list = memberDao.majorClass(sqlSession,departmentName);
 		
 		return list;
 	}
 	
-	// 강의시간표 -> 학년도,학기 조회
+	// 수강신청 - 강의시간표 -> 학년도,학기 조회
 	@Override
 	public ArrayList<String> selectClassTerm() {
 		ArrayList<String> classTerm = memberDao.selectClassTerm(sqlSession);
 		return classTerm;
 	}
 	
-	// 강의시간표 -> 단과대학별 전공 조회
+	// 수강신청 - 강의시간표 -> 단과대학별 전공 조회
 	@Override
 	public ArrayList<String> selectDepertment(String college) {
 		ArrayList<String> dList = memberDao.selectDepartment(sqlSession, college);
 		return dList;
 	}
 
-	// 강의시간표 -> 전공 선택 후 전공수업 조회
+	// 수강신청 - 강의시간표 -> 전공 선택 후 전공수업 조회
 	@Override
 	public ArrayList<Classes> selectDepartmentMajor(HashMap<String, String> map) {
 		ArrayList<Classes> cList = memberDao.selectDepartmentMajor(sqlSession, map);
@@ -130,6 +131,13 @@ public class MemberServiceImpl implements MemberService{
 		return cList;
 	}
 
-
+	//상담신청 - 학과별 교수 조회
+	@Override
+	public ArrayList<Professor> selectDepartProList(String departmentNo) {
+		
+		ArrayList<Professor> list = memberDao.selectDepartProList(sqlSession,departmentNo);
+		
+		return list;
+	}
 	
 }

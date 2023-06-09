@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.univ.fin.common.model.vo.Classes;
+import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 
@@ -34,20 +35,22 @@ public interface MemberService {
 	int changePwd2(Professor pr);
 
 	//수강신청 - 학부전공별 조회
-	ArrayList<Classes> majorClass(String departmentName);
+	ArrayList<RegisterClass> majorClass(String departmentName);
 	
-	// 강의시간표 -> 학년도,학기 조회
+	// 수강신청 - 강의시간표 -> 학년도,학기 조회
 	ArrayList<String> selectClassTerm();
 	
-	// 강의시간표 -> 단과대학별 전공 조회
+	// 수강신청 - 강의시간표 -> 단과대학별 전공 조회
 	ArrayList<String> selectDepertment(String college);
 
-	// 강의시간표 -> 전공 선택 후 전공수업 조회
+	// 수강신청 - 강의시간표 -> 전공 선택 후 전공수업 조회
 	ArrayList<Classes> selectDepartmentMajor(HashMap<String, String> map);
 
 	// 강의시간표 -> 교양수업 조회
 	ArrayList<Classes> selectElective(HashMap<String, String> map);
 
+	//상담신청 - 학과별 교수 전부 조회
+	ArrayList<Professor> selectDepartProList(String departmentNo);
 
 
 }

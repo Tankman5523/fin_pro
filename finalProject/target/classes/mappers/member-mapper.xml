@@ -71,10 +71,18 @@
   		<result column="CLASS_LEVEL" property="classLevel"/>
   	</resultMap>
   
+  	<resultMap type="department" id="departmentMap">
+  		<result column="DEPARTMENT_NO" property="departmentNo"/>
+  		<result column="COLLEGE_NAME" property="collegeNo"/>
+  		<result column="DEPARTMENT_NAME" property="departmentName"/>
+  		<result column="DEPARTMENT_NOS" property="departmentNos"/>
+  		<result column="GRADUATION" property="graduation"/>
+  	</resultMap>
+  	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
   		SELECT STUDENT_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,FILE_NO,STUDENT_NAME,STUDENT_PWD,
-               ENTRANCE_DATE,GRADUATION_DATE,CLASS_LEVEL,PHONE,EMAIL,POST,ADDRESS
+               ENTRANCE_DATE,GRADUATION_DATE,CLASS_LEVEL,PHONE,EMAIL,POST,ADDRESS,STATUS
   		FROM STUDENT S
   		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO) 
         JOIN COLLEGE C ON (S.COLLEGE_NO = C.COLLEGE_NO)
@@ -84,7 +92,7 @@
   	<!-- 임직원 로그인 -->
   	<select id="loginProfessor" parameterType="professor" resultMap="loginProfessorMap">
   		SELECT PROFESSOR_NO,FILE_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,PROFESSOR_NAME
-  			  ,PROFESSOR_PWD,POSITION,ENTRANCE_DATE,PHONE,EMAIL,POST,ADDRESS,ACCOUNT_NO,ADMIN
+  			  ,PROFESSOR_PWD,POSITION,ENTRANCE_DATE,PHONE,EMAIL,POST,ADDRESS,ACCOUNT_NO,ADMIN,STATUS
   		FROM PROFESSOR P
         JOIN DEPARTMENT D ON (P.DEPARTMENT_NO = D.DEPARTMENT_NO)
         JOIN COLLEGE C ON (P.COLLEGE_NO = C.COLLEGE_NO)
@@ -152,8 +160,8 @@
 		                    WHERE COLLEGE_NAME = #{college})
   	</select>
   	
-  	<!-- 수강신청 - 학부전공별 조회 -->
-  	<select id="majorClass" parameterType="classes" resultMap="registerClassMap">
+  	<!-- 수강신청 - 수강신청 (학부전공별 조회) -->
+  	<select id="majorClass" parameterType="registerClass" resultMap="registerClassMap">
   		SELECT COLLEGE_NAME,CLASS_NO,CLASS_NAME,PROFESSOR_NAME,DEPARTMENT_NAME
         ,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR",CLASS_NOS
         ,(DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
@@ -201,4 +209,27 @@
 		WHERE DIVISION = '1' AND CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND C.STATUS = 'Y'
 		ORDER BY CLASS_NAME
   	</select>
+  	
+  	<!-- 학과명으로 확과번호 조회 -->
+  	<select id="selectDepartmentNo" resultMap="departmentMap">
+  		SELECT DEPARTMENT_NO
+  		FROM DEPARTMENT
+  		WHERE DEPARTMENT_NAME = #{departmentNo}
+  	</select>
+  	
+  	<!-- 상담신청 - 학과별 교수리스트 조회 -->
+  	<select id="selectDepartProList" resultMap="loginProfessorMap">
+  		SELECT PROFESSOR_NO,PROFESSOR_NAME,DEPARTMENT_NAME,POSITION,EMAIL
+  		FROM PROFESSOR
+  		JOIN DEPARTMENT USING(DEPARTMENT_NO)
+  		WHERE DEPARTMENT_NO = #{departmentNo}
+  		AND POSITION != '행정직원'
+  	</select>
+  	
+  	<!-- 상담신청 - 인서트 -->
+  	<insert id="insertCounselingStudent">
+  		INSERT INTO COUNSELING(COUNSEL_NO,STUDENT_NO,PROFESSOR_NO,REQUEST_DATE,COUNSEL_AREA,COUNSEL_CONTENT)
+  		VALUES (SEQ_COUNO.NEXTVAL,?,?,?,?,?)
+  	</insert>
+  	
   </mapper>

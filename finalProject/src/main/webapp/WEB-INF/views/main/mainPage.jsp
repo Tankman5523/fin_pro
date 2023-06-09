@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Main : Feasible University</title>
 <link rel="stylesheet" href="/fin/resources/css/mainPage.css">
 </head>
 <body>

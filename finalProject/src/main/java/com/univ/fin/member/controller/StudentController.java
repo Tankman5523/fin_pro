@@ -12,8 +12,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Classes;
+import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.template.DepartmentCategory;
 import com.univ.fin.member.model.service.MemberService;
+import com.univ.fin.member.model.vo.Professor;
 
 @Controller
 public class StudentController {
@@ -27,7 +29,7 @@ public class StudentController {
 		return "member/student/registerClass";
 	}
 	
-	//수강신청 -전공 카테고리조회
+	//수강신청 - 수강신청(전공 카테고리조회)
 	@ResponseBody
 	@RequestMapping(value="selectCollegeNo.st",produces = "application/json; charset=UTF-8")
 	public String selectCollegeNo(int cno) {
@@ -39,12 +41,12 @@ public class StudentController {
 		return new Gson().toJson(list);
 	}
 	
-	//수강신청 - 학부전공별 조회
+	//수강신청 - 수강신청 (학부전공별 조회)
 	@ResponseBody
 	@RequestMapping(value="majorClass.st",produces = "application/json; charset=UTF-8")
 	public String majorClassList(String departmentName) {
 		
-		ArrayList<Classes> list = memberService.majorClass(departmentName);
+		ArrayList<RegisterClass> list = memberService.majorClass(departmentName);
 		
 		return new Gson().toJson(list);
 	}
@@ -66,4 +68,27 @@ public class StudentController {
 	}
 
 	
+	//상담관리 - 상담조회페이지 이동
+	@RequestMapping("counselingList.st")
+	public String counselingList() {
+		
+		return "member/student/st_counseling_list";
+	}
+	
+	//상담관리 - 상담신청 페이지 이동
+	@RequestMapping("counselingEnroll.st")
+	public String counselingEnroll(String departmentNo) {
+		return "member/student/st_counseling_enrollForm";
+	}
+	
+	//상담관리 - 상담신청 페이지 학생 학과 교수 리스트 조회
+	@ResponseBody
+	@RequestMapping(value="departmentProList.st",produces = "application/json; charset = UTF-8")
+	public String selectDepartProList(String departmentNo) {
+		
+		//학과별 교수 조회해서 가져가기
+		ArrayList<Professor> list = memberService.selectDepartProList(departmentNo);
+		
+		return new Gson().toJson(list);
+	}
 }
