@@ -234,6 +234,7 @@
   		JOIN PROFESSOR P USING (PROFESSOR_NO)
   		WHERE STUDENT_NO = #{studentNo}
   		ORDER BY COUNSEL_NO DESC
+	 </select>
   	<!-- 강의시간표 -> 교양수업 조회 -->
   	<select id="selectElective" parameterType="hashmap" resultMap="classResultMap">
   		SELECT CLASS_NO, C.FILE_NO, PROFESSOR_NAME, CLASS_NAME, CLASS_YEAR, CLASS_TERM, CLASSROOM
