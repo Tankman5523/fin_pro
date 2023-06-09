@@ -17,6 +17,7 @@
 		<typeAlias type="com.univ.fin.common.model.vo.Classes" alias="classes"/>
 		<typeAlias type="com.univ.fin.common.model.vo.RegisterClass" alias="registerClass"/>
 		<typeAlias type="com.univ.fin.common.model.vo.Department" alias="department"/>
+		<typeAlias type="com.univ.fin.common.model.vo.Counseling" alias="counseling"/>
 	</typeAliases>
 	
 	<mappers>

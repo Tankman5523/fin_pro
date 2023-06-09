@@ -76,43 +76,45 @@
                 </div>
             </div>
             <div id="content_1" align="center" style="padding-top: 5%;">
-				<form action="#">
-                    <input type="hidden" id="pno">
+				<form action="insertCounseling.st" method="post">
+                    <input type="hidden" id="pno" name="ProfessorNo">
+                    <input type="hidden" name="studentNo" value="${loginUser.studentNo}">
                     <table border="1" style="width: 80%; text-align: center;">
                         <tr style="width: 1;">
                             <td class="litle_title">상담교직원</td>
                             <td class="coun_input">
                                 <label for="pro_modal">
-                                    <input type="text" name="professor" id="pro_name" readonly>
+                                    <input type="text" name="professor" id="pro_name" style="border:0px;" readonly>
                                 </label>
-                                <button onclick="" id="pro_modal" data-bs-toggle="modal" data-bs-target="#pro_modal">돋보기</button>
+                                <button type="button" id="pro_modal">돋보기</button>
+                                
                             </td>
                             <td class="litle_title">학생명</td>
-                            <td class="coun_input"><input type="text" name="" id="" value="${loginUser.studentName}" readonly></td>
+                            <td class="coun_input"><input type="text" value="${loginUser.studentName}" readonly></td>
                         </tr>
                         <tr>
                             <td class="litle_title">학과</td>
-                            <td class="coun_input"><input type="text" name="" id="pro_depa" readonly></td>
+                            <td class="coun_input"><input type="text" id="pro_depa" readonly></td>
                             <td class="litle_title">학과</td>
-                            <td class="coun_input"><input type="text" name="" id="" value="${loginUser.departmentNo }" readonly></td>
+                            <td class="coun_input"><input type="text" value="${loginUser.departmentNo }" readonly></td>
                         </tr>
                         <tr>
                             <td class="litle_title">직책</td>
-                            <td class="coun_input"><input type="text" name="" id="pro_posi" readonly></td>
+                            <td class="coun_input"><input type="text" id="pro_posi" readonly></td>
                             <td class="litle_title">학생번호</td>
-                            <td class="coun_input"><input type="text" name="" id="" value="${loginUser.studentNo}" readonly></td>
+                            <td class="coun_input"><input type="text" value="${loginUser.studentNo}" readonly></td>
                         </tr>
                         <tr>
                             <td class="litle_title">이메일</td>
-                            <td class="coun_input"><input type="text" name="" id="pro_email" readonly></td>
+                            <td class="coun_input"><input type="text" id="pro_email" readonly></td>
                             <td class="litle_title">학생 전화번호</td>
-                            <td class="coun_input"><input type="text" name="" id="" value="${loginUser.phone}" readonly></td>
+                            <td class="coun_input"><input type="text" value="${loginUser.phone}" readonly></td>
                         </tr>
                         <tr>
-                            <td class="litle_title">상담요청일자</td>
-                            <td class="coun_input"><input type="text" name="" id="" class="datepicker" readonly></td>
+                            <td class="litle_title">상담희망일자</td>
+                            <td class="coun_input"><input type="text" name="requestDate" class="datepicker" readonly></td>
                             <td class="litle_title">상담신청일자</td>
-                            <td class="coun_input"><input type="text" name="" id="today" readonly></td>
+                            <td class="coun_input"><input type="text"  id="today" readonly></td>
                         </tr>
                         <tr>
                             <td rowspan="2" class="litle_title">상담요청영역</td>
@@ -120,25 +122,25 @@
                                 <ul class="counselingCategory">
                                     <li>
                                         <label>
-                                            <input type="radio" name="coun_category" id="">
+                                            <input type="radio" name="counselArea" value="진로(취업)">
                                             	진로(취업)
                                         </label>
                                     </li>
                                     <li>
                                         <label >
-                                            <input type="radio" name="coun_category" id="">
+                                            <input type="radio" name="counselArea" value="학교생활">
                                             	학교생활
                                         </label>
                                     </li>
                                     <li>
                                         <label>
-                                            <input type="radio" name="coun_category" id="">
+                                            <input type="radio" name="counselArea" value="학사(출결)">
                                             	학사(출결)
                                         </label>
                                     </li>
                                     <li>
                                         <label>
-                                            <input type="radio" name="coun_category" id="">
+                                            <input type="radio" name="counselArea" value="심리정서">
                                             	심리정서
                                         </label>
                                     </li>
@@ -150,25 +152,25 @@
                                 <ul class="counselingCategory">
                                     <li>
                                         <label>
-                                            <input type="radio" name="coun_category" id="">
+                                            <input type="radio" name="counselArea" value="학사(제적)">
                                             	학사(제적)
                                         </label>
                                     </li>
                                     <li>
                                         <label>
-                                            <input type="radio" name="coun_category" id="">
+                                            <input type="radio" name="counselArea" value="학사행정">
                                             	학사행정
                                         </label>
                                     </li>
                                     <li>
                                         <label>
-                                            <input type="radio" name="coun_category" id="">
+                                            <input type="radio" name="counselArea" value="학사(휴학)">
                                             	학사(휴학)
                                         </label>
                                     </li>
                                     <li>
                                         <label>
-                                            <input type="radio" name="coun_category" id="">
+                                            <input type="radio" name="counselArea" value="기타">
                                             	기타
                                         </label>
                                     </li>
@@ -178,7 +180,7 @@
                         <tr>
                             <td class="litle_title">상담요청내용</td>
                             <td colspan="3">
-                                <textarea name="" id="" cols="100" rows="10" style="resize: none;"></textarea>
+                                <textarea name="counselContent" cols="100" rows="10" style="resize: none;"></textarea>
                             </td>
                         </tr>
                     </table>
@@ -193,54 +195,22 @@
     <div id="modalWrap" style="display: none;">
         <div id="modalContent">
             <div id="modalBody">
+            <h4>상담 교수님을 선택해주세요.</h4>
             <span id="closeBtn">&times;</span> 
-                <table border="1" style="width: 100%;" id="pro_list">
+                <table border="1" style="width: 100%;text-align: center;" id="pro_list">
+                	<thead>
+                		<tr>
+                            <th>교수명</th>
+                            <th>학과</th>
+                            <th>직책</th>
+                            <th>이메일</th>
+                            <th style="display: none;">직번</th>
+                        </tr>
+                	</thead>
                     <tbody>
-
-                        <!-- <tr onclick="test(this,0);"> -->
-                        <tr>
-                            <td>교수명</td>
-                            <td>학과</td>
-                            <td>직책</td>
-                            <td>이메일</td>
-                            <td style="display: none;">직번</td>
-                        </tr>
-                        <tr>
-                            <td>교수명</td>
-                            <td>학과</td>
-                            <td>직책</td>
-                            <td>이메일</td>
-                            <td style="display: none;">직번</td>
-                        </tr>
-                        <tr>
-                            <td>교수명</td>
-                            <td>학과</td>
-                            <td>직책</td>
-                            <td>이메일</td>
-                            <td style="display: none;">직번</td>
-                        </tr>
-                        <tr>
-                            <td>교수명</td>
-                            <td>학과</td>
-                            <td>직책</td>
-                            <td>이메일</td>
-                            <td style="display: none;">직번</td>
-                        </tr>
-                        <tr>
-                            <td>교수명</td>
-                            <td>학과</td>
-                            <td>직책</td>
-                            <td>이메일</td>
-                            <td style="display: none;">직번</td>
-                        </tr>
-                        <tr>
-                            <td>교수명</td>
-                            <td>학과</td>
-                            <td>직책</td>
-                            <td>이메일</td>
-                            <td style="display: none;">직번</td>
-                        </tr>
-                </tbody>
+                    	
+                        
+                	</tbody>
                     
                 </table>
                 
@@ -248,9 +218,22 @@
         </div>
       </div>
     <script>
-        $(function(){
-            
-           $("#pro_list>tbody>tr").click(function(){
+        $(function(){         
+        
+            var today = new Date(); //오늘 날짜 가져옴
+            var month = ("0"+(today.getMonth()+1)).slice(-2); //월 앞에 0 붙이고 10이상일수 있으니 뒤에서 2자리로 자름
+            var date = ("0"+today.getDate()).slice(-2); // 위와 동일
+            var now = today.getFullYear()+"-"+month+"-"+date; //오늘기준 년-월-일
+            $("#today").val(now);
+
+            $(".datepicker").datepicker({
+                minDate:now
+            })
+        
+        });
+        
+        function choicePro(){
+        	$("#pro_list>tbody>tr").click(function(){
                 var pro_name = $(this).children().eq(0).html(); //교수님 이름
                 var pro_depa = $(this).children().eq(1).html(); //교수님 학과
                 var pro_posi = $(this).children().eq(2).html(); //교수님 직책
@@ -268,18 +251,7 @@
                 document.getElementById('modalWrap').style.display = "none"; //골랐으면 모달창 닫기
                 
             }) 
-            var today = new Date(); //오늘 날짜 가져옴
-            var month = ("0"+(today.getMonth()+1)).slice(-2); //월 앞에 0 붙이고 10이상일수 있으니 뒤에서 2자리로 자름
-            var date = ("0"+today.getDate()).slice(-2); // 위와 동일
-            var now = today.getFullYear()+"-"+month+"-"+date; //오늘기준 년-월-일
-            console.log(typeof now);
-            $("#today").val(now);
-
-            $(".datepicker").datepicker({
-                minDate:now
-            })
-        
-        });
+        }
         
         //밑에는 모달 위한 스크립트
         const btn = document.getElementById('pro_modal'); //모달 키는 버튼
@@ -294,6 +266,18 @@
         		data:{departmentNo:departmentNo},
         		success:function(list){
         			console.log(list);
+        			var result = "";
+        			
+        			for(var i=0; i<list.length; i++){
+        				result += "<tr onclick='choicePro();'>"
+        						+"<td>"+list[i].professorName+"</td>"
+        						+"<td>"+list[i].departmentNo+"</td>"
+        						+"<td>"+list[i].position+"</td>"
+        						+"<td>"+list[i].email+"</td>"
+        						+"<td style='display: none;'>"+list[i].professorNo+"</td>"
+        						+"</tr>"
+        			}
+        			$("#pro_list>tbody").html(result);
         		},
         		error:function(){
         			alert("통신 오류");
@@ -301,15 +285,18 @@
         	})
             modal.style.display = 'block';
         }
+        
         closeBtn.onclick = function() { //모달 닫기
             modal.style.display = 'none';
         }
-
+        
+		
         window.onclick = function(event) { //모달 밖에 누르면 모달 닫히게 하기
             if (event.target == modal) {
                 modal.style.display = "none";
             }
         }
+		
     </script>
 </body>
 </html>

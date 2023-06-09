@@ -79,6 +79,18 @@
   		<result column="GRADUATION" property="graduation"/>
   	</resultMap>
   	
+  	<resultMap type="counseling" id="counselingMap">
+  		<result column="COUNSEL_NO" property="counselNo"/>
+  		<result column="STUDENT_NO" property="studentNo"/>
+  		<result column="PROFESSOR_NO" property="professorNo"/>
+  		<result column="APPLICATION_DATE" property="applicationDate"/>
+  		<result column="REQUEST_DATE" property="requestDate"/>
+  		<result column="COUNSEL_AREA" property="counselArea"/>
+  		<result column="COUNSEL_CONTENT" property="counselContent"/>
+  		<result column="COUNSEL_RESULT" property="counselResult"/>
+  		<result column="STATUS" property="status"/>
+  	</resultMap>
+  	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
   		SELECT STUDENT_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,FILE_NO,STUDENT_NAME,STUDENT_PWD,
@@ -199,6 +211,15 @@
 		GROUP BY CLASS_YEAR, CLASS_TERM
   	</select>
   	
+  	<!-- (학생)상담신청 내역 가져오기 -->
+  	<select id="selectCounStuList" resultMap="counselingMap">
+  		SELECT COUNSEL_NO,APPLICATION_DATE,REQUEST_DATE,COUNSEL_CONTENT,PROFESSOR_NAME,COUNSEL_AREA,C.STATUS
+  		FROM COUNSELING C
+  		JOIN PROFESSOR P USING (PROFESSOR_NO)
+  		WHERE STUDENT_NO = #{studentNo}
+  		ORDER BY COUNSEL_NO DESC
+  	</select>
+  	
   	<!-- 학과명으로 확과번호 조회 -->
   	<select id="selectDepartmentNo" resultMap="departmentMap">
   		SELECT DEPARTMENT_NO
@@ -216,9 +237,32 @@
   	</select>
   	
   	<!-- 상담신청 - 인서트 -->
-  	<insert id="insertCounselingStudent">
+  	<insert id="insertCounseling">
   		INSERT INTO COUNSELING(COUNSEL_NO,STUDENT_NO,PROFESSOR_NO,REQUEST_DATE,COUNSEL_AREA,COUNSEL_CONTENT)
-  		VALUES (SEQ_COUNO.NEXTVAL,?,?,?,?,?)
+  		VALUES (SEQ_COUNO.NEXTVAL,#{studentNo},#{professorNo},#{requestDate},#{counselArea},#{counselContent})
   	</insert>
+  	
+  	<!-- 상담 상세보기 -->
+  	<select id="selectCounseling" resultMap="counselingMap">
+  		SELECT *
+  		FROM COUNSELING
+  		WHERE COUNSEL_NO = #{counselNo}
+  	</select>
+  	
+  	<!-- 직번으로 교수정보조회 -->
+  	<select id="selectProfessorForNo" resultMap="loginProfessorMap">
+  		SELECT PROFESSOR_NO,PROFESSOR_NAME,DEPARTMENT_NAME,POSITION,EMAIL
+  		FROM PROFESSOR
+  		JOIN DEPARTMENT USING(DEPARTMENT_NO)
+  		WHERE PROFESSOR_NO = #{professorNo}
+  	</select>
+  	
+  	<!-- 상담요청내용 수정(학생) -->
+  	<update id="updateCounContent">
+  		UPDATE COUNSELING
+  		SET COUNSEL_CONTENT = #{counselContent}
+  		WHERE COUNSEL_NO = #{counselNo}
+  		AND STATUS = 'N'
+  	</update>
   	
   </mapper>
