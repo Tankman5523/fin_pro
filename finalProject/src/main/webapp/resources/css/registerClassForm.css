@@ -109,3 +109,7 @@ div[id *= main_content]{
 div[id *= contentDiv]{
     display: none;
 }
+
+input[name = sub_div2_radio]:checked+label{
+    border-bottom: 2px solid #00aeff;
+}

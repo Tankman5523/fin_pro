@@ -46,12 +46,11 @@
             		
             		<div id="sub_div2">
             		<!-- ajax에 num값만 다르게 해서 출력 -->
-            				<input id="major" type="radio" name="sub_div2_radio" onchange="mainContent(1);"> <label for="major">학부전공별</label>
+            				<input id="major" type="radio" name="sub_div2_radio" onchange="mainContent(1);" checked> <label for="major">단과대학 전공별</label>
             				<input id="elective" type="radio" name="sub_div2_radio" onchange="mainContent(2);"> <label for="elective">교양선택</label>
-            				<input id="normal" type="radio" name="sub_div2_radio" onchange="mainContent(3);"> <label for="normal">일반선택</label>
-            				<input id="proName" type="radio" name="sub_div2_radio" onchange="mainContent(4);"> <label for="proName">교수명검색</label>
-            				<input id="subject" type="radio" name="sub_div2_radio" onchange="mainContent(5);"> <label for="subject">과목검색</label>
-            				<input id="bucket" type="radio" name="sub_div2_radio" onchange="mainContent(6);"> <label for="bucket">장바구니</label>
+            				<input id="proName" type="radio" name="sub_div2_radio" onchange="mainContent(3);"> <label for="proName">교수명검색</label>
+            				<input id="subject" type="radio" name="sub_div2_radio" onchange="mainContent(4);"> <label for="subject">과목검색</label>
+            				<input id="bucket" type="radio" name="sub_div2_radio" onchange="mainContent(5);"> <label for="bucket">장바구니</label>
             		</div>
             		<hr>
             		<div id="contentDiv1">
@@ -114,13 +113,12 @@
 	           				<h2>5</h2>
 	           			</div>
            			</div>
-           			<div id="contentDiv6">
-           				<div id="main_content6">
-	           				<h2>6</h2>
-	           			</div>
-           			</div>
            			
             		<script>
+            		
+            		$(function(){
+            			mainContent(1);
+            		});
             		
             		/* content 선택 */
             		function mainContent(num){
@@ -138,8 +136,6 @@
 	            			case 4 : $("#contentDiv4").css("display","block");
 	            				break;
 	            			case 5 : $("#contentDiv5").css("display","block");
-	            				break;
-	            			case 6 : $("#contentDiv6").css("display","block");
 	            				break;
             			}
             		}
