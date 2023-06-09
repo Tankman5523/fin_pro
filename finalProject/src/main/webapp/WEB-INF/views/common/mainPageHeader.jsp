@@ -6,6 +6,7 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <link rel="stylesheet" href="/fin/resources/css/mainPageHeader.css">
+<script src="https://kit.fontawesome.com/7f4a340891.js" crossorigin="anonymous"></script>
 </head>
 <body>
 	<div id="header">

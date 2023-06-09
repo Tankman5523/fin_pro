@@ -47,12 +47,22 @@ public class StudentController {
 		return new Gson().toJson(list);
 	}
 	
-	//수강신청 - 수강신청 (학부전공별 조회)
+	//수강신청 - 수강신청
 	@ResponseBody
 	@RequestMapping(value="majorClass.st",produces = "application/json; charset=UTF-8")
-	public String majorClassList(String departmentName) {
+	public String majorClassList(@RequestParam(value="departmentName",defaultValue = "교양")String departmentName,RegisterClass rc) {
 		
-		ArrayList<RegisterClass> list = memberService.majorClass(departmentName);
+		String term = String.valueOf(rc.getClassTerm().charAt(0));
+		
+		RegisterClass rc2 = RegisterClass.builder()
+										 .classYear(rc.getClassYear())
+										 .classTerm(term)
+										 .departmentName(departmentName)
+										 .professorName(rc.getProfessorName())
+										 .className(rc.getClassName())
+										 .build();
+		
+		ArrayList<RegisterClass> list = memberService.majorClass(rc2);
 		
 		return new Gson().toJson(list);
 	}
@@ -73,21 +83,6 @@ public class StudentController {
 		return mv;
 	}
 
-	// 수강신청 - 강의시간표 -> 단과대학별 전공 조회
-	@ResponseBody 
-	@RequestMapping(value = "selectDepart.me", produces = "application/json; charset=UTF-8;")
-	public String selectDepartment(String college) {
-		ArrayList<String> dList = memberService.selectDepertment(college);
-		return new Gson().toJson(dList);
-	}
-	
-	// 수강신청 - 강의시간표 -> 전공 선택 후 전공수업 조회
-	@ResponseBody
-	@RequestMapping(value = "selectDepartmentMajor.st", produces = "application/json; charset=UTF-8;")
-	public String selectDepartmentMajor(@RequestParam HashMap<String,String> map) {
-		ArrayList<Classes> cList = memberService.selectDepartmentMajor(map);
-		return new Gson().toJson(cList);
-	}
 	
 	//상담관리 - 상담조회페이지 이동
 	@RequestMapping("counselingList.st")
@@ -117,6 +112,7 @@ public class StudentController {
 		ArrayList<Professor> list = memberService.selectDepartProList(departmentNo);
 		
 		return new Gson().toJson(list);
+
 	}
 	
 	//상담신청 - 상담신청 작성
@@ -167,4 +163,63 @@ public class StudentController {
 		
 		return mv;
 	}
+	
+	
+		//학적 정보조회 - 학생
+			@RequestMapping("infoStudent.me")
+			public String infoStudent() {		
+				
+				return "member/student/infoStudent";
+			}
+			
+			
+			//학적 정보수정 - 학생
+			@RequestMapping("updateStudent.me")
+			public ModelAndView updateStudent(Student st,
+											ModelAndView mv,
+											HttpSession session) {
+				int result = memberService.updateStudent(st);
+				
+				System.out.println("확인 : "+result);
+				
+				if(result>0) {
+					//유저 정보갱신
+					Student loginUser = memberService.loginStudent(st);
+					session.setAttribute("loginUser", loginUser);
+					session.setAttribute("alertMsg", "수정 완료");
+					mv.setViewName("redirect:infoStudent.me");
+				}else { //정보변경실패
+					mv.addObject("errorMsg","수정 실패함요").setViewName("redirect:infoStudent.me");
+				}
+				
+			return mv;
+				
+			}
+	
+			//학생등록 페이지
+			@RequestMapping("enrollStudent.me")
+			public String enrollStudent() {		
+				
+				return "member/student/enrollStudent";
+			}
+			
+			//학생등록 페이지 등록
+			@RequestMapping("insertStudent.me")
+			public String insertStudent(Student st,
+										Model model,
+										HttpSession session) {
+			
+			int result = memberService.insertStudent(st);
+				
+			if(result>0) {
+				session.setAttribute("alertMsg", "회원가입 성공");
+				return "redirect:enrollStudent";
+			}else {
+				model.addAttribute("errorMsg","회원가입 실패");
+			}
+			return "member/student/infoStudent";
+				
+			}
+	
+
 }
