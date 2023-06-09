@@ -82,7 +82,7 @@
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
   		SELECT STUDENT_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,FILE_NO,STUDENT_NAME,STUDENT_PWD,
-               ENTRANCE_DATE,GRADUATION_DATE,CLASS_LEVEL,PHONE,EMAIL,POST,ADDRESS
+               ENTRANCE_DATE,GRADUATION_DATE,CLASS_LEVEL,PHONE,EMAIL,POST,ADDRESS,STATUS
   		FROM STUDENT S
   		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO) 
         JOIN COLLEGE C ON (S.COLLEGE_NO = C.COLLEGE_NO)
@@ -92,7 +92,7 @@
   	<!-- 임직원 로그인 -->
   	<select id="loginProfessor" parameterType="professor" resultMap="loginProfessorMap">
   		SELECT PROFESSOR_NO,FILE_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,PROFESSOR_NAME
-  			  ,PROFESSOR_PWD,POSITION,ENTRANCE_DATE,PHONE,EMAIL,POST,ADDRESS,ACCOUNT_NO,ADMIN
+  			  ,PROFESSOR_PWD,POSITION,ENTRANCE_DATE,PHONE,EMAIL,POST,ADDRESS,ACCOUNT_NO,ADMIN,STATUS
   		FROM PROFESSOR P
         JOIN DEPARTMENT D ON (P.DEPARTMENT_NO = D.DEPARTMENT_NO)
         JOIN COLLEGE C ON (P.COLLEGE_NO = C.COLLEGE_NO)
@@ -160,8 +160,8 @@
 		                    WHERE COLLEGE_NAME = #{college})
   	</select>
   	
-  	<!-- 수강신청 - 학부전공별 조회 -->
-  	<select id="majorClass" parameterType="classes" resultMap="registerClassMap">
+  	<!-- 수강신청 - 수강신청 (학부전공별 조회) -->
+  	<select id="majorClass" parameterType="registerClass" resultMap="registerClassMap">
   		SELECT COLLEGE_NAME,CLASS_NO,CLASS_NAME,PROFESSOR_NAME,DEPARTMENT_NAME
         ,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR",CLASS_NOS
         ,(DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
