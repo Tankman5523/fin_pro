@@ -151,7 +151,7 @@
   		AND STATUS = 'Y'
   	</update>
   	
-  	  	<!-- 단과대학 전공 조회  -->
+  	<!-- 단과대학 전공 조회  -->
   	<select id="selectDepartment" resultType="string">
   		SELECT DEPARTMENT_NAME
 		FROM DEPARTMENT
@@ -178,8 +178,11 @@
 		ORDER BY CLASS_NO
   	</select>
   	
+  	<!-- 강의시간표 -> 전공 선택 후 전공수업 조회 -->
   	<select id="selectDepartmentMajor" parameterType="hashmap" resultMap="classResultMap">
-  		SELECT CLASS_NO, PROFESSOR_NAME, DEPARTMENT_NAME, C.FILE_NO, CLASS_NAME, CLASS_LEVEL, CLASS_YEAR, CLASS_TERM, CLASSROOM
+  		SELECT CLASS_NO, PROFESSOR_NAME, DEPARTMENT_NAME, C.FILE_NO, CLASS_NAME
+  				, DECODE(CLASS_LEVEL, '0', '전체학년', '1', '1학년', '2', '2학년', '3', '3학년', '4', '4학년') AS CLASS_LEVEL
+  				, CLASS_YEAR, CLASS_TERM, CLASSROOM
   				, DECODE(DAY, '1', '월', '2', '화', '3', '수', '4', '목', '5', '금') AS DAY
   				, DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)||':00 ~ '||(DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)+CLASS_HOUR)||':00' AS PERIOD
   				, CLASS_HOUR, CLASS_NOS, EXPLAIN, CREDIT, DIVISION, C.STATUS
@@ -190,17 +193,20 @@
 		                        FROM DEPARTMENT
 		                        WHERE DEPARTMENT_NAME = #{department})
 		      AND CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND C.STATUS = 'Y'
-		ORDER BY TO_CHAR(CLASS_LEVEL)
+		ORDER BY CLASS_LEVEL
   	</select>
   	
+  	<!-- 강의시간표 -> 학년도,학기 조회 -->
   	<select id="selectClassTerm" resultType="string">
   		SELECT CLASS_YEAR||'0'||CLASS_TERM
 		FROM CLASS
 		GROUP BY CLASS_YEAR, CLASS_TERM
   	</select>
   	
+  	<!-- 강의시간표 -> 교양수업 조회 -->
   	<select id="selectElective" parameterType="hashmap" resultMap="classResultMap">
   		SELECT CLASS_NO, C.FILE_NO, PROFESSOR_NAME, CLASS_NAME, CLASS_YEAR, CLASS_TERM, CLASSROOM
+  				, DECODE(CLASS_LEVEL, '0', '전체학년', '1', '1학년', '2', '2학년', '3', '3학년', '4', '4학년') AS CLASS_LEVEL
   				, DECODE(DAY, '1', '월', '2', '화', '3', '수', '4', '목', '5', '금') AS DAY
   				, DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)||':00 ~ '||(DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)+CLASS_HOUR)||':00' AS PERIOD
   				, CLASS_HOUR, CLASS_NOS, EXPLAIN, CREDIT, DIVISION, C.STATUS
@@ -232,4 +238,25 @@
   		VALUES (SEQ_COUNO.NEXTVAL,?,?,?,?,?)
   	</insert>
   	
+  	<!-- 강의시간표 -> 교수명 검색/과목 검색 -->
+  	<select id="searchClassKeyword" parameterType="hashmap" resultMap="classResultMap">
+  		SELECT CLASS_NO, PROFESSOR_NAME, DEPARTMENT_NAME, C.FILE_NO, CLASS_NAME
+  				, DECODE(CLASS_LEVEL, '0', '전체학년', '1', '1학년', '2', '2학년', '3', '3학년', '4', '4학년') AS CLASS_LEVEL
+  				, CLASS_YEAR, CLASS_TERM, CLASSROOM
+  				, DECODE(DAY, '1', '월', '2', '화', '3', '수', '4', '목', '5', '금') AS DAY
+  				, DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)||':00 ~ '||(DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)+CLASS_HOUR)||':00' AS PERIOD
+  				, CLASS_HOUR, CLASS_NOS, EXPLAIN, CREDIT, DIVISION, C.STATUS
+		FROM CLASS C
+		LEFT JOIN PROFESSOR P USING(PROFESSOR_NO)
+		LEFT JOIN DEPARTMENT D ON(C.DEPARTMENT_NO = D.DEPARTMENT_NO)
+		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND C.STATUS = 'Y'
+		<if test="condition == 'professor'">
+			AND PROFESSOR_NAME
+		</if>
+		<if test="condition == 'subject'">
+			AND CLASS_NAME
+		</if>
+		LIKE '%'||#{keyword}||'%'
+		ORDER BY CLASS_LEVEL
+  	</select>
   </mapper>

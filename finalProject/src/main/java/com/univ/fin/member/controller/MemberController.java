@@ -424,8 +424,15 @@ public class MemberController {
 	@ResponseBody
 	@RequestMapping(value = "selectElective.me", produces = "application/json; charset=UTF-8;")
 	public String selectElective(@RequestParam HashMap<String,String> map) {
-		System.out.println("*****************************" + map);
 		ArrayList<Classes> cList = memberService.selectElective(map);
+		return new Gson().toJson(cList);
+	}
+	
+	// 강의시간표 -> 교수명 검색/과목 검색
+	@ResponseBody
+	@RequestMapping(value = "searchClassKeyword.me", produces = "application/json; charset=UTF-8;")
+	public String searchClassKeyword(@RequestParam HashMap<String,String> map) {
+		ArrayList<Classes> cList = memberService.searchClassKeyword(map);
 		return new Gson().toJson(cList);
 	}
 

@@ -61,12 +61,12 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.majorClass", departmentName);
 	}
 	
-	// 수강신청 - 강의시간표 -> 학년도,학기 조회
+	// 강의시간표 -> 학년도,학기 조회
 	public ArrayList<String> selectClassTerm(SqlSessionTemplate sqlSession) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectClassTerm");
 	}
 	
-	// 수강신청 - 강의시간표 -> 단과대학별 전공 조회
+	// 강의시간표 -> 단과대학별 전공 조회
 	public ArrayList<String> selectDepartment(SqlSessionTemplate sqlSession, String college) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectDepartment", college);
 	}
@@ -88,6 +88,11 @@ public class MemberDao {
 	// 강의시간표 -> 교양수업 조회
 	public ArrayList<Classes> selectElective(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectElective", map);
+	}
+
+	// 강의시간표 -> 교수명 검색/과목 검색
+	public ArrayList<Classes> searchClassKeyword(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return (ArrayList)sqlSession.selectList("memberMapper.searchClassKeyword", map);
 	}
 
 
