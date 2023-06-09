@@ -147,4 +147,28 @@ public class MemberServiceImpl implements MemberService{
 		return cList;
 	}
 	
+	//학적정보 수정 -학생
+	@Override
+	public int updateStudent(Student st) {
+			
+		int result = memberDao.updateStudent(sqlSession,st);
+			
+		return result;
+	}
+
+	@Override
+	public int updateProfessor(Professor pr) {
+		
+		int result = memberDao.updateProfessor(sqlSession,pr);
+		
+		return result;
+	}
+
+	@Override
+	public int insertStudent(Student st) {
+		
+		int result = memberDao.insertStudent(sqlSession,st);
+		
+		return result;
+	}
 }

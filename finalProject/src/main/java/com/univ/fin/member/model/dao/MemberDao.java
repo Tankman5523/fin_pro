@@ -89,6 +89,22 @@ public class MemberDao {
 	public ArrayList<Classes> selectElective(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectElective", map);
 	}
+	
+	//학적정보 수정 - 학생
+		public int updateStudent(SqlSessionTemplate sqlSession, Student st) {
+
+			return sqlSession.update("memberMapper.updateStudent",st);
+		}
+
+		public int updateProfessor(SqlSessionTemplate sqlSession, Professor pr) {
+			
+			return sqlSession.update("memberMapper.updateProfessor",pr);
+		}
+
+		public int insertStudent(SqlSessionTemplate sqlSession, Student st) {
+
+			return sqlSession.insert("memberMapper.insertMapper",st);
+		}
 
 	// 강의시간표 -> 교수명 검색/과목 검색
 	public ArrayList<Classes> searchClassKeyword(SqlSessionTemplate sqlSession, HashMap<String, String> map) {

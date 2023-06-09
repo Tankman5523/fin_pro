@@ -52,8 +52,19 @@ public interface MemberService {
 	//상담신청 - 학과별 교수 전부 조회
 	ArrayList<Professor> selectDepartProList(String departmentNo);
 
+<<<<<<< HEAD
 	// 강의시간표 -> 교수명 검색/과목 검색
 	ArrayList<Classes> searchClassKeyword(HashMap<String, String> map);
 
+=======
+	//학적정보 수정 (학생)
+	int updateStudent(Student st);
+	
+	//학적정보 수정 (교수)
+	int updateProfessor(Professor pr);
+>>>>>>> refs/remotes/origin/main
 
+	// 회원추가 (학생)
+	int insertStudent(Student st);
+	
 }
