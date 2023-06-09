@@ -124,6 +124,13 @@ public class MemberServiceImpl implements MemberService{
 		return cList;
 	}
 
+	// 강의시간표 -> 교양수업 조회
+	@Override
+	public ArrayList<Classes> selectElective(HashMap<String, String> map) {
+		ArrayList<Classes> cList = memberDao.selectElective(sqlSession, map);
+		return cList;
+	}
+
 	//상담신청 - 학과별 교수 조회
 	@Override
 	public ArrayList<Professor> selectDepartProList(String departmentNo) {
