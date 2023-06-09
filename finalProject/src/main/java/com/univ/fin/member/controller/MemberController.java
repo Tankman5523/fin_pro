@@ -381,7 +381,7 @@ public class MemberController {
 	}
 	
 	//비밀번호 초기화 - 비밀번호 변경 메소드
-	@ResponseBody
+	@ResponseBody 
 	@RequestMapping("changePwd.me")
 	public String changePwd(String password, String memberNo,HttpSession session) {
 		
@@ -404,6 +404,22 @@ public class MemberController {
 		return new Gson().toJson(result);
 	}
 	
+	// 강의시간표 -> 단과대학별 전공 조회
+	@ResponseBody 
+	@RequestMapping(value = "selectDepart.me", produces = "application/json; charset=UTF-8;")
+	public String selectDepartment(String college) {
+		ArrayList<String> dList = memberService.selectDepertment(college);
+		return new Gson().toJson(dList);
+	}
+
+	// 강의시간표 -> 전공 선택 후 전공수업 조회
+	@ResponseBody
+	@RequestMapping(value = "selectDepartmentMajor.me", produces = "application/json; charset=UTF-8;")
+	public String selectDepartmentMajor(@RequestParam HashMap<String,String> map) {
+		ArrayList<Classes> cList = memberService.selectDepartmentMajor(map);
+		return new Gson().toJson(cList);
+	}
+
 	//교수 학적정보 조회
 	@RequestMapping("infoProfessor.me")
 	public String infoProfessor() {

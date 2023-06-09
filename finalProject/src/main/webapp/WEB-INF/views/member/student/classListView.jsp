@@ -5,7 +5,6 @@
 <head>
 <meta charset="UTF-8">
 <title>강의시간표</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<style>
         .b_line {
             border: 0.5px solid lightgray;
@@ -30,7 +29,6 @@
 
         #selectList {
             border-radius: 10px;
-            margin-left: 20px;
         }
 
         input[name=search_category] {
@@ -46,10 +44,6 @@
         	font-weight: 550;
             color:#00aeff;
             border-bottom: 2px solid #00aeff;
-        }
-        
-        #college {
-        	margin-left: 2%;
         }
 
         div[class*=content] {
@@ -91,6 +85,19 @@
 
 		table[id*=class] td {
 			border-left: 1px solid lightgray;
+		}
+		
+		.setting_div {
+			display: flex;
+			width: 100%;
+			height: 30px;
+		}
+		
+		.setting_div * {
+			margin-left: 1%;
+			height: 100% !important;
+			justify-content: center;
+			line-height: 30px;
 		}
     </style>
 </head>
@@ -148,8 +155,8 @@
                 
                 <!-- 학부 전공별 -->
                 <div class="content_major">
-                	<div class="major_div">
-	                    <select name="colleage" id="college" onchange="selectCollege(this);">
+                	<div class="setting_div">
+	                    <select name="colleage" id="college" style="margin-left: 2%;" onchange="selectCollege(this);">
 	                        <option value=""> ==단과대학== </option>
 	                        <option value="인문대학">인문대학</option>
 	                        <option value="사회과학대학">사회과학대학</option>
@@ -164,7 +171,7 @@
 	                    </select>
 	                    <button type="button" class="btn btn-primary btn-sm" id="selectList" onclick="selectMajor();">조회</button>
                 	</div>
-                    <br><br>
+                    <br>
                     
                     <div class="table-area">
 	                    <table id="class-table">
@@ -219,9 +226,11 @@
                 
                 <!-- 교수명 검색 -->
                 <div class="content_searchPro">
-                	<span style="margin-left: 2%;">교수: </span> <input type="text" name="professorName" id="professorName">
-                	<button type="button" class="btn btn-primary btn-sm" id="selectList" onclick="searchProfessor();">검색</button>
-                	<br><br>
+                	<div class="setting_div">
+	                	<span style="margin-left: 2%;">교수: </span> <input type="text" name="professorName" id="professorName">
+	                	<button type="button" class="btn btn-primary btn-sm" id="selectList" onclick="searchProfessor();">검색</button>
+                	</div>
+                	<br>
                 	
                 	<div class="table-area3">
 	                    <table id="class-table3">
@@ -250,9 +259,11 @@
                 
                 <!-- 과목 검색 -->
                 <div class="content_searchSub">
-                	<span style="margin-left: 2%;">검색어: </span> <input type="text" name="subjectName" id="subjectName">
-                	<button type="button" class="btn btn-primary btn-sm" id="selectList" onclick="searchSubject();">검색</button>
-                	<br><br>
+                	<div class="setting_div">
+                		<span style="margin-left: 2%;">검색어: </span> <input type="text" name="subjectName" id="subjectName">
+	                	<button type="button" class="btn btn-primary btn-sm" id="selectList" onclick="searchSubject();">검색</button>
+                	</div>
+                	<br>
                 	
                 	<div class="table-area4">
 	                    <table id="class-table4">
