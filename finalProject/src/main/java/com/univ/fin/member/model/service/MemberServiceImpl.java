@@ -12,8 +12,6 @@ import com.univ.fin.member.model.dao.MemberDao;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
 public class MemberServiceImpl implements MemberService{
 
@@ -104,24 +102,31 @@ public class MemberServiceImpl implements MemberService{
 		return list;
 	}
 	
-	// 수강신청 - 강의시간표 -> 학년도,학기 조회
+	// 강의시간표 -> 학년도,학기 조회
 	@Override
 	public ArrayList<String> selectClassTerm() {
 		ArrayList<String> classTerm = memberDao.selectClassTerm(sqlSession);
 		return classTerm;
 	}
 	
-	// 수강신청 - 강의시간표 -> 단과대학별 전공 조회
+	// 강의시간표 -> 단과대학별 전공 조회
 	@Override
 	public ArrayList<String> selectDepertment(String college) {
 		ArrayList<String> dList = memberDao.selectDepartment(sqlSession, college);
 		return dList;
 	}
 
-	// 수강신청 - 강의시간표 -> 전공 선택 후 전공수업 조회
+	// 강의시간표 -> 전공 선택 후 전공수업 조회
 	@Override
 	public ArrayList<Classes> selectDepartmentMajor(HashMap<String, String> map) {
 		ArrayList<Classes> cList = memberDao.selectDepartmentMajor(sqlSession, map);
+		return cList;
+	}
+
+	// 강의시간표 -> 교양수업 조회
+	@Override
+	public ArrayList<Classes> selectElective(HashMap<String, String> map) {
+		ArrayList<Classes> cList = memberDao.selectElective(sqlSession, map);
 		return cList;
 	}
 

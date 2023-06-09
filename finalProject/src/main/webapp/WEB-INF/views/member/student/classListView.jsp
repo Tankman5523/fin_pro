@@ -30,7 +30,7 @@
 
         #selectList {
             border-radius: 10px;
-            margin-left: 30px;
+            margin-left: 20px;
         }
 
         input[name=search_category] {
@@ -43,6 +43,7 @@
         }
 
         input[name=search_category]:checked+label {
+        	font-weight: 550;
             color:#00aeff;
             border-bottom: 2px solid #00aeff;
         }
@@ -60,6 +61,7 @@
             width: 100%;
             height: 77%;
             display: none;
+            border: 1px solid red;
         }
         
         .table-area {
@@ -67,28 +69,36 @@
         	height: 92%;
         	overflow: auto;
         }
-
-		#class-table {
+        
+        .table-area2 {
+        	width: 100%;
+        	height: 100%;
+        	overflow: auto;
+        }
+        
+        .table-area3, .table-area4 {
+        	width: 100%;
+        	height: 95%;
+        	overflow: auto;
+        }
+        
+        table[id*=class] {
 			width: 100%;
 			text-align: center;
 			border-collapse: collapse;
 		}
 		
-		#class-table>thead {
+		table[id*=class]>thead {
 			background-color: rgb(250, 250, 133);
         	position: sticky;
         	top: 0;
 		}
 		
-		#class-table>tbody>tr {
+		table[id*=class]>tbody>tr {
 			border-bottom: 0.5px solid lightgray;
 		}
-		
-/* 		#class-table>tbody>tr>td { */
-/* 			border-left: 0.5px solid black; */
-/* 		} */
 
-		#class-table td {
+		table[id*=class] td {
 			border-left: 1px solid lightgray;
 		}
     </style>
@@ -133,10 +143,9 @@
 												</c:forEach>
                                         </select>
                     <span>학기: </span> <select name="term" id="term">
-<!--                                             <option value="1">1학기</option> -->
-<!--                                             <option value="2">2학기</option> -->
                                        </select>
-                    <!-- 이전학기 다음학기 버튼 -->
+                    <button type="button" class="btn btn-outline-primary btn-sm" id="selectList" onclick="prevTerm();">이전 학기</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm" id="selectList" style="margin-left:0;" onclick="nextTerm();">다음 학기</button>
                 </div>
                 <br>
 
@@ -181,7 +190,7 @@
 	                    		</tr>
 	                    	</thead>
 	                    	<tbody id="class-table-tbody">
-	                    		<tr style="border: 0;">
+	                    		<tr>
 	                    			<td colspan="10" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
 	                    		</tr>
 	                    	</tbody>
@@ -190,7 +199,29 @@
                 </div>
                 
                 <!-- 교양 -->
-                <div class="content_elective"></div>
+                <div class="content_elective">
+                	<div class="table-area2">
+	                    <table id="class-table2">
+	                    	<thead>
+	                    		<tr>
+	                    			<td width="3%" style="border: 0;"></td> <!-- 강의계획서 첨부파일 -->
+	                    			<td width="7%">강의번호</td>
+	                    			<td width="20%">강의명</td>
+	                    			<td width="7%">교수명</td>
+	                    			<td width="3%">학점</td>
+	                    			<td width="3%">수강인원</td>
+	                    			<td width="3%">여석</td>
+	                    			<td width="27%">강의시간 (강의실)</td>
+	                    		</tr>
+	                    	</thead>
+	                    	<tbody id="class-table-tbody2">
+	                    		<tr>
+	                    			<td colspan="8" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
+	                    		</tr>
+	                    	</tbody>
+	                    </table>
+	               	</div>
+                </div>
                 
                 <!-- 교수명 검색 -->
                 <div class="content_searchPro">
@@ -206,19 +237,73 @@
 
                 <script>
                 	var arr = ${classTerm};
+                	
                 
 	                $(function() {
 	                    $(".content_major").css("display", "block");
+	                    changeYear($("#year"));
+	                    
+	                	$(".selectTerm").on("change", "#term", function() {
+	                		selectCategory();
+	                	});
 	                })
 	                
 	                function changeYear(e) {
 	                	var $year = e.value;
+	                	var count=0;
+	                	var str = "";
 	                	
 	                	for(var i=0;i<arr.length;i++) {
-	                		console.log(arr[i].substr(0,5));
-// 	                		if(arr[i].substring(0,5).includes($year)) {
-// 	                			console.log(arr[i]);
-// 	                		}
+	                		var tmp = arr[i].toString().substr(0,4);
+	                		if(tmp.includes($year)) {
+	                			count++;
+	                		}
+	                	}
+	                	
+	                	str += "<option value='1'>1학기</option>";
+	                	if(count==2) {
+	                		str += "<option value='2'>2학기</option>";
+	                	}
+	                	$("#term").empty();
+	                	$("#term").append(str);
+	                	selectCategory();
+	                }
+	                
+	                function prevTerm() { // 마지막 학기일 경우 alert, 2학기->1학기, 1학기 -> 이전 년도 2학기
+	                	var $thisYear = $("select[name=year]");
+	                	var $term = $("select[name=term]");
+	                
+	                	if(($thisYear.children().last().val() == $thisYear.val()) && ($term.children().first().val() == $term.val())) { // 마지막 학기
+	                		alert("조회 내용이 없습니다.");
+	                	}
+	                	else {
+		                	if($term.val() == 1) { // 이전 년도 2학기로 바꿔야함
+		                		var $index = $thisYear.children("option:selected").index();
+		                		$thisYear.children().eq($index+1).prop("selected", true).change();
+	                			$term.children().last().prop("selected", true).change();
+		                	}
+		                	else { // 같은 년도 1학기로 바꿔야함
+		                		$term.children().first().prop("selected", true).change();
+		                	}
+	                	}
+	                }
+	                
+	                function nextTerm() { // 마지막 학기일 경우 alert, 1학기 -> 2학기, 2학기 -> 다음 년도 1학기
+	                	var $thisYear = $("select[name=year]");
+	                	var $term = $("select[name=term]");
+	                	
+	                	if(($thisYear.children().first().val() == $thisYear.val()) && ($term.children().last().val() == $term.val())) { // 마지막 학기
+	                		alert("조회 내용이 없습니다.");
+	                	}
+	                	else {
+		                	if($term.val() == 2) { // 다음 년도 1학기로 바꿔야함
+		                		var $index = $thisYear.children("option:selected").index();
+		                		$thisYear.children().eq($index-1).prop("selected", true).change();
+	                			$term.children().first().prop("selected", true).change();
+		                	}
+		                	else { // 같은 년도 2학기로 바꿔야함
+		                		$term.children().last().prop("selected", true).change();
+		                	}
 	                	}
 	                }
 	
@@ -237,6 +322,44 @@
 	                    }
 	                    else if($('#elective').is(':checked')) {
 	                        $(".content_elective").css("display", "block");
+	                        
+	                        $.ajax({
+	                        	url: "selectElective.me",
+	                        	data: {
+	                        		year: $("#year").val(),
+	                				term: $("#term").val()
+	                        	},
+	                        	success: function(cList) {
+	                        		if(cList != "") {
+	                        			var str = "";
+	                					for(var i=0;i<cList.length;i++) {
+		                					str += "<tr>";
+		                					if(cList[i].fileNo == 0) {
+		                						str += "<td style='border-left: 0;'></td>";
+		                					}
+		                					else { // 클릭하면 강의계획서 볼 수 있게
+		                						str += "<td style='border-left: 0;'><i class='fa-solid fa-file-pdf fa-sm' style='color: #7cd7fe;'></i></td>";
+		                					}
+	                						 str += "<td>" + cList[i].classNo + "</td>"
+	                						 + "<td>" + cList[i].className + "</td>"
+	                						 + "<td>" + cList[i].professorNo + "</td>"
+	                						 + "<td>" + cList[i].credit + "</td>"
+	                						 + "<td>" + cList[i].classNos + "</td>"
+	                						 + "<td>" + cList[i].classNos + "</td>" // 여석 계산**********************
+	                						 + "<td>" + cList[i].day + " " + cList[i].period + " (" + cList[i].classroom + ")" + "</td>"
+		                				}
+		                				$("#class-table-tbody2").empty();
+		                				$("#class-table-tbody2").append(str);
+	                				}
+	                				else {
+	                					$("#class-table-tbody2").empty();
+	                					$("#class-table-tbody2").append("<td colspan='8' style='border: 0;''>해당 테이블에 데이터가 없습니다.</td>");
+	                				}
+	                        	},
+	                        	error: function() {
+	                        		console.log("통신 오류");
+	                        	}
+	                        })
 	                    }
 	                    else if($('#search_pro').is(':checked')) {
 	                        $(".content_searchPro").css("display", "block");
@@ -273,7 +396,7 @@
 	                	
 	                	if($department != "") {
 	                		$.ajax({
-	                			url: "selectDepartmentMajor.st",
+	                			url: "selectDepartmentMajor.me",
 	                			data: {
 	                				department: $department,
 	                				year: $("#year").val(),
@@ -304,6 +427,8 @@
 	                				}
 	                				else {
 	                					alert("검색 결과가 없습니다.");
+	                					$("#class-table-tbody").empty();
+	                					$("#class-table-tbody").append("<td colspan='10' style='border: 0;''>해당 테이블에 데이터가 없습니다.</td>");
 	                				}
 	                			},
 	                			error: function() {

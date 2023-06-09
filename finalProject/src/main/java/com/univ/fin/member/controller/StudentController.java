@@ -65,20 +65,5 @@ public class StudentController {
 		return mv;
 	}
 
-	// 수강신청 - 강의시간표 -> 단과대학별 전공 조회
-	@ResponseBody 
-	@RequestMapping(value = "selectDepart.me", produces = "application/json; charset=UTF-8;")
-	public String selectDepartment(String college) {
-		ArrayList<String> dList = memberService.selectDepertment(college);
-		return new Gson().toJson(dList);
-	}
-	
-	// 수강신청 - 강의시간표 -> 전공 선택 후 전공수업 조회
-	@ResponseBody
-	@RequestMapping(value = "selectDepartmentMajor.st", produces = "application/json; charset=UTF-8;")
-	public String selectDepartmentMajor(@RequestParam HashMap<String,String> map) {
-		ArrayList<Classes> cList = memberService.selectDepartmentMajor(map);
-		return new Gson().toJson(cList);
-	}
 	
 }

@@ -1,5 +1,8 @@
 package com.univ.fin.member.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.Cookie;
@@ -16,11 +19,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.template.Sms;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
@@ -397,6 +402,31 @@ public class MemberController {
 		}
 		
 		return new Gson().toJson(result);
+	}
+
+	// 강의시간표 -> 단과대학별 전공 조회
+	@ResponseBody 
+	@RequestMapping(value = "selectDepart.me", produces = "application/json; charset=UTF-8;")
+	public String selectDepartment(String college) {
+		ArrayList<String> dList = memberService.selectDepertment(college);
+		return new Gson().toJson(dList);
+	}
+	
+	// 강의시간표 -> 전공 선택 후 전공수업 조회
+	@ResponseBody
+	@RequestMapping(value = "selectDepartmentMajor.me", produces = "application/json; charset=UTF-8;")
+	public String selectDepartmentMajor(@RequestParam HashMap<String,String> map) {
+		ArrayList<Classes> cList = memberService.selectDepartmentMajor(map);
+		return new Gson().toJson(cList);
+	}
+	
+	// 강의시간표 -> 교양수업 조회
+	@ResponseBody
+	@RequestMapping(value = "selectElective.me", produces = "application/json; charset=UTF-8;")
+	public String selectElective(@RequestParam HashMap<String,String> map) {
+		System.out.println("*****************************" + map);
+		ArrayList<Classes> cList = memberService.selectElective(map);
+		return new Gson().toJson(cList);
 	}
 
 }
