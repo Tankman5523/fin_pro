@@ -56,9 +56,9 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.changePwd2", pr);
 	}
 
-	//수강신청 - 수강신청 (학부전공별 조회)
-	public ArrayList<RegisterClass> majorClass(SqlSessionTemplate sqlSession, String departmentName) {
-		return (ArrayList)sqlSession.selectList("memberMapper.majorClass", departmentName);
+	//수강신청 - 수강신청
+	public ArrayList<RegisterClass> majorClass(SqlSessionTemplate sqlSession, RegisterClass rc2) {
+		return (ArrayList)sqlSession.selectList("memberMapper.majorClass", rc2);
 	}
 	
 	// 강의시간표 -> 학년도,학기 조회

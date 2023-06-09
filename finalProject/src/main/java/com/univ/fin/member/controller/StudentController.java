@@ -45,12 +45,22 @@ public class StudentController {
 		return new Gson().toJson(list);
 	}
 	
-	//수강신청 - 수강신청 (학부전공별 조회)
+	//수강신청 - 수강신청
 	@ResponseBody
 	@RequestMapping(value="majorClass.st",produces = "application/json; charset=UTF-8")
-	public String majorClassList(String departmentName) {
+	public String majorClassList(@RequestParam(value="departmentName",defaultValue = "교양")String departmentName,RegisterClass rc) {
 		
-		ArrayList<RegisterClass> list = memberService.majorClass(departmentName);
+		String term = String.valueOf(rc.getClassTerm().charAt(0));
+		
+		RegisterClass rc2 = RegisterClass.builder()
+										 .classYear(rc.getClassYear())
+										 .classTerm(term)
+										 .departmentName(departmentName)
+										 .professorName(rc.getProfessorName())
+										 .className(rc.getClassName())
+										 .build();
+		
+		ArrayList<RegisterClass> list = memberService.majorClass(rc2);
 		
 		return new Gson().toJson(list);
 	}

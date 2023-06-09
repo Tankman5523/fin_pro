@@ -94,11 +94,11 @@ public class MemberServiceImpl implements MemberService{
 		return result;
 	}
 
-	//수강신청 - 수강신청 (학부전공별 조회)
+	//수강신청 - 수강신청
 	@Override
-	public ArrayList<RegisterClass> majorClass(String departmentName) {
+	public ArrayList<RegisterClass> majorClass(RegisterClass rc2) {
 		
-		ArrayList<RegisterClass> list = memberDao.majorClass(sqlSession,departmentName);
+		ArrayList<RegisterClass> list = memberDao.majorClass(sqlSession,rc2);
 		
 		return list;
 	}
