@@ -94,33 +94,40 @@ public class MemberServiceImpl implements MemberService{
 		return result;
 	}
 
-	//수강신청 - 수강신청 (학부전공별 조회)
+	//수강신청 - 수강신청
 	@Override
-	public ArrayList<RegisterClass> majorClass(String departmentName) {
+	public ArrayList<RegisterClass> majorClass(RegisterClass rc2) {
 		
-		ArrayList<RegisterClass> list = memberDao.majorClass(sqlSession,departmentName);
+		ArrayList<RegisterClass> list = memberDao.majorClass(sqlSession,rc2);
 		
 		return list;
 	}
 	
-	// 수강신청 - 강의시간표 -> 학년도,학기 조회
+	// 강의시간표 -> 학년도,학기 조회
 	@Override
 	public ArrayList<String> selectClassTerm() {
 		ArrayList<String> classTerm = memberDao.selectClassTerm(sqlSession);
 		return classTerm;
 	}
 	
-	// 수강신청 - 강의시간표 -> 단과대학별 전공 조회
+	// 강의시간표 -> 단과대학별 전공 조회
 	@Override
 	public ArrayList<String> selectDepertment(String college) {
 		ArrayList<String> dList = memberDao.selectDepartment(sqlSession, college);
 		return dList;
 	}
 
-	// 수강신청 - 강의시간표 -> 전공 선택 후 전공수업 조회
+	// 강의시간표 -> 전공 선택 후 전공수업 조회
 	@Override
 	public ArrayList<Classes> selectDepartmentMajor(HashMap<String, String> map) {
 		ArrayList<Classes> cList = memberDao.selectDepartmentMajor(sqlSession, map);
+		return cList;
+	}
+
+	// 강의시간표 -> 교양수업 조회
+	@Override
+	public ArrayList<Classes> selectElective(HashMap<String, String> map) {
+		ArrayList<Classes> cList = memberDao.selectElective(sqlSession, map);
 		return cList;
 	}
 
@@ -132,5 +139,36 @@ public class MemberServiceImpl implements MemberService{
 		
 		return list;
 	}
+
+	// 강의시간표 -> 교수명 검색/과목 검색
+	@Override
+	public ArrayList<Classes> searchClassKeyword(HashMap<String, String> map) {
+		ArrayList<Classes> cList = memberDao.searchClassKeyword(sqlSession, map);
+		return cList;
+	}
 	
+	//학적정보 수정 -학생
+	@Override
+	public int updateStudent(Student st) {
+			
+		int result = memberDao.updateStudent(sqlSession,st);
+			
+		return result;
+	}
+
+	@Override
+	public int updateProfessor(Professor pr) {
+		
+		int result = memberDao.updateProfessor(sqlSession,pr);
+		
+		return result;
+	}
+
+	@Override
+	public int insertStudent(Student st) {
+		
+		int result = memberDao.insertStudent(sqlSession,st);
+		
+		return result;
+	}
 }
