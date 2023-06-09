@@ -8,11 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.univ.fin.common.model.vo.Classes;
+import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.member.model.dao.MemberDao;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
-
-import lombok.RequiredArgsConstructor;
 
 @Service
 public class MemberServiceImpl implements MemberService{
@@ -95,11 +94,11 @@ public class MemberServiceImpl implements MemberService{
 		return result;
 	}
 
-	//수강신청 - 학부전공별 조회
+	//수강신청 - 수강신청 (학부전공별 조회)
 	@Override
-	public ArrayList<Classes> majorClass(String departmentName) {
+	public ArrayList<RegisterClass> majorClass(String departmentName) {
 		
-		ArrayList<Classes> list = memberDao.majorClass(sqlSession,departmentName);
+		ArrayList<RegisterClass> list = memberDao.majorClass(sqlSession,departmentName);
 		
 		return list;
 	}
@@ -122,6 +121,13 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public ArrayList<Classes> selectDepartmentMajor(HashMap<String, String> map) {
 		ArrayList<Classes> cList = memberDao.selectDepartmentMajor(sqlSession, map);
+		return cList;
+	}
+
+	// 강의시간표 -> 교양수업 조회
+	@Override
+	public ArrayList<Classes> selectElective(HashMap<String, String> map) {
+		ArrayList<Classes> cList = memberDao.selectElective(sqlSession, map);
 		return cList;
 	}
 

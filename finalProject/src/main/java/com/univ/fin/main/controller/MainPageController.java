@@ -26,9 +26,9 @@ public class MainPageController {
 		return "main/haksaSchedule";
 	}
 	
-	@GetMapping("noticeBoard.mp")
+	@GetMapping("notice.mp")
 	public String noticeBoard() {
-		return "main/noticeBoard";
+		return "main/notice";
 	}
 	
 	@GetMapping("infoSystem.mp")

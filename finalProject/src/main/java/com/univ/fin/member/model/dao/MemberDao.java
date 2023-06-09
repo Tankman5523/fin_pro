@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Department;
+import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 
@@ -55,8 +56,8 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.changePwd2", pr);
 	}
 
-	//수강신청 - 학부전공별 조회
-	public ArrayList<Classes> majorClass(SqlSessionTemplate sqlSession, String departmentName) {
+	//수강신청 - 수강신청 (학부전공별 조회)
+	public ArrayList<RegisterClass> majorClass(SqlSessionTemplate sqlSession, String departmentName) {
 		return (ArrayList)sqlSession.selectList("memberMapper.majorClass", departmentName);
 	}
 	
@@ -70,7 +71,7 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectDepartment", college);
 	}
 
-	// 수강신청 - 강의시간표 -> 전공 선택 후 전공수업 조회
+	// 강의시간표 -> 전공 선택 후 전공수업 조회
 	public ArrayList<Classes> selectDepartmentMajor(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectDepartmentMajor", map);
 	}
@@ -83,21 +84,27 @@ public class MemberDao {
 		System.out.println(d);
 		return (ArrayList)sqlSession.selectList("memberMapper.selectDepartProList",d);
 	}
+
+	// 강의시간표 -> 교양수업 조회
+	public ArrayList<Classes> selectElective(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectElective", map);
+	}
 	
 	//학적정보 수정 - 학생
-	public int updateStudent(SqlSessionTemplate sqlSession, Student st) {
+		public int updateStudent(SqlSessionTemplate sqlSession, Student st) {
 
-		return sqlSession.update("memberMapper.updateStudent",st);
-	}
+			return sqlSession.update("memberMapper.updateStudent",st);
+		}
 
-	public int updateProfessor(SqlSessionTemplate sqlSession, Professor pr) {
-		
-		return sqlSession.update("memberMapper.updateProfessor",pr);
-	}
+		public int updateProfessor(SqlSessionTemplate sqlSession, Professor pr) {
+			
+			return sqlSession.update("memberMapper.updateProfessor",pr);
+		}
 
-	public int insertStudent(SqlSessionTemplate sqlSession, Student st) {
+		public int insertStudent(SqlSessionTemplate sqlSession, Student st) {
 
-		return sqlSession.insert("memberMapper.insertMapper",st);
-	}
+			return sqlSession.insert("memberMapper.insertMapper",st);
+		}
+
 
 }

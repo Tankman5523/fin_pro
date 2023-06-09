@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>학사소개 : Feasible University</title>
 <link rel="stylesheet" href="/fin/resources/css/haksaInfo.css">
 </head>
 <body>
@@ -139,7 +139,7 @@
 					<img src="resources/icon/yesul.jpg">
 					
 					<p align="center" style="font-size: 15px; margin: 30px 0;">
-						민족의 정통성 창달과 세계화 선도의 주역
+						우리나라 산업과 예술, 문화계의 현장을 주도
 					</p>
 					
 					<table class="haksa-table">

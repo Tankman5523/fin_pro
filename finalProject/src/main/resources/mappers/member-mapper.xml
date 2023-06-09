@@ -82,7 +82,7 @@
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
   		SELECT STUDENT_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,FILE_NO,STUDENT_NAME,STUDENT_PWD,
-               ENTRANCE_DATE,GRADUATION_DATE,CLASS_LEVEL,PHONE,EMAIL,POST,ADDRESS
+               ENTRANCE_DATE,GRADUATION_DATE,CLASS_LEVEL,PHONE,EMAIL,POST,ADDRESS,STATUS
   		FROM STUDENT S
   		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO) 
         JOIN COLLEGE C ON (S.COLLEGE_NO = C.COLLEGE_NO)
@@ -92,7 +92,7 @@
   	<!-- 임직원 로그인 -->
   	<select id="loginProfessor" parameterType="professor" resultMap="loginProfessorMap">
   		SELECT PROFESSOR_NO,FILE_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,PROFESSOR_NAME
-  			  ,PROFESSOR_PWD,POSITION,ENTRANCE_DATE,PHONE,EMAIL,POST,ADDRESS,ACCOUNT_NO,ADMIN
+  			  ,PROFESSOR_PWD,POSITION,ENTRANCE_DATE,PHONE,EMAIL,POST,ADDRESS,ACCOUNT_NO,ADMIN,STATUS
   		FROM PROFESSOR P
         JOIN DEPARTMENT D ON (P.DEPARTMENT_NO = D.DEPARTMENT_NO)
         JOIN COLLEGE C ON (P.COLLEGE_NO = C.COLLEGE_NO)
@@ -160,8 +160,8 @@
 		                    WHERE COLLEGE_NAME = #{college})
   	</select>
   	
-  	<!-- 수강신청 - 학부전공별 조회 -->
-  	<select id="majorClass" parameterType="classes" resultMap="registerClassMap">
+  	<!-- 수강신청 - 수강신청 (학부전공별 조회) -->
+  	<select id="majorClass" parameterType="registerClass" resultMap="registerClassMap">
   		SELECT COLLEGE_NAME,CLASS_NO,CLASS_NAME,PROFESSOR_NAME,DEPARTMENT_NAME
         ,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR",CLASS_NOS
         ,(DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
@@ -178,8 +178,8 @@
 		ORDER BY CLASS_NO
   	</select>
   	
-  	  	<select id="selectDepartmentMajor" parameterType="hashmap" resultMap="classResultMap">
-  		SELECT CLASS_NO, PROFESSOR_NAME, DEPARTMENT_NAME, C.FILE_NO, CLASS_NAME, CLASS_LEVEL, CLASS_YEAR, CLASSROOM
+  	<select id="selectDepartmentMajor" parameterType="hashmap" resultMap="classResultMap">
+  		SELECT CLASS_NO, PROFESSOR_NAME, DEPARTMENT_NAME, C.FILE_NO, CLASS_NAME, CLASS_LEVEL, CLASS_YEAR, CLASS_TERM, CLASSROOM
   				, DECODE(DAY, '1', '월', '2', '화', '3', '수', '4', '목', '5', '금') AS DAY
   				, DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)||':00 ~ '||(DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)+CLASS_HOUR)||':00' AS PERIOD
   				, CLASS_HOUR, CLASS_NOS, EXPLAIN, CREDIT, DIVISION, C.STATUS
@@ -197,6 +197,17 @@
   		SELECT CLASS_YEAR||'0'||CLASS_TERM
 		FROM CLASS
 		GROUP BY CLASS_YEAR, CLASS_TERM
+  	</select>
+  	
+  	<select id="selectElective" parameterType="hashmap" resultMap="classResultMap">
+  		SELECT CLASS_NO, C.FILE_NO, PROFESSOR_NAME, CLASS_NAME, CLASS_YEAR, CLASS_TERM, CLASSROOM
+  				, DECODE(DAY, '1', '월', '2', '화', '3', '수', '4', '목', '5', '금') AS DAY
+  				, DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)||':00 ~ '||(DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)+CLASS_HOUR)||':00' AS PERIOD
+  				, CLASS_HOUR, CLASS_NOS, EXPLAIN, CREDIT, DIVISION, C.STATUS
+		FROM CLASS C
+		LEFT JOIN PROFESSOR P USING(PROFESSOR_NO)
+		WHERE DIVISION = '1' AND CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND C.STATUS = 'Y'
+		ORDER BY CLASS_NAME
   	</select>
   	
   	<!-- 학과명으로 확과번호 조회 -->
