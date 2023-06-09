@@ -225,7 +225,7 @@ body {
 
 .faq_content{
 	width: 400px;
-	height: 400px;
+	height: 230px;
 	background-color: white;
 	color: black;
 	margin: auto;
@@ -236,9 +236,100 @@ body {
 	cursor: pointer;
 }
 
+.thumb_title{
+	display: flex;
+	align-items: center;
+	height: 80px;
+	background-color: lightcoral;
+	margin: 0;
+	font-size: 25px;
+	padding: 0 10px;
+	color: 
+}
+.thumb_content{
+	height: 100px;
+	background-color: lightgreen;
+	margin: 0;
+	margin-top: 10px;
+	font-size: 22px;
+	padding: 10px;
+	display: -webkit-box;
+ 	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	overflow: hidden;
+}
 
+
+/*=================공지사항 영역 설정=================*/
 .notice_area{
-	width: 100%;
-	height: 500px;
-	background-color: white;
+	width: 80%;
+	height: 1000px;
+	margin: auto;
+	border: 1px solid lightcoral;
+}
+.notice_area p{
+	font-size: 40px;
+	text-align: center;
+}
+
+.notice_table {
+	margin: 50px auto;
+	width: 1200px;
+	text-align: center;
+	border-collapse: collapse;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+}
+.notice_table th {
+	background-color: #ddd;
+	height: 50px;
+}
+.notice_table td {
+	height: 50px;
+}
+
+/*=================검색창 설정=================*/
+#searchForm{
+	widht: 800px;
+	margin: 50px 0;
+}
+#searchForm>select{
+	width: 120px;
+	height: 36px;
+	text-align: center;
+	margin: 0 10px;
+	border-radius: 5px;
+	border: 1px solid #c0c0c0;
+}
+#searchForm>select:focus{
+	outline: none;
+}
+#searchForm>label{
+	position: relative;
+}
+#searchForm>label>input{
+	width: 300px;
+	height: 32px;
+	margin-left: 10px;
+	padding-left: 10px;
+	padding-right: 50px;
+	border-radius: 5px;
+	border: 1px solid #c0c0c0;
+}
+#searchForm>label>input:focus{
+	outline: none;
+}
+#searchForm>label>button{
+	position: absolute;
+	width: 50px;
+	height: 35.5px;
+	z-index: 1;
+	margin-left: -50px;
+	border-radius: 0 5px 5px 0;
+	border: 1px solid #c0c0c0;
+}
+#searchForm>label>button:hover{
+	background-color: #0091EA;
+	color: white;
+	border: none;
 }
