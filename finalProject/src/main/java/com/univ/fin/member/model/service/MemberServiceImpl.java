@@ -103,21 +103,21 @@ public class MemberServiceImpl implements MemberService{
 		return list;
 	}
 	
-	// 수강신청 - 강의시간표 -> 학년도,학기 조회
+	// 강의시간표 -> 학년도,학기 조회
 	@Override
 	public ArrayList<String> selectClassTerm() {
 		ArrayList<String> classTerm = memberDao.selectClassTerm(sqlSession);
 		return classTerm;
 	}
 	
-	// 수강신청 - 강의시간표 -> 단과대학별 전공 조회
+	// 강의시간표 -> 단과대학별 전공 조회
 	@Override
 	public ArrayList<String> selectDepertment(String college) {
 		ArrayList<String> dList = memberDao.selectDepartment(sqlSession, college);
 		return dList;
 	}
 
-	// 수강신청 - 강의시간표 -> 전공 선택 후 전공수업 조회
+	// 강의시간표 -> 전공 선택 후 전공수업 조회
 	@Override
 	public ArrayList<Classes> selectDepartmentMajor(HashMap<String, String> map) {
 		ArrayList<Classes> cList = memberDao.selectDepartmentMajor(sqlSession, map);
@@ -138,6 +138,13 @@ public class MemberServiceImpl implements MemberService{
 		ArrayList<Professor> list = memberDao.selectDepartProList(sqlSession,departmentNo);
 		
 		return list;
+	}
+
+	// 강의시간표 -> 교수명 검색/과목 검색
+	@Override
+	public ArrayList<Classes> searchClassKeyword(HashMap<String, String> map) {
+		ArrayList<Classes> cList = memberDao.searchClassKeyword(sqlSession, map);
+		return cList;
 	}
 	
 	//학적정보 수정 -학생
