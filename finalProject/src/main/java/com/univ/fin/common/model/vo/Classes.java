@@ -19,8 +19,8 @@ public class Classes {
 	private String classYear;
 	private String classTerm;
 	private String classroom;
-	private String day;
-	private String period;
+	private int day;
+	private int period;
 	private int classHour;
 	private int classNos;
 	private String explain;

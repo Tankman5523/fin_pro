@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class RegisterClass {
 	private String collegeName;		// 단과대학명
 	private int classNo;			// 강의번호
-	private String className;		// 강의명
+	private String className;
 	private String professorName;	// 교수명
 	private String departmentName;  // 학과명
 	private String creditHour; 		// 시간+학점
