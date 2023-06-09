@@ -113,6 +113,13 @@ public class MemberController {
 		return mv;
 	}
 	
+	//로그아웃 메소드
+	@GetMapping("logout.me")
+	public String logoutUser(HttpSession session) {
+		session.removeAttribute("loginUser");
+		return "redirect:infoSystem.mp";
+	}
+	
 	//ID찾기 폼 메소드
 	@RequestMapping("searchIdForm.me")
 	public String searchIdForm(int num,Model model) {

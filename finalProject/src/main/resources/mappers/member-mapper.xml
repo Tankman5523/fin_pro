@@ -160,7 +160,7 @@
 		                    WHERE COLLEGE_NAME = #{college})
   	</select>
   	
-  	<!-- 수강신청 - 수강신청 (학부전공별 조회) -->
+  	<!-- 수강신청 - 수강신청 -->
   	<select id="majorClass" parameterType="registerClass" resultMap="registerClassMap">
   		SELECT COLLEGE_NAME,CLASS_NO,CLASS_NAME,PROFESSOR_NAME,DEPARTMENT_NAME
         ,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR",CLASS_NOS
@@ -174,7 +174,19 @@
 		JOIN COLLEGE CO ON (D.COLLEGE_NO = CO.COLLEGE_NO)
 		JOIN PROFESSOR P ON (P.PROFESSOR_NO = C.PROFESSOR_NO)
 		WHERE C.STATUS = 'Y'
-		AND DEPARTMENT_NAME = #{departmentName}
+		AND CLASS_YEAR = #{classYear}
+		AND CLASS_TERM = #{classTerm}
+		<choose>
+			<when test="professorName != ''">
+				AND PROFESSOR_NAME LIKE '%'||#{professorName}||'%'
+			</when>
+			<when test="className != ''">
+				AND CLASS_NAME LIKE '%'||#{className}||'%'
+			</when>
+			<otherwise>
+				AND DEPARTMENT_NAME = #{departmentName}
+			</otherwise>
+		</choose>
 		ORDER BY CLASS_NO
   	</select>
   	
