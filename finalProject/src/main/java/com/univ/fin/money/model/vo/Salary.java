@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class Salary {
 	private int payNo;
 	private String professorNo;
-	private Date paymentDate;
+	private String paymentDate;
 	
 	private int basePay; //기본급
 	private int positionPay; //직책수당

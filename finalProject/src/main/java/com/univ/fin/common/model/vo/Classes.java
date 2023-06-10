@@ -23,6 +23,7 @@ public class Classes {
 	private String period;
 	private int classHour;
 	private int classNos;
+	private int spareNos; // 여석
 	private String explain;
 	private int credit;
 	private int division;

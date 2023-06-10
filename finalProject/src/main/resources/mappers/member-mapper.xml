@@ -53,6 +53,7 @@
   		<result column="PERIOD" property="period"/>
   		<result column="CLASS_HOUR" property="classHour"/>
   		<result column="CLASS_NOS" property="classNos"/>
+  		<result column="SPARE_NOS" property="spareNos"/>
   		<result column="EXPLAIN" property="explain"/>
   		<result column="CREDIT" property="credit"/>
   		<result column="DIVISION" property="division"/>
@@ -183,10 +184,15 @@
   		SELECT CLASS_NO, PROFESSOR_NAME, DEPARTMENT_NAME, C.FILE_NO, CLASS_NAME
   				, DECODE(CLASS_LEVEL, '0', '전체학년', '1', '1학년', '2', '2학년', '3', '3학년', '4', '4학년') AS CLASS_LEVEL
   				, CLASS_YEAR, CLASS_TERM, CLASSROOM
-  				, DECODE(DAY, '1', '월', '2', '화', '3', '수', '4', '목', '5', '금') AS DAY
-  				, DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)||':00 ~ '||(DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)+CLASS_HOUR)||':00' AS PERIOD
-  				, CLASS_HOUR, CLASS_NOS, EXPLAIN, CREDIT, DIVISION, C.STATUS
-		FROM CLASS C
+  				, DECODE(C.DAY, '1', '월', '2', '화', '3', '수', '4', '목', '5', '금') AS DAY
+  				, DECODE(C.PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)||':00 ~ '||(DECODE(C.PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)+CLASS_HOUR)||':00' AS PERIOD
+  				, CLASS_HOUR, CLASS_NOS
+                , CLASS_NOS - NVL(A.COUNT_CLASS,0) AS SPARE_NOS
+                , EXPLAIN, CREDIT, DIVISION, C.STATUS
+		FROM (SELECT CLASS_NO, COUNT(*) AS COUNT_CLASS
+		      FROM SCHEDULE
+		      GROUP BY CLASS_NO) A
+		RIGHT JOIN CLASS C USING(CLASS_NO)
 		LEFT JOIN PROFESSOR P USING(PROFESSOR_NO)
 		LEFT JOIN DEPARTMENT D ON(C.DEPARTMENT_NO = D.DEPARTMENT_NO)
 		WHERE C.DEPARTMENT_NO = (SELECT DEPARTMENT_NO
@@ -209,8 +215,13 @@
   				, DECODE(CLASS_LEVEL, '0', '전체학년', '1', '1학년', '2', '2학년', '3', '3학년', '4', '4학년') AS CLASS_LEVEL
   				, DECODE(DAY, '1', '월', '2', '화', '3', '수', '4', '목', '5', '금') AS DAY
   				, DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)||':00 ~ '||(DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)+CLASS_HOUR)||':00' AS PERIOD
-  				, CLASS_HOUR, CLASS_NOS, EXPLAIN, CREDIT, DIVISION, C.STATUS
-		FROM CLASS C
+  				, CLASS_HOUR, CLASS_NOS
+  				, CLASS_NOS - NVL(A.COUNT_CLASS,0) AS SPARE_NOS
+  				, EXPLAIN, CREDIT, DIVISION, C.STATUS
+		FROM (SELECT CLASS_NO, COUNT(*) AS COUNT_CLASS
+		      FROM SCHEDULE
+		      GROUP BY CLASS_NO) A
+		RIGHT JOIN CLASS C USING(CLASS_NO)
 		LEFT JOIN PROFESSOR P USING(PROFESSOR_NO)
 		WHERE DIVISION = '1' AND CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND C.STATUS = 'Y'
 		ORDER BY CLASS_NAME
