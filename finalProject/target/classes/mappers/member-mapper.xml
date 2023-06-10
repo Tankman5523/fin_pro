@@ -281,7 +281,7 @@
   		INSERT INTO COUNSELING(COUNSEL_NO,STUDENT_NO,PROFESSOR_NO,REQUEST_DATE,COUNSEL_AREA,COUNSEL_CONTENT)
   		VALUES (SEQ_COUNO.NEXTVAL,#{studentNo},#{professorNo},#{requestDate},#{counselArea},#{counselContent})
   	</insert>
-  	
+
   	<!-- 상담 상세보기 -->
   	<select id="selectCounseling" resultMap="counselingMap">
   		SELECT *
