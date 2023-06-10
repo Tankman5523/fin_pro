@@ -42,10 +42,10 @@ public interface MemberService {
 	ArrayList<String> selectClassTerm();
 	
 	// 강의시간표 -> 단과대학별 전공 조회
-	ArrayList<String> selectDepertment(String college);
+	ArrayList<String> selectDepert(String college);
 
-	// 강의시간표 -> 전공 선택 후 전공수업 조회
-	ArrayList<Classes> selectDepartmentMajor(HashMap<String, String> map);
+	// 강의시간표 -> 전공 선택 후 전공수업 조회/교양수업 조회
+	ArrayList<Classes> selectDepartment(HashMap<String, String> map);
 
 	//상담관리 - 상담내역조회(학생)
 	ArrayList<Counseling> selectCounStuList(String studentNo);
@@ -64,11 +64,6 @@ public interface MemberService {
 	
 	//상담관리 - 상담 요청내용 수정(학생)
 	int updateCounContent(Counseling c);
-
-	// 강의시간표 -> 교양수업 조회
-	ArrayList<Classes> selectElective(HashMap<String, String> map);
-
-	
 
 	// 강의시간표 -> 교수명 검색/과목 검색
 	ArrayList<Classes> searchClassKeyword(HashMap<String, String> map);
