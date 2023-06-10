@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.univ.fin.common.model.vo.Classes;
+import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.member.model.dao.MemberDao;
 import com.univ.fin.member.model.vo.Professor;
@@ -140,6 +141,50 @@ public class MemberServiceImpl implements MemberService{
 		return list;
 	}
 
+	//상담신청 - 상담신청 작성
+	@Override
+	public int insertCounseling(Counseling c) {
+		
+		int result = memberDao.insertCounseling(sqlSession,c);
+		
+		return result;
+	}
+
+	//상담관리 - 상담내역 조회
+	@Override
+	public ArrayList<Counseling> selectCounStuList(String studentNo) {
+		
+		ArrayList<Counseling> list = memberDao.selectCounStuList(sqlSession,studentNo);
+		
+		return list;
+	}
+
+	//상담관리 - 상담 상세보기
+	@Override
+	public Counseling selectCounseling(int counselNo) {
+		
+		Counseling c = memberDao.selectCounseling(sqlSession,counselNo);
+		
+		return c;
+	}
+
+	//직번으로 교수정보 조회
+	@Override
+	public Professor selectProfessorForNo(String professorNo) {
+		
+		Professor p = memberDao.selectProfessorForNo(sqlSession,professorNo);
+		
+		return p;
+	}
+
+	//상담관리 - 상담 요청내용 수정(학생)
+	@Override
+	public int updateCounContent(Counseling c) {
+		
+		int result = memberDao.updateCounContent(sqlSession,c);
+		
+		return result;
+	}
 	// 강의시간표 -> 교수명 검색/과목 검색
 	@Override
 	public ArrayList<Classes> searchClassKeyword(HashMap<String, String> map) {

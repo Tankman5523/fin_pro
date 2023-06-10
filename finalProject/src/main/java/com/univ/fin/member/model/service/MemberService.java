@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.univ.fin.common.model.vo.Classes;
+import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
@@ -46,11 +47,28 @@ public interface MemberService {
 	// 강의시간표 -> 전공 선택 후 전공수업 조회
 	ArrayList<Classes> selectDepartmentMajor(HashMap<String, String> map);
 
+	//상담관리 - 상담내역조회(학생)
+	ArrayList<Counseling> selectCounStuList(String studentNo);
+	
+	//상담신청 - 학과별 교수 전부 조회
+	ArrayList<Professor> selectDepartProList(String departmentNo);
+
+	//상담신청 - 상담신청 작성
+	int insertCounseling(Counseling c);
+	
+	//상담관리 - 상담 상세보기(학생)
+	Counseling selectCounseling(int counselNo);
+	
+	//교수정보 조회(직번으로)
+	Professor selectProfessorForNo(String professorNo);
+	
+	//상담관리 - 상담 요청내용 수정(학생)
+	int updateCounContent(Counseling c);
+
 	// 강의시간표 -> 교양수업 조회
 	ArrayList<Classes> selectElective(HashMap<String, String> map);
 
-	//상담신청 - 학과별 교수 전부 조회
-	ArrayList<Professor> selectDepartProList(String departmentNo);
+	
 
 	// 강의시간표 -> 교수명 검색/과목 검색
 	ArrayList<Classes> searchClassKeyword(HashMap<String, String> map);
@@ -64,4 +82,5 @@ public interface MemberService {
 	// 회원추가 (학생)
 	int insertStudent(Student st);
 	
+
 }
