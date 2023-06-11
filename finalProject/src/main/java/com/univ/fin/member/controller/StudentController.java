@@ -10,12 +10,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.template.DepartmentCategory;
 import com.univ.fin.member.model.service.MemberService;
@@ -108,7 +110,13 @@ public class StudentController {
 	
 	//상담관리 - 상담조회페이지 이동
 	@RequestMapping("counselingList.st")
-	public String counselingList() {
+	public String counselingList(HttpSession session,Model m) {
+		
+		String studentNo =((Student)session.getAttribute("loginUser")).getStudentNo();
+		
+		ArrayList<Counseling> list = memberService.selectCounStuList(studentNo);
+		
+		m.addAttribute("list",list);
 		
 		return "member/student/st_counseling_list";
 	}
@@ -130,59 +138,111 @@ public class StudentController {
 	return new Gson().toJson(list);
 	} 
 	
-	//학적 정보조회 - 학생
-	@RequestMapping("infoStudent.me")
-	public String infoStudent() {		
+	//상담신청 - 상담신청 작성
+	@RequestMapping(value="insertCounseling.st",method =RequestMethod.POST)
+	public ModelAndView insertCounseling(Counseling c,ModelAndView mv) {
 		
-		return "member/student/infoStudent";
-	}
-	
-	//학적 정보수정 - 학생
-	@RequestMapping("updateStudent.me")
-	public ModelAndView updateStudent(Student st,
-									ModelAndView mv,
-									HttpSession session) {
-		int result = memberService.updateStudent(st);
-		
-		System.out.println("확인 : "+result);
+		int result = memberService.insertCounseling(c);
 		
 		if(result>0) {
-			//유저 정보갱신
-			Student loginUser = memberService.loginStudent(st);
-			session.setAttribute("loginUser", loginUser);
-			session.setAttribute("alertMsg", "수정 완료");
-			mv.setViewName("redirect:infoStudent.me");
-		}else { //정보변경실패
-			mv.addObject("errorMsg","수정 실패함요").setViewName("redirect:infoStudent.me");
+			mv.addObject("alertMsg", "상담신청 성공");
+			mv.setViewName("redirect:counselingList.st");
+		}else {
+			mv.addObject("errorMsg", "상담신청 실패");
+			mv.setViewName("common/errorPage");
+		}
+		return mv;
+	}
+	
+	//상담관리 - 상담 상세보기
+	@RequestMapping("stuCounDetail.st")
+	public String StudentcounDetail(int counselNo,Model m) {
+		
+		Counseling c = memberService.selectCounseling(counselNo);
+		
+		Professor p = memberService.selectProfessorForNo(c.getProfessorNo());
+		
+		m.addAttribute("c",c);
+		m.addAttribute("p",p);
+		
+		return "member/student/st_counseling_detail";
+	}
+	
+	
+	@RequestMapping(value="counselingUpdate.st",method =RequestMethod.POST)
+	public ModelAndView StuCounUpdate(Counseling c,ModelAndView mv) {
+		
+		
+		
+		int result = memberService.updateCounContent(c);
+		
+		if(result>0) {
+			mv.addObject("counselNo",c.getCounselNo());
+			mv.setViewName("redirect:stuCounDetail.st");
+		}else {
+			mv.addObject("errorMsg", "상담신청 실패");
+			mv.setViewName("common/errorPage");
 		}
 		
-	return mv;
-		
-	}
-
-	//학생등록 페이지
-	@RequestMapping("enrollStudent.me")
-	public String enrollStudent() {		
-		
-		return "member/student/enrollStudent";
+		return mv;
 	}
 	
-	//학생등록 페이지 등록
-	@RequestMapping("insertStudent.me")
-	public String insertStudent(Student st,
-								Model model,
-								HttpSession session) {
 	
-	int result = memberService.insertStudent(st);
+		//학적 정보조회 - 학생
+			@RequestMapping("infoStudent.me")
+			public String infoStudent() {		
+				
+				return "member/student/infoStudent";
+			}
+			
+			
+			//학적 정보수정 - 학생
+			@RequestMapping("updateStudent.me")
+			public ModelAndView updateStudent(Student st,
+											ModelAndView mv,
+											HttpSession session) {
+				int result = memberService.updateStudent(st);
+				
+				System.out.println("확인 : "+result);
+				
+				if(result>0) {
+					//유저 정보갱신
+					Student loginUser = memberService.loginStudent(st);
+					session.setAttribute("loginUser", loginUser);
+					session.setAttribute("alertMsg", "수정 완료");
+					mv.setViewName("redirect:infoStudent.me");
+				}else { //정보변경실패
+					mv.addObject("errorMsg","수정 실패함요").setViewName("redirect:infoStudent.me");
+				}
+				
+			return mv;
+				
+			}
+	
+			//학생등록 페이지
+			@RequestMapping("enrollStudent.me")
+			public String enrollStudent() {		
+				
+				return "member/student/enrollStudent";
+			}
+			
+			//학생등록 페이지 등록
+			@RequestMapping("insertStudent.me")
+			public String insertStudent(Student st,
+										Model model,
+										HttpSession session) {
+			
+			int result = memberService.insertStudent(st);
+				
+			if(result>0) {
+				session.setAttribute("alertMsg", "회원가입 성공");
+				return "redirect:enrollStudent";
+			}else {
+				model.addAttribute("errorMsg","회원가입 실패");
+			}
+			return "member/student/infoStudent";
+				
+			}
 		
-	if(result>0) {
-		session.setAttribute("alertMsg", "회원가입 성공");
-		return "redirect:enrollStudent";
-	}else {
-		model.addAttribute("errorMsg","회원가입 실패");
-	}
-	return "member/student/infoStudent";
-		
-	}
 	
 }

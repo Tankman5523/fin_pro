@@ -419,16 +419,16 @@ public class MemberController {
 	// 강의시간표 -> 단과대학별 전공 조회
 	@ResponseBody 
 	@RequestMapping(value = "selectDepart.me", produces = "application/json; charset=UTF-8;")
-	public String selectDepartment(String college) {
-		ArrayList<String> dList = memberService.selectDepertment(college);
+	public String selectDepart(String college) {
+		ArrayList<String> dList = memberService.selectDepert(college);
 		return new Gson().toJson(dList);
 	}
 
-	// 강의시간표 -> 전공 선택 후 전공수업 조회
+	// 강의시간표 -> 전공 선택 후 전공수업 조회/교양수업 조회
 	@ResponseBody
-	@RequestMapping(value = "selectDepartmentMajor.me", produces = "application/json; charset=UTF-8;")
-	public String selectDepartmentMajor(@RequestParam HashMap<String,String> map) {
-		ArrayList<Classes> cList = memberService.selectDepartmentMajor(map);
+	@RequestMapping(value = "selectDepartment.me", produces = "application/json; charset=UTF-8;")
+	public String selectDepartment(@RequestParam HashMap<String,String> map) {
+		ArrayList<Classes> cList = memberService.selectDepartment(map);
 		return new Gson().toJson(cList);
 	}
 
@@ -459,14 +459,6 @@ public class MemberController {
 		
 	return mv;
 		
-	}
-	
-	// 강의시간표 -> 교양수업 조회
-	@ResponseBody
-	@RequestMapping(value = "selectElective.me", produces = "application/json; charset=UTF-8;")
-	public String selectElective(@RequestParam HashMap<String,String> map) {
-		ArrayList<Classes> cList = memberService.selectElective(map);
-		return new Gson().toJson(cList);
 	}
 	
 	// 강의시간표 -> 교수명 검색/과목 검색

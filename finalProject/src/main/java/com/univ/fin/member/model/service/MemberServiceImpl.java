@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
+import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.member.model.dao.MemberDao;
 import com.univ.fin.member.model.vo.Professor;
@@ -131,22 +132,15 @@ public class MemberServiceImpl implements MemberService{
 	
 	// 강의시간표 -> 단과대학별 전공 조회
 	@Override
-	public ArrayList<String> selectDepertment(String college) {
-		ArrayList<String> dList = memberDao.selectDepartment(sqlSession, college);
+	public ArrayList<String> selectDepert(String college) {
+		ArrayList<String> dList = memberDao.selectDepart(sqlSession, college);
 		return dList;
 	}
 
-	// 강의시간표 -> 전공 선택 후 전공수업 조회
+	// 강의시간표 -> 전공 선택 후 전공수업 조회/교양수업 조회
 	@Override
-	public ArrayList<Classes> selectDepartmentMajor(HashMap<String, String> map) {
-		ArrayList<Classes> cList = memberDao.selectDepartmentMajor(sqlSession, map);
-		return cList;
-	}
-
-	// 강의시간표 -> 교양수업 조회
-	@Override
-	public ArrayList<Classes> selectElective(HashMap<String, String> map) {
-		ArrayList<Classes> cList = memberDao.selectElective(sqlSession, map);
+	public ArrayList<Classes> selectDepartment(HashMap<String, String> map) {
+		ArrayList<Classes> cList = memberDao.selectDepartment(sqlSession, map);
 		return cList;
 	}
 
@@ -159,6 +153,50 @@ public class MemberServiceImpl implements MemberService{
 		return list;
 	}
 
+	//상담신청 - 상담신청 작성
+	@Override
+	public int insertCounseling(Counseling c) {
+		
+		int result = memberDao.insertCounseling(sqlSession,c);
+		
+		return result;
+	}
+
+	//상담관리 - 상담내역 조회
+	@Override
+	public ArrayList<Counseling> selectCounStuList(String studentNo) {
+		
+		ArrayList<Counseling> list = memberDao.selectCounStuList(sqlSession,studentNo);
+		
+		return list;
+	}
+
+	//상담관리 - 상담 상세보기
+	@Override
+	public Counseling selectCounseling(int counselNo) {
+		
+		Counseling c = memberDao.selectCounseling(sqlSession,counselNo);
+		
+		return c;
+	}
+
+	//직번으로 교수정보 조회
+	@Override
+	public Professor selectProfessorForNo(String professorNo) {
+		
+		Professor p = memberDao.selectProfessorForNo(sqlSession,professorNo);
+		
+		return p;
+	}
+
+	//상담관리 - 상담 요청내용 수정(학생)
+	@Override
+	public int updateCounContent(Counseling c) {
+		
+		int result = memberDao.updateCounContent(sqlSession,c);
+		
+		return result;
+	}
 	// 강의시간표 -> 교수명 검색/과목 검색
 	@Override
 	public ArrayList<Classes> searchClassKeyword(HashMap<String, String> map) {
