@@ -7,6 +7,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Department;
 import com.univ.fin.common.model.vo.RegisterClass;
@@ -55,7 +56,17 @@ public class MemberDao {
 	public int changePwd2(SqlSessionTemplate sqlSession, Professor pr) {
 		return sqlSession.update("memberMapper.changePwd2", pr);
 	}
+	
+	//예비수강신청 - 중복체크
+	public int checkPre(SqlSessionTemplate sqlSession, Bucket b) {
+		return sqlSession.selectOne("memberMapper.checkPre", b);
+	}
 
+	//예비수강신청 - 수강담기
+	public int preRegisterClass(SqlSessionTemplate sqlSession, Bucket b) {
+		return sqlSession.insert("memberMapper.preRegisterClass", b);
+	}
+	
 	//수강신청 - 수강신청
 	public ArrayList<RegisterClass> majorClass(SqlSessionTemplate sqlSession, RegisterClass rc2) {
 		return (ArrayList)sqlSession.selectList("memberMapper.majorClass", rc2);
@@ -91,25 +102,27 @@ public class MemberDao {
 	}
 	
 	//학적정보 수정 - 학생
-		public int updateStudent(SqlSessionTemplate sqlSession, Student st) {
+	public int updateStudent(SqlSessionTemplate sqlSession, Student st) {
 
-			return sqlSession.update("memberMapper.updateStudent",st);
-		}
+		return sqlSession.update("memberMapper.updateStudent",st);
+	}
 
-		public int updateProfessor(SqlSessionTemplate sqlSession, Professor pr) {
-			
-			return sqlSession.update("memberMapper.updateProfessor",pr);
-		}
+	public int updateProfessor(SqlSessionTemplate sqlSession, Professor pr) {
+		
+		return sqlSession.update("memberMapper.updateProfessor",pr);
+	}
 
-		public int insertStudent(SqlSessionTemplate sqlSession, Student st) {
+	public int insertStudent(SqlSessionTemplate sqlSession, Student st) {
 
-			return sqlSession.insert("memberMapper.insertMapper",st);
-		}
+		return sqlSession.insert("memberMapper.insertMapper",st);
+	}
 
 	// 강의시간표 -> 교수명 검색/과목 검색
 	public ArrayList<Classes> searchClassKeyword(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
 		return (ArrayList)sqlSession.selectList("memberMapper.searchClassKeyword", map);
 	}
+
+
 
 
 }

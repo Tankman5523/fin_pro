@@ -3,6 +3,7 @@ package com.univ.fin.member.model.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.member.model.vo.Professor;
@@ -33,6 +34,12 @@ public interface MemberService {
 
 	//비밀번호 초기화 - 비밀번호 변경 메소드 (임직원)
 	int changePwd2(Professor pr);
+	
+	//예비수강신청 - 중복체크
+	int checkPre(Bucket b);
+	
+	//예비수강신청 - 수강담기
+	int preRegisterClass(Bucket b);
 
 	//수강신청 - 수강신청
 	ArrayList<RegisterClass> majorClass(RegisterClass rc2);
@@ -63,5 +70,6 @@ public interface MemberService {
 
 	// 회원추가 (학생)
 	int insertStudent(Student st);
+
 	
 }

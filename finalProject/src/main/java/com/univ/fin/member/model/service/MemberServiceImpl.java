@@ -7,6 +7,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.member.model.dao.MemberDao;
@@ -93,6 +94,24 @@ public class MemberServiceImpl implements MemberService{
 		
 		return result;
 	}
+	
+	//예비수강신청 - 중복체크
+	@Override
+	public int checkPre(Bucket b) {
+		
+		int chkClass = memberDao.checkPre(sqlSession,b);
+		
+		return chkClass;
+	}
+	
+	//예비수강신청 - 수강담기
+	@Override
+	public int preRegisterClass(Bucket b) {
+		
+		int result = memberDao.preRegisterClass(sqlSession,b);
+		
+		return result;
+	}
 
 	//수강신청 - 수강신청
 	@Override
@@ -171,4 +190,5 @@ public class MemberServiceImpl implements MemberService{
 		
 		return result;
 	}
+
 }

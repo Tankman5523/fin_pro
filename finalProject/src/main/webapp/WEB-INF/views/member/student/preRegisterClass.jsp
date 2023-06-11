@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>수강신청 : Feasible University</title>
+<title>예비수강신청 : Feasible University</title>
 <link rel="stylesheet" href="resources/css/registerClassForm.css">
 </head>
 <body>
@@ -19,7 +19,7 @@
                     <a href="classListView.st">강의시간표</a>
                 </div>
                 <div class="child_title">
-                    <a href="registerClassForm.st" style="color:#00aeff; font-weight: 550;">수강신청</a>
+                    <a href="registerClassForm.st">수강신청</a>
                 </div>
                 <div class="child_title">
                     <a href="#">수강취소</a>
@@ -28,12 +28,12 @@
                     <a href="#">수강신청 내역조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="preRegisterClass.st">예비수강신청</a>
+                    <a href="preRegisterClass.st" style="color:#00aeff; font-weight: 550;">예비수강신청</a>
                 </div>
             </div>
             <div id="content_1">
             	<div id="main_div">
-            		<p>담당자 문의 정보</p>
+            		<p>예비 수강신청 목록 조회</p>
             		<hr>
             		
             		<div id="sub_div1">
@@ -294,7 +294,7 @@
 													 +"<td>" + list[i].classNos + "</td>"
 													 +"<td>" + list[i].classInfo + "</td>"
 													 +"<td>" + list[i].classLevel + "</td>"
-													 +"<td><button>수강신청</button></td>"
+													 +"<td><button>수강담기</button></td>"
 													 +"</tr>";
 		            					}
 	            					}else{
@@ -317,11 +317,39 @@
 	            			});
             			}
             		}
+            		
+            		$(function(){
+            			/* 수강 담기 버튼 클릭시 */
+            			$(document).on("click",".mcTable>tbody>tr button",function(){
+            				//과목번호 추출
+            				var cno = $(this).closest("tr").children().eq(1).text();
+            				
+            				$.ajax({
+            					url : "preRegisterClass.st",
+            					type : "POST",
+            					data : {
+            						classNo : cno,
+            						studentNo : "${loginUser.studentNo}"
+            					},
+            					success : function(result){
+            						if(result >0){
+            							/* 예비수강신청 내역조회 함수 재요청 */
+            						}else{
+            							alert("예비수강신청이 실패하였습니다.");
+            						}
+            					},
+            					error : function(){
+            						console.log("예비수강신청 통신실패");
+            					}
+            				});
+            			});
+            		});
+            		
             		</script>
             	</div>
             	<div id="registered_area">
             		<div id="registered_list">
-            			<h3>수강신청 내역이 들어갈 공간</h3>
+            			<h3>예비수강신청 내역이 들어갈 공간</h3>
             		</div>
             	</div>
             </div>

@@ -61,8 +61,10 @@ public class MemberController {
 			
 			Student loginUser = memberService.loginStudent(st);
 			
-			if(loginUser != null) { //로그인 되었을때만 쿠키 생성 및 저장
-				
+			if(loginUser == null) { //로그인 되었을때만 쿠키 생성 및 저장
+				session.setAttribute("alertMsg", "잘못 입력하셨습니다. 다시 입력해주세요");
+				mv.setViewName("member/login");
+			}else {
 				Cookie cookie = null;
 				
 				if(saveId != null && saveId.equals("on")) {
@@ -74,10 +76,9 @@ public class MemberController {
 					cookie.setMaxAge(0);
 					response.addCookie(cookie);
 				}
+				session.setAttribute("loginUser", loginUser);
+				mv.setViewName("common/student_category");
 			}
-			
-			session.setAttribute("loginUser", loginUser);
-			mv.setViewName("common/student_category");
 			
 		}else if(userNo.charAt(0) == 'P'){ //임직원 로그인
 			
@@ -85,8 +86,10 @@ public class MemberController {
 			
 			Professor loginUser = memberService.loginProfessor(pr);
 			
-			if(loginUser != null) { //로그인 되었을때만 쿠키 생성 및 저장
-				
+			if(loginUser == null) { //로그인 되었을때만 쿠키 생성 및 저장
+				session.setAttribute("alertMsg", "잘못 입력하셨습니다. 다시 입력해주세요");
+				mv.setViewName("member/login");
+			}else {
 				Cookie cookie = null;
 				
 				if(saveId != null && saveId.equals("on")) {
@@ -98,18 +101,20 @@ public class MemberController {
 					cookie.setMaxAge(0);
 					response.addCookie(cookie);
 				}
+				
+				if(loginUser.getAdmin() == 1) { // 교수 로그인
+					
+					session.setAttribute("loginUser", loginUser);
+					mv.setViewName("common/professor_category");
+					
+				}else { // 관리자 로그인
+					
+					session.setAttribute("loginUser", loginUser);
+					mv.setViewName("common/admin_category");
+				}
+				
 			}
 			
-			if(loginUser.getAdmin() == 1) { // 교수 로그인
-				
-				session.setAttribute("loginUser", loginUser);
-				mv.setViewName("common/professor_category");
-				
-			}else { // 관리자 로그인
-				
-				session.setAttribute("loginUser", loginUser);
-				mv.setViewName("common/admin_category");
-			}
 		}else {
 			session.setAttribute("alertMsg", "잘못 입력하셨습니다. 다시 입력해주세요");
 			mv.setViewName("member/login");
