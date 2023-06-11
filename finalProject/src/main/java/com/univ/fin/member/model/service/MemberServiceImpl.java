@@ -113,22 +113,15 @@ public class MemberServiceImpl implements MemberService{
 	
 	// 강의시간표 -> 단과대학별 전공 조회
 	@Override
-	public ArrayList<String> selectDepertment(String college) {
-		ArrayList<String> dList = memberDao.selectDepartment(sqlSession, college);
+	public ArrayList<String> selectDepert(String college) {
+		ArrayList<String> dList = memberDao.selectDepart(sqlSession, college);
 		return dList;
 	}
 
-	// 강의시간표 -> 전공 선택 후 전공수업 조회
+	// 강의시간표 -> 전공 선택 후 전공수업 조회/교양수업 조회
 	@Override
-	public ArrayList<Classes> selectDepartmentMajor(HashMap<String, String> map) {
-		ArrayList<Classes> cList = memberDao.selectDepartmentMajor(sqlSession, map);
-		return cList;
-	}
-
-	// 강의시간표 -> 교양수업 조회
-	@Override
-	public ArrayList<Classes> selectElective(HashMap<String, String> map) {
-		ArrayList<Classes> cList = memberDao.selectElective(sqlSession, map);
+	public ArrayList<Classes> selectDepartment(HashMap<String, String> map) {
+		ArrayList<Classes> cList = memberDao.selectDepartment(sqlSession, map);
 		return cList;
 	}
 

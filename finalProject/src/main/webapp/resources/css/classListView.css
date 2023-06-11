@@ -1,0 +1,101 @@
+@charset "UTF-8";
+
+.b_line {
+    border: 0.5px solid lightgray;
+    margin: 20px 0px;
+}
+
+.page_title {
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-bottom: 0px;
+    font-weight: bold;
+}
+
+.selectTerm {
+    display: flex;
+    align-items: center;
+}
+
+.selectTerm * {
+    margin-left: 10px;
+}
+
+#selectList {
+    border-radius: 10px;
+}
+
+input[name=search_category] {
+    opacity: 0;
+    margin: 0 10px;
+}
+
+input[name=search_category]+label:hover {
+    cursor: pointer;
+}
+
+input[name=search_category]:checked+label {
+	font-weight: 550;
+    color:#00aeff;
+    border-bottom: 2px solid #00aeff;
+}
+
+div[class*=content] {
+    margin: 0 auto;
+    width: 100%;
+    height: 77%;
+    display: none;
+/*     overflow: hidden; */
+    padding-top: 15px;
+}
+
+.table-area, .table-area3, .table-area4 {
+	width: 100%;
+	height: 92%;
+	overflow: auto;
+}
+
+.table-area2 {
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+}
+
+table[id*=class] {
+	width: 100%;
+	text-align: center;
+	border-collapse: collapse;
+}
+
+table[id*=class]>thead {
+	background-color: #76D2FF;
+    position: sticky;
+    top: 0;
+}
+
+table[id*=class]>tbody>tr {
+	border-bottom: 0.5px solid gray;
+	height: 30px;
+}
+
+table[id*=class]>tbody>tr:not(.no-hover):hover {
+	background-color: #E0E0E0;
+	font-weight: 550;
+}
+
+table[id*=class] th, table[id*=class] td {
+	border-left: 1px solid gray;
+}
+
+.setting_div {
+	display: flex;
+	width: 100%;
+	height: 30px;
+}
+
+.setting_div * {
+	margin-left: 1%;
+	height: 100% !important;
+	justify-content: center;
+	line-height: 30px;
+}
