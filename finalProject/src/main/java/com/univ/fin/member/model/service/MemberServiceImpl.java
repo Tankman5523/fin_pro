@@ -95,6 +95,13 @@ public class MemberServiceImpl implements MemberService{
 		
 		return result;
 	}
+
+	//예비수강신청 - 수강조회
+	@Override
+	public ArrayList<RegisterClass> preClass(RegisterClass rc2) {
+		ArrayList<RegisterClass> list = memberDao.preClass(sqlSession,rc2);
+		return list;
+	}
 	
 	//예비수강신청 - 중복체크
 	@Override
@@ -113,7 +120,7 @@ public class MemberServiceImpl implements MemberService{
 		
 		return result;
 	}
-
+	
 	//수강신청 - 수강신청
 	@Override
 	public ArrayList<RegisterClass> majorClass(RegisterClass rc2) {

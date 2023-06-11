@@ -274,7 +274,8 @@
 	            					classTerm : $("#classTerm").val(),
 	            					departmentName : $("#departmentNo").val(),
 	            					professorName : $("#searchProfessor").val(),
-	            					className : $("#searchClass").val()
+	            					className : $("#searchClass").val(),
+	            					studentNo : "${loginUser.studentNo}"
 	            				},
 	            				success : function(list){
 	            					if(list.length !== 0){
@@ -291,7 +292,7 @@
 													 +"<td>" + list[i].professorName + "</td>"
 													 +"<td>" + list[i].departmentName + "</td>"
 													 +"<td>" + list[i].creditHour + "</td>"
-													 +"<td>" + list[i].classNos + "</td>"
+													 +"<td>" + list[i].preclassNos + "</td>"
 													 +"<td>" + list[i].classInfo + "</td>"
 													 +"<td>" + list[i].classLevel + "</td>"
 													 +"<td><button>수강담기</button></td>"

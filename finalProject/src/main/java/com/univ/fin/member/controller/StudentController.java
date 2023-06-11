@@ -84,9 +84,11 @@ public class StudentController {
 										 .departmentName(departmentName)
 										 .professorName(rc.getProfessorName())
 										 .className(rc.getClassName())
+										 .studentNo(rc.getStudentNo())
 										 .build();
 		
-		ArrayList<RegisterClass> list = memberService.majorClass(rc2);
+		ArrayList<RegisterClass> list = memberService.preClass(rc2);
+//		ArrayList<RegisterClass> list = memberService.majorClass(rc2);
 		
 		return new Gson().toJson(list);
 	}

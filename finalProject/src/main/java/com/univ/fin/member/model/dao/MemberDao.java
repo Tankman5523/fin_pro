@@ -58,6 +58,11 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.changePwd2", pr);
 	}
 	
+	//예비수강신청 - 수강조회
+	public ArrayList<RegisterClass> preClass(SqlSessionTemplate sqlSession, RegisterClass rc2) {
+		return (ArrayList)sqlSession.selectList("memberMapper.preClass", rc2);
+	}
+	
 	//예비수강신청 - 중복체크
 	public int checkPre(SqlSessionTemplate sqlSession, Bucket b) {
 		return sqlSession.selectOne("memberMapper.checkPre", b);
@@ -87,7 +92,6 @@ public class MemberDao {
 	public ArrayList<Classes> selectDepartment(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectDepartment", map);
 	}
-	
 	
 	//상담신청 - 학과별 교수 조회
 	@Transactional
@@ -146,8 +150,5 @@ public class MemberDao {
 	public ArrayList<Classes> searchClassKeyword(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
 		return (ArrayList)sqlSession.selectList("memberMapper.searchClassKeyword", map);
 	}
-
-
-
 
 }
