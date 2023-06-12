@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>수강신청 : Feasible University</title>
-<link rel="stylesheet" href="resources/css/registerClassForm.css">
+<link rel="stylesheet" href="resources/css/regClassForm.css">
 </head>
 <body>
     <div class="wrap">
@@ -319,9 +319,32 @@
             		}
             		</script>
             	</div>
-            	<div id="registered_area">
-            		<div id="registered_list">
-            			<h3>수강신청 내역이 들어갈 공간</h3>
+            	<div id="postRegistered_area">
+					<hr>
+	       			<div id="postReg_div">
+	       				수강신청 내역
+	       			</div>
+	        		<hr>
+            		<div id="postRegistered_list">
+						<table class="postMcTable" id="postRegisteredTable" border="1" >
+           					<thead>
+            					<tr>
+									<th>단과대학</th>
+						            <th>과목번호</th>
+						            <th>과목명</th>
+						            <th>교수명</th>
+						            <th>개설학과</th>
+						            <th>시간/학점</th>
+						            <th>수강인원</th>
+						            <th>강의시간(강의실)</th>
+						            <th>수강대상</th>
+						            <th>수강취소</th>
+					            </tr>
+           					</thead>
+           					<tbody>
+           						
+           					</tbody>
+           				</table>
             		</div>
             	</div>
             </div>

@@ -73,6 +73,17 @@ public class MemberDao {
 		return sqlSession.insert("memberMapper.preRegisterClass", b);
 	}
 	
+	//예비수강신청 - 장바구니 조회
+	public ArrayList<RegisterClass> preRegList(SqlSessionTemplate sqlSession, String studentNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.preRegList", studentNo);
+	}
+	
+	//예비수강신청 - 장바구니 수강취소
+	public int delPreRegList(SqlSessionTemplate sqlSession, RegisterClass rc) {
+		return sqlSession.delete("memberMapper.delPreRegList", rc);
+	}
+
+	
 	//수강신청 - 수강신청
 	public ArrayList<RegisterClass> majorClass(SqlSessionTemplate sqlSession, RegisterClass rc2) {
 		return (ArrayList)sqlSession.selectList("memberMapper.majorClass", rc2);

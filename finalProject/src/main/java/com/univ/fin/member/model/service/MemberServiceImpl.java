@@ -121,6 +121,24 @@ public class MemberServiceImpl implements MemberService{
 		return result;
 	}
 	
+	//예비수강신청 - 장바구니 조회
+	@Override
+	public ArrayList<RegisterClass> preRegList(String studentNo) {
+		
+		ArrayList<RegisterClass> list = memberDao.preRegList(sqlSession,studentNo);
+		
+		return list;
+	}
+	
+	//예비수강신청 - 장바구니 수강취소
+	@Override
+	public int delPreRegList(RegisterClass rc) {
+		
+		int result = memberDao.delPreRegList(sqlSession,rc);
+		
+		return result;
+	}
+	
 	//수강신청 - 수강신청
 	@Override
 	public ArrayList<RegisterClass> majorClass(RegisterClass rc2) {

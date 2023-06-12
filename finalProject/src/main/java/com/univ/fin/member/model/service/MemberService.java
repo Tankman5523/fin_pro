@@ -45,6 +45,12 @@ public interface MemberService {
 	//예비수강신청 - 수강담기
 	int preRegisterClass(Bucket b);
 	
+	//예비수강신청 - 장바구니 조회
+	ArrayList<RegisterClass> preRegList(String studentNo);
+	
+	//예비수강신청 - 장바구니 수강취소
+	int delPreRegList(RegisterClass rc);
+	
 	//수강신청 - 수강신청
 	ArrayList<RegisterClass> majorClass(RegisterClass rc2);
 	
@@ -86,9 +92,5 @@ public interface MemberService {
 
 	// 회원추가 (학생)
 	int insertStudent(Student st);
-
-
-
-	
 
 }

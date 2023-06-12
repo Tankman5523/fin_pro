@@ -49,12 +49,54 @@ public class StudentController {
 		
 		int result = 0;
 		
-		//예비수강 중복체크
-		int chkClass = memberService.checkPre(b); 
+		int chkClass = memberService.checkPre(b); //예비수강 중복체크
 		
 		if(chkClass == 0) {
 			result = memberService.preRegisterClass(b);
 		}
+		
+		return new Gson().toJson(result);
+	}
+	
+	//예비수강신청 - 수강조회
+	@ResponseBody
+	@RequestMapping(value="majorClass.st",produces = "application/json; charset=UTF-8")
+	public String majorClassList(@RequestParam(value="departmentName",defaultValue = "교양")String departmentName,RegisterClass rc) {
+		
+		String term = String.valueOf(rc.getClassTerm().charAt(0)); //학기 추출
+		
+		RegisterClass rc2 = RegisterClass.builder()
+										 .classYear(rc.getClassYear()) //학년도
+										 .classTerm(term) //학기
+										 .departmentName(departmentName) //전공
+										 .professorName(rc.getProfessorName()) //교수명
+										 .className(rc.getClassName()) //과목명
+										 .studentNo(rc.getStudentNo()) //학번 
+										 .studentLevel(rc.getStudentLevel()) //학생 학년
+										 .build();
+		
+		ArrayList<RegisterClass> list = memberService.preClass(rc2);
+//		ArrayList<RegisterClass> list = memberService.majorClass(rc2);
+		
+		return new Gson().toJson(list);
+	}
+	
+	//예비수강신청 - 장바구니 조회
+	@ResponseBody
+	@RequestMapping(value="preRegList.st", produces = "application/json; charset=UTF-8")
+	public String preRegList(String studentNo) {
+		
+		ArrayList<RegisterClass> list = memberService.preRegList(studentNo);
+		
+		return new Gson().toJson(list);
+	}
+	
+	//예비수강신청 - 장바구니 수강취소
+	@ResponseBody
+	@RequestMapping(value="delPreRegList.st", produces = "application/json; charset=UTF-8")
+	public String delPreRegList(RegisterClass rc) {
+		
+		int result = memberService.delPreRegList(rc); 
 		
 		return new Gson().toJson(result);
 	}
@@ -71,28 +113,6 @@ public class StudentController {
 		return new Gson().toJson(list);
 	}
 	
-	//수강신청 - 수강신청
-	@ResponseBody
-	@RequestMapping(value="majorClass.st",produces = "application/json; charset=UTF-8")
-	public String majorClassList(@RequestParam(value="departmentName",defaultValue = "교양")String departmentName,RegisterClass rc) {
-		
-		String term = String.valueOf(rc.getClassTerm().charAt(0));
-		
-		RegisterClass rc2 = RegisterClass.builder()
-										 .classYear(rc.getClassYear())
-										 .classTerm(term)
-										 .departmentName(departmentName)
-										 .professorName(rc.getProfessorName())
-										 .className(rc.getClassName())
-										 .studentNo(rc.getStudentNo())
-										 .build();
-		
-		ArrayList<RegisterClass> list = memberService.preClass(rc2);
-//		ArrayList<RegisterClass> list = memberService.majorClass(rc2);
-		
-		return new Gson().toJson(list);
-	}
-
 	// 수강신청 - 학기별 성적 조회
 	@RequestMapping("classManagement.st")
 	public String student_classManagement() {

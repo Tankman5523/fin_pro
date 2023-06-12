@@ -22,4 +22,5 @@ public class RegisterClass {
 	private String classYear;		// 학년도
 	private String classTerm;		// 학기
 	private String studentNo;		// 학번
+	private String studentLevel;	// 학생학년
 }
