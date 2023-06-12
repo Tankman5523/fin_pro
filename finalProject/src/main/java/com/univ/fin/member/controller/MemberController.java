@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -399,32 +400,4 @@ public class MemberController {
 		return new Gson().toJson(result);
 	}
 	
-	//교수 학적정보 조회
-	@RequestMapping("infoProfessor.me")
-	public String infoProfessor() {
-		
-		return "member/professor/infoProfessor";
-	}
-
-	//학적 정보수정 - 교수
-	@RequestMapping("updateProfessor.me")
-	public ModelAndView updateProfessor(Professor pr,
-									ModelAndView mv,
-									HttpSession session) {
-		int result = memberService.updateProfessor(pr);
-		
-		
-		if(result>0) {
-			//유저 정보갱신
-			Professor updateStudent = memberService.loginProfessor(pr);
-			session.setAttribute("loginUser", updateStudent);
-			session.setAttribute("alertMsg", "수정 완료");
-			mv.setViewName("redirect:infoProfessor.me");
-		}else { //정보변경실패
-			mv.addObject("errorMsg","수정 실패함요").setViewName("redirect:infoProfessor.me");
-		}
-		
-	return mv;
-		
-	}
 }

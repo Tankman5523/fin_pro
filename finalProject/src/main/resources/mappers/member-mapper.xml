@@ -232,4 +232,13 @@
   		VALUES (SEQ_COUNO.NEXTVAL,?,?,?,?,?)
   	</insert>
   	
+  	<update id="updateStudent">
+  	UPDATE STUDENT 
+  	SET PHONE = #{phone},
+  			EMAIL = #{email},
+  			POST = #{post},
+  			ADDRESS =#{address}
+  	WHERE STUDENT_NO =#{studentNo}
+  	</update>
+  	
   </mapper>

@@ -231,53 +231,25 @@
   		INSERT INTO COUNSELING(COUNSEL_NO,STUDENT_NO,PROFESSOR_NO,REQUEST_DATE,COUNSEL_AREA,COUNSEL_CONTENT)
   		VALUES (SEQ_COUNO.NEXTVAL,?,?,?,?,?)
   	</insert>
-  	  	<select id ="infoStudent">
- SELECT
-    A.STUDENT_NO,
-    A.STUDENT_NAME,
-    A.STUDENT_PWD,
-    A.ENTRANCE_DATE,
-    A.GRADUATION_DATE,
-    A.CLASS_LEVEL,
-    A.PHONE,
-    A.EMAIL,
-    A.POST,
-    A.ADDRESS,
-    A.STATUS,
-    B.DEPARTMENT_NAME,
-    C.COLLEGE_NAME
-FROM
-    STUDENT A
-    JOIN DEPARTMENT B ON B.DEPARTMENT_NO = A.DEPARTMENT_NO
-    JOIN COLLEGE C ON C.COLLEGE_NO = A.COLLEGE_NO
-WHERE
-    A.STUDENT_NO = #{studentNo}
-  	</select>
   	
+  	<!-- 학생 학적정보 변경 -->
   	<update id="updateStudent">
-  	UPDATE STUDENT
-		SET PHONE = #{phone},
-	    EMAIL = #{email},
-	    ADDRESS = #{post},
-	    POST = #{address}
-	    WHERE STUDENT_NO = #{studentNo}
+  	UPDATE STUDENT 
+  	SET PHONE = #{phone},
+  			EMAIL = #{email},
+  			POST = #{post},
+  			ADDRESS =#{address}
+  	WHERE STUDENT_NO =#{studentNo}
   	</update>
   	
-  	<update id="updateProfessor">
+  	<!-- 교수 학적정보 변경 -->
+  	<update id ="updateProfessor">
   	UPDATE PROFESSOR
-		SET PHONE = #{phone},
-	    EMAIL = #{email},
-	    ADDRESS = #{post},
-	    POST = #{address}
-	    WHERE PROFESSOR_NO = #{professorNo}
+  	SET PHONE = #{phone},
+  		EMAIL = #{email},
+  		POST = #{post},
+  		ADDRESS = #{address}
+  	WHERE PROFESSOR_NO = #{professorNo}
   	</update>
-  	
-  	<insert id="insertStudent">
-  	INSERT INTO STUDENT(STUDENT_NO,STUDENT_NAME,DEPARTMENT_NAME,COLLEGE_NAME,ENTRANCE_DATE,STUDENT_PWD,
-  						PHONE,EMAIL,POST,ADDRESS)
-  	VALUES(#{studentNo},#{studentName},#{departmentName},#{collegeName},#{entranceDate},#{studentPwd},
-  			#{phone},#{email},#{post},#{address})
-  			
-  	</insert>
   	
   </mapper>

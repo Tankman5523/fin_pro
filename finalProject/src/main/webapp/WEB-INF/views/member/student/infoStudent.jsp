@@ -176,16 +176,24 @@
 
 
 <script>
-
+	var msg = "${msg}";
+	
 	$(document).ready(function(){
-		
+		if(msg != ""){
+			alert(msg);
+		}
 	});
 	
 	
 	 function updateStudent(){
-		$("#crystalBtn").attr("form", "updateForm");
-		$("updateForm").submit();
-    }
+		 var flag = confirm("수정하시겠습니까?");
+		 
+		 if(flag){
+			 $("#updateForm").submit();	 
+		 }else{
+			 return false;
+		 }
+ 	  }
 	
 	 function convertReadonly(){
 		 $("#crystalBtn").attr("onclick", "updateStudent()");
@@ -296,9 +304,6 @@
                     <a href="#">개인 시간표</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">강의 시간표</a>
-                </div>
-				<div class="child_title">
                     <a href="#">휴/복학 신청</a>
                 </div>
 				<div class="child_title">
@@ -317,17 +322,19 @@
 							<img src="https://item.kakaocdn.net/do/1bc37545ead4d1b5ccf3af23d5bce5714022de826f725e10df604bf1b9725cfd" style="width:100px; height:100px;" alt="학생얼굴">
 						</ul>
 					</div>
-					<form id="updateForm" action="updateStudent.me" method="post">
 					<div id="basic_info">
 						<table class="basic_table">
 							<th>기본 정보</th>
 							<!-- <button id="crystalBtn" onclick="convertReadonly()">수정하기</button> -->
-							<button id="crystalBtn" type="submit">수정하기</button>
+							<button id="crystalBtn" onclick="updateStudent()">수정하기</button>
+						
 							
 						</table>
 						<br>
 						<hr>
 					</div>
+					<form id="updateForm" action="updateStudent.st" method="post">
+					<input type="hidden" id="studentNo" name="studentNo" value="${loginUser.studentNo }">
 					<div id="user_infomation">
 						<table id="user_info">
 							<thead>
@@ -357,7 +364,7 @@
 									<th width="100px" height="30px">이름 : </th>
 									<th><input type="text" class="user_info3" value="${loginUser.studentName}" readonly></th>
 									<th width="100px" height="30px">비밀번호 : </th>
-									<th><input type="password" id="userPassword" class="user_info3" value="${loginUser.studentPwd}" readonly></th>
+									<th><input type="password" id="studentPwd" name="studentPwd" class="user_info3" value="${loginUser.studentPwd}" readonly></th>
 									
 								</tr>
 							</thead>
@@ -378,9 +385,9 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">전화번호 : </th>
-									<th><input type="text" id="phone"class="user_info3" value="${loginUser.phone}"></th>
+									<th><input type="text" id="phone" name="phone" class="user_info3" value="${loginUser.phone}"></th>
 									<th width="100px" height="30px">E-MAIL : </th>
-									<th><input type="text" id="email"class="user_info3" value="${loginUser.email}"></th>
+									<th><input type="text" id="email" name="email" class="user_info3" value="${loginUser.email}"></th>
 								</tr>
 							</thead>
 						</table>
@@ -389,9 +396,9 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">우편번호 : </th>
-									<th><input type="text" id="post"class="user_info3" value="${loginUser.post}"></th>
+									<th><input type="text" id="post" name="post" class="user_info3" value="${loginUser.post}"></th>
 									<th width="100px" height="30px">주소 : </th>
-									<th><input type="text" id="address"class="user_info3" value="${loginUser.address}" ></th>
+									<th><input type="text" id="address" name="address" class="user_info3" value="${loginUser.address}" ></th>
 								</tr>
 							</thead>
 						</table>
@@ -406,9 +413,6 @@
 								</tr>
 							</thead>
 						</table>
-					<div class="btns" align="center">
-                    <button type="submit" class="savebtn">저장</button>
-                	</div>
 					</form>
 					</div>
 
