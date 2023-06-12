@@ -249,7 +249,7 @@
             		}
             		
 
-            		/* 수강 조회 */
+            		/* 수강 조회 리스트 */
             		function searchClass(num){
             			var result = "";
             			
@@ -259,7 +259,7 @@
             				alert("과목명을 입력해 주세요");
             			}else{
 	            			$.ajax({
-	            				url : "majorClass.st",
+	            				url : "preRegClass.st",
 	            				data : {
 	            					classYear : $("#classYear").val(),
 	            					classTerm : $("#classTerm").val(),
@@ -285,7 +285,7 @@
 													 +"<td>" + list[i].professorName + "</td>"
 													 +"<td>" + list[i].departmentName + "</td>"
 													 +"<td>" + list[i].creditHour + "</td>"
-													 +"<td>" + list[i].preclassNos + "</td>"
+													 +"<td>" + list[i].preClassNos + "</td>"
 													 +"<td>" + list[i].classInfo + "</td>"
 													 +"<td>" + list[i].classLevel + "</td>"
 													 +"<td><button>수강담기</button></td>"

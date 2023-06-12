@@ -257,9 +257,8 @@
             		}
             		
 
-            		/* 학부 전공별 조회 리스트 */
+            		/* 수강 조회 리스트 */
             		function searchClass(num){
-            			
             			var result = "";
             			
             		 	if(num == 3 && !$("#searchProfessor").val()){
@@ -268,13 +267,15 @@
             				alert("과목명을 입력해 주세요");
             			}else{
 	            			$.ajax({
-	            				url : "majorClass.st",
+	            				url : "postRegClass.st",
 	            				data : {
 	            					classYear : $("#classYear").val(),
 	            					classTerm : $("#classTerm").val(),
 	            					departmentName : $("#departmentNo").val(),
 	            					professorName : $("#searchProfessor").val(),
-	            					className : $("#searchClass").val()
+	            					className : $("#searchClass").val(),
+	            					studentNo : "${loginUser.studentNo}",
+	            					studentLevel : "${loginUser.classLevel}"
 	            				},
 	            				success : function(list){
 	            					if(list.length !== 0){
@@ -291,7 +292,7 @@
 													 +"<td>" + list[i].professorName + "</td>"
 													 +"<td>" + list[i].departmentName + "</td>"
 													 +"<td>" + list[i].creditHour + "</td>"
-													 +"<td>" + list[i].classNos + "</td>"
+													 +"<td>" + list[i].postClassNos + "</td>"
 													 +"<td>" + list[i].classInfo + "</td>"
 													 +"<td>" + list[i].classLevel + "</td>"
 													 +"<td><button>수강신청</button></td>"
@@ -301,15 +302,15 @@
 	            						result += "<tr><th colspan='10' style='font-size:20px;'>신청 가능한 강의가 존재하지 않습니다.</th></tr>";
 	            					}
 	            					switch(num){
-	            					case 1 : $("#majorClassTable>tbody").html(result);
-	            						break;
-	            					case 2 : $("#electiveClassTable>tbody").html(result);
-	            						break;
-	            					case 3 : $("#proNameClassTable>tbody").html(result);
-	            						break;
-	            					case 4 : $("#classNameTable>tbody").html(result);
-	            						break;
-            					}
+		            					case 1 : $("#majorClassTable>tbody").html(result);
+		            						break;
+		            					case 2 : $("#electiveClassTable>tbody").html(result);
+		            						break;
+		            					case 3 : $("#proNameClassTable>tbody").html(result);
+		            						break;
+		            					case 4 : $("#classNameTable>tbody").html(result);
+		            						break;
+            						}
 	            				},
 	            				error : function(){
 	            					console.log("학부전공별 리스트 조회 실패")
@@ -317,6 +318,30 @@
 	            			});
             			}
             		}
+            		
+            		$(function(){
+            			/* 수강신청 버튼 클릭시 */
+            			$(document).on("click",".mcTable>tbody>tr button",function(){
+            				var cno = $(this).closest("tr").children().eq(1).text();
+            				$.ajax({
+            					url : "postRegisterClass.st",
+            					data : {
+            						classNo : cno, 
+            						studentNo : "${loginUser.studentNo}"
+            					},
+            					success : function(result){
+            						if(result > 0){
+            							alert("수강신청에 성공하였습니다.");
+            						}else{
+            							alert("수강신청이 실패하였습니다.");
+            						}
+            					},
+            					error : function(){
+            						console.log("수강신청 통신실패");
+            					}
+            				});
+            			});
+            		});
             		</script>
             	</div>
             	<div id="postRegistered_area">
