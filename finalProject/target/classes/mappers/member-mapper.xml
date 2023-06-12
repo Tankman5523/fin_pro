@@ -367,4 +367,24 @@
 		LIKE '%'||#{keyword}||'%'
 		ORDER BY CLASS_LEVEL
   	</select>
+  	
+  	<update id="updateStudent">
+  	UPDATE STUDENT 
+  	SET PHONE = #{phone},
+  			EMAIL = #{email},
+  			POST = #{post},
+  			ADDRESS =#{address}
+  	WHERE STUDENT_NO =#{studentNo}
+  	</update>
+  	
+  	<!-- 교수 학적정보 변경 -->
+  	<update id ="updateProfessor">
+  	UPDATE PROFESSOR
+  	SET PHONE = #{phone},
+  		EMAIL = #{email},
+  		POST = #{post},
+  		ADDRESS = #{address}
+  	WHERE PROFESSOR_NO = #{professorNo}
+  	</update>
+  	
   </mapper>

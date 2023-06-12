@@ -1,13 +1,14 @@
 package com.univ.fin.member.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -191,7 +192,7 @@ public class StudentController {
 	
 	
 		//학적 정보조회 - 학생
-			@RequestMapping("infoStudent.me")
+			@RequestMapping("infoStudent.st")
 			public String infoStudent() {		
 				
 				return "member/student/infoStudent";
@@ -199,9 +200,10 @@ public class StudentController {
 			
 			
 			//학적 정보수정 - 학생
-			@RequestMapping("updateStudent.me")
-			public ModelAndView updateStudent(Student st,
-											ModelAndView mv,
+			
+			@RequestMapping(value="updateStudent.st" , method = RequestMethod.POST)
+			public String updateStudent(Student st,
+											Model model,
 											HttpSession session) {
 				int result = memberService.updateStudent(st);
 				
@@ -211,25 +213,24 @@ public class StudentController {
 					//유저 정보갱신
 					Student loginUser = memberService.loginStudent(st);
 					session.setAttribute("loginUser", loginUser);
-					session.setAttribute("alertMsg", "수정 완료");
-					mv.setViewName("redirect:infoStudent.me");
+					model.addAttribute("msg", "수정 완료");
 				}else { //정보변경실패
-					mv.addObject("errorMsg","수정 실패함요").setViewName("redirect:infoStudent.me");
+					model.addAttribute("msg", "수정 실패");
 				}
 				
-			return mv;
+			return "member/student/infoStudent";
 				
 			}
 	
 			//학생등록 페이지
-			@RequestMapping("enrollStudent.me")
+			@RequestMapping("enrollStudent.ad")
 			public String enrollStudent() {		
 				
 				return "member/student/enrollStudent";
 			}
 			
 			//학생등록 페이지 등록
-			@RequestMapping("insertStudent.me")
+			@RequestMapping("insertStudent.ad")
 			public String insertStudent(Student st,
 										Model model,
 										HttpSession session) {
