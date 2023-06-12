@@ -67,9 +67,10 @@
   		<result column="PROFESSOR_NAME" property="professorName"/>
   		<result column="DEPARTMENT_NAME" property="departmentName"/>
   		<result column="CREDIT_HOUR" property="creditHour"/>
-  		<result column="CLASS_NOS" property="classNos"/>
+  		<result column="PRECLASS_NOS" property="preclassNos"/>
   		<result column="CLASS_INFO" property="classInfo"/>
   		<result column="CLASS_LEVEL" property="classLevel"/>
+  		<result column="STUDENT_NO" property="studentNo"/>
   	</resultMap>
   
   	<resultMap type="department" id="departmentMap">
@@ -91,7 +92,6 @@
   		<result column="COUNSEL_RESULT" property="counselResult"/>
   		<result column="STATUS" property="status"/>
   	</resultMap>
-  	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
   		SELECT STUDENT_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,FILE_NO,STUDENT_NAME,STUDENT_PWD,
@@ -164,7 +164,7 @@
   		AND STATUS = 'Y'
   	</update>
   	
-  	<!-- 단과대학 전공 조회  -->
+  	  	<!-- 단과대학 전공 조회  -->
   	<select id="selectDepart" resultType="string">
   		SELECT DEPARTMENT_NAME
 		FROM DEPARTMENT
@@ -173,10 +173,64 @@
 		                    WHERE COLLEGE_NAME = #{college})
   	</select>
   	
+  	<!-- 예비수강신청 - 중복체크 -->
+  	<select id="checkPre" resultType="_int">
+  		SELECT COUNT(CLASS_NOS) COUNT
+		FROM CLASS C
+		JOIN BUCKET B ON (C.CLASS_NO = B.CLASS_NO)
+		WHERE B.CLASS_NO = #{classNo}
+		AND STUDENT_NO = #{studentNo}
+		AND STATUS = 'Y'
+  	</select>
+  	
+  	<!-- 예비수강신청 - 수강담기 -->
+  	<insert id="preRegisterClass">
+  		INSERT INTO BUCKET VALUES(#{classNo},#{studentNo})
+  	</insert>
+  	
+   	<!-- 예비수강신청 - 수강조회 --> 	
+  	<select id="preClass" parameterType="registerClass" resultMap="registerClassMap">
+  		SELECT COLLEGE_NAME,CLASS_NO,CLASS_NAME,PROFESSOR_NAME,DEPARTMENT_NAME
+		,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR"
+		,((SELECT COUNT(*)
+		    FROM BUCKET
+		    WHERE CLASS_NO = C.CLASS_NO)|| '/' ||CLASS_NOS) "PRECLASS_NOS"
+		,(DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
+		  DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
+		                    2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) 
+		||' '|| CLASSROOM) "CLASS_INFO",
+		DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년') "CLASS_LEVEL"
+		FROM CLASS C
+		JOIN DEPARTMENT D ON (C.DEPARTMENT_NO = D.DEPARTMENT_NO)
+		JOIN COLLEGE CO ON (D.COLLEGE_NO = CO.COLLEGE_NO)
+		JOIN PROFESSOR P ON (P.PROFESSOR_NO = C.PROFESSOR_NO)
+		WHERE C.STATUS = 'Y'
+		AND CLASS_NO NOT IN (SELECT CLASS_NO
+	              		 	 FROM BUCKET
+	               			 WHERE STUDENT_NO = #{studentNo})
+		<choose>
+			<when test="professorName != ''">
+				AND PROFESSOR_NAME LIKE '%'||#{professorName}||'%'
+			</when>
+			<when test="className != ''">
+				AND CLASS_NAME LIKE '%'||#{className}||'%'
+			</when>
+			<otherwise>
+				AND DEPARTMENT_NAME = #{departmentName}
+			</otherwise>
+		</choose>
+		GROUP BY COLLEGE_NAME, CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DEPARTMENT_NAME,CLASS_NOS,
+		CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT), (DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
+		DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
+						  2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) ||' '|| CLASSROOM),
+						  DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년')
+  	</select>
+  	
   	<!-- 수강신청 - 수강신청 -->
   	<select id="majorClass" parameterType="registerClass" resultMap="registerClassMap">
   		SELECT COLLEGE_NAME,CLASS_NO,CLASS_NAME,PROFESSOR_NAME,DEPARTMENT_NAME
-        ,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR",CLASS_NOS
+        ,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR"
+        ,CLASS_NOS
         ,(DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
           DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
                             2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) 
