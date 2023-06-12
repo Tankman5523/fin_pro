@@ -221,5 +221,15 @@ public class StudentController {
 				
 			}
 	
+	// 학사관리 - 개인시간표
+	@RequestMapping("personalTimetable.st")
+	public ModelAndView personalTimetable(ModelAndView mv, HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
+		ArrayList<String> classTerm = memberService.selectClassTerm(studentNo);
+		
+		mv.addObject("classTerm", classTerm).setViewName("member/student/personalTimetableView");
+		return mv;
+	}
 
 }

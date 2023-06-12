@@ -230,6 +230,9 @@
   	<select id="selectClassTerm" resultType="string">
   		SELECT CLASS_YEAR||'0'||CLASS_TERM
 		FROM CLASS
+		<if test="studentNo != null">
+			WHERE STUDENT_NO = #{studentNo}
+		</if>
 		GROUP BY CLASS_YEAR, CLASS_TERM
   	</select>
   	
@@ -312,5 +315,14 @@
 		</if>
 		LIKE '%'||#{keyword}||'%'
 		ORDER BY CLASS_LEVEL
+  	</select>
+  	
+  	<!-- 개인시간표 -> 학년도,학기 조회 -->
+  	<select id="selectClassTerm2" resultType="string">
+  		SELECT CLASS_YEAR||'0'||CLASS_TERM
+		FROM CLASS
+		LEFT JOIN SCHEDULE USING(CLASS_NO)
+		WHERE STUDENT_NO = #{studentNo}
+		GROUP BY CLASS_YEAR, CLASS_TERM
   	</select>
   </mapper>

@@ -209,4 +209,11 @@ public class MemberServiceImpl implements MemberService{
 		
 		return result;
 	}
+
+	// 개인시간표 -> 학년도,학기 조회
+	@Override
+	public ArrayList<String> selectClassTerm(String studentNo) {
+		ArrayList<String> classTerm = memberDao.selectClassTerm(sqlSession, studentNo);
+		return classTerm;
+	}
 }

@@ -76,6 +76,9 @@ public interface MemberService {
 
 	// 회원추가 (학생)
 	int insertStudent(Student st);
+
+	// 개인시간표 -> 학년도,학기 조회
+	ArrayList<String> selectClassTerm(String studentNo);
 	
 
 }
