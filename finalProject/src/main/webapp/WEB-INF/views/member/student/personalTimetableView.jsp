@@ -74,7 +74,7 @@
                     <span style="margin: 0 auto;">학사관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="#">학적 정보 조회</a>
+                    <a href="infoStudent.st">학적 정보 조회</a>
                 </div>
                 <div class="child_title">
                     <a href="#" style="color:#00aeff; font-weight: 550;">개인 시간표</a>
@@ -185,7 +185,7 @@
 					var arr = ${classTerm};
 	                
 	                $(function() {
-	                    changeYear($("#year"));
+	                	$("select[name=year]").children().eq(0).prop("selected", true).change();
 	                    
 	                	$(".selectTerm").on("change", "#term", function() {
 	                		selectCategory();

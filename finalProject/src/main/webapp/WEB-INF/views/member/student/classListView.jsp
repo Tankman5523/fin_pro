@@ -203,7 +203,7 @@
                 
 	                $(function() {
 	                    $(".content_major").css("display", "block");
-	                    changeYear($("#year"));
+	                    $("select[name=year]").children().eq(0).prop("selected", true).change();
 	                    
 	                	$(".selectTerm").on("change", "#term", function() {
 	                		selectCategory();
