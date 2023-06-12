@@ -387,7 +387,7 @@
   		ADDRESS = #{address}
   	WHERE PROFESSOR_NO = #{professorNo}
   	</update>
-  	
+  	  	
   	<!-- 개인시간표 -> 학년도,학기 조회 -->
   	<select id="selectClassTerm2" resultType="string">
   		SELECT CLASS_YEAR||'0'||CLASS_TERM

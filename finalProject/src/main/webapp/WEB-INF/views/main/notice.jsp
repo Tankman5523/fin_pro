@@ -1,11 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>공지사항 : Feasible University</title>
-<link rel="stylesheet" href="/fin/resources/css/noticeBoard.css">
+<link rel="stylesheet" href="/fin/resources/css/notice.css">
 </head>
 <body>
 <div class="wrap">
@@ -81,25 +82,25 @@
 			</div>
 			
 			<script type="text/javascript">
-			const tabBtn = document.querySelectorAll('.tab_btn')
-			const tabCont = document.querySelectorAll('.tab_content')
-			
-			tabBtn.forEach((tab, index) => {
+				const tabBtn = document.querySelectorAll('.tab_btn')
+				const tabCont = document.querySelectorAll('.tab_content')
 				
-				tab.addEventListener('click', function(){
-					tabCont.forEach((cont) => {
-						cont.classList.remove('active')
+				tabBtn.forEach((tab, index) => {
+					
+					tab.addEventListener('click', function(){
+						tabCont.forEach((cont) => {
+							cont.classList.remove('active')
+						})
+						
+						tabBtn.forEach((btn) => {
+							btn.classList.remove('active')
+						})
+						
+						tabBtn[index].classList.add('active')
+						tabCont[index].classList.add('active')
 					})
 					
-					tabBtn.forEach((btn) => {
-						btn.classList.remove('active')
-					})
-					
-					tabBtn[index].classList.add('active')
-					tabCont[index].classList.add('active')
 				})
-				
-			})
 			</script>
 		</div>
 		
@@ -107,79 +108,6 @@
 			<div class="notice_board">
 				<p>공지사항</p>
 				
-				<table class="notice_table">
-					<thead>
-						<tr>
-							<th style="width: 80px;">분류</th>
-							<th>제목</th>
-							<th style="width: 80px;">첨부파일</th>
-							<th style="width: 200px;">게시일</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>학사</td>
-							<td>학사입니다.</td>
-							<td><i class="fa-solid fa-paperclip"></i></td>
-							<td>2023-05-23</td>
-						</tr>
-						<tr>
-							<td>학사</td>
-							<td>학사입니다2</td>
-							<td><i class="fa-solid fa-paperclip"></i></td>
-							<td>2023-05-21</td>
-						</tr>
-						<tr>
-							<td>장학</td>
-							<td>장학입니다.</td>
-							<td><i class="fa-solid fa-paperclip"></i></td>
-							<td>2023-05-20</td>
-						</tr>
-						<tr>
-							<td>학사</td>
-							<td>학사입니다.</td>
-							<td><i class="fa-solid fa-paperclip"></i></td>
-							<td>2023-05-23</td>
-						</tr>
-						<tr>
-							<td>학사</td>
-							<td>학사입니다2</td>
-							<td><i class="fa-solid fa-paperclip"></i></td>
-							<td>2023-05-21</td>
-						</tr>
-						<tr>
-							<td>장학</td>
-							<td>장학입니다.</td>
-							<td><i class="fa-solid fa-paperclip"></i></td>
-							<td>2023-05-20</td>
-						</tr>
-						<tr>
-							<td>학사</td>
-							<td>학사입니다.</td>
-							<td><i class="fa-solid fa-paperclip"></i></td>
-							<td>2023-05-23</td>
-						</tr>
-						<tr>
-							<td>학사</td>
-							<td>학사입니다2</td>
-							<td><i class="fa-solid fa-paperclip"></i></td>
-							<td>2023-05-21</td>
-						</tr>
-						<tr>
-							<td>장학</td>
-							<td>장학입니다.</td>
-							<td><i class="fa-solid fa-paperclip"></i></td>
-							<td>2023-05-20</td>
-						</tr>
-						<tr>
-							<td>장학</td>
-							<td>장학입니다.</td>
-							<td><i class="fa-solid fa-paperclip"></i></td>
-							<td>2023-05-20</td>
-						</tr>
-					</tbody>
-				</table>
-			
 				<form id="searchForm" action="search.mp" method="get" align="center">
 					<select>
 						<option value="title">제목</option>
@@ -191,6 +119,58 @@
 						<button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
 					</label>
 				</form>
+				
+				<table class="notice_table">
+					<thead>
+						<tr>
+							<th style="width: 80px;">분류</th>
+							<th>제목</th>
+							<th style="width: 80px;">첨부파일</th>
+							<th style="width: 200px;">게시일</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach var="n" items="${list }">
+							<tr>
+								<td>${n.noticeCategory }</td>
+								<td>${n.noticeTitle }</td>
+								<td>
+									<c:if test="${not empty n.originName }">
+										<i class="fa-solid fa-paperclip"></i>
+									</c:if>
+								</td>
+								<td>${n.createDate }</td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+				
+				<div id="pagingArea">
+					<ul class="pagination">
+						<c:choose>
+							<c:when test="${pi.currentPage eq 1 }">
+								<li class="page-btn"><a class="pLink" href="#"><i class="fa-solid fa-chevron-left"></i></a></li>
+							</c:when>
+							<c:otherwise>
+								<li class="page-btn"><a class="pLink" href="notice.mp?currentPage=${pi.currentPage - 1 }"><i class="fa-solid fa-chevron-left"></i></a></li>
+							</c:otherwise>
+						</c:choose>
+						
+						<c:forEach var="p" begin="${pi.startPage }" end="${pi.endPage }">
+							<li class="page-btn"><a class="pLink" onclick="test()" href="notice.mp?currentPage=${p }">${p }</a></li>
+						</c:forEach>
+						
+						<c:choose>
+							<c:when test="${pi.currentPage eq 1 }">
+								<li class="page-btn"><a class="pLink" href="#"><i class="fa-solid fa-chevron-right"></i></a></li>
+							</c:when>
+							<c:otherwise>
+								<li class="page-btn"><a class="pLink" href="notice.mp?currentPage=${pi.currentPage + 1 }"><i class="fa-solid fa-chevron-right"></i></a></li>
+							</c:otherwise>
+						</c:choose>
+					</ul>
+				</div>
+				
 			</div>
 		</div>
 						
