@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
@@ -487,4 +488,404 @@
 		WHERE STUDENT_NO = #{studentNo}
 		GROUP BY CLASS_YEAR, CLASS_TERM
   	</select>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="memberMapper">
+	
+	<resultMap type="student" id="loginStudentMap">
+		<result column="STUDENT_NO" property="studentNo"/>
+		<result column="DEPARTMENT_NAME" property="departmentNo"/>
+		<result column="COLLEGE_NAME" property="collegeNo"/>
+		<result column="FILE_NO" property="fileNo"/>
+		<result column="STUDENT_NAME" property="studentName"/>
+		<result column="STUDENT_PWD" property="studentPwd"/>
+		<result column="ENTRANCE_DATE" property="entranceDate"/>
+		<result column="GRADUATION_DATE" property="graduationDate"/>
+		<result column="CLASS_LEVEL" property="classLevel"/>
+		<result column="PHONE" property="phone"/>
+		<result column="EMAIL" property="email"/>
+		<result column="POST" property="post"/>
+		<result column="ADDRESS" property="address"/>
+		<result column="STATUS" property="status"/>
+	</resultMap>
+  
+  	<resultMap type="professor" id="loginProfessorMap">
+  		<result column="PROFESSOR_NO" property="professorNo"/>
+  		<result column="FILE_NO" property="fileNo"/>
+  		<result column="DEPARTMENT_NAME" property="departmentNo"/>
+  		<result column="COLLEGE_NAME" property="collegeNo"/>
+  		<result column="PROFESSOR_NAME" property="professorName"/>
+  		<result column="PROFESSOR_PWD" property="professorPwd"/>
+  		<result column="POSITION" property="position"/>
+  		<result column="ENTRANCE_DATE" property="entranceDate"/>
+  		<result column="PHONE" property="phone"/>
+  		<result column="EMAIL" property="email"/>
+  		<result column="POST" property="post"/>
+  		<result column="ADDRESS" property="address"/>
+  		<result column="ACCOUNT_NO" property="accountNo"/>
+  		<result column="ADMIN" property="admin"/>
+  	</resultMap>
+  
+  	<resultMap type="classes" id="classResultMap">
+  		<result column="CLASS_NO" property="classNo"/>
+  		<result column="PROFESSOR_NAME" property="professorNo"/>
+  		<result column="DEPARTMENT_NAME" property="departmentNo"/>
+  		<result column="FILE_NO" property="fileNo"/>
+  		<result column="CLASS_NAME" property="className"/>
+  		<result column="CLASS_LEVEL" property="classLevel"/>
+  		<result column="CLASS_YEAR" property="classYear"/>
+  		<result column="CLASS_TERM" property="classTerm"/>
+  		<result column="CLASSROOM" property="classroom"/>
+  		<result column="DAY" property="day"/>
+  		<result column="PERIOD" property="period"/>
+  		<result column="CLASS_HOUR" property="classHour"/>
+  		<result column="CLASS_NOS" property="classNos"/>
+  		<result column="SPARE_NOS" property="spareNos"/>
+  		<result column="EXPLAIN" property="explain"/>
+  		<result column="CREDIT" property="credit"/>
+  		<result column="DIVISION" property="division"/>
+  		<result column="STATUS" property="status"/>
+  	</resultMap>
+  
+  	<resultMap type="registerClass" id="registerClassMap">
+  		<result column="COLLEGE_NAME" property="collegeName"/>
+  		<result column="CLASS_NO" property="classNo"/>
+  		<result column="CLASS_NAME" property="className"/>
+  		<result column="PROFESSOR_NAME" property="professorName"/>
+  		<result column="DEPARTMENT_NAME" property="departmentName"/>
+  		<result column="CREDIT_HOUR" property="creditHour"/>
+  		<result column="PRECLASS_NOS" property="preclassNos"/>
+  		<result column="CLASS_INFO" property="classInfo"/>
+  		<result column="CLASS_LEVEL" property="classLevel"/>
+  		<result column="STUDENT_NO" property="studentNo"/>
+  	</resultMap>
+  
+  	<resultMap type="department" id="departmentMap">
+  		<result column="DEPARTMENT_NO" property="departmentNo"/>
+  		<result column="COLLEGE_NAME" property="collegeNo"/>
+  		<result column="DEPARTMENT_NAME" property="departmentName"/>
+  		<result column="DEPARTMENT_NOS" property="departmentNos"/>
+  		<result column="GRADUATION" property="graduation"/>
+  	</resultMap>
+  	
+  	<resultMap type="counseling" id="counselingMap">
+  		<result column="COUNSEL_NO" property="counselNo"/>
+  		<result column="STUDENT_NO" property="studentNo"/>
+  		<result column="PROFESSOR_NO" property="professorNo"/>
+  		<result column="APPLICATION_DATE" property="applicationDate"/>
+  		<result column="REQUEST_DATE" property="requestDate"/>
+  		<result column="COUNSEL_AREA" property="counselArea"/>
+  		<result column="COUNSEL_CONTENT" property="counselContent"/>
+  		<result column="COUNSEL_RESULT" property="counselResult"/>
+  		<result column="STATUS" property="status"/>
+  	</resultMap>
+  	
+  	<!-- 학생 로그인 -->
+  	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
+  		SELECT STUDENT_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,FILE_NO,STUDENT_NAME,STUDENT_PWD,
+               ENTRANCE_DATE,GRADUATION_DATE,CLASS_LEVEL,PHONE,EMAIL,POST,ADDRESS,STATUS
+  		FROM STUDENT S
+  		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO) 
+        JOIN COLLEGE C ON (S.COLLEGE_NO = C.COLLEGE_NO)
+  		WHERE STUDENT_NO = #{studentNo}
+  	</select>
+  	
+  	<!-- 임직원 로그인 -->
+  	<select id="loginProfessor" parameterType="professor" resultMap="loginProfessorMap">
+  		SELECT PROFESSOR_NO,FILE_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,PROFESSOR_NAME
+  			  ,PROFESSOR_PWD,POSITION,ENTRANCE_DATE,PHONE,EMAIL,POST,ADDRESS,ACCOUNT_NO,ADMIN,STATUS
+  		FROM PROFESSOR P
+        JOIN DEPARTMENT D ON (P.DEPARTMENT_NO = D.DEPARTMENT_NO)
+        JOIN COLLEGE C ON (P.COLLEGE_NO = C.COLLEGE_NO)
+  		WHERE PROFESSOR_NO = #{professorNo}
+  	</select>
+  
+  	<!-- ID조회 - 학생 -->
+  	<select id="checkEmail" parameterType="student" resultMap="loginStudentMap">
+  		SELECT STUDENT_NO,PHONE,EMAIL
+  		FROM STUDENT
+  		WHERE STUDENT_NAME = #{studentName}
+  		AND PHONE = #{phone}
+  		AND STATUS = '재학'
+  	</select>
+  	
+  	<!-- ID조회 - 임직원 -->
+  	<select id="checkEmail2" parameterType="professor" resultMap="loginProfessorMap">
+  		SELECT PROFESSOR_NO,PHONE,EMAIL
+  		FROM PROFESSOR
+  		WHERE PROFESSOR_NAME = #{professorName}
+  		AND PHONE = #{phone}
+  		AND STATUS = 'Y'
+  	</select>
+  	
+  	<!-- 비밀번호 초기화 - 학생 -->
+  	<select id="checkPwd" parameterType="student" resultMap="loginStudentMap">
+		SELECT STUDENT_NO,PHONE,EMAIL
+  		FROM STUDENT
+  		WHERE STUDENT_NO = #{studentNo}
+  		AND PHONE = #{phone}
+  		AND STATUS = '재학'
+  	</select>
+  	
+  	<!-- 비밀번호 초기화 - 임직원 -->
+  	<select id="checkPwd2" parameterType="professor" resultMap="loginProfessorMap">
+  		SELECT PROFESSOR_NO,PHONE,EMAIL
+  		FROM PROFESSOR
+  		WHERE PROFESSOR_NO = #{professorNo}
+  		AND PHONE = #{phone}
+  		AND STATUS = 'Y'
+  	</select>
+  	
+  	<!-- 비밀번호 초기화 - 비밀번호 변경 메소드 (학생) -->
+  	<update id="changePwd">
+  		UPDATE STUDENT
+  		SET STUDENT_PWD = #{studentPwd}
+  		WHERE STUDENT_NO = #{studentNo} 
+  		AND STATUS = '재학'
+  	</update>
+  
+  	<!-- 비밀번호 초기화 - 비밀번호 변경 메소드 (임직원) -->
+  	<update id="changePwd2">
+  		UPDATE PROFESSOR
+  		SET PROFESSOR_PWD = #{professorPwd}
+  		WHERE PROFESSOR_NO = #{professorNo} 
+  		AND STATUS = 'Y'
+  	</update>
+  	
+  	<!-- 단과대학 전공 조회  -->
+  	<select id="selectDepart" resultType="string">
+  		SELECT DEPARTMENT_NAME
+		FROM DEPARTMENT
+		WHERE COLLEGE_NO = (SELECT COLLEGE_NO
+		                    FROM COLLEGE
+		                    WHERE COLLEGE_NAME = #{college})
+  	</select>
+  	
+  	<!-- 예비수강신청 - 중복체크 -->
+  	<select id="checkPre" resultType="_int">
+  		SELECT COUNT(CLASS_NOS) COUNT
+		FROM CLASS C
+		JOIN BUCKET B ON (C.CLASS_NO = B.CLASS_NO)
+		WHERE B.CLASS_NO = #{classNo}
+		AND STUDENT_NO = #{studentNo}
+		AND STATUS = 'Y'
+  	</select>
+  	
+  	<!-- 예비수강신청 - 수강담기 -->
+  	<insert id="preRegisterClass">
+  		INSERT INTO BUCKET VALUES(#{classNo},#{studentNo})
+  	</insert>
+  	
+   	<!-- 예비수강신청 - 수강조회 --> 	
+  	<select id="preClass" parameterType="registerClass" resultMap="registerClassMap">
+  		SELECT COLLEGE_NAME,CLASS_NO,CLASS_NAME,PROFESSOR_NAME,DEPARTMENT_NAME
+		,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR"
+		,((SELECT COUNT(*)
+		    FROM BUCKET
+		    WHERE CLASS_NO = C.CLASS_NO)|| '/' ||CLASS_NOS) "PRECLASS_NOS"
+		,(DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
+		  DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
+		                    2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) 
+		||' '|| CLASSROOM) "CLASS_INFO",
+		DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년') "CLASS_LEVEL"
+		FROM CLASS C
+		JOIN DEPARTMENT D ON (C.DEPARTMENT_NO = D.DEPARTMENT_NO)
+		JOIN COLLEGE CO ON (D.COLLEGE_NO = CO.COLLEGE_NO)
+		JOIN PROFESSOR P ON (P.PROFESSOR_NO = C.PROFESSOR_NO)
+		WHERE C.STATUS = 'Y'
+		AND CLASS_NO NOT IN (SELECT CLASS_NO
+	              		 	 FROM BUCKET
+	               			 WHERE STUDENT_NO = #{studentNo})
+		<choose>
+			<when test="professorName != ''">
+				AND PROFESSOR_NAME LIKE '%'||#{professorName}||'%'
+			</when>
+			<when test="className != ''">
+				AND CLASS_NAME LIKE '%'||#{className}||'%'
+			</when>
+			<otherwise>
+				AND DEPARTMENT_NAME = #{departmentName}
+			</otherwise>
+		</choose>
+		GROUP BY COLLEGE_NAME, CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DEPARTMENT_NAME,CLASS_NOS,
+		CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT), (DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
+		DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
+						  2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) ||' '|| CLASSROOM),
+						  DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년')
+  	</select>
+  	
+  	<!-- 수강신청 - 수강신청 -->
+  	<select id="majorClass" parameterType="registerClass" resultMap="registerClassMap">
+  		SELECT COLLEGE_NAME,CLASS_NO,CLASS_NAME,PROFESSOR_NAME,DEPARTMENT_NAME
+        ,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR"
+        ,CLASS_NOS
+        ,(DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
+          DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
+                            2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) 
+		||' '|| CLASSROOM) "CLASS_INFO",
+		DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년') "CLASS_LEVEL"
+		FROM CLASS C
+		JOIN DEPARTMENT D ON (C.DEPARTMENT_NO = D.DEPARTMENT_NO)
+		JOIN COLLEGE CO ON (D.COLLEGE_NO = CO.COLLEGE_NO)
+		JOIN PROFESSOR P ON (P.PROFESSOR_NO = C.PROFESSOR_NO)
+		WHERE C.STATUS = 'Y'
+		AND CLASS_YEAR = #{classYear}
+		AND CLASS_TERM = #{classTerm}
+		<choose>
+			<when test="professorName != ''">
+				AND PROFESSOR_NAME LIKE '%'||#{professorName}||'%'
+			</when>
+			<when test="className != ''">
+				AND CLASS_NAME LIKE '%'||#{className}||'%'
+			</when>
+			<otherwise>
+				AND DEPARTMENT_NAME = #{departmentName}
+			</otherwise>
+		</choose>
+		ORDER BY CLASS_NO
+  	</select>
+  	
+  	<!-- 강의시간표 -> 전공 선택 후 전공수업 조회/교양수업 조회 -->
+  	<select id="selectDepartment" parameterType="hashmap" resultMap="classResultMap">
+  		SELECT CLASS_NO, PROFESSOR_NAME, DEPARTMENT_NAME, C.FILE_NO, CLASS_NAME
+  				, DECODE(CLASS_LEVEL, '0', '전체학년', '1', '1학년', '2', '2학년', '3', '3학년', '4', '4학년') AS CLASS_LEVEL
+  				, CLASS_YEAR, CLASS_TERM, CLASSROOM
+  				, DECODE(DAY, '1', '월', '2', '화', '3', '수', '4', '목', '5', '금') AS DAY
+  				, DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)||':00 ~ '||(DECODE(C.PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)+CLASS_HOUR)||':00' AS PERIOD
+  				, CLASS_HOUR, CLASS_NOS
+                , CLASS_NOS - NVL(A.COUNT_CLASS,0) AS SPARE_NOS
+                , EXPLAIN, CREDIT, DIVISION, C.STATUS
+		FROM (SELECT CLASS_NO, COUNT(*) AS COUNT_CLASS
+		      FROM SCHEDULE
+		      GROUP BY CLASS_NO) A
+		RIGHT JOIN CLASS C USING(CLASS_NO)
+		LEFT JOIN PROFESSOR P USING(PROFESSOR_NO)
+		LEFT JOIN DEPARTMENT D ON(C.DEPARTMENT_NO = D.DEPARTMENT_NO)
+		WHERE C.DEPARTMENT_NO = (SELECT DEPARTMENT_NO
+		                        FROM DEPARTMENT
+		                        WHERE DEPARTMENT_NAME = #{department})
+		      AND CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND C.STATUS = 'Y'
+		ORDER BY CLASS_LEVEL
+  	</select>
+  	
+  	<!-- 강의시간표 -> 학년도,학기 조회 -->
+  	<select id="selectClassTerm" resultType="string">
+  		SELECT CLASS_YEAR||'0'||CLASS_TERM
+		FROM CLASS
+		GROUP BY CLASS_YEAR, CLASS_TERM
+  	</select>
+  	
+  	<!-- (학생)상담신청 내역 가져오기 -->
+  	<select id="selectCounStuList" resultMap="counselingMap">
+  		SELECT COUNSEL_NO,APPLICATION_DATE,REQUEST_DATE,COUNSEL_CONTENT,PROFESSOR_NAME,COUNSEL_AREA,C.STATUS
+  		FROM COUNSELING C
+  		JOIN PROFESSOR P USING (PROFESSOR_NO)
+  		WHERE STUDENT_NO = #{studentNo}
+  		ORDER BY COUNSEL_NO DESC
+	 </select>
+  	
+  	<!-- 학과명으로 확과번호 조회 -->
+  	<select id="selectDepartmentNo" resultMap="departmentMap">
+  		SELECT DEPARTMENT_NO
+  		FROM DEPARTMENT
+  		WHERE DEPARTMENT_NAME = #{departmentNo}
+  	</select>
+  	
+  	<!-- 상담신청 - 학과별 교수리스트 조회 -->
+  	<select id="selectDepartProList" resultMap="loginProfessorMap">
+  		SELECT PROFESSOR_NO,PROFESSOR_NAME,DEPARTMENT_NAME,POSITION,EMAIL
+  		FROM PROFESSOR
+  		JOIN DEPARTMENT USING(DEPARTMENT_NO)
+  		WHERE DEPARTMENT_NO = #{departmentNo}
+  		AND POSITION != '행정직원'
+  	</select>
+  	
+  	<!-- 상담신청 - 인서트 -->
+  	<insert id="insertCounseling">
+  		INSERT INTO COUNSELING(COUNSEL_NO,STUDENT_NO,PROFESSOR_NO,REQUEST_DATE,COUNSEL_AREA,COUNSEL_CONTENT)
+  		VALUES (SEQ_COUNO.NEXTVAL,#{studentNo},#{professorNo},#{requestDate},#{counselArea},#{counselContent})
+  	</insert>
+  	
+  	<!-- 상담 상세보기 -->
+  	<select id="selectCounseling" resultMap="counselingMap">
+  		SELECT *
+  		FROM COUNSELING
+  		WHERE COUNSEL_NO = #{counselNo}
+  	</select>
+  	
+  	<!-- 직번으로 교수정보조회 -->
+  	<select id="selectProfessorForNo" resultMap="loginProfessorMap">
+  		SELECT PROFESSOR_NO,PROFESSOR_NAME,DEPARTMENT_NAME,POSITION,EMAIL
+  		FROM PROFESSOR
+  		JOIN DEPARTMENT USING(DEPARTMENT_NO)
+  		WHERE PROFESSOR_NO = #{professorNo}
+  	</select>
+  	
+  	<!-- 상담요청내용 수정(학생) -->
+  	<update id="updateCounContent">
+  		UPDATE COUNSELING
+  		SET COUNSEL_CONTENT = #{counselContent}
+  		WHERE COUNSEL_NO = #{counselNo}
+  		AND STATUS = 'N'
+  	</update>
+  	
+  	<!-- 강의시간표 -> 교수명 검색/과목 검색 -->
+  	<select id="searchClassKeyword" parameterType="hashmap" resultMap="classResultMap">
+  		SELECT CLASS_NO, PROFESSOR_NAME, DEPARTMENT_NAME, C.FILE_NO, CLASS_NAME
+  				, DECODE(CLASS_LEVEL, '0', '전체학년', '1', '1학년', '2', '2학년', '3', '3학년', '4', '4학년') AS CLASS_LEVEL
+  				, CLASS_YEAR, CLASS_TERM, CLASSROOM
+  				, DECODE(DAY, '1', '월', '2', '화', '3', '수', '4', '목', '5', '금') AS DAY
+  				, DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)||':00 ~ '||(DECODE(PERIOD, '1', 9, '2', 10, '3', 11, '4', 12, '5', 13, '6', 14, '7', 15, '8', 16, '9', 17, '10', 18)+CLASS_HOUR)||':00' AS PERIOD
+  				, CLASS_HOUR, CLASS_NOS
+  				, CLASS_NOS - NVL(A.COUNT_CLASS,0) AS SPARE_NOS
+  				, EXPLAIN, CREDIT, DIVISION, C.STATUS
+		FROM (SELECT CLASS_NO, COUNT(*) AS COUNT_CLASS
+		      FROM SCHEDULE
+		      GROUP BY CLASS_NO) A
+		RIGHT JOIN CLASS C USING(CLASS_NO)
+		LEFT JOIN PROFESSOR P USING(PROFESSOR_NO)
+		LEFT JOIN DEPARTMENT D ON(C.DEPARTMENT_NO = D.DEPARTMENT_NO)
+		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND C.STATUS = 'Y'
+		<if test="condition == 'professor'">
+			AND PROFESSOR_NAME
+		</if>
+		<if test="condition == 'subject'">
+			AND CLASS_NAME
+		</if>
+		LIKE '%'||#{keyword}||'%'
+		ORDER BY CLASS_LEVEL
+  	</select>
+  	
+  	<update id="updateStudent">
+  	UPDATE STUDENT 
+  	SET PHONE = #{phone},
+  			EMAIL = #{email},
+  			POST = #{post},
+  			ADDRESS =#{address}
+  	WHERE STUDENT_NO =#{studentNo}
+  	</update>
+  	
+  	<!-- 교수 학적정보 변경 -->
+  	<update id ="updateProfessor">
+  	UPDATE PROFESSOR
+  	SET PHONE = #{phone},
+  		EMAIL = #{email},
+  		POST = #{post},
+  		ADDRESS = #{address}
+  	WHERE PROFESSOR_NO = #{professorNo}
+  	</update>
+  	  	
+  	<!-- 개인시간표 -> 학년도,학기 조회 -->
+  	<select id="selectClassTerm2" resultType="string">
+  		SELECT CLASS_YEAR||'0'||CLASS_TERM
+		FROM CLASS
+		LEFT JOIN SCHEDULE USING(CLASS_NO)
+		WHERE STUDENT_NO = #{studentNo}
+		GROUP BY CLASS_YEAR, CLASS_TERM
+  	</select>
+>>>>>>> refs/remotes/origin/main
   </mapper>
