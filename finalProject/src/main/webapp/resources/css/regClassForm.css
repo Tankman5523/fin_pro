@@ -186,3 +186,23 @@ input[name = sub_div2_radio]:checked+label{
 .postMcTable>tbody td{
     height: 50px;
 }
+#postReg_div{
+    display: flex;
+}
+
+#sumCredit_span{
+    margin-left: auto;
+    margin-right: 15px;
+}
+
+#sumCredit{
+    text-indent: 8px;
+    cursor: auto;
+    border: 1px solid rgba(118, 118, 118, 0.3);
+    border-radius: 5px;
+    background-color: rgba(239, 239, 239, 0.3);
+}
+
+#sumCredit:focus{
+    outline: none;
+}
