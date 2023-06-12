@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,7 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
-import com.univ.fin.common.model.vo.Classes;
+import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.template.DepartmentCategory;
 import com.univ.fin.member.model.service.MemberService;
@@ -35,6 +37,29 @@ public class StudentController {
 		return "member/student/registerClass";
 	}
 	
+	//예비수강신청 폼
+	@GetMapping("preRegisterClass.st")
+	public String preRegisterClassForm() {
+		return "member/student/preRegisterClass";
+	}
+	
+	//예비수강신청 - 수강담기
+	@ResponseBody
+	@PostMapping("preRegisterClass.st")
+	public String preRegisterClass(Bucket b) {
+		
+		int result = 0;
+		
+		//예비수강 중복체크
+		int chkClass = memberService.checkPre(b); 
+		
+		if(chkClass == 0) {
+			result = memberService.preRegisterClass(b);
+		}
+		
+		return new Gson().toJson(result);
+	}
+	
 	//수강신청 - 수강신청(전공 카테고리조회)
 	@ResponseBody
 	@RequestMapping(value="selectCollegeNo.st",produces = "application/json; charset=UTF-8")
@@ -47,12 +72,24 @@ public class StudentController {
 		return new Gson().toJson(list);
 	}
 	
-	//수강신청 - 수강신청 (학부전공별 조회)
+	//수강신청 - 수강신청
 	@ResponseBody
 	@RequestMapping(value="majorClass.st",produces = "application/json; charset=UTF-8")
-	public String majorClassList(String departmentName) {
+	public String majorClassList(@RequestParam(value="departmentName",defaultValue = "교양")String departmentName,RegisterClass rc) {
 		
-		ArrayList<RegisterClass> list = memberService.majorClass(departmentName);
+		String term = String.valueOf(rc.getClassTerm().charAt(0));
+		
+		RegisterClass rc2 = RegisterClass.builder()
+										 .classYear(rc.getClassYear())
+										 .classTerm(term)
+										 .departmentName(departmentName)
+										 .professorName(rc.getProfessorName())
+										 .className(rc.getClassName())
+										 .studentNo(rc.getStudentNo())
+										 .build();
+		
+		ArrayList<RegisterClass> list = memberService.preClass(rc2);
+//		ArrayList<RegisterClass> list = memberService.majorClass(rc2);
 		
 		return new Gson().toJson(list);
 	}
@@ -76,7 +113,13 @@ public class StudentController {
 	
 	//상담관리 - 상담조회페이지 이동
 	@RequestMapping("counselingList.st")
-	public String counselingList() {
+	public String counselingList(HttpSession session,Model m) {
+		
+		String studentNo =((Student)session.getAttribute("loginUser")).getStudentNo();
+		
+		ArrayList<Counseling> list = memberService.selectCounStuList(studentNo);
+		
+		m.addAttribute("list",list);
 		
 		return "member/student/st_counseling_list";
 	}
@@ -92,11 +135,61 @@ public class StudentController {
 	@RequestMapping(value="departmentProList.st",produces = "application/json; charset = UTF-8")
 	public String selectDepartProList(String departmentNo) {
 		
-		//학과별 교수 조회해서 가져가기
-		ArrayList<Professor> list = memberService.selectDepartProList(departmentNo);
-		
-		return new Gson().toJson(list);
+	//학과별 교수 조회해서 가져가기
+	ArrayList<Professor> list = memberService.selectDepartProList(departmentNo);
+	
+	return new Gson().toJson(list);
 	} 
+	
+	//상담신청 - 상담신청 작성
+	@RequestMapping(value="insertCounseling.st",method =RequestMethod.POST)
+	public ModelAndView insertCounseling(Counseling c,ModelAndView mv) {
+		
+		int result = memberService.insertCounseling(c);
+		
+		if(result>0) {
+			mv.addObject("alertMsg", "상담신청 성공");
+			mv.setViewName("redirect:counselingList.st");
+		}else {
+			mv.addObject("errorMsg", "상담신청 실패");
+			mv.setViewName("common/errorPage");
+		}
+		return mv;
+	}
+	
+	//상담관리 - 상담 상세보기
+	@RequestMapping("stuCounDetail.st")
+	public String StudentcounDetail(int counselNo,Model m) {
+		
+		Counseling c = memberService.selectCounseling(counselNo);
+		
+		Professor p = memberService.selectProfessorForNo(c.getProfessorNo());
+		
+		m.addAttribute("c",c);
+		m.addAttribute("p",p);
+		
+		return "member/student/st_counseling_detail";
+	}
+	
+	
+	@RequestMapping(value="counselingUpdate.st",method =RequestMethod.POST)
+	public ModelAndView StuCounUpdate(Counseling c,ModelAndView mv) {
+		
+		
+		
+		int result = memberService.updateCounContent(c);
+		
+		if(result>0) {
+			mv.addObject("counselNo",c.getCounselNo());
+			mv.setViewName("redirect:stuCounDetail.st");
+		}else {
+			mv.addObject("errorMsg", "상담신청 실패");
+			mv.setViewName("common/errorPage");
+		}
+		
+		return mv;
+	}
+	
 	
 		//학적 정보조회 - 학생
 			@RequestMapping("infoStudent.st")
@@ -153,5 +246,6 @@ public class StudentController {
 			return "member/student/infoStudent";
 				
 			}
+		
 	
 }

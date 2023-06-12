@@ -16,6 +16,7 @@
 <!-- Latest compiled JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <link rel="stylesheet" href="/fin/resources/css/adminPageStylesheet.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 	<div id="header">
@@ -28,7 +29,7 @@
 					${loginUser.professorName}님 환영합니다.
 		        </td>
 		        <td style="padding-left: 50px;">
-		            <button type="button" class="btn btn-primary" onclick="">로그아웃</button>
+		            <button type="button" class="btn btn-primary" onclick="location.href='logout.me'">로그아웃</button>
 		        </td>
 	    	</tr>
 		</table>

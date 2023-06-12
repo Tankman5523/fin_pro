@@ -1,5 +1,8 @@
 package com.univ.fin.member.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.Cookie;
@@ -17,11 +20,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.template.Sms;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
@@ -57,8 +62,10 @@ public class MemberController {
 			
 			Student loginUser = memberService.loginStudent(st);
 			
-			if(loginUser != null) { //로그인 되었을때만 쿠키 생성 및 저장
-				
+			if(loginUser == null) { //로그인 되었을때만 쿠키 생성 및 저장
+				session.setAttribute("alertMsg", "잘못 입력하셨습니다. 다시 입력해주세요");
+				mv.setViewName("member/login");
+			}else {
 				Cookie cookie = null;
 				
 				if(saveId != null && saveId.equals("on")) {
@@ -70,10 +77,9 @@ public class MemberController {
 					cookie.setMaxAge(0);
 					response.addCookie(cookie);
 				}
+				session.setAttribute("loginUser", loginUser);
+				mv.setViewName("common/student_category");
 			}
-			
-			session.setAttribute("loginUser", loginUser);
-			mv.setViewName("common/student_category");
 			
 		}else if(userNo.charAt(0) == 'P'){ //임직원 로그인
 			
@@ -81,8 +87,10 @@ public class MemberController {
 			
 			Professor loginUser = memberService.loginProfessor(pr);
 			
-			if(loginUser != null) { //로그인 되었을때만 쿠키 생성 및 저장
-				
+			if(loginUser == null) { //로그인 되었을때만 쿠키 생성 및 저장
+				session.setAttribute("alertMsg", "잘못 입력하셨습니다. 다시 입력해주세요");
+				mv.setViewName("member/login");
+			}else {
 				Cookie cookie = null;
 				
 				if(saveId != null && saveId.equals("on")) {
@@ -94,24 +102,33 @@ public class MemberController {
 					cookie.setMaxAge(0);
 					response.addCookie(cookie);
 				}
+				
+				if(loginUser.getAdmin() == 1) { // 교수 로그인
+					
+					session.setAttribute("loginUser", loginUser);
+					mv.setViewName("common/professor_category");
+					
+				}else { // 관리자 로그인
+					
+					session.setAttribute("loginUser", loginUser);
+					mv.setViewName("common/admin_category");
+				}
+				
 			}
 			
-			if(loginUser.getAdmin() == 1) { // 교수 로그인
-				
-				session.setAttribute("loginUser", loginUser);
-				mv.setViewName("common/professor_category");
-				
-			}else { // 관리자 로그인
-				
-				session.setAttribute("loginUser", loginUser);
-				mv.setViewName("common/admin_category");
-			}
 		}else {
 			session.setAttribute("alertMsg", "잘못 입력하셨습니다. 다시 입력해주세요");
 			mv.setViewName("member/login");
 		}
 		
 		return mv;
+	}
+	
+	//로그아웃 메소드
+	@GetMapping("logout.me")
+	public String logoutUser(HttpSession session) {
+		session.removeAttribute("loginUser");
+		return "redirect:infoSystem.mp";
 	}
 	
 	//ID찾기 폼 메소드
@@ -377,7 +394,7 @@ public class MemberController {
 	}
 	
 	//비밀번호 초기화 - 비밀번호 변경 메소드
-	@ResponseBody
+	@ResponseBody 
 	@RequestMapping("changePwd.me")
 	public String changePwd(String password, String memberNo,HttpSession session) {
 		
@@ -400,4 +417,57 @@ public class MemberController {
 		return new Gson().toJson(result);
 	}
 	
+	// 강의시간표 -> 단과대학별 전공 조회
+	@ResponseBody 
+	@RequestMapping(value = "selectDepart.me", produces = "application/json; charset=UTF-8;")
+	public String selectDepart(String college) {
+		ArrayList<String> dList = memberService.selectDepert(college);
+		return new Gson().toJson(dList);
+	}
+
+	// 강의시간표 -> 전공 선택 후 전공수업 조회/교양수업 조회
+	@ResponseBody
+	@RequestMapping(value = "selectDepartment.me", produces = "application/json; charset=UTF-8;")
+	public String selectDepartment(@RequestParam HashMap<String,String> map) {
+		ArrayList<Classes> cList = memberService.selectDepartment(map);
+		return new Gson().toJson(cList);
+	}
+
+	//교수 학적정보 조회
+	@RequestMapping("infoProfessor.me")
+	public String infoProfessor() {
+		
+		return "member/professor/infoProfessor";
+	}
+	
+	//학적 정보수정 - 교수
+	@RequestMapping("updateProfessor.me")
+	public ModelAndView updateProfessor(Professor pr,
+									ModelAndView mv,
+									HttpSession session) {
+		int result = memberService.updateProfessor(pr);
+		
+		
+		if(result>0) {
+			//유저 정보갱신
+			Professor updateStudent = memberService.loginProfessor(pr);
+			session.setAttribute("loginUser", updateStudent);
+			session.setAttribute("alertMsg", "수정 완료");
+			mv.setViewName("redirect:infoProfessor.me");
+		}else { //정보변경실패
+			mv.addObject("errorMsg","수정 실패함요").setViewName("redirect:infoProfessor.me");
+		}
+		
+	return mv;
+		
+	}
+	
+	// 강의시간표 -> 교수명 검색/과목 검색
+	@ResponseBody
+	@RequestMapping(value = "searchClassKeyword.me", produces = "application/json; charset=UTF-8;")
+	public String searchClassKeyword(@RequestParam HashMap<String,String> map) {
+		ArrayList<Classes> cList = memberService.searchClassKeyword(map);
+		return new Gson().toJson(cList);
+	}
+
 }

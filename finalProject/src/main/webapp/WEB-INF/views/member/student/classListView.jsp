@@ -5,103 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>강의시간표</title>
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-	<style>
-        .b_line {
-            border: 0.5px solid lightgray;
-            margin: 20px 0px;
-        }
-
-        .page_title {
-            margin-top: 5px;
-            margin-left: 5px;
-            margin-bottom: 0px;
-            font-weight: bold;
-        }
-
-        .selectTerm {
-            display: flex;
-            align-items: center;
-        }
-
-        .selectTerm * {
-            margin-left: 10px;
-        }
-
-        #selectList {
-            border-radius: 10px;
-            margin-left: 20px;
-        }
-
-        input[name=search_category] {
-            opacity: 0;
-            margin: 0 10px;
-        }
-
-        input[name=search_category]+label:hover {
-            cursor: pointer;
-        }
-
-        input[name=search_category]:checked+label {
-        	font-weight: 550;
-            color:#00aeff;
-            border-bottom: 2px solid #00aeff;
-        }
-        
-        .content_major {
-        	padding-top: 10px;
-        }
-        
-        #college {
-        	margin-left: 2%;
-        }
-
-        div[class*=content] {
-            margin: 0 auto;
-            width: 100%;
-            height: 77%;
-            display: none;
-            border: 1px solid red;
-        }
-        
-        .table-area {
-        	width: 100%;
-        	height: 92%;
-        	overflow: auto;
-        }
-        
-        .table-area2 {
-        	width: 100%;
-        	height: 100%;
-        	overflow: auto;
-        }
-        
-        .table-area3, .table-area4 {
-        	width: 100%;
-        	height: 95%;
-        	overflow: auto;
-        }
-        
-        table[id*=class] {
-			width: 100%;
-			text-align: center;
-			border-collapse: collapse;
-		}
-		
-		table[id*=class]>thead {
-			background-color: rgb(250, 250, 133);
-        	position: sticky;
-        	top: 0;
-		}
-		
-		table[id*=class]>tbody>tr {
-			border-bottom: 0.5px solid lightgray;
-		}
-
-		table[id*=class] td {
-			border-left: 1px solid lightgray;
-		}
-    </style>
+<link rel="stylesheet" href="resources/css/classListView.css">
 </head>
 <body>
 	<div class="wrap">
@@ -124,7 +28,7 @@
                     <a href="#">수강신청 내역조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">예비수강신청</a>
+                    <a href="preRegisterClass.st">예비수강신청</a>
                 </div>
             </div>
             <div id="content_1">
@@ -144,7 +48,7 @@
                                         </select>
                     <span>학기: </span> <select name="term" id="term">
                                        </select>
-                    <button type="button" class="btn btn-outline-primary btn-sm" id="selectList" onclick="prevTerm();">이전 학기</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm" id="selectList" style="margin-left:2%;" onclick="prevTerm();">이전 학기</button>
                     <button type="button" class="btn btn-outline-primary btn-sm" id="selectList" style="margin-left:0;" onclick="nextTerm();">다음 학기</button>
                 </div>
                 <br>
@@ -157,40 +61,42 @@
                 
                 <!-- 학부 전공별 -->
                 <div class="content_major">
-                    <select name="colleage" id="college" onchange="selectCollege(this);">
-                        <option value=""> ==단과대학== </option>
-                        <option value="인문대학">인문대학</option>
-                        <option value="사회과학대학">사회과학대학</option>
-                        <option value="교육대학">교육대학</option>
-                        <option value="자연대학">자연대학</option>
-                        <option value="공학대학">공학대학</option>
-                        <option value="미술대학">미술대학</option>
-                        <option value="예술대학">예술대학</option>
-                    </select>
-                    <select name="department" id="department">
-                        <option value=""> ====전공==== </option>
-                    </select>
-                    <button type="button" class="btn btn-primary btn-sm" id="selectList" onclick="selectMajor();">조회</button>
-                    <br><br>
+                	<div class="setting_div">
+	                    <select name="colleage" id="college" style="margin-left: 2%;" onchange="selectCollege(this);">
+	                        <option value=""> ==단과대학== </option>
+	                        <option value="인문대학">인문대학</option>
+	                        <option value="사회과학대학">사회과학대학</option>
+	                        <option value="교육대학">교육대학</option>
+	                        <option value="자연대학">자연대학</option>
+	                        <option value="공학대학">공학대학</option>
+	                        <option value="미술대학">미술대학</option>
+	                        <option value="예술대학">예술대학</option>
+	                    </select>
+	                    <select name="department" id="department">
+	                        <option value=""> ====전공==== </option>
+	                    </select>
+	                    <button type="button" class="btn btn-primary btn-sm" id="selectList" onclick="selectMajor();">조회</button>
+                	</div>
+                    <br>
                     
                     <div class="table-area">
 	                    <table id="class-table">
 	                    	<thead>
 	                    		<tr>
-	                    			<td width="3%" style="border: 0;"></td> <!-- 강의계획서 첨부파일 -->
-	                    			<td width="7%">강의번호</td>
-	                    			<td width="20%">강의명</td>
-	                    			<td width="7%">교수명</td>
-	                    			<td width="12%">개설학과</td>
-	                    			<td width="3%">학점</td>
-	                    			<td width="3%">수강인원</td>
-	                    			<td width="3%">여석</td>
-	                    			<td width="27%">강의시간 (강의실)</td>
-	                    			<td width="6%">수강대상</td>
+	                    			<th width="3%" style="border: 0;"></th> <!-- 강의계획서 첨부파일 -->
+	                    			<th width="6%">강의번호</th>
+	                    			<th width="20%">강의명</th>
+	                    			<th width="7%">교수명</th>
+	                    			<th width="12%">개설학과</th>
+	                    			<th width="3%">학점</th>
+	                    			<th width="3%">수강인원</th>
+	                    			<th width="3%">여석</th>
+	                    			<th width="26%">강의시간 (강의실)</th>
+	                    			<th width="8%">수강대상</th>
 	                    		</tr>
 	                    	</thead>
 	                    	<tbody id="class-table-tbody">
-	                    		<tr>
+	                    		<tr class="no-hover">
 	                    			<td colspan="10" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
 	                    		</tr>
 	                    	</tbody>
@@ -204,19 +110,21 @@
 	                    <table id="class-table2">
 	                    	<thead>
 	                    		<tr>
-	                    			<td width="3%" style="border: 0;"></td> <!-- 강의계획서 첨부파일 -->
-	                    			<td width="7%">강의번호</td>
-	                    			<td width="20%">강의명</td>
-	                    			<td width="7%">교수명</td>
-	                    			<td width="3%">학점</td>
-	                    			<td width="3%">수강인원</td>
-	                    			<td width="3%">여석</td>
-	                    			<td width="27%">강의시간 (강의실)</td>
+	                    			<th width="3%" style="border: 0;"></th> <!-- 강의계획서 첨부파일 -->
+	                    			<th width="6%">강의번호</th>
+	                    			<th width="20%">강의명</th>
+	                    			<th width="7%">교수명</th>
+	                    			<th width="12%">개설학과</th>
+	                    			<th width="3%">학점</th>
+	                    			<th width="3%">수강인원</th>
+	                    			<th width="3%">여석</th>
+	                    			<th width="26%">강의시간 (강의실)</th>
+	                    			<th width="8%">수강대상</th>
 	                    		</tr>
 	                    	</thead>
 	                    	<tbody id="class-table-tbody2">
-	                    		<tr>
-	                    			<td colspan="8" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
+	                    		<tr class="no-hover">
+	                    			<td colspan="10" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
 	                    		</tr>
 	                    	</tbody>
 	                    </table>
@@ -225,14 +133,68 @@
                 
                 <!-- 교수명 검색 -->
                 <div class="content_searchPro">
-                	<span>교수: </span> <input type="text" name="professorName" id="professorName">
-                	<button type="button" class="btn btn-primary btn-sm" id="selectList">검색</button>
+                	<div class="setting_div">
+	                	<input type="text" name="professorName" id="professorName" placeholder="교수명을 입력하세요." style="margin-left: 2%; width:20%;">
+	                	<button type="button" class="btn btn-primary btn-sm" id="selectList" onclick="searchProfessor();">검색</button>
+                	</div>
+                	<br>
+                	
+                	<div class="table-area3">
+	                    <table id="class-table3">
+	                    	<thead>
+	                    		<tr>
+	                    			<th width="3%" style="border: 0;"></th> <!-- 강의계획서 첨부파일 -->
+	                    			<th width="6%">강의번호</th>
+	                    			<th width="20%">강의명</th>
+	                    			<th width="7%">교수명</th>
+	                    			<th width="12%">개설학과</th>
+	                    			<th width="3%">학점</th>
+	                    			<th width="3%">수강인원</th>
+	                    			<th width="3%">여석</th>
+	                    			<th width="26%">강의시간 (강의실)</th>
+	                    			<th width="8%">수강대상</th>
+	                    		</tr>
+	                    	</thead>
+	                    	<tbody id="class-table-tbody3">
+	                    		<tr class="no-hover">
+	                    			<td colspan="10" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
+	                    		</tr>
+	                    	</tbody>
+	                    </table>
+	               	</div>
                 </div>
                 
                 <!-- 과목 검색 -->
                 <div class="content_searchSub">
-                	<span>검색어: </span> <input type="text" name="subjectName" id="subjectName">
-                	<button type="button" class="btn btn-primary btn-sm" id="selectList">검색</button>
+                	<div class="setting_div">
+                		<input type="text" name="subjectName" id="subjectName" placeholder="검색어를 입력하세요." style="margin-left: 2%; width:20%;">
+	                	<button type="button" class="btn btn-primary btn-sm" id="selectList" onclick="searchSubject();">검색</button>
+                	</div>
+                	<br>
+                	
+                	<div class="table-area4">
+	                    <table id="class-table4">
+	                    	<thead>
+	                    		<tr>
+	                    			<th width="3%" style="border: 0;"></th> <!-- 강의계획서 첨부파일 -->
+	                    			<th width="6%">강의번호</th>
+	                    			<th width="20%">강의명</th>
+	                    			<th width="7%">교수명</th>
+	                    			<th width="12%">개설학과</th>
+	                    			<th width="3%">학점</th>
+	                    			<th width="3%">수강인원</th>
+	                    			<th width="3%">여석</th>
+	                    			<th width="26%">강의시간 (강의실)</th>
+	                    			<th width="8%">수강대상</th>
+	                    		</tr>
+	                    	</thead>
+	                    	<tbody id="class-table-tbody4">
+	                    		<tr class="no-hover">
+	                    			<td colspan="10" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
+	                    		</tr>
+	                    	</tbody>
+	                    </table>
+	               	</div>
                 </div>
 
                 <script>
@@ -308,14 +270,16 @@
 	                }
 	
 	                function selectCategory() {
+                		$("#college").val("");
+                		$("#department").val("");
+                		$("#professorName").val("");
+                		$("#subjectName").val("");
 	                	$("div[class*=content]").each(function() {
-	                		$("#college").val("");
-	                		$("#department").val("");
-	                		$("#professorName").val("");
-	                		$("#subjectName").val("");
-	                		$("#class-table-tbody").html("<tr style='border: 0;'><td colspan='10' style='border: 0;'>해당 테이블에 데이터가 없습니다.</td></tr>");
                             $(this).css("display", "none");
                         });
+	                	$("tbody[id*=tbody]").each(function() {
+	                		$(this).html("<tr class='no-hover' style='border: 0;'><td colspan='10' style='border: 0;'>해당 테이블에 데이터가 없습니다.</td></tr>");
+	                	})
 	                	
 	                    if($('#major').is(':checked')){
 	                        $(".content_major").css("display", "block");
@@ -324,37 +288,16 @@
 	                        $(".content_elective").css("display", "block");
 	                        
 	                        $.ajax({
-	                        	url: "selectElective.me",
+	                        	url: "selectDepartment.me",
 	                        	data: {
+	                        		department: "교양",
 	                        		year: $("#year").val(),
 	                				term: $("#term").val()
 	                        	},
 	                        	success: function(cList) {
-	                        		if(cList != "") {
-	                        			var str = "";
-	                					for(var i=0;i<cList.length;i++) {
-		                					str += "<tr>";
-		                					if(cList[i].fileNo == 0) {
-		                						str += "<td style='border-left: 0;'></td>";
-		                					}
-		                					else { // 클릭하면 강의계획서 볼 수 있게
-		                						str += "<td style='border-left: 0;'><i class='fa-solid fa-file-pdf fa-sm' style='color: #7cd7fe;'></i></td>";
-		                					}
-	                						 str += "<td>" + cList[i].classNo + "</td>"
-	                						 + "<td>" + cList[i].className + "</td>"
-	                						 + "<td>" + cList[i].professorNo + "</td>"
-	                						 + "<td>" + cList[i].credit + "</td>"
-	                						 + "<td>" + cList[i].classNos + "</td>"
-	                						 + "<td>" + cList[i].classNos + "</td>" // 여석 계산**********************
-	                						 + "<td>" + cList[i].day + " " + cList[i].period + " (" + cList[i].classroom + ")" + "</td>"
-		                				}
-		                				$("#class-table-tbody2").empty();
-		                				$("#class-table-tbody2").append(str);
-	                				}
-	                				else {
-	                					$("#class-table-tbody2").empty();
-	                					$("#class-table-tbody2").append("<td colspan='8' style='border: 0;''>해당 테이블에 데이터가 없습니다.</td>");
-	                				}
+	                        		var str = drawTable(cList);
+	                				$("#class-table-tbody2").empty();
+	                				$("#class-table-tbody2").append(str);
 	                        	},
 	                        	error: function() {
 	                        		console.log("통신 오류");
@@ -392,50 +335,95 @@
 	                
 	                function selectMajor() {
 	                	var $department = $("#department").val();
-	                	var str = "";
 	                	
 	                	if($department != "") {
 	                		$.ajax({
-	                			url: "selectDepartmentMajor.me",
+	                			url: "selectDepartment.me",
 	                			data: {
 	                				department: $department,
 	                				year: $("#year").val(),
 	                				term: $("#term").val()
 	                			},
 	                			success: function(cList) {
-	                				if(cList != "") {
-	                					for(var i=0;i<cList.length;i++) {
-		                					str += "<tr>";
-		                					if(cList[i].fileNo == 0) {
-		                						str += "<td style='border-left: 0;'></td>";
-		                					}
-		                					else { // 클릭하면 강의계획서 볼 수 있게
-		                						str += "<td style='border-left: 0;'><i class='fa-solid fa-file-pdf fa-sm' style='color: #7cd7fe;'></i></td>";
-		                					}
-	                						 str += "<td>" + cList[i].classNo + "</td>"
-	                						 + "<td>" + cList[i].className + "</td>"
-	                						 + "<td>" + cList[i].professorNo + "</td>"
-	                						 + "<td>" + cList[i].departmentNo + "</td>"
-	                						 + "<td>" + cList[i].credit + "</td>"
-	                						 + "<td>" + cList[i].classNos + "</td>"
-	                						 + "<td>" + cList[i].classNos + "</td>" // 여석 계산**********************
-	                						 + "<td>" + cList[i].day + " " + cList[i].period + " (" + cList[i].classroom + ")" + "</td>"
-	                						 + "<td>" + cList[i].classLevel + "학년 </td>";
-		                				}
-		                				$("#class-table-tbody").empty();
-		                				$("#class-table-tbody").append(str);
-	                				}
-	                				else {
-	                					alert("검색 결과가 없습니다.");
-	                					$("#class-table-tbody").empty();
-	                					$("#class-table-tbody").append("<td colspan='10' style='border: 0;''>해당 테이블에 데이터가 없습니다.</td>");
-	                				}
+	                				var str = drawTable(cList);
+	                				$("#class-table-tbody").empty();
+	                				$("#class-table-tbody").append(str);
 	                			},
 	                			error: function() {
 	                				console.log("통신 오류");
 	                			}
 	                		})
 	                	}
+	                }
+	                
+	                function searchProfessor() {
+	                	$.ajax({
+	                		url: "searchClassKeyword.me",
+	                		data: {
+	                			condition: "professor",
+	                			keyword: $("#professorName").val(),
+                				year: $("#year").val(),
+                				term: $("#term").val()
+	                		},
+	                		success: function(cList) {
+	                			var str = drawTable(cList);
+	                			$("#class-table-tbody3").empty();
+                				$("#class-table-tbody3").append(str);
+	                		},
+	                		error: function() {
+	                			console.log("통신 오류");
+	                		}
+	                	})
+	                }
+	                
+	                function searchSubject() {
+	                	$.ajax({
+	                		url: "searchClassKeyword.me",
+	                		data: {
+	                			condition: "subject",
+	                			keyword: $("#subjectName").val(),
+                				year: $("#year").val(),
+                				term: $("#term").val()
+	                		},
+	                		success: function(cList) {
+	                			var str = drawTable(cList);
+	                			$("#class-table-tbody4").empty();
+                				$("#class-table-tbody4").append(str);
+	                		},
+	                		error: function() {
+	                			console.log("통신 오류");
+	                		}
+	                	})
+	                }
+	                
+	                function drawTable(cList) {
+	                	var str = "";
+            			if(cList != "") {
+        					for(var i=0;i<cList.length;i++) {
+            					str += "<tr>";
+            					if(cList[i].fileNo == 0) {
+            						str += "<td style='border-left: 0;'></td>";
+            					}
+            					else { // 클릭하면 강의계획서 볼 수 있게
+            						str += "<td style='border-left: 0;'><i class='fa-solid fa-file-pdf fa-sm' style='color: #7cd7fe;'></i></td>";
+            					}
+        						 str += "<td>" + cList[i].classNo + "</td>"
+        						 + "<td>" + cList[i].className + "</td>"
+        						 + "<td>" + cList[i].professorNo + "</td>"
+        						 + "<td>" + cList[i].departmentNo + "</td>"
+        						 + "<td>" + cList[i].credit + "</td>"
+        						 + "<td>" + cList[i].classNos + "</td>"
+        						 + "<td>" + cList[i].spareNos + "</td>"
+        						 + "<td>" + cList[i].day + " " + cList[i].period + " (" + cList[i].classroom + ")" + "</td>"
+        						 + "<td>" + cList[i].classLevel + "</td></tr>";
+            				}
+        				}
+        				else {
+        					alert("검색 결과가 없습니다.");
+        					str += "<tr class='no-hover'><td colspan='10' style='border: 0;''>해당 테이블에 데이터가 없습니다.</td></tr>";
+        				}
+            			
+            			return str;
 	                }
                 </script>
             </div>
