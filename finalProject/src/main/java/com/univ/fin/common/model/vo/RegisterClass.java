@@ -24,7 +24,7 @@ public class RegisterClass {
 	private String classTerm;		// 학기
 	private String studentNo;		// 학번
 	private String studentLevel;	// 학생학년
-	private int day;				// 요일
-	private int period;				// 교시
+	private String day;				// 요일
+	private String period;			// 교시
 	private int classHour;			// 시간
 }

@@ -270,8 +270,8 @@
 	            					studentLevel : "${loginUser.classLevel}"
 	            				},
 	            				success : function(list){
+            						result += "<input type='hidden' id='hiddenNum' value='"+num+"'>"
 	            					if(list.length !== 0){
-	            						result += "<input type='hidden' id='hiddenNum' value='"+num+"'>"
 		            					for(var i=0; i<list.length; i++){
 		            						result += "<tr ";
 		            								 if(i%2 == 0){
@@ -400,7 +400,7 @@
 													 +"<td>" + list[i].professorName + "</td>"
 													 +"<td>" + list[i].departmentName + "</td>"
 													 +"<td>" + list[i].creditHour + "</td>"
-													 +"<td>" + list[i].preclassNos + "</td>"
+													 +"<td>" + list[i].preClassNos + "</td>"
 													 +"<td>" + list[i].classInfo + "</td>"
 													 +"<td>" + list[i].classLevel + "</td>"
 													 +"<td><button>수강취소</button></td>"

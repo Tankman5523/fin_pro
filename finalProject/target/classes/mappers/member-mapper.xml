@@ -269,7 +269,8 @@
   		SELECT COLLEGE_NAME,CLASS_NO,CLASS_NAME,PROFESSOR_NAME,DEPARTMENT_NAME
 		,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR"
 		,((SELECT COUNT(*)
-		    FROM SCHEDULE
+           FROM (SELECT DISTINCT CLASS_NO, STUDENT_NO
+                 FROM SCHEDULE)
 		    WHERE CLASS_NO = C.CLASS_NO)|| '/' ||CLASS_NOS) "POSTCLASS_NOS"
 		,(DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
 		  DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
@@ -303,23 +304,13 @@
 						  DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년')
   	</select>
   	
-  	<!-- 수강신청 - 수강신청 (강의 인원수 체크) -->
-  	<select id="checkPostReg" resultType="_int">
-  		<![CDATA[ 
-			SELECT COUNT(*) COUNT
-			FROM SCHEDULE S
-			JOIN CLASS C ON (S.CLASS_NO = C.CLASS_NO)
-			WHERE (SELECT COUNT(*) 
-				   FROM SCHEDULE 
-				   WHERE CLASS_NO = #{classNo}) < CLASS_NOS
-	   ]]>
-  	</select>
-  	
-  	<!-- 수강신청 - 수강신청 (해당과목 조회) -->
-  	<select id="selectClass" parameterType="registerClass" resultMap="registerClassMap">
-  		SELECT DAY,PERIOD,CLASS_HOUR
-  		FROM CLASS
-  		WHERE CLASS_NO = #{classNo}
+  	<!-- 수강신청 - 수강신청 (해당강의 조회) -->
+  	<select id="selectClass" parameterType="classes" resultMap="classResultMap">
+		SELECT C.DAY,C.PERIOD,CLASS_HOUR,COUNT(S.CLASS_NO) "SPARE_NOS", CLASS_NOS
+  		FROM CLASS C
+        LEFT JOIN SCHEDULE S ON (C.CLASS_NO = S.CLASS_NO)
+  		WHERE C.CLASS_NO = #{classNo}
+        GROUP BY C.DAY, C.PERIOD, CLASS_HOUR, CLASS_NOS
   	</select>
   	
   	<!-- 수강신청 - 수강신청 (강의 시간 체크) -->
@@ -348,6 +339,40 @@
   	<insert id="postRegisterClass2">
   		INSERT INTO SCHEDULE VALUES(#{classNo},#{studentNo},#{day},#{period}+1)
   	</insert>
+  	
+  	<!-- 수강신청 - 수강신청내역 조회 -->
+  	<select id="postRegList" parameterType="registerClass" resultMap="registerClassMap">
+ 	  	SELECT COLLEGE_NAME,C.CLASS_NO,CLASS_NAME,PROFESSOR_NAME,DEPARTMENT_NAME
+		,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR"
+		,((SELECT COUNT(*)
+           FROM (SELECT DISTINCT CLASS_NO, STUDENT_NO
+                 FROM SCHEDULE)
+		    WHERE CLASS_NO = C.CLASS_NO)|| '/' ||CLASS_NOS) "POSTCLASS_NOS"
+		,(DECODE(C.DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
+		  DECODE(CLASS_HOUR,1,DECODE(C.PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
+		                    2,DECODE(C.PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) 
+		||' '|| CLASSROOM) "CLASS_INFO",
+		DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년') "CLASS_LEVEL"
+		FROM CLASS C
+		JOIN DEPARTMENT D ON (C.DEPARTMENT_NO = D.DEPARTMENT_NO)
+		JOIN COLLEGE CO ON (D.COLLEGE_NO = CO.COLLEGE_NO)
+		JOIN PROFESSOR P ON (P.PROFESSOR_NO = C.PROFESSOR_NO)
+        JOIN SCHEDULE S ON (C.CLASS_NO = S.CLASS_NO)
+		WHERE C.STATUS = 'Y'
+        AND S.STUDENT_NO = #{studentNo}
+        group by COLLEGE_NAME, C.CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DEPARTMENT_NAME, CLASS_NOS,
+                CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT), (DECODE(C.DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '|| 
+                DECODE(CLASS_HOUR,1,DECODE(C.PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'), 
+                                  2,DECODE(C.PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) ||' '|| CLASSROOM), 
+                DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년')
+  	</select>
+  	
+  	<!-- 수강신청 - 수강신청 (수강신청내역 수강취소) -->
+  	<delete id="delPostRegList">
+  		DELETE FROM SCHEDULE
+  		WHERE CLASS_NO = #{classNo}
+  		AND STUDENT_NO = #{studentNo}
+  	</delete>
   	
   	<!-- 강의시간표 -> 전공 선택 후 전공수업 조회/교양수업 조회 -->
   	<select id="selectDepartment" parameterType="hashmap" resultMap="classResultMap">

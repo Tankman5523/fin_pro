@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.template.DepartmentCategory;
@@ -139,36 +140,51 @@ public class StudentController {
 	@RequestMapping("postRegisterClass.st")
 	public String postRegisterClass(RegisterClass rc) {
 		
-		//강의 인원수 체크 (해당 과목의 수강인원이 되면 0을 반환,반환값은 0~해당 강의의 최대인원수 까지)
-		int check1 = memberService.checkPostReg(rc.getClassNo());
+		int result = 0; //최종 성공여부 변수
+		RegisterClass rc2 = null;
 		
-		int check2 = 0;
-		int result = 0;
-		RegisterClass rc3 = null;
+		//해당 강의 조회
+		Classes c = memberService.selectClass(rc.getClassNo());
 		
-		if(check1 != 0) {
-			//해당강의 조회
-			RegisterClass rc2 = memberService.selectClass(rc.getClassNo());
+		if(c.getSpareNos() != c.getClassNos()) { // 수강인원 체크 (신청인원이 수강인원보다 적을때)
+			rc2 = RegisterClass.builder().day(c.getDay())
+										 .period(c.getPeriod())
+										 .classHour(c.getClassHour())
+										 .studentNo(rc.getStudentNo())
+										 .classNo(rc.getClassNo())
+										 .build();
 			
-			rc3 = RegisterClass.builder().day(rc2.getDay())
-									   	 .period(rc2.getPeriod())
-									   	 .classHour(rc2.getClassHour())
-									   	 .studentNo(rc.getStudentNo())
-									   	 .classNo(rc.getClassNo())
-									   	 .build();
 			//강의 시간 체크 (0반환이라면 가능이라는 의미)
-			check2 = memberService.checkPostReg2(rc3);
+			int check = memberService.checkPostReg2(rc2);
+			
+			//수강신청 가능 여부 판별
+			if(check == 0) {
+				result = memberService.postRegisterClass(rc2);
+				if(rc2.getClassHour() == 2) { //2시간짜리 강의일 경우
+					result *= memberService.postRegisterClass2(rc2);
+				}
+			}
 		}
 		
-		//수강신청 가능 여부 판별
-		if(check1 != 0 && check2 == 0 ) {
-			result = memberService.postRegisterClass(rc3);
-			if(rc3.getClassHour() == 2) { //2시간짜리 강의일 경우
-				result *= memberService.postRegisterClass2(rc3);
-			}
-		}else {
-			result = 0;
-		}
+		return new Gson().toJson(result);
+	}
+	
+	//수강신청 - 수강신청 (수강신청내역 조회)
+	@ResponseBody
+	@RequestMapping(value="postRegList.st",produces = "application/json; charset=UTF-8")
+	public String postRegList(String studentNo) {
+		
+		ArrayList<RegisterClass> list = memberService.postRegList(studentNo);
+		
+		return new Gson().toJson(list);
+	}
+	
+	//수강신청 - 수강신청 (수강신청내역 수강취소)
+	@ResponseBody
+	@RequestMapping("delPostRegList.st")
+	public String delPostRegList(RegisterClass rc) {
+		
+		int result = memberService.delPostRegList(rc);
 		
 		return new Gson().toJson(result);
 	}
@@ -188,7 +204,7 @@ public class StudentController {
 		mv.addObject("classTerm", classTerm).setViewName("member/student/classListView");
 		return mv;
 	}
-	
+
 	//상담관리 - 상담조회페이지 이동
 	@RequestMapping("counselingList.st")
 	public String counselingList(HttpSession session,Model m) {
