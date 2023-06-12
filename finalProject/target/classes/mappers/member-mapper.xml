@@ -92,6 +92,7 @@
   		<result column="COUNSEL_RESULT" property="counselResult"/>
   		<result column="STATUS" property="status"/>
   	</resultMap>
+  	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
   		SELECT STUDENT_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,FILE_NO,STUDENT_NAME,STUDENT_PWD,
@@ -164,7 +165,7 @@
   		AND STATUS = 'Y'
   	</update>
   	
-  	  	<!-- 단과대학 전공 조회  -->
+  	<!-- 단과대학 전공 조회  -->
   	<select id="selectDepart" resultType="string">
   		SELECT DEPARTMENT_NAME
 		FROM DEPARTMENT
@@ -387,4 +388,12 @@
   	WHERE PROFESSOR_NO = #{professorNo}
   	</update>
   	
+  	<!-- 개인시간표 -> 학년도,학기 조회 -->
+  	<select id="selectClassTerm2" resultType="string">
+  		SELECT CLASS_YEAR||'0'||CLASS_TERM
+		FROM CLASS
+		LEFT JOIN SCHEDULE USING(CLASS_NO)
+		WHERE STUDENT_NO = #{studentNo}
+		GROUP BY CLASS_YEAR, CLASS_TERM
+  	</select>
   </mapper>

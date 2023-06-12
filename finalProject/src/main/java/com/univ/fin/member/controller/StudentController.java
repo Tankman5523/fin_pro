@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -135,10 +136,10 @@ public class StudentController {
 	@RequestMapping(value="departmentProList.st",produces = "application/json; charset = UTF-8")
 	public String selectDepartProList(String departmentNo) {
 		
-	//학과별 교수 조회해서 가져가기
-	ArrayList<Professor> list = memberService.selectDepartProList(departmentNo);
-	
-	return new Gson().toJson(list);
+		//학과별 교수 조회해서 가져가기
+		ArrayList<Professor> list = memberService.selectDepartProList(departmentNo);
+		
+		return new Gson().toJson(list);
 	} 
 	
 	//상담신청 - 상담신청 작성
@@ -222,30 +223,15 @@ public class StudentController {
 				
 			}
 	
-			//학생등록 페이지
-			@RequestMapping("enrollStudent.ad")
-			public String enrollStudent() {		
-				
-				return "member/student/enrollStudent";
-			}
-			
-			//학생등록 페이지 등록
-			@RequestMapping("insertStudent.ad")
-			public String insertStudent(Student st,
-										Model model,
-										HttpSession session) {
-			
-			int result = memberService.insertStudent(st);
-				
-			if(result>0) {
-				session.setAttribute("alertMsg", "회원가입 성공");
-				return "redirect:enrollStudent";
-			}else {
-				model.addAttribute("errorMsg","회원가입 실패");
-			}
-			return "member/student/infoStudent";
-				
-			}
+	// 학사관리 - 개인시간표
+	@RequestMapping("personalTimetable.st")
+	public ModelAndView personalTimetable(ModelAndView mv, HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
+		ArrayList<String> classTerm = memberService.selectClassTerm(studentNo);
 		
-	
+		mv.addObject("classTerm", classTerm).setViewName("member/student/personalTimetableView");
+		return mv;
+	}
+
 }

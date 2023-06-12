@@ -203,7 +203,7 @@
                 
 	                $(function() {
 	                    $(".content_major").css("display", "block");
-	                    changeYear($("#year"));
+	                    $("select[name=year]").children().eq(0).prop("selected", true).change();
 	                    
 	                	$(".selectTerm").on("change", "#term", function() {
 	                		selectCategory();
@@ -222,9 +222,11 @@
 	                		}
 	                	}
 	                	
-	                	str += "<option value='1'>1학기</option>";
-	                	if(count==2) {
-	                		str += "<option value='2'>2학기</option>";
+	                	if(count!=0) {
+		                	str += "<option value='1'>1학기</option>";
+		                	if(count==2) {
+		                		str += "<option value='2'>2학기</option>";
+		                	}
 	                	}
 	                	$("#term").empty();
 	                	$("#term").append(str);
@@ -401,11 +403,11 @@
             			if(cList != "") {
         					for(var i=0;i<cList.length;i++) {
             					str += "<tr>";
-            					if(cList[i].fileNo == 0) {
+            					if(cList[i].fileNo == null) {
             						str += "<td style='border-left: 0;'></td>";
             					}
             					else { // 클릭하면 강의계획서 볼 수 있게
-            						str += "<td style='border-left: 0;'><i class='fa-solid fa-file-pdf fa-sm' style='color: #7cd7fe;'></i></td>";
+            						str += "<td style='border-left: 0;'><i class='fa-solid fa-file-pdf fa-sm fileDown' style='color: #7cd7fe;'></i></td>";
             					}
         						 str += "<td>" + cList[i].classNo + "</td>"
         						 + "<td>" + cList[i].className + "</td>"
