@@ -162,4 +162,9 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.searchClassKeyword", map);
 	}
 
+	// 개인시간표 -> 학년도,학기 조회
+	public ArrayList<String> selectClassTerm(SqlSessionTemplate sqlSession, String studentNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectClassTerm2", studentNo);
+	}
+
 }

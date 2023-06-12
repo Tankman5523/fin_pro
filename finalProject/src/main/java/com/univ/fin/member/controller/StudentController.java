@@ -154,10 +154,10 @@ public class StudentController {
 	@RequestMapping(value="departmentProList.st",produces = "application/json; charset = UTF-8")
 	public String selectDepartProList(String departmentNo) {
 		
-	//학과별 교수 조회해서 가져가기
-	ArrayList<Professor> list = memberService.selectDepartProList(departmentNo);
-	
-	return new Gson().toJson(list);
+		//학과별 교수 조회해서 가져가기
+		ArrayList<Professor> list = memberService.selectDepartProList(departmentNo);
+		
+		return new Gson().toJson(list);
 	} 
 	
 	//상담신청 - 상담신청 작성
@@ -211,7 +211,7 @@ public class StudentController {
 	
 	
 		//학적 정보조회 - 학생
-			@RequestMapping("infoStudent.me")
+			@RequestMapping("infoStudent.st")
 			public String infoStudent() {		
 				
 				return "member/student/infoStudent";
@@ -219,9 +219,10 @@ public class StudentController {
 			
 			
 			//학적 정보수정 - 학생
-			@RequestMapping("updateStudent.me")
-			public ModelAndView updateStudent(Student st,
-											ModelAndView mv,
+			
+			@RequestMapping(value="updateStudent.st" , method = RequestMethod.POST)
+			public String updateStudent(Student st,
+											Model model,
 											HttpSession session) {
 				int result = memberService.updateStudent(st);
 				
@@ -231,40 +232,23 @@ public class StudentController {
 					//유저 정보갱신
 					Student loginUser = memberService.loginStudent(st);
 					session.setAttribute("loginUser", loginUser);
-					session.setAttribute("alertMsg", "수정 완료");
-					mv.setViewName("redirect:infoStudent.me");
+					model.addAttribute("msg", "수정 완료");
 				}else { //정보변경실패
-					mv.addObject("errorMsg","수정 실패함요").setViewName("redirect:infoStudent.me");
+					model.addAttribute("msg", "수정 실패");
 				}
 				
-			return mv;
-				
-			}
-	
-			//학생등록 페이지
-			@RequestMapping("enrollStudent.me")
-			public String enrollStudent() {		
-				
-				return "member/student/enrollStudent";
-			}
-			
-			//학생등록 페이지 등록
-			@RequestMapping("insertStudent.me")
-			public String insertStudent(Student st,
-										Model model,
-										HttpSession session) {
-			
-			int result = memberService.insertStudent(st);
-				
-			if(result>0) {
-				session.setAttribute("alertMsg", "회원가입 성공");
-				return "redirect:enrollStudent";
-			}else {
-				model.addAttribute("errorMsg","회원가입 실패");
-			}
 			return "member/student/infoStudent";
 				
 			}
-		
 	
+	// 학사관리 - 개인시간표
+	@RequestMapping("personalTimetable.st")
+	public ModelAndView personalTimetable(ModelAndView mv, HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
+		ArrayList<String> classTerm = memberService.selectClassTerm(studentNo);
+		
+		mv.addObject("classTerm", classTerm).setViewName("member/student/personalTimetableView");
+		return mv;
+	}
 }

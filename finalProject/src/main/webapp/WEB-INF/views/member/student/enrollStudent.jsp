@@ -5,6 +5,16 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<!-- jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+<!-- Popper JS -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- 주소API 다음(카카오) -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+</head>
 <style>
 	div{
 	    box-sizing: border-box;
@@ -159,8 +169,8 @@
 		float: right;
 		font-weight: bold;
  	}
-
-    select{
+ 	
+ 	    select{
         -moz-appearance: none;
         -webkit-appearance: none;
         appearance: none;
@@ -172,20 +182,44 @@
         border-radius: 8px;
         text-align: center;
     }
+ 	
 
 
 </style>
+
+
 <script>
 
 	$(document).ready(function(){
 		
 	});
 	
-	function insertStudent(){
-		$("#crystalBtn").attr("form", "insertForm");
-		$("insertForm").submit();
+	
+	 function updateStudent(){
+		$("#crystalBtn").attr("form", "updateForm");
+		$("updateForm").submit();
+    }
+	
+	 function convertReadonly(){
+		 $("#crystalBtn").attr("onclick", "updateStudent()");
+	 }
+	 
+	
+	/* function convertReadonly(){
+		$("#phone").prop("readonly" , false);
+		$("#email").prop("readonly" , false);
+		$("#post").prop("readonly" , false);
+		$("#address").prop("readonly" , false );
+		
+		$("#crystalBtn").attr("onclick", "updateStudent()");
+		
 	}
-
+	
+	
+	function changeReadonly(){
+		
+	} */ 
+	
 	window.onload = function(){
 	    document.getElementById("address").addEventListener("click", function(){ //주소입력칸을 클릭하면
 	        //카카오 지도 발생
@@ -231,7 +265,7 @@
 	        }).open();
 	    });
 	}
-
+	
 </script>
 </head>
 <body>
@@ -253,7 +287,7 @@
 		<div id="menubar">
 			<ul id="nav">
 				<li><a href="#">홈</a></li>
-				<li><a href="#">급전관리</a></li>
+				<li><a href="#">금전관리</a></li>
 				<li><a href="#">학사관리</a></li>
 				<li><a href="#">강의관리</a></li>
 			</ul>
@@ -266,7 +300,7 @@
                     <h3>학사관리</h3>
                 </div>
                 <div class="child_title">
-                    <a href="enrollStudent.ad">학생관리</a>
+                    <a href="#">학생관리</a>
                 </div>
 				<div class="child_title">
                     <a href="#">임직원관리</a>
@@ -278,11 +312,13 @@
 							<img src="https://item.kakaocdn.net/do/1bc37545ead4d1b5ccf3af23d5bce5714022de826f725e10df604bf1b9725cfd" style="width:100px; height:100px;" alt="학생얼굴">
 						</ul>
 					</div>
-					<form id="insertForm" action="insertStudent.me" method="post"></form>
+					<form id="insertForm" action="insertStudent.ad" method="post">
 					<div id="basic_info">
 						<table class="basic_table">
 							<th>기본 정보</th>
-							<button id="crystalBtn" type="submit">학생등록</button>
+							<!-- <button id="crystalBtn" onclick="convertReadonly()">수정하기</button> -->
+							<button id="crystalBtn" type="submit">등록하기</button>
+							
 						</table>
 						<br>
 						<hr>
@@ -292,21 +328,20 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">입학 년도 : </th>
-									<th><input type="text" class="user_info3" id="entranceDate" placeholder="숫자로만 입력하세요 (ex)2023"></th>
+									<th><input type="text" class="user_info3" id="entranceDate" placeholder="숫자로만 입력하세요."></th>
 									<th width="100px" height="30px">대학(원) : </th>
 									<th>
-                                        <label for="department">
-                                            <select name="collage" id="collage">
-                                            <option value="">인문대학</option>
-                                            <option value="">사회과학대학</option>
-                                            <option value="">교육대학</option>
-                                            <option value="">자연대학</option>
-                                            <option value="">공학대학</option>
-                                            <option value="">미술대학</option>
-                                            <option value="">예술대학</option>
+										<select name="collage" id="collage" onChange="collegeChange(this.value,department)">
+                                            <option>-선택-</option>
+                                            <option value="1">인문대학</option>
+                                            <option value="2">사회과학대학</option>
+                                            <option value="3">교육대학</option>
+                                            <option value="4">자연대학</option>
+                                            <option value="5">공학대학</option>
+                                            <option value="6">미술대학</option>
+                                            <option value="7">예술대학</option>
                                         </select>
-                                        </label>
-                                    </th>
+									</th>
 								</tr>
 							</thead>
 						</table>
@@ -315,37 +350,36 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">학번 : </th>
-									<th><input type="text" class="user_info3" id="studentNo" placeholder="(ex)P20230001"></th>
+									<th><input type="text" class="user_info3" placeholder="Ex : S20230001"></th>
 									<th width="100px" height="30px">학과(부) : </th>
 									<th>
-                                        <label for="department">
-                                            <select name="collage" id="department">
-                                                <option value="">국어국문학과</option>
-                                                <option value="">영어영문학과</option>
-                                                <option value="">일어일문학과</option>
-                                                <option value="">사학과</option>
-                                                <option value="">경제경영학과</option>
-                                                <option value="">회계학과</option>
-                                                <option value="">법학과</option>
-                                                <option value="">행정학과</option>
-                                                <option value="">초등교육과</option>
-                                                <option value="">유아교육과</option>
-                                                <option value="">생명공학과</option>
-                                                <option value="">수학과</option>
-                                                <option value="">물리학과</option>
-                                                <option value="">통계학과</option>
-                                                <option value="">건축학과</option>
-                                                <option value="">기계학과</option>
-                                                <option value="">컴퓨터공학과</option>
-                                                <option value="">전자전기과</option>
-                                                <option value="">화학공학과</option>
-                                                <option value="">시각디자인학과</option>
-                                                <option value="">패션디자인학과</option>
-                                                <option value="">연극영화과</option>
-                                                <option value="">실용음악과</option>
+										<select name="department" id="department" onChange="collegeChange2(this.value)">
+                                            	<option>-선택-</option>
+                                                <option value="10">국어국문학과</option>
+                                                <option value="11">영어영문학과</option>
+                                                <option value="12">일어일문학과</option>
+                                                <option value="13">사학과</option>
+                                                <option value="14">경제경영학과</option>
+                                                <option value="15">회계학과</option>
+                                                <option value="16">법학과</option>
+                                                <option value="17">행정학과</option>
+                                                <option value="18">초등교육과</option>
+                                                <option value="19">유아교육과</option>
+                                                <option value="20">생명공학과</option>
+                                                <option value="21">수학과</option>
+                                                <option value="22">물리학과</option>
+                                                <option value="23">통계학과</option>
+                                                <option value="24">건축학과</option>
+                                                <option value="25">기계학과</option>
+                                                <option value="26">컴퓨터공학과</option>
+                                                <option value="27">전자전기과</option>
+                                                <option value="28">화학공학과</option>
+                                                <option value="29">시각디자인학과</option>
+                                                <option value="30">패션디자인학과</option>
+                                                <option value="31">연극영화과</option>
+                                                <option value="32">실용음악과</option>
                                             </select>
-                                        </label>
-                                    </th>
+									</th>
 								</tr>
 							</thead>
 						</table>
@@ -354,9 +388,10 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">이름 : </th>
-									<th><input type="text" class="user_info3" id="name"></th>
+									<th><input type="text" class="user_info3" placeholder="정자로 입력하세요"></th>
 									<th width="100px" height="30px">비밀번호 : </th>
-									<th><input type="password" class="user_info3" id="password" placeholder="비밀번호를 입력하세요"></th>
+									<th><input type="password" id="userPassword" class="user_info3" placeholder="예비 비밀번호를 입력하세요"></th>
+									
 								</tr>
 							</thead>
 						</table>
@@ -365,9 +400,9 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">전화번호 : </th>
-									<th><input type="tel" class="user_info3" id="phone" placeholder="(-없이) 입력하세요"></th>
+									<th><input type="text" id="phone"class="user_info3" placeholder="(-)없이 입력하세요" ></th>
 									<th width="100px" height="30px">E-MAIL : </th>
-									<th><input type="email" class="user_info3" id="email" placeholder="Email"></th>
+									<th><input type="text" id="email"class="user_info3" placeholder="이메일을 입력하세요"></th>
 								</tr>
 							</thead>
 						</table>
@@ -376,13 +411,14 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">우편번호 : </th>
-									<th><input type="text" class="user_info3" id="post"></th>
+									<th><input type="text" id="post"class="user_info3"></th>
 									<th width="100px" height="30px">주소 : </th>
-									<th><input type="text" class="user_info3" id="address"></th>
+									<th><input type="text" id="address"class="user_info3"></th>
 								</tr>
 							</thead>
 						</table>
 						<br>
+					</form>
 					</div>
 
             </div>
