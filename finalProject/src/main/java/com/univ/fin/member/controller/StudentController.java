@@ -1,6 +1,7 @@
 package com.univ.fin.member.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
 
@@ -41,6 +42,26 @@ public class StudentController {
 	@GetMapping("preRegisterClass.st")
 	public String preRegisterClassForm() {
 		return "member/student/preRegisterClass";
+	}
+	
+	//수강신청 - 수강취소 폼
+	@GetMapping("cancelRegClassForm.st")
+	public String cancelRegClassForm() {
+		return "member/student/cancelRegClass";
+	}
+	
+	//수강신청 - 수강신청 내역조회 폼
+	@GetMapping("searchRegClassForm.st")
+	public String searchRegClassForm(Model model,HttpSession session) {
+		
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
+		
+		//수강신청 - 수강신청내역조회 (로그인 학생의 수강신청 년도/학기 추출)
+		ArrayList<Classes> list = memberService.searchRegYear(studentNo);
+		model.addAttribute("regYear", list);
+		
+		return "member/student/searchRegClass";
 	}
 	
 	//예비수강신청 - 수강담기
@@ -84,9 +105,17 @@ public class StudentController {
 	//예비수강신청 - 장바구니 조회
 	@ResponseBody
 	@RequestMapping(value="preRegList.st", produces = "application/json; charset=UTF-8")
-	public String preRegList(String studentNo) {
+	public String preRegList(RegisterClass rc) {
 		
-		ArrayList<RegisterClass> list = memberService.preRegList(studentNo);
+		String term = String.valueOf(rc.getClassTerm().charAt(0)); //학기 추출
+		
+		RegisterClass rc2 = RegisterClass.builder()
+										 .classYear(rc.getClassYear())
+										 .classTerm(term)
+										 .studentNo(rc.getStudentNo())
+										 .build();
+		
+		ArrayList<RegisterClass> list = memberService.preRegList(rc2);
 		
 		return new Gson().toJson(list);
 	}
@@ -113,7 +142,7 @@ public class StudentController {
 		return new Gson().toJson(list);
 	}
 	
-	// 수강신청 - 수강조회
+	// 수강신청 - 수강신청 (수강조회)
 	@ResponseBody
 	@RequestMapping(value="postRegClass.st",produces = "application/json; charset=UTF-8")
 	public String postRegClass(@RequestParam(value="departmentName",defaultValue = "교양")String departmentName,RegisterClass rc) {
@@ -135,6 +164,24 @@ public class StudentController {
 		return new Gson().toJson(list);
 	}
 	
+	//수강신청 - 수강신청 (장바구니)
+	@ResponseBody
+	@RequestMapping(value="postRegBucket.st",produces = "application/json; charset=UTF-8")
+	public String postRegBucket(RegisterClass rc) {
+		
+		String term = String.valueOf(rc.getClassTerm().charAt(0)); //학기 추출
+		
+		RegisterClass rc2 = RegisterClass.builder()
+										 .classYear(rc.getClassYear())
+										 .classTerm(term)
+										 .studentNo(rc.getStudentNo())
+										 .build();
+		
+		ArrayList<RegisterClass> list = memberService.postRegBucket(rc2);
+		
+		return new Gson().toJson(list);
+	}
+	
 	//수강신청 - 수강신청
 	@ResponseBody
 	@RequestMapping("postRegisterClass.st")
@@ -152,6 +199,8 @@ public class StudentController {
 										 .classHour(c.getClassHour())
 										 .studentNo(rc.getStudentNo())
 										 .classNo(rc.getClassNo())
+										 .classYear(rc.getClassYear())
+										 .classTerm(rc.getClassTerm())
 										 .build();
 			
 			//강의 시간 체크 (0반환이라면 가능이라는 의미)
@@ -172,9 +221,17 @@ public class StudentController {
 	//수강신청 - 수강신청 (수강신청내역 조회)
 	@ResponseBody
 	@RequestMapping(value="postRegList.st",produces = "application/json; charset=UTF-8")
-	public String postRegList(String studentNo) {
+	public String postRegList(RegisterClass rc) {
 		
-		ArrayList<RegisterClass> list = memberService.postRegList(studentNo);
+		String term = String.valueOf(rc.getClassTerm().charAt(0)); //학기 추출
+		
+		RegisterClass rc2 = RegisterClass.builder()
+										 .classYear(rc.getClassYear())
+										 .classTerm(term)
+										 .studentNo(rc.getStudentNo())
+										 .build();
+		
+		ArrayList<RegisterClass> list = memberService.postRegList(rc2);
 		
 		return new Gson().toJson(list);
 	}
@@ -187,6 +244,20 @@ public class StudentController {
 		int result = memberService.delPostRegList(rc);
 		
 		return new Gson().toJson(result);
+	}
+	
+	//수강신청 - 수강신청 내역조회
+	@ResponseBody
+	@RequestMapping(value="searchRegList.st",produces = "application/json; charset=UTF-8")
+	public String searchRegList(String studentNo,String classYear, String classTerm) {
+		HashMap<String, String> h = new HashMap<String, String>();
+		h.put("studentNo", studentNo);
+		h.put("classYear",classYear);
+		h.put("classTerm",classTerm);
+		
+		ArrayList<HashMap<String, String>> list = memberService.searchRegList(h);
+		
+		return new Gson().toJson(list);
 	}
 	
 	// 수강신청 - 학기별 성적 조회

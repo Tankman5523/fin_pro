@@ -22,10 +22,10 @@
                     <a href="registerClassForm.st">수강신청</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">수강취소</a>
+                    <a href="cancelRegClassForm.st">수강취소</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">수강신청 내역조회</a>
+                    <a href="searchRegClassForm.st">수강신청 내역조회</a>
                 </div>
                 <div class="child_title">
                     <a href="preRegisterClass.st" style="color:#00aeff; font-weight: 550;">예비수강신청</a>
@@ -61,11 +61,10 @@
             		<hr>
             		
             		<div id="sub_div2">
-            		<!-- ajax에 num값만 다르게 해서 출력 -->
-            				<input id="major" type="radio" name="sub_div2_radio" onchange="mainContent(1);" checked> <label for="major">단과대학 전공별</label>
-            				<input id="elective" type="radio" name="sub_div2_radio" onchange="mainContent(2);"> <label for="elective">교양선택</label>
-            				<input id="proName" type="radio" name="sub_div2_radio" onchange="mainContent(3);"> <label for="proName">교수명검색</label>
-            				<input id="subject" type="radio" name="sub_div2_radio" onchange="mainContent(4);"> <label for="subject">과목검색</label>
+           				<input id="major" type="radio" name="sub_div2_radio" onchange="mainContent(1);" checked> <label for="major">단과대학 전공별</label>
+          				<input id="elective" type="radio" name="sub_div2_radio" onchange="mainContent(2);"> <label for="elective">교양선택</label>
+          				<input id="proName" type="radio" name="sub_div2_radio" onchange="mainContent(3);"> <label for="proName">교수명검색</label>
+        				<input id="subject" type="radio" name="sub_div2_radio" onchange="mainContent(4);"> <label for="subject">과목검색</label>
             		</div>
             		<hr>
             		<div id="contentDiv1">
@@ -382,7 +381,9 @@
             				$.ajax({
             					url : "preRegList.st",
             					data : {
-            						studentNo : "${loginUser.studentNo}"
+            						studentNo : "${loginUser.studentNo}",
+            						classYear : $("#classYear").val(),
+	            					classTerm : $("#classTerm").val()
             					},
             					success : function(list){
             						var result = "";
