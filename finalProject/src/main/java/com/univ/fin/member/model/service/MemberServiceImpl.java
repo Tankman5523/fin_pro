@@ -103,6 +103,15 @@ public class MemberServiceImpl implements MemberService{
 		return list;
 	}
 	
+	//수강신청 - 수강신청내역조회 (로그인 학생의 수강신청 년도/학기 추출)
+	@Override
+	public ArrayList<Classes> searchRegYear(String studentNo) {
+		
+		ArrayList<Classes> list = memberDao.searchRegYear(sqlSession,studentNo);
+		
+		return list;
+	}
+	
 	//예비수강신청 - 중복체크
 	@Override
 	public int checkPreReg(Bucket b) {
@@ -123,9 +132,9 @@ public class MemberServiceImpl implements MemberService{
 	
 	//예비수강신청 - 장바구니 조회
 	@Override
-	public ArrayList<RegisterClass> preRegList(String studentNo) {
+	public ArrayList<RegisterClass> preRegList(RegisterClass rc2) {
 		
-		ArrayList<RegisterClass> list = memberDao.preRegList(sqlSession,studentNo);
+		ArrayList<RegisterClass> list = memberDao.preRegList(sqlSession,rc2);
 		
 		return list;
 	}
@@ -144,6 +153,15 @@ public class MemberServiceImpl implements MemberService{
 	public ArrayList<RegisterClass> postRegClass(RegisterClass rc2) {
 		
 		ArrayList<RegisterClass> list = memberDao.postRegClass(sqlSession,rc2);
+		
+		return list;
+	}
+	
+	//수강신청 - 수강신청 (장바구니)
+	@Override
+	public ArrayList<RegisterClass> postRegBucket(RegisterClass rc2) {
+		
+		ArrayList<RegisterClass> list = memberDao.postRegBucket(sqlSession,rc2);
 		
 		return list;
 	}
@@ -186,9 +204,9 @@ public class MemberServiceImpl implements MemberService{
 	
 	//수강신청 - 수강신청내역 조회
 	@Override
-	public ArrayList<RegisterClass> postRegList(String studentNo) {
+	public ArrayList<RegisterClass> postRegList(RegisterClass rc2) {
 		
-		ArrayList<RegisterClass> list = memberDao.postRegList(sqlSession,studentNo);
+		ArrayList<RegisterClass> list = memberDao.postRegList(sqlSession,rc2);
 		
 		return list;
 	}
@@ -200,6 +218,15 @@ public class MemberServiceImpl implements MemberService{
 		int result = memberDao.delPostRegList(sqlSession,rc);
 		
 		return result;
+	}
+	
+	//수강신청 - 수강신청 내역조회
+	@Override
+	public ArrayList<HashMap<String, String>> searchRegList(HashMap<String, String> h) {
+		
+		ArrayList<HashMap<String, String>> list = memberDao.searchRegList(sqlSession,h);
+		
+		return list;
 	}
 	
 	// 강의시간표 -> 학년도,학기 조회

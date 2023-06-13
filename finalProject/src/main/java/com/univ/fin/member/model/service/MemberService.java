@@ -36,6 +36,9 @@ public interface MemberService {
 	//비밀번호 초기화 - 비밀번호 변경 메소드 (임직원)
 	int changePwd2(Professor pr);
 	
+	//수강신청 - 수강신청내역조회 (로그인 학생의 수강신청 년도/학기 추출)
+	ArrayList<Classes> searchRegYear(String studentNo);
+	
 	//예비수강신청 - 수강조회
 	ArrayList<RegisterClass> preRegClass(RegisterClass rc2);
 	
@@ -46,13 +49,16 @@ public interface MemberService {
 	int preRegisterClass(Bucket b);
 	
 	//예비수강신청 - 장바구니 조회
-	ArrayList<RegisterClass> preRegList(String studentNo);
+	ArrayList<RegisterClass> preRegList(RegisterClass rc2);
 	
 	//예비수강신청 - 장바구니 수강취소
 	int delPreRegList(RegisterClass rc);
 	
 	//수강신청 - 수강신청 (수강조회)
 	ArrayList<RegisterClass> postRegClass(RegisterClass rc2);
+	
+	//수강신청 - 수강신청 (장바구니)
+	ArrayList<RegisterClass> postRegBucket(RegisterClass rc2);
 	
 	//수강신청 - 수강신청 (해당강의 조회)
 	Classes selectClass(int classNo);
@@ -67,10 +73,13 @@ public interface MemberService {
 	int postRegisterClass2(RegisterClass rc3);
 	
 	//수강신청 - 수강신청 (수강신청내역 조회)
-	ArrayList<RegisterClass> postRegList(String studentNo);
+	ArrayList<RegisterClass> postRegList(RegisterClass rc2);
 	
 	//수강신청 - 수강신청 (수강신청내역 수강취소)
 	int delPostRegList(RegisterClass rc);
+	
+	//수강신청 - 수강신청 내역조회
+	ArrayList<HashMap<String, String>> searchRegList(HashMap<String, String> h);
 	
 	// 강의시간표 -> 학년도,학기 조회
 	ArrayList<String> selectClassTerm();
