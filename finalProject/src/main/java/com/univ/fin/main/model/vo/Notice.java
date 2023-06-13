@@ -12,12 +12,14 @@ import lombok.NoArgsConstructor;
 public class Notice {
 	private int noticeNo;//	NOTICE_NO	NUMBER
 	private String professorNo;//	PROFESSOR_NO	VARCHAR2(30 BYTE)
-	private String noticeCategory;//	NOTICE_CATEGORY	NUMBER
+	private int noticeCategory;//	NOTICE_CATEGORY	NUMBER
 	private String noticeTitle;//	NOTICE_TITLE	VARCHAR2(100 BYTE)
 	private String noticeContent;//	NOTICE_CONTENT	VARCHAR2(600 BYTE)
 	private int count;//	COUNT	NUMBER
 	private String createDate;//	CREATE_DATE	DATE
-	private String filed;//	FIELD	VARCHAR2(2 BYTE)
+	private String field;//	FIELD	VARCHAR2(2 BYTE)
 	private String status;//	STATUS	VARCHAR2(2 BYTE)
 	private String originName;
+	private String categoryName;
+	private int rank;
 }

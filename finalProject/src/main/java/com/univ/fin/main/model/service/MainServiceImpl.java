@@ -35,6 +35,24 @@ public class MainServiceImpl implements MainService{
 		return list; 
 	}
 	
+	//총 FAQ 수 조회
+	@Override
+	public int selectFaqCount() {
+		int faqCount = mainDao.selectFaqCount(sqlSession);
+		
+		return faqCount;
+	}
+	
+	//FAQ 조회
+	@Override
+	public ArrayList<Notice> selectFaqList() {
+		
+		ArrayList<Notice> faq = mainDao.selectFaqList(sqlSession);
+		
+		return faq;
+	}
+
+	
 	
 	
 }

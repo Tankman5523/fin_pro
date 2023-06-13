@@ -9,22 +9,42 @@
 		SELECT COUNT(*)
 		FROM NOTICE
 		WHERE STATUS='Y'
+		AND FIELD = 0
 	</select>
 	
 	<resultMap type="notice" id="noticeResultSet">
-		<result column="CATEGORY_NAME" property="noticeCategory"/>
+		<result column="NOTICE_NO" property="noticeNo"/>
+		<result column="NOTICE_CATEGORY" property="noticeCategory"/>
 		<result column="NOTICE_TITLE" property="noticeTitle"/>
-		<result column="ORIGIN_NAME" property="originName"/>
+		<result column="NOTICE_CONTENT" property="noticeContent"/>
 		<result column="CREATE_DATE" property="createDate"/>
+		<result column="FIELD" property="field"/>
+		<result column="ORIGIN_NAME" property="originName"/>
+		<result column="CATEGORY_NAME" property="categoryName"/>
 	</resultMap>
 	
 	<select id="selectNoticeList" resultMap="noticeResultSet">
-		SELECT CATEGORY_NAME, NOTICE_TITLE, ORIGIN_NAME, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE"
+		SELECT NOTICE_NO, FIELD, CATEGORY_NAME, NOTICE_TITLE, ORIGIN_NAME, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE"
 		FROM NOTICE N
 		LEFT JOIN NOTICE_ATTACHMENT NA USING(NOTICE_NO)
 		JOIN NOTICE_CATEGORY NC ON(CATEGORY_NO = NOTICE_CATEGORY)
 		WHERE N.STATUS='Y'
+		AND FIELD = 0
 		ORDER BY CREATE_DATE DESC
+	</select>
+	
+	<select id="selectFaqCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM NOTICE
+		WHERE STATUS='Y'
+		AND FIELD = 1
+	</select>
+	
+	<select id="selectFaqList" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, FIELD,NOTICE_TITLE, NOTICE_CONTENT, NOTICE_CATEGORY, RANK() OVER(ORDER BY COUNT DESC) "RANK"
+		FROM NOTICE
+		WHERE FIELD = 1
+		AND STATUS='Y'
 	</select>
   
   </mapper>
