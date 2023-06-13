@@ -75,6 +75,29 @@
     padding: 0px;
 }
 
+.contentBtn:hover{
+    box-shadow: 1px 1px 2px #000000;
+}
+
+.selectBtn{
+    background-color: white;
+    border: 1px solid rgb(52, 152, 219);
+    border-radius: 8px;
+    color: rgb(52, 152, 219);
+    width: 80px;
+    height: 30px;
+    padding: 0px;
+    margin-left: 20px;
+}
+
+#nextBtn{
+    margin-left: 5px ;
+}
+
+.selectBtn:hover{
+    box-shadow: 1px 1px 1px #000000;
+}
+
 div[id *= main_content]{
     width: 1090px;
     height: 528px;
@@ -167,7 +190,9 @@ input[name = sub_div2_radio]:checked+label{
 }
 
 #sumCredit{
-    text-indent: 8px;
+    width: 40px;
+    text-indent: 0px !important;
+    text-align: center;
     cursor: auto;
     border: 1px solid rgba(118, 118, 118, 0.3);
     border-radius: 5px;

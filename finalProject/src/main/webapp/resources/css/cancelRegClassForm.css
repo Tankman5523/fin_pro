@@ -167,7 +167,9 @@ input[name = sub_div2_radio]:checked+label{
 }
 
 #sumCredit{
-    text-indent: 8px;
+    width: 40px;
+    text-indent: 0px !important;
+    text-align: center;
     cursor: auto;
     border: 1px solid rgba(118, 118, 118, 0.3);
     border-radius: 5px;
