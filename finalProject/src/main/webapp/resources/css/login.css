@@ -111,3 +111,10 @@ a{
 #main_content{
     overflow: auto;
 }
+
+#checkComment{
+    margin-top: 10px;
+    padding-left: 10px;
+    color: #e65f3e;
+    font-size: 12px;
+}
