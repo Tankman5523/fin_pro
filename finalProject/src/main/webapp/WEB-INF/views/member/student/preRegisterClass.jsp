@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>예비수강신청 : Feasible University</title>
-<link rel="stylesheet" href="resources/css/registerClassForm.css">
+<link rel="stylesheet" href="resources/css/preRegClassForm.css">
 </head>
 <body>
     <div class="wrap">
@@ -66,7 +66,6 @@
             				<input id="elective" type="radio" name="sub_div2_radio" onchange="mainContent(2);"> <label for="elective">교양선택</label>
             				<input id="proName" type="radio" name="sub_div2_radio" onchange="mainContent(3);"> <label for="proName">교수명검색</label>
             				<input id="subject" type="radio" name="sub_div2_radio" onchange="mainContent(4);"> <label for="subject">과목검색</label>
-            				<input id="bucket" type="radio" name="sub_div2_radio" onchange="mainContent(5);"> <label for="bucket">장바구니</label>
             		</div>
             		<hr>
             		<div id="contentDiv1">
@@ -185,11 +184,6 @@
 	           				</table>
 	           			</div>
            			</div>
-           			<div id="contentDiv5">
-           				<div id="main_content5">
-	           				<h2>5</h2>
-	           			</div>
-           			</div>
            			
             		<script>
             		
@@ -214,8 +208,6 @@
 	            			case 3 : $("#contentDiv3").css("display","block");
 	            				break;
 	            			case 4 : $("#contentDiv4").css("display","block");
-	            				break;
-	            			case 5 : $("#contentDiv5").css("display","block");
 	            				break;
             			}
             		}
@@ -257,9 +249,8 @@
             		}
             		
 
-            		/* 학부 전공별 조회 리스트 */
+            		/* 수강 조회 리스트 */
             		function searchClass(num){
-            			
             			var result = "";
             			
             		 	if(num == 3 && !$("#searchProfessor").val()){
@@ -268,16 +259,18 @@
             				alert("과목명을 입력해 주세요");
             			}else{
 	            			$.ajax({
-	            				url : "majorClass.st",
+	            				url : "preRegClass.st",
 	            				data : {
 	            					classYear : $("#classYear").val(),
 	            					classTerm : $("#classTerm").val(),
 	            					departmentName : $("#departmentNo").val(),
 	            					professorName : $("#searchProfessor").val(),
 	            					className : $("#searchClass").val(),
-	            					studentNo : "${loginUser.studentNo}"
+	            					studentNo : "${loginUser.studentNo}",
+	            					studentLevel : "${loginUser.classLevel}"
 	            				},
 	            				success : function(list){
+            						result += "<input type='hidden' id='hiddenNum' value='"+num+"'>"
 	            					if(list.length !== 0){
 		            					for(var i=0; i<list.length; i++){
 		            						result += "<tr ";
@@ -292,28 +285,28 @@
 													 +"<td>" + list[i].professorName + "</td>"
 													 +"<td>" + list[i].departmentName + "</td>"
 													 +"<td>" + list[i].creditHour + "</td>"
-													 +"<td>" + list[i].preclassNos + "</td>"
+													 +"<td>" + list[i].preClassNos + "</td>"
 													 +"<td>" + list[i].classInfo + "</td>"
 													 +"<td>" + list[i].classLevel + "</td>"
 													 +"<td><button>수강담기</button></td>"
 													 +"</tr>";
 		            					}
 	            					}else{
-	            						result += "<tr><th colspan='10' style='font-size:20px;'>신청 가능한 강의가 존재하지 않습니다.</th></tr>";
+	            						result += "<tr><th colspan='10' style='font-size:20px;'>신청 가능한 강의가 존재하지 않거나 이미 신청한 강의입니다.</th></tr>";
 	            					}
 	            					switch(num){
-	            					case 1 : $("#majorClassTable>tbody").html(result);
-	            						break;
-	            					case 2 : $("#electiveClassTable>tbody").html(result);
-	            						break;
-	            					case 3 : $("#proNameClassTable>tbody").html(result);
-	            						break;
-	            					case 4 : $("#classNameTable>tbody").html(result);
-	            						break;
-            					}
+		            					case 1 : $("#majorClassTable>tbody").html(result);
+		            						break;
+		            					case 2 : $("#electiveClassTable>tbody").html(result);
+		            						break;
+		            					case 3 : $("#proNameClassTable>tbody").html(result);
+		            						break;
+		            					case 4 : $("#classNameTable>tbody").html(result);
+		            						break;
+            						}
 	            				},
 	            				error : function(){
-	            					console.log("학부전공별 리스트 조회 실패")
+	            					console.log("학부전공별 리스트 조회 실패");
 	            				}
 	            			});
             			}
@@ -324,7 +317,7 @@
             			$(document).on("click",".mcTable>tbody>tr button",function(){
             				//과목번호 추출
             				var cno = $(this).closest("tr").children().eq(1).text();
-            				
+            				var num = parseInt($("#hiddenNum").val());
             				$.ajax({
             					url : "preRegisterClass.st",
             					type : "POST",
@@ -334,7 +327,8 @@
             					},
             					success : function(result){
             						if(result >0){
-            							/* 예비수강신청 내역조회 함수 재요청 */
+            							searchClass(num);
+            							preRegList();
             						}else{
             							alert("예비수강신청이 실패하였습니다.");
             						}
@@ -348,10 +342,108 @@
             		
             		</script>
             	</div>
-            	<div id="registered_area">
-            		<div id="registered_list">
-            			<h3>예비수강신청 내역이 들어갈 공간</h3>
+            	
+            	<div id="preRegistered_area">
+	            	<hr>
+	       			<div id="bucket_area">
+	       				장바구니
+	       			</div>
+	        		<hr>
+            		<div id="preRegistered_list">
+						<table class="preMcTable" id="preRegisteredTable" border="1" >
+           					<thead>
+            					<tr>
+									<th>단과대학</th>
+						            <th>과목번호</th>
+						            <th>과목명</th>
+						            <th>교수명</th>
+						            <th>개설학과</th>
+						            <th>시간/학점</th>
+						            <th>수강인원</th>
+						            <th>강의시간(강의실)</th>
+						            <th>수강대상</th>
+						            <th>수강취소</th>
+					            </tr>
+           					</thead>
+           					<tbody>
+           						
+           					</tbody>
+           				</table>
             		</div>
+            		
+            		<script>
+            		
+            			$(function(){
+            				preRegList();
+            			});
+            		
+           				//예비수강신청 - 장바구니조회
+           				function preRegList(){
+            				$.ajax({
+            					url : "preRegList.st",
+            					data : {
+            						studentNo : "${loginUser.studentNo}"
+            					},
+            					success : function(list){
+            						var result = "";
+            						if(list.length !== 0){
+		            					for(var i=0; i<list.length; i++){
+		            						result += "<tr ";
+		            								 if(i%2 == 0){
+		            									 result += "style = 'background-color:#dadada;'>";
+		            								 }else{
+		            									 result += ">";
+		            								 }
+											  result +="<td>" + list[i].collegeName + "</td>"
+													 +"<td>" + list[i].classNo + "</td>"
+													 +"<td>" + list[i].className + "</td>"
+													 +"<td>" + list[i].professorName + "</td>"
+													 +"<td>" + list[i].departmentName + "</td>"
+													 +"<td>" + list[i].creditHour + "</td>"
+													 +"<td>" + list[i].preClassNos + "</td>"
+													 +"<td>" + list[i].classInfo + "</td>"
+													 +"<td>" + list[i].classLevel + "</td>"
+													 +"<td><button>수강취소</button></td>"
+													 +"</tr>";
+		            					}
+            						}else{
+            							result += "<tr><th colspan='10' style='font-size:20px;'>현재 예비 수강신청한 내역이 없습니다.</th></tr>";
+            						}
+            						$("#preRegisteredTable>tbody").html(result);
+            					},
+            					error : function(){
+            						console.log("장바구니 조회 통신실패");
+            					}
+            				});
+           				}
+           				
+           				//예비수강신청 - 장바구니 수강취소
+           				$(function(){
+            				$(document).on("click","#preRegisteredTable>tbody>tr button",function(){
+            					var preCno = $(this).closest("tr").children().eq(1).text(); //과목번호 추출
+            					var num = parseInt($("#hiddenNum").val());
+            					$.ajax({
+            						url : "delPreRegList.st",
+            						data : {
+            							classNo : preCno,
+            							studentNo : "${loginUser.studentNo}"
+            						},
+            						success : function(result){
+            							if(result > 0){
+            								searchClass(num);
+	            							//예비수강신청 내역 재요청
+	            							preRegList();
+            							}else{
+            								alert("수강취소에 실패하였습니다.");
+            							}
+            						},
+            						error : function(){
+            							console.log("예비수강신청 취소 통신실패");
+            						}
+            					});
+            				});
+           				})
+            		</script>
             	</div>
             </div>
         </div>

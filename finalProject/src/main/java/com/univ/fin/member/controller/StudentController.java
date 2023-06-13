@@ -1,14 +1,12 @@
 package com.univ.fin.member.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.template.DepartmentCategory;
@@ -51,8 +50,7 @@ public class StudentController {
 		
 		int result = 0;
 		
-		//예비수강 중복체크
-		int chkClass = memberService.checkPre(b); 
+		int chkClass = memberService.checkPreReg(b); //예비수강 중복체크
 		
 		if(chkClass == 0) {
 			result = memberService.preRegisterClass(b);
@@ -61,7 +59,49 @@ public class StudentController {
 		return new Gson().toJson(result);
 	}
 	
-	//수강신청 - 수강신청(전공 카테고리조회)
+	//예비수강신청 - 수강조회
+	@ResponseBody
+	@RequestMapping(value="preRegClass.st",produces = "application/json; charset=UTF-8")
+	public String preRegClass(@RequestParam(value="departmentName",defaultValue = "교양")String departmentName,RegisterClass rc) {
+		
+		String term = String.valueOf(rc.getClassTerm().charAt(0)); //학기 추출
+		
+		RegisterClass rc2 = RegisterClass.builder()
+										 .classYear(rc.getClassYear()) //학년도
+										 .classTerm(term) //학기
+										 .departmentName(departmentName) //전공
+										 .professorName(rc.getProfessorName()) //교수명
+										 .className(rc.getClassName()) //과목명
+										 .studentNo(rc.getStudentNo()) //학번 
+										 .studentLevel(rc.getStudentLevel()) //학생 학년
+										 .build();
+		
+		ArrayList<RegisterClass> list = memberService.preRegClass(rc2);
+		
+		return new Gson().toJson(list);
+	}
+	
+	//예비수강신청 - 장바구니 조회
+	@ResponseBody
+	@RequestMapping(value="preRegList.st", produces = "application/json; charset=UTF-8")
+	public String preRegList(String studentNo) {
+		
+		ArrayList<RegisterClass> list = memberService.preRegList(studentNo);
+		
+		return new Gson().toJson(list);
+	}
+	
+	//예비수강신청 - 장바구니 수강취소
+	@ResponseBody
+	@RequestMapping(value="delPreRegList.st", produces = "application/json; charset=UTF-8")
+	public String delPreRegList(RegisterClass rc) {
+		
+		int result = memberService.delPreRegList(rc); 
+		
+		return new Gson().toJson(result);
+	}
+	
+	//수강신청 -(전공 카테고리조회)
 	@ResponseBody
 	@RequestMapping(value="selectCollegeNo.st",produces = "application/json; charset=UTF-8")
 	public String selectCollegeNo(int cno) {
@@ -73,28 +113,82 @@ public class StudentController {
 		return new Gson().toJson(list);
 	}
 	
-	//수강신청 - 수강신청
+	// 수강신청 - 수강조회
 	@ResponseBody
-	@RequestMapping(value="majorClass.st",produces = "application/json; charset=UTF-8")
-	public String majorClassList(@RequestParam(value="departmentName",defaultValue = "교양")String departmentName,RegisterClass rc) {
+	@RequestMapping(value="postRegClass.st",produces = "application/json; charset=UTF-8")
+	public String postRegClass(@RequestParam(value="departmentName",defaultValue = "교양")String departmentName,RegisterClass rc) {
 		
-		String term = String.valueOf(rc.getClassTerm().charAt(0));
+		String term = String.valueOf(rc.getClassTerm().charAt(0)); //학기 추출
 		
 		RegisterClass rc2 = RegisterClass.builder()
-										 .classYear(rc.getClassYear())
-										 .classTerm(term)
-										 .departmentName(departmentName)
-										 .professorName(rc.getProfessorName())
-										 .className(rc.getClassName())
-										 .studentNo(rc.getStudentNo())
+										 .classYear(rc.getClassYear()) //학년도
+										 .classTerm(term) //학기
+										 .departmentName(departmentName) //전공
+										 .professorName(rc.getProfessorName()) //교수명
+										 .className(rc.getClassName()) //과목명
+										 .studentNo(rc.getStudentNo()) //학번 
+										 .studentLevel(rc.getStudentLevel()) //학생 학년
 										 .build();
 		
-		ArrayList<RegisterClass> list = memberService.preClass(rc2);
-//		ArrayList<RegisterClass> list = memberService.majorClass(rc2);
+		ArrayList<RegisterClass> list = memberService.postRegClass(rc2);
 		
 		return new Gson().toJson(list);
 	}
-
+	
+	//수강신청 - 수강신청
+	@ResponseBody
+	@RequestMapping("postRegisterClass.st")
+	public String postRegisterClass(RegisterClass rc) {
+		
+		int result = 0; //최종 성공여부 변수
+		RegisterClass rc2 = null;
+		
+		//해당 강의 조회
+		Classes c = memberService.selectClass(rc.getClassNo());
+		
+		if(c.getSpareNos() != c.getClassNos()) { // 수강인원 체크 (신청인원이 수강인원보다 적을때)
+			rc2 = RegisterClass.builder().day(c.getDay())
+										 .period(c.getPeriod())
+										 .classHour(c.getClassHour())
+										 .studentNo(rc.getStudentNo())
+										 .classNo(rc.getClassNo())
+										 .build();
+			
+			//강의 시간 체크 (0반환이라면 가능이라는 의미)
+			int check = memberService.checkPostReg2(rc2);
+			
+			//수강신청 가능 여부 판별
+			if(check == 0) {
+				result = memberService.postRegisterClass(rc2);
+				if(rc2.getClassHour() == 2) { //2시간짜리 강의일 경우
+					result *= memberService.postRegisterClass2(rc2);
+				}
+			}
+		}
+		
+		return new Gson().toJson(result);
+	}
+	
+	//수강신청 - 수강신청 (수강신청내역 조회)
+	@ResponseBody
+	@RequestMapping(value="postRegList.st",produces = "application/json; charset=UTF-8")
+	public String postRegList(String studentNo) {
+		
+		ArrayList<RegisterClass> list = memberService.postRegList(studentNo);
+		
+		return new Gson().toJson(list);
+	}
+	
+	//수강신청 - 수강신청 (수강신청내역 수강취소)
+	@ResponseBody
+	@RequestMapping("delPostRegList.st")
+	public String delPostRegList(RegisterClass rc) {
+		
+		int result = memberService.delPostRegList(rc);
+		
+		return new Gson().toJson(result);
+	}
+	
 	// 수강신청 - 학기별 성적 조회
 	@RequestMapping("classManagement.st")
 	public String student_classManagement() {
@@ -111,7 +205,6 @@ public class StudentController {
 		return mv;
 	}
 
-	
 	//상담관리 - 상담조회페이지 이동
 	@RequestMapping("counselingList.st")
 	public String counselingList(HttpSession session,Model m) {
@@ -233,5 +326,4 @@ public class StudentController {
 		mv.addObject("classTerm", classTerm).setViewName("member/student/personalTimetableView");
 		return mv;
 	}
-
 }

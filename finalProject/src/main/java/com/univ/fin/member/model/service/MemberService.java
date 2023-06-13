@@ -37,16 +37,40 @@ public interface MemberService {
 	int changePwd2(Professor pr);
 	
 	//예비수강신청 - 수강조회
-	ArrayList<RegisterClass> preClass(RegisterClass rc2);
+	ArrayList<RegisterClass> preRegClass(RegisterClass rc2);
 	
 	//예비수강신청 - 중복체크
-	int checkPre(Bucket b);
+	int checkPreReg(Bucket b);
 	
 	//예비수강신청 - 수강담기
 	int preRegisterClass(Bucket b);
 	
+	//예비수강신청 - 장바구니 조회
+	ArrayList<RegisterClass> preRegList(String studentNo);
+	
+	//예비수강신청 - 장바구니 수강취소
+	int delPreRegList(RegisterClass rc);
+	
+	//수강신청 - 수강신청 (수강조회)
+	ArrayList<RegisterClass> postRegClass(RegisterClass rc2);
+	
+	//수강신청 - 수강신청 (해당강의 조회)
+	Classes selectClass(int classNo);
+	
+	//수강신청 - 수강신청 (강의 시간 체크)
+	int checkPostReg2(RegisterClass rc2);
+	
 	//수강신청 - 수강신청
-	ArrayList<RegisterClass> majorClass(RegisterClass rc2);
+	int postRegisterClass(RegisterClass rc3);
+	
+	//수강신청 - 수강신청(2시간짜리 강의)
+	int postRegisterClass2(RegisterClass rc3);
+	
+	//수강신청 - 수강신청 (수강신청내역 조회)
+	ArrayList<RegisterClass> postRegList(String studentNo);
+	
+	//수강신청 - 수강신청 (수강신청내역 수강취소)
+	int delPostRegList(RegisterClass rc);
 	
 	// 강의시간표 -> 학년도,학기 조회
 	ArrayList<String> selectClassTerm();
@@ -89,6 +113,5 @@ public interface MemberService {
 
 	// 개인시간표 -> 학년도,학기 조회
 	ArrayList<String> selectClassTerm(String studentNo);
-	
 
 }

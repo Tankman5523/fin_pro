@@ -35,13 +35,6 @@
     height: 60%;
 }
 
-#registered_area{
-    position: relative;
-    width: 100%;
-    height: 40%;
-    padding : 15px;
-}
-
 #main_div>p{
     padding : 0px 0px 5px 15px;
     font-size: 18px;
@@ -162,9 +155,34 @@ input[name = sub_div2_radio]:checked+label{
 }
 /* =========== 장바구니 ============ */
 
-#registered_list{
-    background-color: burlywood;
+#preRegistered_area>hr{
+    border-bottom: 1px solid lightblue;
+    margin: 0px;
+}
+
+#bucket_area{
+    padding: 10px 0px 10px 15px;
+}
+
+#preRegistered_area{
     position: relative;
     width: 100%;
-    height: 100%;
+    height: 40%;
+}
+
+#preRegistered_list{
+    position: relative;
+    width: 100%;
+    height: 440px;
+    padding : 15px;
+    overflow: auto;
+}
+
+.preMcTable{
+    width: 100%;
+    text-align: center;
+}
+
+.preMcTable>tbody td{
+    height: 50px;
 }
