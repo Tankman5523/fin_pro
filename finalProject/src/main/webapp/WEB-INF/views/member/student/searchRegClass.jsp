@@ -36,8 +36,8 @@
             		<p>수강신청 내역 조회</p>
             		<hr>
             		
-            		<div id="sub_div1">
-            			<c:if test="${not empty regYear}">
+           			<c:if test="${not empty regYear}">
+            			<div id="sub_div1">
             				<label for="searchRegYear">학년도 : </label>
 		            		<select class="selectReset" name="searchRegYear" id="searchRegYear">
 								<c:forEach var="y" items="${regYear}">
@@ -49,13 +49,15 @@
 								<option>2</option>
 								<option>1</option>
 		            		</select>
-		            		<button class="contentBtn" id="categoryBtn" onclick="searchReg()">검색</button>
+		            		<button class="contentBtn" onclick="searchReg()">검색</button>
 		            		<span id="sumCredit_span">
        							총 학점 : <input type="text" id="sumCredit" readonly>
        						</span>
-            			</c:if>
-            		</div>
+       						<button class="selectBtn" onclick="searchBtn(1)">이전학기</button>
+       						<button class="selectBtn" id="nextBtn" onclick="searchBtn(2)">다음학기</button>
+	            		</div>
             		<hr>
+           			</c:if>
             		<div id="contentDiv1">
 	           			<div id="main_content">
 	           				<table class="mcTable" id="searchRegTable" border="1" >
@@ -84,6 +86,40 @@
            					searchReg();
            				});
            			
+           				/* 이전,다음버튼 */
+           				function searchBtn(num){
+           					var year = $("#searchRegYear").val(); //년도 추출
+           					var term = $("#searchRegTerm").val(); //학기 추출
+           					
+           					if(num == 1){ /* 이전버튼 */
+	           					if(term == 1){ //1학기가 체크되었을 경우
+		           					$("#searchRegYear option").each(function(){
+		           						if(parseInt($(this).val()) === parseInt(year)-1){
+		           							$(this).prop("selected",true); //이전년도로 변경
+				           					$("#searchRegTerm").children().eq(0).prop("selected",true); //2학기로 변경
+				           					searchReg();
+		           						}
+		           					});
+	           					}else{
+		           					$("#searchRegTerm").children().eq(1).prop("selected",true); //1학기로 변경
+		           					searchReg();
+	           					}
+           					}else{ /* 다음버튼 */
+	           					if(term == 2){ //2학기가 체크되었을 경우
+		           					$("#searchRegYear option").each(function(){
+		           						if(parseInt($(this).val()) === parseInt(year)+1){
+		           							$(this).prop("selected",true); //다음년도로 변경
+				           					$("#searchRegTerm").children().eq(1).prop("selected",true); //1학기로 변경
+				           					searchReg();
+		           						}
+		           					});
+	           					}else{
+		           					$("#searchRegTerm").children().eq(0).prop("selected",true); //2학기로 변경
+		           					searchReg();
+	           					}
+           					}
+           				}
+           				
             			/* 선택한 년도,학기 수강신청 내역 조회 */
             			function searchReg(){
             				var year = $("#searchRegYear").val();

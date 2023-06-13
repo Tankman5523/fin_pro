@@ -67,6 +67,7 @@
   		<result column="PROFESSOR_NAME" property="professorName"/>
   		<result column="DEPARTMENT_NAME" property="departmentName"/>
   		<result column="CREDIT_HOUR" property="creditHour"/>
+  		<result column="SIGNUPNOS" property="signUpNos"/>
   		<result column="POSTCLASS_NOS" property="postClassNos"/>
   		<result column="PRECLASS_NOS" property="preClassNos"/>
   		<result column="CLASS_INFO" property="classInfo"/>
@@ -284,10 +285,11 @@
   	<select id="postRegClass" parameterType="registerClass" resultMap="registerClassMap">
   		SELECT COLLEGE_NAME,CLASS_NO,CLASS_NAME,PROFESSOR_NAME,DEPARTMENT_NAME
 		,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR"
-		,((SELECT COUNT(*)
+		,(SELECT COUNT(*)
            FROM (SELECT DISTINCT CLASS_NO, STUDENT_NO
                  FROM SCHEDULE)
-		   WHERE CLASS_NO = C.CLASS_NO)|| '/' ||CLASS_NOS) "POSTCLASS_NOS"
+		   WHERE CLASS_NO = C.CLASS_NO) "SIGNUPNOS"
+		,CLASS_NOS "POSTCLASS_NOS"
 		,(DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
 		  DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
 		                    2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) 
@@ -315,11 +317,7 @@
 				AND DEPARTMENT_NAME = #{departmentName}
 			</otherwise>
 		</choose>
-		GROUP BY COLLEGE_NAME, CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DEPARTMENT_NAME,CLASS_NOS,
-		CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT), (DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
-		DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
-						  2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) ||' '|| CLASSROOM),
-						  DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년')
+		ORDER BY C.CLASS_NO ASC
   	</select>
   	
   	<!-- 수강신청 - 수강신청 (장바구니) -->

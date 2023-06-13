@@ -16,6 +16,7 @@ public class RegisterClass {
 	private String professorName;	// 교수명
 	private String departmentName;  // 학과명
 	private String creditHour; 		// 시간+학점
+	private String signUpNos;		// 신청인원
 	private String postClassNos;	// 수강인원(수강신청)
 	private String preClassNos;		// 수강인원(예비수강)
 	private String classInfo;		// 요일+강의시간+강의실

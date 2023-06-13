@@ -194,6 +194,7 @@
             		function mainContent(num){
             			$("div[id *= contentDiv]").css("display","none");
             			$("#departmentNo").hide();
+            			$("#categoryBtn").hide();
             			$(".selectReset").val(0);
             			$(".mcTable>tbody").html("");
             			$(".searchInput").val("");
@@ -218,9 +219,11 @@
             			
             			if($cno != 0){
             				$("#departmentNo").show();
+            				$("#categoryBtn").show();
             				$("#categoryBtn").attr("disabled",false);
             			}else{
             				$("#departmentNo").hide();
+            				$("#categoryBtn").hide();
             				$("#categoryBtn").attr("disabled",true);
             			}
             			

@@ -19,7 +19,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -69,7 +68,7 @@ public class MemberController {
 			Student loginUser = memberService.loginStudent(st);
 			
 			if(loginUser == null) { //로그인 되었을때만 쿠키 생성 및 저장
-				session.setAttribute("alertMsg", "잘못 입력하셨습니다. 다시 입력해주세요");
+				session.setAttribute("alertMsg", "아이디 또는 비밀번호를 잘못 입력했습니다.");
 				mv.setViewName("member/login");
 			}else {
 				Cookie cookie = null;
@@ -94,7 +93,7 @@ public class MemberController {
 			Professor loginUser = memberService.loginProfessor(pr);
 			
 			if(loginUser == null) { //로그인 되었을때만 쿠키 생성 및 저장
-				session.setAttribute("alertMsg", "잘못 입력하셨습니다. 다시 입력해주세요");
+				session.setAttribute("alertMsg", "아이디 또는 비밀번호를 잘못 입력했습니다.");
 				mv.setViewName("member/login");
 			}else {
 				Cookie cookie = null;
@@ -123,7 +122,7 @@ public class MemberController {
 			}
 			
 		}else {
-			session.setAttribute("alertMsg", "잘못 입력하셨습니다. 다시 입력해주세요");
+			session.setAttribute("alertMsg", "아이디 또는 비밀번호를 잘못 입력했습니다.");
 			mv.setViewName("member/login");
 		}
 		
