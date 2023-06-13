@@ -50,10 +50,19 @@ public class MainPageController {
 		
 		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		
+		//공지사항 조회
 		ArrayList<Notice> list = mainService.selectNoticeList(pi);
+		
+		//총 FAQ 수 조회
+		int faqCount = mainService.selectFaqCount();
+		
+		//FAQ 조회
+		ArrayList<Notice> faq = mainService.selectFaqList();
 		
 		model.addAttribute("list", list);
 		model.addAttribute("pi", pi);
+		model.addAttribute("faq", faq);
+		model.addAttribute("fc", faqCount);
 		
 		return "main/notice";
 	}

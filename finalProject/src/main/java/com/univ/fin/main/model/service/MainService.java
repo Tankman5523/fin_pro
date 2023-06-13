@@ -12,4 +12,9 @@ public interface MainService {
 	
 	//게시글 목록 조회
 	ArrayList<Notice> selectNoticeList(PageInfo pi);
+
+	//FAQ 조회
+	ArrayList<Notice> selectFaqList();
+
+	int selectFaqCount();
 }

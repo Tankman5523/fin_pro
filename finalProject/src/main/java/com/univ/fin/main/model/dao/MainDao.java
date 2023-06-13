@@ -27,5 +27,16 @@ public class MainDao {
 		return (ArrayList)sqlSession.selectList("mainMapper.selectNoticeList", null, rowBounds);
 	}
 
+	//총 FAQ 수 조회
+	public int selectFaqCount(SqlSessionTemplate sqlSession) {
+		return sqlSession.selectOne("mainMapper.selectFaqCount");
+	}
+	
+	//FAQ 조회
+	public ArrayList<Notice> selectFaqList(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("mainMapper.selectFaqList");
+	}
+
+
 	
 }
