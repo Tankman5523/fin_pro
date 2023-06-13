@@ -39,51 +39,93 @@
 			</ul>
 			
 			<div class="tab_contents">
-				<div class="tab_content active">
+				
+				<ul class="tab_content active">
+					<li class="faq_content">
+						<span class="thumb_title">
+							${faq[1].noticeTitle }
+						</span>
+						<span class="thumb_content">
+							${faq[1].noticeContent }
+						</span>
+					</li>
+					<li class="faq_content">
+						<span class="thumb_title">
+							${faq[2].noticeTitle }
+						</span>
+						<span class="thumb_content">
+							${faq[2].noticeContent }
+						</span>
+					</li>
+					<li class="faq_content">
+						<span class="thumb_title">
+							${faq[3].noticeTitle }
+						</span>
+						<span class="thumb_content">
+							${faq[3].noticeContent }
+						</span>
+					</li>
+					<li class="faq_content">
+						<span class="thumb_title">
+							${faq[3].noticeTitle }
+						</span>
+						<span class="thumb_content">
+							${faq[3].noticeContent }
+						</span>
+					</li>
+				</ul>
+						
+				<div class="tab_content">
 					<div class="faq_content">
 						<div class="thumb_title">
-							제목입니다제목입니다제목입니다제목입니다
+							${faq[i].noticeTitle }
 						</div>
 						<div class="thumb_content">
-							내용임돠내용임돠내용임돠내용임돠내용임돠내용임돠
-							내용임돠내용임돠내용임돠내용임돠내용임돠내용임돠
-							내용임돠내용임돠내용임돠내용임돠내용임돠내용임돠
-							내용임돠내용임돠내용임돠내용임돠내용임돠내용임돠
+							${faq[i].noticeContent }
 						</div>
 					</div>
-					<div class="faq_content">학사 FAQ2</div>
-					<div class="faq_content">학사 FAQ3</div>
-					<div class="faq_content">학사 FAQ4</div>
 				</div>
+				
 				<div class="tab_content">
-					<div class="faq_content">장학 FAQ1</div>
-					<div class="faq_content">장학 FAQ2</div>
-					<div class="faq_content">장학 FAQ3</div>
-					<div class="faq_content">장학 FAQ4</div>
+					<div class="faq_content">
+						<div class="thumb_title">
+							${faq[i].noticeTitle }
+						</div>
+						<div class="thumb_content">
+							${faq[i].noticeContent }
+						</div>
+					</div>
 				</div>
+				
 				<div class="tab_content">
-					<div class="faq_content">입학 FAQ1</div>
-					<div class="faq_content">입학 FAQ2</div>
-					<div class="faq_content">입학 FAQ3</div>
-					<div class="faq_content">입학 FAQ4</div>
+					<div class="faq_content">
+						<div class="thumb_title">
+							${faq[i].noticeTitle }
+						</div>
+						<div class="thumb_content">
+							${faq[i].noticeContent }
+						</div>
+					</div>
 				</div>
+				
 				<div class="tab_content">
-					<div class="faq_content">채용 FAQ1</div>
-					<div class="faq_content">채용 FAQ2</div>
-					<div class="faq_content">채용 FAQ3</div>
-					<div class="faq_content">채용 FAQ4</div>
+					<div class="faq_content">
+						<div class="thumb_title">
+							${faq[i].noticeTitle }
+						</div>
+						<div class="thumb_content">
+							${faq[i].noticeContent }
+						</div>
+					</div>
 				</div>
-				<div class="tab_content">
-					<div class="faq_content">기타 FAQ1</div>
-					<div class="faq_content">기타 FAQ2</div>
-					<div class="faq_content">기타 FAQ3</div>
-					<div class="faq_content">기타 FAQ4</div>
-				</div>
+				
 			</div>
 			
 			<script type="text/javascript">
 				const tabBtn = document.querySelectorAll('.tab_btn')
 				const tabCont = document.querySelectorAll('.tab_content')
+				
+				console.log(tabCont)
 				
 				tabBtn.forEach((tab, index) => {
 					
@@ -132,7 +174,7 @@
 					<tbody>
 						<c:forEach var="n" items="${list }">
 							<tr>
-								<td>${n.noticeCategory }</td>
+								<td>${n.categoryName }</td>
 								<td>${n.noticeTitle }</td>
 								<td>
 									<c:if test="${not empty n.originName }">
@@ -147,6 +189,7 @@
 				
 				<div id="pagingArea">
 					<ul class="pagination">
+						<%-- 이전 페이지 --%>
 						<c:choose>
 							<c:when test="${pi.currentPage eq 1 }">
 								<li class="page-btn"><a class="pLink" href="#"><i class="fa-solid fa-chevron-left"></i></a></li>
@@ -156,10 +199,19 @@
 							</c:otherwise>
 						</c:choose>
 						
+						<%-- 페이지 --%>
 						<c:forEach var="p" begin="${pi.startPage }" end="${pi.endPage }">
-							<li class="page-btn"><a class="pLink" onclick="test()" href="notice.mp?currentPage=${p }">${p }</a></li>
+							<c:choose>
+								<c:when test="${p eq pi.currentPage }">
+									<li class="page-btn"><a class="pLink active" href="notice.mp?currentPage=${p }">${p }</a></li>
+								</c:when>								
+								<c:otherwise>
+									<li class="page-btn"><a class="pLink" href="notice.mp?currentPage=${p }">${p }</a></li>
+								</c:otherwise>
+							</c:choose>
 						</c:forEach>
 						
+						<%-- 다음 페이지 --%>
 						<c:choose>
 							<c:when test="${pi.currentPage eq 1 }">
 								<li class="page-btn"><a class="pLink" href="#"><i class="fa-solid fa-chevron-right"></i></a></li>
@@ -170,11 +222,8 @@
 						</c:choose>
 					</ul>
 				</div>
-				
 			</div>
 		</div>
-						
-		
 	</div>
 	
 	<%@include file="../common/mainPageFooter.jsp" %>

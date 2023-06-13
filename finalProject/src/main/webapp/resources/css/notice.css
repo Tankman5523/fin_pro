@@ -145,12 +145,18 @@ body {
 
 .tab_content{
 	display: none;
-	width: 100%;
 	height: auto;
 	padding: 50px;
 }
 .tab_content.active{
 	display: flex;
+}
+
+.tab_contents ul{
+	margin: 0;
+}
+.tab_contents>ul li{
+	list-style-type: none;
 }
 
 .tab_content:first-child:hover{
@@ -342,7 +348,6 @@ body {
 
 /*=================페이징=================*/
 .pagination{
-	display: block;
     width: 100%;
     margin: 0 0 100px 0;
     padding: 0%;
@@ -352,20 +357,40 @@ body {
 .page-btn{
     position: relative;
     display: inline-block;
+    width: 40px;
+    height: 40px;
     vertical-align: top;
     text-align: center;
-    margin: auto;
+    margin: auto 5px;
 }
-.page-btn a{
-	padding: 5px 10px;
-    text-decoration: none;
-    font-size: 20px;
-    font-weight: bold;
-    color: black;
-}
-.pLink:hover{
+.page-btn:hover{
 	cursor: pointer;
 	background-color: rgb(59, 193, 255);
-	border-radius: 10px;
+	border-radius: 50px;
+}
+.pLink{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 10px;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: bold;
+    color: black;
+    height: 40px;
+}
+.page-btn .pLink.active{
+	background-color: rgb(59, 193, 255);
+	border-radius: 50px;
 	color: white;
+}
+.page-btn a:hover{
+    color: white;
+}
+.fa-solid.fa-chevron-left,
+.fa-solid.fa-chevron-right{
+	height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
