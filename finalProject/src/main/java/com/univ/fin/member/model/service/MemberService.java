@@ -54,11 +54,8 @@ public interface MemberService {
 	//수강신청 - 수강신청 (수강조회)
 	ArrayList<RegisterClass> postRegClass(RegisterClass rc2);
 	
-	//수강신청 - 수강신청 (강의 인원수 체크)
-	int checkPostReg(int classNo);
-	
-	//수강신청 - 수강신청 (해당과목 조회)
-	RegisterClass selectClass(int classNo);
+	//수강신청 - 수강신청 (해당강의 조회)
+	Classes selectClass(int classNo);
 	
 	//수강신청 - 수강신청 (강의 시간 체크)
 	int checkPostReg2(RegisterClass rc2);
@@ -68,6 +65,12 @@ public interface MemberService {
 	
 	//수강신청 - 수강신청(2시간짜리 강의)
 	int postRegisterClass2(RegisterClass rc3);
+	
+	//수강신청 - 수강신청 (수강신청내역 조회)
+	ArrayList<RegisterClass> postRegList(String studentNo);
+	
+	//수강신청 - 수강신청 (수강신청내역 수강취소)
+	int delPostRegList(RegisterClass rc);
 	
 	// 강의시간표 -> 학년도,학기 조회
 	ArrayList<String> selectClassTerm();
@@ -110,7 +113,5 @@ public interface MemberService {
 
 	// 개인시간표 -> 학년도,학기 조회
 	ArrayList<String> selectClassTerm(String studentNo);
-
-
 
 }

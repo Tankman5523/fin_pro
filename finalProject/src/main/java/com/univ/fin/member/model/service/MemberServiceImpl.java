@@ -148,20 +148,11 @@ public class MemberServiceImpl implements MemberService{
 		return list;
 	}
 	
-	//수강신청 - 수강신청 (강의 인원수 체크)
+	//수강신청 - 수강신청 (해당강의 조회)
 	@Override
-	public int checkPostReg(int classNo) {
+	public Classes selectClass(int classNo) {
 		
-		int result = memberDao.checkPostReg(sqlSession,classNo);
-		
-		return result;
-	}
-	
-	//수강신청 - 수강신청 (해당과목 조회)
-	@Override
-	public RegisterClass selectClass(int classNo) {
-		
-		RegisterClass c = memberDao.selectClass(sqlSession,classNo);
+		Classes c = memberDao.selectClass(sqlSession,classNo);
 		
 		return c;
 	}
@@ -189,6 +180,24 @@ public class MemberServiceImpl implements MemberService{
 	public int postRegisterClass2(RegisterClass rc3) {
 		
 		int result = memberDao.postRegisterClass2(sqlSession,rc3);
+		
+		return result;
+	}
+	
+	//수강신청 - 수강신청내역 조회
+	@Override
+	public ArrayList<RegisterClass> postRegList(String studentNo) {
+		
+		ArrayList<RegisterClass> list = memberDao.postRegList(sqlSession,studentNo);
+		
+		return list;
+	}
+	
+	//수강신청 - 수강신청 (수강신청내역 수강취소)
+	@Override
+	public int delPostRegList(RegisterClass rc) {
+		
+		int result = memberDao.delPostRegList(sqlSession,rc);
 		
 		return result;
 	}
@@ -305,7 +314,5 @@ public class MemberServiceImpl implements MemberService{
 		ArrayList<String> classTerm = memberDao.selectClassTerm(sqlSession, studentNo);
 		return classTerm;
 	}
-
-
-
+	
 }
