@@ -88,7 +88,10 @@ public interface MemberService {
 	int insertStudent(Student st);
 
 	// 개인시간표 -> 학년도,학기 조회
-	ArrayList<String> selectClassTerm(String studentNo);
+	ArrayList<String> selectClassTerm2(String studentNo);
+
+	// 개인시간표 -> 학기 선택 후 시간표 조회
+	ArrayList<Classes> selectTimetable(HashMap<String, String> map);
 	
 
 }

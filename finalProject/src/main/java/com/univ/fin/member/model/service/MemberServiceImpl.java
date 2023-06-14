@@ -238,8 +238,15 @@ public class MemberServiceImpl implements MemberService{
 
 	// 개인시간표 -> 학년도,학기 조회
 	@Override
-	public ArrayList<String> selectClassTerm(String studentNo) {
-		ArrayList<String> classTerm = memberDao.selectClassTerm(sqlSession, studentNo);
+	public ArrayList<String> selectClassTerm2(String studentNo) {
+		ArrayList<String> classTerm = memberDao.selectClassTerm2(sqlSession, studentNo);
 		return classTerm;
+	}
+
+	// 개인시간표 -> 학기 선택 후 시간표 조회
+	@Override
+	public ArrayList<Classes> selectTimetable(HashMap<String, String> map) {
+		ArrayList<Classes> cList = memberDao.selectTimetable(sqlSession, map);
+		return cList;
 	}
 }

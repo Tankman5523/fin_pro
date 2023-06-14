@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.template.DepartmentCategory;
@@ -228,10 +229,22 @@ public class StudentController {
 	public ModelAndView personalTimetable(ModelAndView mv, HttpSession session) {
 		Student st = (Student)session.getAttribute("loginUser");
 		String studentNo = st.getStudentNo();
-		ArrayList<String> classTerm = memberService.selectClassTerm(studentNo);
+		ArrayList<String> classTerm = memberService.selectClassTerm2(studentNo); // 수강한 학년도, 학기
 		
 		mv.addObject("classTerm", classTerm).setViewName("member/student/personalTimetableView");
 		return mv;
+	}
+
+	// 개인시간표 -> 학기 선택 후 시간표 조회
+	@ResponseBody
+	@RequestMapping(value = "selectTimetable.st", produces = "application/json; charset=UTF-8;")
+	public String selectTimetable(@RequestParam HashMap<String,String> map, HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
+		map.put("studentNo", studentNo);
+		
+		ArrayList<Classes> cList = memberService.selectTimetable(map);
+		return new Gson().toJson(cList);
 	}
 
 }

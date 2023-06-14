@@ -152,8 +152,13 @@ public class MemberDao {
 	}
 
 	// 개인시간표 -> 학년도,학기 조회
-	public ArrayList<String> selectClassTerm(SqlSessionTemplate sqlSession, String studentNo) {
+	public ArrayList<String> selectClassTerm2(SqlSessionTemplate sqlSession, String studentNo) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectClassTerm2", studentNo);
+	}
+
+	// 개인시간표 -> 학기 선택 후 시간표 조회
+	public ArrayList<Classes> selectTimetable(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectTimetable", map);
 	}
 
 }
