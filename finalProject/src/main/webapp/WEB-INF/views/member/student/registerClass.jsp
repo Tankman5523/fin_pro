@@ -218,6 +218,7 @@
             		function mainContent(num){
             			$("div[id *= contentDiv]").css("display","none");
             			$("#departmentNo").hide();
+            			$("#categoryBtn").hide();
             			$(".selectReset").val(0);
             			$(".mcTable>tbody").html("");
             			$(".searchInput").val("");
@@ -245,9 +246,11 @@
             			
             			if($cno != 0){
             				$("#departmentNo").show();
+            				$("#categoryBtn").show();
             				$("#categoryBtn").attr("disabled",false);
             			}else{
             				$("#departmentNo").hide();
+            				$("#categoryBtn").hide();
             				$("#categoryBtn").attr("disabled",true);
             			}
             			
@@ -349,9 +352,14 @@
 													 +"<td>" + list[i].className + "</td>"
 													 +"<td>" + list[i].professorName + "</td>"
 													 +"<td>" + list[i].departmentName + "</td>"
-													 +"<td>" + list[i].creditHour + "</td>"
-													 +"<td>" + list[i].postClassNos + "</td>"
-													 +"<td>" + list[i].classInfo + "</td>"
+													 +"<td>" + list[i].creditHour + "</td>";
+													 /* 신청인원과 최대수강인원이 같다면*/
+													 if(list[i].signUpNos == list[i].postClassNos){
+											  result +="<td><b style='color:red;'>" + list[i].signUpNos +"</b>/"+ list[i].postClassNos + "</td>";
+													 }else{
+											  result +="<td>" + list[i].signUpNos +"/"+ list[i].postClassNos + "</td>";
+													 }
+											  result +="<td>" + list[i].classInfo + "</td>"
 													 +"<td>" + list[i].classLevel + "</td>"
 													 +"<td><button>수강신청</button></td>"
 													 +"</tr>";

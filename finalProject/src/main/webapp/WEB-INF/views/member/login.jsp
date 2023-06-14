@@ -19,7 +19,7 @@
 		 	<c:if test="${not empty alertMsg}">
 			
 				<script>
-					alert("${alertMsg}");
+				 	alert("<c:out value='${alertMsg}'/>");
 				</script>
 				
 				<c:remove var="alertMsg" scope="session"/>
