@@ -77,7 +77,7 @@
                     <a href="infoStudent.st">학적 정보 조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="#" style="color:#00aeff; font-weight: 550;">개인 시간표</a>
+                    <a href="personalTimetable.st" style="color:#00aeff; font-weight: 550;">개인 시간표</a>
                 </div>
                 <div class="child_title">
                     <a href="#">휴/복학 신청</a>
@@ -185,37 +185,37 @@
 					var arr = ${classTerm};
 	                
 	                $(function() {
-	                	$("select[name=year]").children().eq(0).prop("selected", true).change();
+	                	$("select[name=year]").children().first().prop("selected", true).change();
+	                	selectTimetable();
 	                    
 	                	$(".selectTerm").on("change", "#term", function() {
-	                		selectCategory();
+	                		selectTimetable();
 	                	});
 	                })
 	                
 	                function changeYear(e) {
 	                	var $year = e.value;
-	                	var count=0;
 	                	var str = "";
 	                	
 	                	for(var i=0;i<arr.length;i++) {
 	                		var tmp = arr[i].toString().substr(0,4);
 	                		if(tmp.includes($year)) {
-	                			count++;
+	                			var tmp2 = arr[i].toString().substr(5,);
+		                		if(tmp2 == "1") {
+		                			str += "<option value='1'>1학기</option>";
+		                		}
+		                		if(tmp2 == "2") {
+		                			str += "<option value='2'>2학기</option>";
+		                		}
 	                		}
 	                	}
 	                	
-	                	if(count!=0) {
-		                	str += "<option value='1'>1학기</option>";
-		                	if(count==2) {
-		                		str += "<option value='2'>2학기</option>";
-		                	}
-	                	}
 	                	$("#term").empty();
 	                	$("#term").append(str);
-	                	selectCategory();
+	                	clearPage();
 	                }
 	                
-	                function prevTerm() { // 마지막 학기일 경우 alert, 2학기->1학기, 1학기 -> 이전 년도 2학기
+	                function prevTerm() { // 마지막 학기일 경우 alert, 무조건 재학한 이전학기로
 	                	var $thisYear = $("select[name=year]");
 	                	var $term = $("select[name=term]");
 	                
@@ -223,18 +223,18 @@
 	                		alert("조회 내용이 없습니다.");
 	                	}
 	                	else {
-		                	if($term.val() == 1) { // 이전 년도 2학기로 바꿔야함
-		                		var $index = $thisYear.children("option:selected").index();
-		                		$thisYear.children().eq($index+1).prop("selected", true).change();
+							if($term.children().first().val() == $term.val()) { // 해 바뀜
+								var $index = $thisYear.children("option:selected").index();
+								$thisYear.children().eq($index+1).prop("selected", true).change();
 	                			$term.children().last().prop("selected", true).change();
-		                	}
-		                	else { // 같은 년도 1학기로 바꿔야함
+							}
+							else {
 		                		$term.children().first().prop("selected", true).change();
 		                	}
 	                	}
 	                }
 	                
-	                function nextTerm() { // 마지막 학기일 경우 alert, 1학기 -> 2학기, 2학기 -> 다음 년도 1학기
+	                function nextTerm() { // 마지막 학기일 경우 alert, 무조건 재학한 다음학기로
 	                	var $thisYear = $("select[name=year]");
 	                	var $term = $("select[name=term]");
 	                	
@@ -242,15 +242,37 @@
 	                		alert("조회 내용이 없습니다.");
 	                	}
 	                	else {
-		                	if($term.val() == 2) { // 다음 년도 1학기로 바꿔야함
+	                		if($term.children().last().val() == $term.val()) { // 해 바뀜
 		                		var $index = $thisYear.children("option:selected").index();
-		                		$thisYear.children().eq($index-1).prop("selected", true).change();
+	                			$thisYear.children().eq($index-1).prop("selected", true).change();
 	                			$term.children().first().prop("selected", true).change();
-		                	}
-		                	else { // 같은 년도 2학기로 바꿔야함
+	                		}
+	                		else {
 		                		$term.children().last().prop("selected", true).change();
 		                	}
 	                	}
+	                }
+	                
+	                function selectTimetable() {
+	                	clearPage();
+	                	
+	                	$.ajax({
+	                		url: "selectTimetable.st",
+	                		data: {
+	                			year: $("#year").val(),
+                				term: $("#term").val()
+	                		},
+	                		success: function(cList) {
+	                			console.log(cList);
+	                		},
+	                		error: function() {
+	                			console.log("통신 오류");
+	                		}
+	                	})
+	                }
+	                
+	                function clearPage() {
+	                	console.log("clearPage");
 	                }
 				</script>
             </div>
