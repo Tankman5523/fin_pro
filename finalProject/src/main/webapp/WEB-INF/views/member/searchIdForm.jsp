@@ -9,7 +9,7 @@
 	<!-- jQuery library -->
 	<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="resources/css/searchIdForm.css">
-    <title>Document</title>
+    <title>로그인ID 조회 : 종합정보시스템</title>
 </head>
 <body>
     <div class="wrap">

@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
@@ -28,7 +29,6 @@ import com.univ.fin.common.template.DepartmentCategory;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
-import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.money.model.vo.RegistPay;
 
 
@@ -211,12 +211,18 @@ public class StudentController {
 										 .classTerm(rc.getClassTerm())
 										 .build();
 			
-			//강의 시간 체크 (0반환이라면 가능이라는 의미)
+			//강의 시간 체크 (0반환이라면 겹치는 강의가 없다라는 의미)
 			int check = memberService.checkPostReg2(rc2);
 			
 			//수강신청 가능 여부 판별
 			if(check == 0) {
 				result = memberService.postRegisterClass(rc2);
+				
+					if(result > 0) {
+						//해당 과목 장바구니에서 지워주기
+						result += memberService.postRegDelBucket(rc2);
+					}
+				
 				if(rc2.getClassHour() == 2) { //2시간짜리 강의일 경우
 					result *= memberService.postRegisterClass2(rc2);
 				}
@@ -446,6 +452,15 @@ public class StudentController {
 		
 		ArrayList<Classes> cList = memberService.selectStudentTimetable(map);
 		return new Gson().toJson(cList);
+	}
+	
+	//학사관리 - 졸업사정표
+	@GetMapping("graduationInfoForm.st")
+	public String graduationInfoForm(Model model,HttpSession session) {
+		
+		/* 이름,학년,이수학기(?),학적상태,입학년도,소속(단과대학),전공,졸업사정일자(뷰에서처리),인정학점(?) */
+		
+		return "member/student/graduationInfo";
 	}
 	
 	//학생등록 페이지

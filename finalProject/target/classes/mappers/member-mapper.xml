@@ -408,6 +408,13 @@
   		INSERT INTO SCHEDULE VALUES(#{classNo},#{studentNo},#{day},#{period})
   	</insert>
   	
+  	<!-- 수강신청 - 수강신청(해당 과목 장바구니에서 지워주기) -->
+  	<delete id="postRegDelBucket">
+  		DELETE FROM BUCKET
+  		WHERE STUDENT_NO = #{studentNo}
+  		AND CLASS_NO = #{classNo}
+  	</delete>
+  	
   	<!-- 수강신청 - 수강신청(2시간짜리 강의) -->
   	<insert id="postRegisterClass2">
   		INSERT INTO SCHEDULE VALUES(#{classNo},#{studentNo},#{day},#{period}+1)
