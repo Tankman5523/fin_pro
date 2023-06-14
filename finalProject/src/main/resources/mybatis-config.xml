@@ -15,11 +15,16 @@
 		<typeAlias type="com.univ.fin.money.model.vo.Scholarship" alias="scholarship"/>
 		<typeAlias type="com.univ.fin.money.model.vo.RegistPay" alias="registpay"/>
 		<typeAlias type="com.univ.fin.common.model.vo.Classes" alias="classes"/>
+		<typeAlias type="com.univ.fin.common.model.vo.RegisterClass" alias="registerClass"/>
+		<typeAlias type="com.univ.fin.common.model.vo.Department" alias="department"/>
+		<typeAlias type="com.univ.fin.common.model.vo.Counseling" alias="counseling"/>
+		<typeAlias type="com.univ.fin.main.model.vo.Notice" alias="notice"/>
 	</typeAliases>
 	
 	<mappers>
 		<mapper resource="/mappers/member-mapper.xml"/>
 		<mapper resource="/mappers/money-mapper.xml"/>
+		<mapper resource="/mappers/main-mapper.xml"/>
 	</mappers>
-	
+
 </configuration>

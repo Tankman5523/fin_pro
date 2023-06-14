@@ -147,13 +147,12 @@ public class RegistController {
 		messageHelper.setTo(toMail);
 		messageHelper.setSubject(title);
 		messageHelper.setText(content,true);
-		mailSender.send(message); //결과 판별불가...
+		mailSender.send(message); 
 		//메일 완료
 		
 		//SMS 문자전송
-		Boolean check =false;
 		Sms smsMessage = new Sms();
-		int result = smsMessage.dunning_msg("01027552324", nonPaidAmount, studentName);
+		int result = smsMessage.dunningMsg("01046418415", nonPaidAmount, studentName);
 		//문자 완료
 		
 		if(result>0) {

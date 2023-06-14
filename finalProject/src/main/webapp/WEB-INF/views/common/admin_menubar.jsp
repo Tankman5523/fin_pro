@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>        
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,16 +16,20 @@
 <!-- Latest compiled JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <link rel="stylesheet" href="/fin/resources/css/adminPageStylesheet.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 	<div id="header">
+		<div id="logo" style="width: 500px; height: 100%; margin: 0; float: left; display: flex; align-items: center; justify-content: center;">
+			<img src="resources/icon/blue_logo_text.png" style="width:300px;">
+		</div>
 		<table id="user_log">
 	        <tr>
 	            <td>
-					${loginUser.professorName} 님 환영합니다.
+					${loginUser.professorName}님 환영합니다.
 		        </td>
 		        <td style="padding-left: 50px;">
-		            <button type="button" class="btn btn-primary" onclick="">로그아웃</button>
+		            <button type="button" class="btn btn-primary" onclick="location.href='logout.me'">로그아웃</button>
 		        </td>
 	    	</tr>
 		</table>

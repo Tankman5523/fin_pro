@@ -4,8 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
-<title>종합정보시스템</title>
+<title>종합정보시스템 : Feasible University</title>
     <link rel="stylesheet" href="/fin/resources/css/infoSystemMain.css">
 </head>
 <body>

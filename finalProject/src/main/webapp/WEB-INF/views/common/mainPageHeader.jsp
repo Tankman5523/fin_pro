@@ -6,6 +6,7 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <link rel="stylesheet" href="/fin/resources/css/mainPageHeader.css">
+<script src="https://kit.fontawesome.com/7f4a340891.js" crossorigin="anonymous"></script>
 </head>
 <body>
 	<div id="header">
@@ -17,7 +18,7 @@
 	            <li><a href="universityIntro.mp">학교소개</a></li>
 	            <li><a href="haksaInfo.mp">학사소개</a></li>
 	            <li><a href="haksaSchedule.mp">학사일정</a></li>
-	            <li><a href="noticeBoard.mp">공지게시판</a></li>
+	            <li><a href="notice.mp">공지게시판</a></li>
 	            <li><a href="infoSystem.mp">종합정보시스템</a></li>
 	        </ul>
 	    </div>

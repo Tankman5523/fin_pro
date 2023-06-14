@@ -1,5 +1,6 @@
 package com.univ.fin.money.model.vo;
 
+
 import java.sql.Date;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +15,8 @@ import lombok.NoArgsConstructor;
 public class Salary {
 	private int payNo;
 	private String professorNo;
-	private String paymentDate; //
+	private String paymentDate;
+
 	
 	private int basePay; //기본급
 	private int positionPay; //직책수당

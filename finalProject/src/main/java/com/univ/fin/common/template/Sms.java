@@ -133,7 +133,7 @@ public class Sms {
 	}
 	
 	@SuppressWarnings("unchecked") //등록금 독촉 메시지
-	public int dunning_msg(String tel, int nonPaidAmount, String studentName) {
+	public int dunningMsg(String tel, int nonPaidAmount, String studentName) {
 		
 		String hostNameUrl = "https://sens.apigw.ntruss.com";
 		
@@ -164,7 +164,7 @@ public class Sms {
         bodyJson.put("contentType","COMM");
         bodyJson.put("countryCode","82");
         
-        bodyJson.put("from","01027552324");		
+        bodyJson.put("from","01046418415");		
         bodyJson.put("content","[FEASIBLE UNIVERSITY] "+studentName+"님의 등록금 미납액 ["+nonPaidAmount+"(원)] 입니다. 등록 기간내에 납부바랍니다.");		
         bodyJson.put("messages", toArr);
         

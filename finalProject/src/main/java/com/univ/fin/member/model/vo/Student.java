@@ -31,8 +31,8 @@ public class Student {
 	*/
 	
 	private String studentNo;
-	private int departmentNo;
-	private int collegeNo;
+	private String departmentNo;
+	private String collegeNo;
 	private int fileNo;
 	private String studentName;
 	private String studentPwd;
