@@ -7,13 +7,17 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Department;
 import com.univ.fin.common.model.vo.RegisterClass;
+import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
+import com.univ.fin.money.model.vo.RegistPay;
 
 @Repository
 public class MemberDao {
@@ -180,11 +184,19 @@ public class MemberDao {
 		
 		return sqlSession.selectOne("memberMapper.selectProfessorForNo",professorNo);
 	}
+	
 	//상담관리 - 상담 요청내용 수정(학생)
 	public int updateCounContent(SqlSessionTemplate sqlSession, Counseling c) {
 		
 		return sqlSession.update("memberMapper.updateCounContent",c);
 	}
+	
+	//상담관리 - 상담 내역 검색
+	public ArrayList<Counseling> selectSearchCounseling(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+			
+		return (ArrayList)sqlSession.selectList("memberMapper.selectSearchCounList",map);
+	}
+	
 	//학적정보 수정 - 학생
 	public int updateStudent(SqlSessionTemplate sqlSession, Student st) {
 
@@ -204,6 +216,41 @@ public class MemberDao {
 	// 강의시간표 -> 교수명 검색/과목 검색
 	public ArrayList<Classes> searchClassKeyword(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
 		return (ArrayList)sqlSession.selectList("memberMapper.searchClassKeyword", map);
+	}
+
+
+	
+
+	//(학생)휴,복학 신청 리스트 조회
+	public ArrayList<StudentRest> selectStuRestList(SqlSessionTemplate sqlSession, String studentNo) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.selectStuRestList",studentNo);
+	}
+
+	//(학생)휴학횟수 가져옴
+	public int selectRestCount(SqlSessionTemplate sqlSession, String studentNo) {
+		
+		return sqlSession.selectOne("memberMapper.selectRestCount",studentNo);
+	}
+
+	//(학생)가장 최근 휴학 정보 가져옴
+	public StudentRest selectRestInfo(SqlSessionTemplate sqlSession, String studentNo) {
+		
+		return sqlSession.selectOne("memberMapper.selectRestInfo",studentNo);
+	}
+
+	//(학생)휴학신청할떄 등록금 정보 가져오기
+	public RegistPay checkRegPay(SqlSessionTemplate sqlSession, RegistPay rp) {
+		
+		RegistPay checkRp = sqlSession.selectOne("memberMapper.checkRegPay",rp);
+		
+		return checkRp;
+	}
+
+	//(학생)휴,복학 신청 인서트
+	public int insertStuRest(SqlSessionTemplate sqlSession, StudentRest sr) {
+		
+		return sqlSession.insert("memberMapper.insertStuRest",sr);
 	}
 
 	// 학생 개인시간표 -> 학년도,학기 조회

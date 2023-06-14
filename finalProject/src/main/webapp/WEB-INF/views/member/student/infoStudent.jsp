@@ -279,10 +279,10 @@
                     <a href="personalTimetable.st">개인 시간표</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">휴/복학 신청</a>
+                    <a href="studentRestEnroll.st">휴/복학 신청</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">휴/복학 조회</a>
+                    <a href="studentRestList.st">휴/복학 조회</a>
                 </div>
 				<div class="child_title">
                     <a href="#">졸업사정표</a>

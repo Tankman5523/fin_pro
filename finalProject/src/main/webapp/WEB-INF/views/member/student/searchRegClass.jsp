@@ -28,7 +28,7 @@
                     <a href="searchRegClassForm.st" style="color:#00aeff; font-weight: 550;">수강신청 내역조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="preRegisterClass.st">예비수강신청</a>
+                    <a href="preRegisterClassForm.st">예비수강신청</a>
                 </div>
             </div>
             <div id="content_1">

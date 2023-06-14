@@ -7,13 +7,17 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.RegisterClass;
+import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.dao.MemberDao;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
+import com.univ.fin.money.model.vo.RegistPay;
 
 @Service
 public class MemberServiceImpl implements MemberService{
@@ -303,6 +307,15 @@ public class MemberServiceImpl implements MemberService{
 		
 		return result;
 	}
+	
+	//상담관리 - 상담내역 검색
+	@Override
+	public ArrayList<Counseling> selectSearchCounseling(HashMap<String, String> map) {
+		ArrayList<Counseling> list = memberDao.selectSearchCounseling(sqlSession,map);
+			
+		return list;
+	}
+	
 	// 강의시간표 -> 교수명 검색/과목 검색
 	@Override
 	public ArrayList<Classes> searchClassKeyword(HashMap<String, String> map) {
@@ -347,6 +360,45 @@ public class MemberServiceImpl implements MemberService{
 	public ArrayList<Classes> selectStudentTimetable(HashMap<String, String> map) {
 		ArrayList<Classes> cList = memberDao.selectStudentTimetable(sqlSession, map);
 		return cList;
+	}
+	
+	//(학생)휴,복학 신청 리스트 조회
+	@Override
+	public ArrayList<StudentRest> selectStuRestList(String studentNo) {
+		
+		ArrayList<StudentRest> list = memberDao.selectStuRestList(sqlSession,studentNo);
+		
+		return list;
+	}
+	
+	//휴학횟수 가져옴
+	@Override
+	public int selectRestCount(String studentNo) {
+		
+		int restCount = memberDao.selectRestCount(sqlSession,studentNo);
+		
+		return restCount;
+	}
+	
+	//(학생)가장 최근 휴학 정보 가져옴
+	@Override
+	public StudentRest selectRestInfo(String studentNo) {
+		StudentRest sr = memberDao.selectRestInfo(sqlSession,studentNo);
+		return sr;
+	}
+	
+	//(학생)휴학신청할떄 등록금 냈는지 확인
+	@Override
+	public RegistPay checkRegPay(RegistPay rp) {
+		RegistPay checkRp = memberDao.checkRegPay(sqlSession,rp);
+		return checkRp;
+	}
+	
+	//(학생)휴,복학 신청 인서트
+	@Override
+	public int insertStuRest(StudentRest sr) {
+		int result = memberDao.insertStuRest(sqlSession,sr);
+		return result;
 	}
 
 	// 교수 개인시간표 -> 학년도,학기 조회
