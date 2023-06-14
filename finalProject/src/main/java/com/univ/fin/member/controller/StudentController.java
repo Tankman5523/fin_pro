@@ -393,7 +393,7 @@ public class StudentController {
 	public ModelAndView personalTimetable(ModelAndView mv, HttpSession session) {
 		Student st = (Student)session.getAttribute("loginUser");
 		String studentNo = st.getStudentNo();
-		ArrayList<String> classTerm = memberService.selectClassTerm2(studentNo); // 수강한 학년도, 학기
+		ArrayList<String> classTerm = memberService.selectStudentClassTerm(studentNo); // 수강한 학년도, 학기
 		
 		mv.addObject("classTerm", classTerm).setViewName("member/student/personalTimetableView");
 		return mv;
@@ -401,13 +401,13 @@ public class StudentController {
 
 	// 개인시간표 -> 학기 선택 후 시간표 조회
 	@ResponseBody
-	@RequestMapping(value = "selectTimetable.st", produces = "application/json; charset=UTF-8;")
-	public String selectTimetable(@RequestParam HashMap<String,String> map, HttpSession session) {
+	@RequestMapping(value = "selectStudentTimetable.st", produces = "application/json; charset=UTF-8;")
+	public String selectStudentTimetable(@RequestParam HashMap<String,String> map, HttpSession session) {
 		Student st = (Student)session.getAttribute("loginUser");
 		String studentNo = st.getStudentNo();
 		map.put("studentNo", studentNo);
 		
-		ArrayList<Classes> cList = memberService.selectTimetable(map);
+		ArrayList<Classes> cList = memberService.selectStudentTimetable(map);
 		return new Gson().toJson(cList);
 	}
 

@@ -120,11 +120,14 @@ public interface MemberService {
 	// 회원추가 (학생)
 	int insertStudent(Student st);
 
-	// 개인시간표 -> 학년도,학기 조회
-	ArrayList<String> selectClassTerm2(String studentNo);
+	// 학생 개인시간표 -> 학년도,학기 조회
+	ArrayList<String> selectStudentClassTerm(String studentNo);
 
-	// 개인시간표 -> 학기 선택 후 시간표 조회
-	ArrayList<Classes> selectTimetable(HashMap<String, String> map);
+	// 학생 개인시간표 -> 학기 선택 후 시간표 조회
+	ArrayList<Classes> selectStudentTimetable(HashMap<String, String> map);
+
+	// 교수 개인시간표 -> 학년도,학기 조회
+	ArrayList<String> selectProfessorClassTerm(String professorNo);
 	
 
 }

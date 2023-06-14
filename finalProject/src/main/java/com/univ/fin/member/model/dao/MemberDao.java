@@ -206,14 +206,19 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.searchClassKeyword", map);
 	}
 
-	// 개인시간표 -> 학년도,학기 조회
-	public ArrayList<String> selectClassTerm2(SqlSessionTemplate sqlSession, String studentNo) {
-		return (ArrayList)sqlSession.selectList("memberMapper.selectClassTerm2", studentNo);
+	// 학생 개인시간표 -> 학년도,학기 조회
+	public ArrayList<String> selectStudentClassTerm(SqlSessionTemplate sqlSession, String studentNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectStudentClassTerm", studentNo);
 	}
 
-	// 개인시간표 -> 학기 선택 후 시간표 조회
-	public ArrayList<Classes> selectTimetable(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
-		return (ArrayList)sqlSession.selectList("memberMapper.selectTimetable", map);
+	// 학생 개인시간표 -> 학기 선택 후 시간표 조회
+	public ArrayList<Classes> selectStudentTimetable(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectStudentTimetable", map);
+	}
+
+	// 교수 개인시간표 -> 학년도,학기 조회
+	public ArrayList<String> selectProfessorClassTerm(SqlSessionTemplate sqlSession, String professorNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectProfessorClassTerm", professorNo);
 	}
 
 }
