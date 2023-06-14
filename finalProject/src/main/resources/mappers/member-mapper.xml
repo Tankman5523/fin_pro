@@ -639,8 +639,8 @@
   	WHERE PROFESSOR_NO = #{professorNo}
   	</update>
   	  	
-  	<!-- 개인시간표 -> 학년도,학기 조회 -->
-  	<select id="selectClassTerm2" resultType="string">
+  	<!-- 학생 개인시간표 -> 학년도,학기 조회 -->
+  	<select id="selectStudentClassTerm" resultType="string">
   		SELECT CLASS_YEAR||'0'||CLASS_TERM
 		FROM CLASS
 		JOIN SCHEDULE USING(CLASS_NO)
@@ -649,13 +649,22 @@
 		ORDER BY CLASS_YEAR DESC, CLASS_TERM ASC
   	</select>
   	
-  	<!-- 개인시간표 -> 학기 선택 후 시간표 조회 -->
-  	<select id="selectTimetable" parameterType="hashmap" resultMap="classResultMap">
-  		SELECT CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DECODE(S.DAY, '1', '월', '2', '화', '3', '수', '4', '목', '5', '금') AS DAY
-		        , S.PERIOD, CLASS_HOUR, STUDENT_NO, CLASS_YEAR, CLASS_TERM
+  	<!-- 학생 개인시간표 -> 학기 선택 후 시간표 조회 -->
+  	<select id="selectStudentTimetable" parameterType="hashmap" resultMap="classResultMap">
+  		SELECT CLASS_NO, CLASS_NAME, PROFESSOR_NAME, S.DAY, S.PERIOD, CLASS_HOUR, STUDENT_NO, CLASSROOM
 		FROM CLASS C
 		JOIN SCHEDULE S  USING(CLASS_NO)
 		LEFT JOIN PROFESSOR P USING(PROFESSOR_NO)
 		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND S.STUDENT_NO = #{studentNo}
   	</select>
-</mapper>
+  	
+  	<!-- 교수 개인시간표 -> 학년도,학기 조회 -->
+  	<select id="selectProfessorClassTerm" resultType="string">
+  		SELECT CLASS_YEAR||'0'||CLASS_TERM
+		FROM CLASS
+		JOIN PROFESSOR USING(PROFESSOR_NO)
+		WHERE PROFESSOR_NO = 'P20150023'
+		GROUP BY CLASS_YEAR, CLASS_TERM
+		ORDER BY CLASS_YEAR DESC, CLASS_TERM ASC
+  	</select>
+  </mapper>

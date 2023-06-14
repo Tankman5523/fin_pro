@@ -3,7 +3,6 @@ package com.univ.fin.member.model.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -126,12 +125,11 @@ public interface MemberService {
 	// 회원추가 (학생)
 	int insertStudent(Student st);
 	
-	// 개인시간표 -> 학년도,학기 조회
-	ArrayList<String> selectClassTerm2(String studentNo);
+	// 학생 개인시간표 -> 학년도,학기 조회
+	ArrayList<String> selectStudentClassTerm(String studentNo);
 
-
-	// 개인시간표 -> 학기 선택 후 시간표 조회
-	ArrayList<Classes> selectTimetable(HashMap<String, String> map);
+	// 학생 개인시간표 -> 학기 선택 후 시간표 조회
+	ArrayList<Classes> selectStudentTimetable(HashMap<String, String> map);
 	
 	//(학생)휴,복학 신청 리스트 조회
 	ArrayList<StudentRest> selectStuRestList(String studentNo);
@@ -147,6 +145,8 @@ public interface MemberService {
 
 	//(학생)휴,복학 신청 인서트
 	int insertStuRest(StudentRest sr);
-	
+
+	// 교수 개인시간표 -> 학년도,학기 조회
+	ArrayList<String> selectProfessorClassTerm(String professorNo);
 
 }

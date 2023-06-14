@@ -348,17 +348,17 @@ public class MemberServiceImpl implements MemberService{
 		return result;
 	}
 
-	// 개인시간표 -> 학년도,학기 조회
+	// 학생 개인시간표 -> 학년도,학기 조회
 	@Override
-	public ArrayList<String> selectClassTerm2(String studentNo) {
-		ArrayList<String> classTerm = memberDao.selectClassTerm2(sqlSession, studentNo);
+	public ArrayList<String> selectStudentClassTerm(String studentNo) {
+		ArrayList<String> classTerm = memberDao.selectStudentClassTerm(sqlSession, studentNo);
 		return classTerm;
 	}
 
-	// 개인시간표 -> 학기 선택 후 시간표 조회
+	// 학생 개인시간표 -> 학기 선택 후 시간표 조회
 	@Override
-	public ArrayList<Classes> selectTimetable(HashMap<String, String> map) {
-		ArrayList<Classes> cList = memberDao.selectTimetable(sqlSession, map);
+	public ArrayList<Classes> selectStudentTimetable(HashMap<String, String> map) {
+		ArrayList<Classes> cList = memberDao.selectStudentTimetable(sqlSession, map);
 		return cList;
 	}
 	
@@ -401,4 +401,10 @@ public class MemberServiceImpl implements MemberService{
 		return result;
 	}
 
+	// 교수 개인시간표 -> 학년도,학기 조회
+	@Override
+	public ArrayList<String> selectProfessorClassTerm(String professorNo) {
+		ArrayList<String> classTerm = memberDao.selectProfessorClassTerm(sqlSession, professorNo);
+		return classTerm;
+	}
 }
