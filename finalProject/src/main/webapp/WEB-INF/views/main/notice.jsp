@@ -7,6 +7,8 @@
 <meta charset="UTF-8">
 <title>공지사항 : Feasible University</title>
 <link rel="stylesheet" href="/fin/resources/css/notice.css">
+<!-- jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="wrap">
@@ -40,84 +42,57 @@
 			
 			<div class="tab_contents">
 				
-				<ul class="tab_content active">
-					<li class="faq_content">
-						<span class="thumb_title">
-							${faq[1].noticeTitle }
-						</span>
-						<span class="thumb_content">
-							${faq[1].noticeContent }
-						</span>
-					</li>
-					<li class="faq_content">
-						<span class="thumb_title">
-							${faq[2].noticeTitle }
-						</span>
-						<span class="thumb_content">
-							${faq[2].noticeContent }
-						</span>
-					</li>
-					<li class="faq_content">
-						<span class="thumb_title">
-							${faq[3].noticeTitle }
-						</span>
-						<span class="thumb_content">
-							${faq[3].noticeContent }
-						</span>
-					</li>
-					<li class="faq_content">
-						<span class="thumb_title">
-							${faq[3].noticeTitle }
-						</span>
-						<span class="thumb_content">
-							${faq[3].noticeContent }
-						</span>
-					</li>
-				</ul>
-						
-				<div class="tab_content">
-					<div class="faq_content">
-						<div class="thumb_title">
-							${faq[i].noticeTitle }
-						</div>
-						<div class="thumb_content">
-							${faq[i].noticeContent }
-						</div>
-					</div>
+				<div class="tab_content active">
+<!-- 					<div class="faq_content"> -->
+						<span>1</span>
+						<span>2</span>
+						<span>3</span>
+<!-- 					</div> -->
 				</div>
 				
-				<div class="tab_content">
-					<div class="faq_content">
-						<div class="thumb_title">
-							${faq[i].noticeTitle }
-						</div>
-						<div class="thumb_content">
-							${faq[i].noticeContent }
-						</div>
-					</div>
-				</div>
+<!-- 				<div class="tab_content janghak"> -->
+<!-- 					<div class="faq_content"> -->
+<!-- 						<span class="thumb_title"> -->
+<!-- 							2 -->
+<!-- 						</span> -->
+<!-- 						<span class="thumb_content"> -->
+<!-- 							2 -->
+<!-- 						</span> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
 				
-				<div class="tab_content">
-					<div class="faq_content">
-						<div class="thumb_title">
-							${faq[i].noticeTitle }
-						</div>
-						<div class="thumb_content">
-							${faq[i].noticeContent }
-						</div>
-					</div>
-				</div>
+<!-- 				<div class="tab_content iphak"> -->
+<!-- 					<div class="faq_content"> -->
+<!-- 						<span class="thumb_title"> -->
+<!-- 							3 -->
+<!-- 						</span> -->
+<!-- 						<span class="thumb_content"> -->
+<!-- 							3 -->
+<!-- 						</span> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
 				
-				<div class="tab_content">
-					<div class="faq_content">
-						<div class="thumb_title">
-							${faq[i].noticeTitle }
-						</div>
-						<div class="thumb_content">
-							${faq[i].noticeContent }
-						</div>
-					</div>
-				</div>
+<!-- 				<div class="tab_content chaeyong"> -->
+<!-- 					<div class="faq_content"> -->
+<!-- 						<span class="thumb_title"> -->
+<!-- 							4 -->
+<!-- 						</span> -->
+<!-- 						<span class="thumb_content"> -->
+<!-- 							4 -->
+<!-- 						</span> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
+				
+<!-- 				<div class="tab_content gita"> -->
+<!-- 					<div class="faq_content"> -->
+<!-- 						<span class="thumb_title"> -->
+<!-- 							5 -->
+<!-- 						</span> -->
+<!-- 						<span class="thumb_content"> -->
+<!-- 							5 -->
+<!-- 						</span> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
 				
 			</div>
 			
@@ -125,11 +100,30 @@
 				const tabBtn = document.querySelectorAll('.tab_btn')
 				const tabCont = document.querySelectorAll('.tab_content')
 				
-				console.log(tabCont)
+// 				const category = new Array()
+// 				const title = new Array()
+// 				const content = new Array()
+				
+// 				var btnText = ""
+				
+// 				const faqCont = document.getElementsByClassName('faq_content')
+				
+// 				const titleSpan = document.createElement('span')
+// 				titleSpan.className = 'thumb_title'
+				
+// 				const contentSpan = document.createElement('span')
+// 				contentSpan.className = 'thumb_content'
+				
+// 				<c:forEach var="f" items="${faq}">
+// 					category.push("${f.noticeCategory}")
+// 					title.push("${f.noticeTitle}")
+// 					content.push("${f.noticeContent}")
+// 				</c:forEach>
 				
 				tabBtn.forEach((tab, index) => {
-					
+										
 					tab.addEventListener('click', function(){
+											
 						tabCont.forEach((cont) => {
 							cont.classList.remove('active')
 						})
@@ -138,11 +132,63 @@
 							btn.classList.remove('active')
 						})
 						
-						tabBtn[index].classList.add('active')
 						tabCont[index].classList.add('active')
+						tabBtn[index].classList.add('active')
 					})
 					
 				})
+				
+				
+				window.onload = function(){
+// 				(function(){
+					
+				
+					
+					const category = new Array()
+					const title = new Array()
+					const content = new Array()
+					
+					const active = document.getElementsByClassName('.tab_content active')
+					
+					console.log(active)
+// 					const faqCont = document.getElementsByClassName('faq_content')
+					
+					const faqCont = document.createElement('div')
+	 				faqCont.className = 'faq_content'
+	 				
+	 				const titleSpan = document.createElement('span')
+	 				titleSpan.className = 'thumb_title'
+					
+	 				const contentSpan = document.createElement('span')
+	 				contentSpan.className = 'thumb_content'
+					
+					var btnText = ""
+					
+					<c:forEach var="f" items="${faq}">
+						category.push("${f.noticeCategory}")
+						title.push("${f.noticeTitle}")
+						content.push("${f.noticeContent}")
+					</c:forEach>
+					
+						
+						
+// 					while (faqCont.length < 4) {
+						for(var i=0; i<category.length; i++){
+							if(category[i] == 1){
+								titleSpan.innerHTML = title[i]
+								contentSpan.innerHTML = content[i]
+								faqCont.append(titleSpan, contentSpan)
+// 								active.appendChild(faqCont)
+// 								console.log(active)
+							}
+						}
+// 					}			
+						
+						
+// 				})()	
+    			}
+				
+				
 			</script>
 		</div>
 		
