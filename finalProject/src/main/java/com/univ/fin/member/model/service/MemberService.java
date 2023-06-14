@@ -3,12 +3,15 @@ package com.univ.fin.member.model.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.RegisterClass;
+import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
+import com.univ.fin.money.model.vo.RegistPay;
 
 public interface MemberService {
 
@@ -90,6 +93,9 @@ public interface MemberService {
 	// 강의시간표 -> 전공 선택 후 전공수업 조회/교양수업 조회
 	ArrayList<Classes> selectDepartment(HashMap<String, String> map);
 
+	// 강의시간표 -> 교수명 검색/과목 검색
+	ArrayList<Classes> searchClassKeyword(HashMap<String, String> map);
+
 	//상담관리 - 상담내역조회(학생)
 	ArrayList<Counseling> selectCounStuList(String studentNo);
 	
@@ -108,8 +114,8 @@ public interface MemberService {
 	//상담관리 - 상담 요청내용 수정(학생)
 	int updateCounContent(Counseling c);
 
-	// 강의시간표 -> 교수명 검색/과목 검색
-	ArrayList<Classes> searchClassKeyword(HashMap<String, String> map);
+	//상담내역 검색
+	ArrayList<Counseling> selectSearchCounseling(HashMap<String, String> map);
 
 	//학적정보 수정 (학생)
 	int updateStudent(Student st);
@@ -119,12 +125,28 @@ public interface MemberService {
 
 	// 회원추가 (학생)
 	int insertStudent(Student st);
-
+	
 	// 개인시간표 -> 학년도,학기 조회
 	ArrayList<String> selectClassTerm2(String studentNo);
 
+
 	// 개인시간표 -> 학기 선택 후 시간표 조회
 	ArrayList<Classes> selectTimetable(HashMap<String, String> map);
+	
+	//(학생)휴,복학 신청 리스트 조회
+	ArrayList<StudentRest> selectStuRestList(String studentNo);
+
+	//(학생)휴학 횟수 가져옴
+	int selectRestCount(String studentNo);
+
+	//(학생)가장 최근 휴학 정보 가져옴
+	StudentRest selectRestInfo(String studentNo);
+
+	//(학생)휴학신청할떄 등록금 냈는지 확인
+	RegistPay checkRegPay(RegistPay rp);
+
+	//(학생)휴,복학 신청 인서트
+	int insertStuRest(StudentRest sr);
 	
 
 }
