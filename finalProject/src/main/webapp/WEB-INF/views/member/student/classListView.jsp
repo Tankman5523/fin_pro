@@ -22,10 +22,10 @@
                     <a href="registerClassForm.st">수강신청</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">수강취소</a>
+                    <a href="cancelRegClassForm.st">수강취소</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">수강신청 내역조회</a>
+                    <a href="searchRegClassForm.st">수강신청 내역조회</a>
                 </div>
                 <div class="child_title">
                     <a href="preRegisterClass.st">예비수강신청</a>

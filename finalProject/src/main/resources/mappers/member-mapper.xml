@@ -67,10 +67,15 @@
   		<result column="PROFESSOR_NAME" property="professorName"/>
   		<result column="DEPARTMENT_NAME" property="departmentName"/>
   		<result column="CREDIT_HOUR" property="creditHour"/>
-  		<result column="PRECLASS_NOS" property="preclassNos"/>
+  		<result column="SIGNUPNOS" property="signUpNos"/>
+  		<result column="POSTCLASS_NOS" property="postClassNos"/>
+  		<result column="PRECLASS_NOS" property="preClassNos"/>
   		<result column="CLASS_INFO" property="classInfo"/>
   		<result column="CLASS_LEVEL" property="classLevel"/>
   		<result column="STUDENT_NO" property="studentNo"/>
+  		<result column="DAY" property="day"/>
+  		<result column="PERIOD" property="period"/>
+  		<result column="CLASS_HOUR" property="classHour"/>
   	</resultMap>
   
   	<resultMap type="department" id="departmentMap">
@@ -174,8 +179,17 @@
 		                    WHERE COLLEGE_NAME = #{college})
   	</select>
   	
+  	<!-- 수강신청 - 수강신청내역조회 (로그인 학생의 수강신청 년도/학기 추출) -->
+  	<select id="searchRegYear" parameterType="classes" resultMap="classResultMap">
+	  	SELECT DISTINCT CLASS_YEAR, CLASS_TERM
+		FROM SCHEDULE S
+		JOIN CLASS C USING (CLASS_NO)
+		WHERE STUDENT_NO = #{studentNo}
+		ORDER BY CLASS_YEAR DESC
+  	</select>
+  	
   	<!-- 예비수강신청 - 중복체크 -->
-  	<select id="checkPre" resultType="_int">
+  	<select id="checkPreReg" resultType="_int">
   		SELECT COUNT(CLASS_NOS) COUNT
 		FROM CLASS C
 		JOIN BUCKET B ON (C.CLASS_NO = B.CLASS_NO)
@@ -189,13 +203,44 @@
   		INSERT INTO BUCKET VALUES(#{classNo},#{studentNo})
   	</insert>
   	
+  	<!-- 예비수강신청 - 장바구니조회 -->
+  	<select id="preRegList" parameterType="registerClass" resultMap="registerClassMap">
+ 		 SELECT COLLEGE_NAME,C.CLASS_NO,CLASS_NAME,PROFESSOR_NAME,DEPARTMENT_NAME
+		,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR"
+		,((SELECT COUNT(*)
+		   FROM BUCKET
+		   WHERE CLASS_NO = C.CLASS_NO)|| '/' ||CLASS_NOS) "PRECLASS_NOS"
+		,(DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
+		  DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
+		                    2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) 
+		||' '|| CLASSROOM) "CLASS_INFO",
+		DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년') "CLASS_LEVEL"
+		FROM CLASS C
+		JOIN DEPARTMENT D ON (C.DEPARTMENT_NO = D.DEPARTMENT_NO)
+		JOIN COLLEGE CO ON (D.COLLEGE_NO = CO.COLLEGE_NO)
+		JOIN PROFESSOR P ON (P.PROFESSOR_NO = C.PROFESSOR_NO)
+        JOIN BUCKET B ON (C.CLASS_NO = B.CLASS_NO)
+		WHERE C.STATUS = 'Y'
+        AND B.STUDENT_NO = #{studentNo}
+        AND C.CLASS_NO NOT IN (SELECT CLASS_NO
+		                       FROM SCHEDULE
+		                       WHERE STUDENT_NO = #{studentNo})
+		AND CLASS_YEAR = #{classYear}
+		AND CLASS_TERM = #{classTerm}
+		GROUP BY COLLEGE_NAME, C.CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DEPARTMENT_NAME,CLASS_NOS,
+		CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT), (DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
+		DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
+						  2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) ||' '|| CLASSROOM),
+						  DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년')
+  	</select>
+  	
    	<!-- 예비수강신청 - 수강조회 --> 	
-  	<select id="preClass" parameterType="registerClass" resultMap="registerClassMap">
+  	<select id="preRegClass" parameterType="registerClass" resultMap="registerClassMap">
   		SELECT COLLEGE_NAME,CLASS_NO,CLASS_NAME,PROFESSOR_NAME,DEPARTMENT_NAME
 		,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR"
 		,((SELECT COUNT(*)
-		    FROM BUCKET
-		    WHERE CLASS_NO = C.CLASS_NO)|| '/' ||CLASS_NOS) "PRECLASS_NOS"
+		   FROM BUCKET
+		   WHERE CLASS_NO = C.CLASS_NO)|| '/' ||CLASS_NOS) "PRECLASS_NOS"
 		,(DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
 		  DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
 		                    2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) 
@@ -209,6 +254,9 @@
 		AND CLASS_NO NOT IN (SELECT CLASS_NO
 	              		 	 FROM BUCKET
 	               			 WHERE STUDENT_NO = #{studentNo})
+		AND CLASS_LEVEL IN (0,#{studentLevel})
+		AND CLASS_YEAR = #{classYear}
+		AND CLASS_TERM = #{classTerm}
 		<choose>
 			<when test="professorName != ''">
 				AND PROFESSOR_NAME LIKE '%'||#{professorName}||'%'
@@ -227,14 +275,25 @@
 						  DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년')
   	</select>
   	
-  	<!-- 수강신청 - 수강신청 -->
-  	<select id="majorClass" parameterType="registerClass" resultMap="registerClassMap">
+  	<!-- 예비수강신청 - 장바구니 수강삭제 -->
+  	<delete id="delPreRegList">
+  		DELETE FROM BUCKET
+  		WHERE CLASS_NO = #{classNo}
+  		AND STUDENT_NO = #{studentNo}
+  	</delete>
+  	
+  	<!-- 수강신청 - 수강신청(수강조회) -->
+  	<select id="postRegClass" parameterType="registerClass" resultMap="registerClassMap">
   		SELECT COLLEGE_NAME,CLASS_NO,CLASS_NAME,PROFESSOR_NAME,DEPARTMENT_NAME
-        ,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR"
-        ,CLASS_NOS
-        ,(DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
-          DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
-                            2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) 
+		,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR"
+		,(SELECT COUNT(*)
+           FROM (SELECT DISTINCT CLASS_NO, STUDENT_NO
+                 FROM SCHEDULE)
+		   WHERE CLASS_NO = C.CLASS_NO) "SIGNUPNOS"
+		,CLASS_NOS "POSTCLASS_NOS"
+		,(DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
+		  DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
+		                    2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) 
 		||' '|| CLASSROOM) "CLASS_INFO",
 		DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년') "CLASS_LEVEL"
 		FROM CLASS C
@@ -242,6 +301,10 @@
 		JOIN COLLEGE CO ON (D.COLLEGE_NO = CO.COLLEGE_NO)
 		JOIN PROFESSOR P ON (P.PROFESSOR_NO = C.PROFESSOR_NO)
 		WHERE C.STATUS = 'Y'
+		AND CLASS_NO NOT IN (SELECT CLASS_NO
+                             FROM SCHEDULE
+                             WHERE STUDENT_NO = #{studentNo})
+		AND CLASS_LEVEL IN (0,#{studentLevel})
 		AND CLASS_YEAR = #{classYear}
 		AND CLASS_TERM = #{classTerm}
 		<choose>
@@ -255,8 +318,114 @@
 				AND DEPARTMENT_NAME = #{departmentName}
 			</otherwise>
 		</choose>
-		ORDER BY CLASS_NO
+		ORDER BY C.CLASS_NO ASC
   	</select>
+  	
+  	<!-- 수강신청 - 수강신청 (장바구니) -->
+  	<select id="postRegBucket" parameterType="registerClass" resultMap="registerClassMap">
+ 		 SELECT COLLEGE_NAME,C.CLASS_NO,CLASS_NAME,PROFESSOR_NAME,DEPARTMENT_NAME
+		,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR"
+		,((SELECT COUNT(*)
+           FROM (SELECT DISTINCT CLASS_NO, STUDENT_NO
+                 FROM SCHEDULE)
+           WHERE CLASS_NO = C.CLASS_NO)|| '/' ||CLASS_NOS) "POSTCLASS_NOS"
+		,(DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
+		  DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
+		                    2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) 
+		||' '|| CLASSROOM) "CLASS_INFO",
+		DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년') "CLASS_LEVEL"
+		FROM CLASS C
+		JOIN DEPARTMENT D ON (C.DEPARTMENT_NO = D.DEPARTMENT_NO)
+		JOIN COLLEGE CO ON (D.COLLEGE_NO = CO.COLLEGE_NO)
+		JOIN PROFESSOR P ON (P.PROFESSOR_NO = C.PROFESSOR_NO)
+        JOIN BUCKET B ON (C.CLASS_NO = B.CLASS_NO)
+		WHERE C.STATUS = 'Y'
+        AND B.STUDENT_NO = #{studentNo}
+        AND C.CLASS_NO NOT IN (SELECT CLASS_NO
+                               FROM SCHEDULE
+                               WHERE STUDENT_NO = #{studentNo})
+		AND CLASS_YEAR = #{classYear}
+		AND CLASS_TERM = #{classTerm}
+		GROUP BY COLLEGE_NAME, C.CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DEPARTMENT_NAME,CLASS_NOS,
+		CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT), (DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
+		DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
+						  2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) ||' '|| CLASSROOM),
+						  DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년')  		
+  	</select>
+  	
+  	<!-- 수강신청 - 수강신청 (해당강의 조회) -->
+  	<select id="selectClass" parameterType="classes" resultMap="classResultMap">
+		SELECT C.DAY,C.PERIOD,CLASS_HOUR,COUNT(S.CLASS_NO) "SPARE_NOS", CLASS_NOS
+  		FROM CLASS C
+        LEFT JOIN SCHEDULE S ON (C.CLASS_NO = S.CLASS_NO)
+  		WHERE C.CLASS_NO = #{classNo}
+        GROUP BY C.DAY, C.PERIOD, CLASS_HOUR, CLASS_NOS
+  	</select>
+  	
+  	<!-- 수강신청 - 수강신청 (강의 시간 체크) -->
+  	<select id="checkPostReg2" resultType="_int">
+  		SELECT COUNT(*) COUNT
+  		FROM SCHEDULE S
+  		JOIN CLASS C USING (CLASS_NO)
+		WHERE S.DAY = #{day}
+		AND CLASS_YEAR = #{classYear}
+		AND CLASS_TERM = #{classTerm}
+  		<choose>
+  			<when test="classHour == 2">
+  				AND (S.PERIOD = #{period}+1 OR S.PERIOD = #{period})
+  				AND STUDENT_NO = #{studentNo}
+  			</when>
+  			<when test="classHour == 1">
+  				AND S.PERIOD = #{period}
+  				AND STUDENT_NO = #{studentNo}
+  			</when>
+  		</choose>
+  	</select>
+  	
+  	<!-- 수강신청 - 수강신청 -->
+  	<insert id="postRegisterClass">
+  		INSERT INTO SCHEDULE VALUES(#{classNo},#{studentNo},#{day},#{period})
+  	</insert>
+  	
+  	<!-- 수강신청 - 수강신청(2시간짜리 강의) -->
+  	<insert id="postRegisterClass2">
+  		INSERT INTO SCHEDULE VALUES(#{classNo},#{studentNo},#{day},#{period}+1)
+  	</insert>
+  	
+  	<!-- 수강신청 - 수강신청내역 조회 -->
+  	<select id="postRegList" parameterType="registerClass" resultMap="registerClassMap">
+ 	  	SELECT COLLEGE_NAME,C.CLASS_NO,CLASS_NAME,PROFESSOR_NAME,DEPARTMENT_NAME
+		,CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT) "CREDIT_HOUR"
+		,((SELECT COUNT(*)
+           FROM (SELECT DISTINCT CLASS_NO, STUDENT_NO
+                 FROM SCHEDULE)
+		   WHERE CLASS_NO = C.CLASS_NO)|| '/' ||CLASS_NOS) "POSTCLASS_NOS"
+		,(DECODE(C.DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
+		  DECODE(CLASS_HOUR,1,DECODE(C.PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
+		                    2,DECODE(C.PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) ||' '|| CLASSROOM) "CLASS_INFO",
+		DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년') "CLASS_LEVEL"
+		FROM CLASS C
+		JOIN DEPARTMENT D ON (C.DEPARTMENT_NO = D.DEPARTMENT_NO)
+		JOIN COLLEGE CO ON (D.COLLEGE_NO = CO.COLLEGE_NO)
+		JOIN PROFESSOR P ON (P.PROFESSOR_NO = C.PROFESSOR_NO)
+        JOIN SCHEDULE S ON (C.CLASS_NO = S.CLASS_NO)
+		WHERE C.STATUS = 'Y'
+        AND S.STUDENT_NO = #{studentNo}
+        AND CLASS_YEAR = #{classYear}
+        AND CLASS_TERM = #{classTerm}
+        group by COLLEGE_NAME, C.CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DEPARTMENT_NAME, CLASS_NOS,
+                CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT), (DECODE(C.DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '|| 
+                DECODE(CLASS_HOUR,1,DECODE(C.PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'), 
+                                  2,DECODE(C.PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) ||' '|| CLASSROOM), 
+                DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년')
+  	</select>
+  	
+  	<!-- 수강신청 - 수강신청 (수강신청내역 수강취소) -->
+  	<delete id="delPostRegList">
+  		DELETE FROM SCHEDULE
+  		WHERE CLASS_NO = #{classNo}
+  		AND STUDENT_NO = #{studentNo}
+  	</delete>
   	
   	<!-- 강의시간표 -> 전공 선택 후 전공수업 조회/교양수업 조회 -->
   	<select id="selectDepartment" parameterType="hashmap" resultMap="classResultMap">

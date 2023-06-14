@@ -19,7 +19,7 @@
 		 	<c:if test="${not empty alertMsg}">
 			
 				<script>
-					alert("${alertMsg}");
+				 	alert("<c:out value='${alertMsg}'/>");
 				</script>
 				
 				<c:remove var="alertMsg" scope="session"/>
@@ -38,14 +38,14 @@
 				});
 			</script> 
 
-            <form action="login.me" method="post">
+            <form action="login.me" method="post" onsubmit="return chkLogin()">
             
                 <h2>통합 LOGIN</h2>
 
                 <div id="userNo_area">
                     <span class="left_span"><label for="userNo">아이디</label></span>
                     <br>
-                    <input type="text" name="userNo" id="userNo" placeholder="직번/학번을 입력하세요">
+                    <input type="text" name="userNo" id="userNo" placeholder="직번/학번을 입력하세요" onkeyup="changeComment()">
                 </div>
 
                 <div id="userPwd_area">
@@ -53,6 +53,9 @@
                     <br>
                     <input type="password" name="userPwd" id="userPwd" placeholder="비밀번호를 입력하세요">
                 </div>
+
+				<div id="checkComment">
+				</div>
 
                 <div id="save_userNo_area">
                     <input type="checkbox" name="saveId" id="save_userNo">
@@ -76,6 +79,21 @@
                 	<button type="button" onclick="location.href='infoSystem.mp'">돌아가기</button>
                 </div>
             </form>
+            <script>
+            	function chkLogin(){
+            		if($("#userNo").val() == ""){ //아이디 빈값 처리
+            			var comment = "아이디 또는 비밀번호를 입력해 주세요.";
+            			$("#checkComment").text(comment);
+            			return false;
+            		}
+            	}
+            	
+            	function changeComment(){
+            		if($("#userNo").val() != ""){ //아이디 input이 빈값이 아니라면
+            			$("#checkComment").text(""); // 코멘트 지우기
+            		}
+            	}
+            </script>
         </div>
     </div>
 </body>
