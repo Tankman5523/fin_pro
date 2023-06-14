@@ -42,12 +42,12 @@
                         <option value="2">2</option>
                     </select>
                     <!--최초 현재월 입력--> 
-                    <label for="startDate">납부기간</label><input type="date" name="startDate" id="startDate" required> 
+                    <label for="startDate">기간</label><input type="date" name="startDate" id="startDate" required> 
                     <label for="endDate"> ~ </label><input type="date" name="endDate" id="endDate" required>
                     <!--버튼 클릭시 ajax로 값 가지고가서 처리-->
-                    <button>조회</button>
+                    <button onclick="searchMyRegist();">조회</button>
                     <br><br>
-                    <table border="1" style="width: 100%;">
+                    <table id="registList" border="1" style="width: 100%;">
                         <thead style="background-color: bisque;">
                             <tr>
                                 <th>납부일</th>
@@ -61,31 +61,61 @@
                             </tr>
                         </thead>
                         <tbody>
-                        	<c:choose>
-                        		<c:when test="${not empty list}">
-                        			<c:forEach items="list" var="r">
-			                            <tr>
-			                                <td>${r.payDate}</td><!--연월일까지 자르기-->
-			                                <td>${r.payDate}</td><!--시간자르기-->
-			                                <td>${r.studentNo}</td>
-			                                <td>${r.studentName}</td>
-			                                <td>${r.mustPay}</td>
-			                                <td>${r.regAccountNo}</td>
-			                                <td>${r.payAccountNo}</td>
-			                                <td>${r.payStatus}</td>
-			                            </tr>
-		                            </c:forEach>
-	                            </c:when>
-	                            <c:otherwise>
-	                            	<tr>
-	                            		<td colspan="8">데이터가 없습니다.</td>
-	                            	</tr>
-	                            </c:otherwise>
-                            </c:choose>
+                        
                         </tbody>
                     </table>
                 </div>
             </div>
+            
+            <script>
+            	
+            	function searchMyRegist(){
+            		
+            		var classNo = $("#classNo").val();
+            		var studentName = $("#studentName").val();
+            		var classTerm = $("#classTerm").val();
+            		var startDate = $("#startDate").val();
+            		var endDate = $("#endDate").val();
+            		
+            		$.ajax({
+            			url : "list.rg",
+            			data : {
+            				classNo : classNo,
+            				studentName : studentName,
+            				classTerm : classTerm,
+            				startDate : startDate,
+            				endDate : endDate
+            			},
+            			success : function(list){
+            				var str = "";
+            				
+            				if(!list.isEmpty){
+            					for(var i in list){
+            						str +="<tr>"
+            							 +"<td>"+list[i].payDate+"</td>"
+            							 +"<td>"+list[i].payTime+"</td>"
+            							 +"<td>"+list[i].classNo+"</td>"
+            							 +"<td>"+list[i].studentName+"</td>"
+            							 +"<td>"+list[i].inputPay+"</td>"
+            							 +"<td>"+list[i].regAccountNo+"</td>"
+            							 +"<td>"+list[i].payAccountNo+"</td>"
+            							 +"<td>"+list[i].payStatus+"</td>"
+            							 +"</tr>";
+            					}
+            				}else{
+            					str +="<tr><td colspan='8'>데이터가 없습니다.</td></tr>"
+            				}
+            				$("#registList>tbody").html(str);
+            			},
+            			error : function(){
+            				alert("통신 오류");
+            			}
+            		});
+            		
+            	}
+            
+            </script>
+            
         </div>
     </div>
 </body>

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.service.ScholarshipService;
 import com.univ.fin.money.model.vo.Scholarship;
 
@@ -30,17 +31,26 @@ public class ScholarshipController {
 	
 	//학생
 	@GetMapping("listPage.sc")
-	public String selectMyScholarshipListPage() {
-		return "money/scholarship/student/student_scholar_list";
+	public ModelAndView selectMyScholarshipListPage(ModelAndView mv,HttpSession session) {
+		
+		//세션에 있는 로그인 유저 가져와서 판별
+		Student st = (Student)session.getAttribute("loginUser");
+		Scholarship sc = Scholarship.builder().studentNo(st.getStudentNo()).classYear("0").build();
+		ArrayList<Scholarship> list = scholarshipService.selectMyScholarshipList(sc);
+		
+		mv.addObject("list", list).setViewName("money/scholarship/student/student_scholar_list");
+		
+		return mv;
 	}
 	
 	@ResponseBody
-	@GetMapping(value = "list.sc") //ajax처리
+	@GetMapping(value = "list.sc",produces = "application/json; charset=UTF-8" ) //ajax처리
 	public String selectMyScholarshipList(Scholarship sc) { //학년도로 조회(본인)
 		//sc => 유저 학번, 선택한 학년도 
-		ArrayList<Scholarship> slist = scholarshipService.selectMyScholarshipList(sc);
 		
-		return new Gson().toJson(slist);
+		ArrayList<Scholarship> list = scholarshipService.selectMyScholarshipList(sc);
+		
+		return new Gson().toJson(list);
 	}
 	
 	
@@ -62,7 +72,7 @@ public class ScholarshipController {
 			session.setAttribute("alertMsg", "장학금 입력 오류!");
 		}
 		
-		return "redirct:/allList.sc";
+		return "redirct:allList.sc";
 	}
 	
 	/*장학금 수정,삭제는 상태값이 지급 예정인 데이터에 한해서 적용가능 (STATUS IN 'W','N') */
@@ -78,7 +88,7 @@ public class ScholarshipController {
 			session.setAttribute("alertMsg", "장학금 삭제 오류!");
 		}
 		
-		return "redirct:/allList.sc";
+		return "redirct:allList.sc";
 	}
 	
 	@GetMapping("update.sc")
@@ -86,7 +96,7 @@ public class ScholarshipController {
 		
 		Scholarship sc = scholarshipService.selectOneScholarship(schNo);
 		
-		mv.addObject("sc", sc).setViewName("money/scholarship/admin/admin_scholar_insertForm");
+		mv.addObject("sc", sc).setViewName("money/scholarship/admin/admin_scholar_updateForm");
 		
 		return mv;
 	}
@@ -100,13 +110,11 @@ public class ScholarshipController {
 		}else {
 			session.setAttribute("alertMsg", "장학금 수정 오류!");
 		}
-		
-		return "redirct:/allList.sc";
+		return "redirect:allList.sc";
 	}
 	
 	@GetMapping("allList.sc")
 	public String selectScholarshipListAllPage() {//관리자-장학금리스트 페이지로
-		
 		return "money/scholarship/admin/admin_scholar_list";
 	}
 	
@@ -116,7 +124,7 @@ public class ScholarshipController {
 		
 		//필터 ,검색키워드 보내기
 		HashMap<String,String> map = new HashMap<>();
-		map.put("keyowrd", keyword);
+		map.put("keyword", keyword);
 		map.put("filter",filter);
 		
 		ArrayList<Scholarship> list = scholarshipService.selectScholarshipListAll(map);
@@ -139,4 +147,6 @@ public class ScholarshipController {
 //		
 //		return ResponseEntity.ok().headers(headers).body(list);
 //	}
+	
+	
 }

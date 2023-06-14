@@ -25,7 +25,7 @@
                     <a href="#">등록금 납입이력</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">장학금 수혜내역</a>
+                    <a href="listPage.sc">장학금 수혜내역</a>
                 </div>
             </div>
             <!--컨텐츠 영역 -->
@@ -40,7 +40,7 @@
                     </div>
                     <div class="list">
                         <!--loginUser 입학일자 기준으로 최근까지 / 변경시 ajax로 비동기처리-->
-                        <select id="classYear" onchange="">
+                        <select id="classYear" onchange="yearChange();">
                             <option value="0">==전체==</option>
                             <option value="2023">2023</option>
                             <option value="2022">2022</option>
@@ -51,7 +51,7 @@
                             <option value="2017">2017</option>
                             <option value="2017">2016</option>
                         </select>
-                        <table border="1" style="width: 100%;">
+                        <table border="1" style="width: 100%;" id="scholarList">
                             <thead>
                                 <tr>
                                     <th>년도</th>
@@ -64,17 +64,44 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            	<%-- <c:choose>
+                            	<!-- 기본 전체 조회 -->
+                            	 <c:choose>
                             		<c:when test="${not empty list}">
-                            			<c:forEach var="s" items="list">
+                            			<c:forEach var="sc" items="${list}">
 		                           			<tr>
-			                                    <td>${s.classYear}</td>
-			                                    <td>${s.classTerm}</td>
-			                                    <td>${s.schCategoryNo}</td>
-			                                    <td>${s.schAmount}</td>
-			                                    <td>${s.status}</td>
-			                                    <td>${s.proDate}</td>
-			                                    <td>${s.etc}</td>
+			                                    <td>${sc.classYear}</td>
+			                                    <td>${sc.classTerm}</td>
+			                                    <c:choose>
+													<c:when test="${sc.schCategoryNo eq 1}">
+														<td>국가장학금</td>
+													</c:when>		
+													<c:when test="${sc.schCategoryNo eq 2}">
+														<td>근로장학금</td>
+													</c:when>
+													<c:when test="${sc.schCategoryNo eq 3}">
+														<td>성적장학금</td>
+													</c:when>	
+													<c:when test="${sc.schCategoryNo eq 4}">
+														<td>우수장학금</td>
+													</c:when>                                    				
+			                                    </c:choose>
+			                                    
+			                                    <td>${sc.schAmount}.toLocaleString() 원</td>
+			                                    
+			                                    <c:choose>
+					                            	<c:when test="${sc.status eq 'Y'}">
+					                            		 <td>처리완료</td>
+					                            	</c:when>
+					                            	<c:when test="${sc.status eq 'W'}">
+					                            		 <td>처리대기</td>
+					                            	</c:when>
+					                            	<c:when test="${sc.status eq 'N'}">
+					                            		 <td>취소</td>
+					                            	</c:when>
+			                                    </c:choose>
+			                                    
+			                                    <td>${sc.proDate}</td>
+			                                    <td>${sc.etc}</td>
 		                                	</tr>
 	                                	</c:forEach>
                             		</c:when>
@@ -83,15 +110,16 @@
                             				<td colspan="7">데이터가 없습니다.</td>
                             			</tr>
                             		</c:otherwise>
-                            	</c:choose> --%>
+                            	</c:choose>
                             </tbody>
                         </table>
                         <span>* 장학금은 차학기 등록금에서 차감되며 금액초과시 입금통장으로 환급됩니다.</span>
+                        <span>* 해당 학기 장학금은 해학기 등록금을 초과하지 않습니다. 이에 유의 바랍니다.</span>
                     </div>
                     <script>
                     	function yearChange(){
                     		
-                    		var stuNo = ${loginUser.studentNo};
+                    		var stuNo = "${loginUser.studentNo}";
                     		
                     		$.ajax({
                     			url : "list.sc",
@@ -100,27 +128,51 @@
                     				studentNo : stuNo
                     			},
                     			success: function(list){
+                    				console.log(list);
                     				var str = "";
-                    				if(list.isEmpty()){
+                    				if(!list.isEmpty){
                     					for(var i in list){
                     						str +="<tr>"
                     							 +"<td>"+list[i].classYear+"</td>"
-                    							 +"<td>"+list[i].classTerm+"</td>"
-                    							 +"<td>"+list[i].schCategoryNo+"</td>"
-                    							 +"<td>"+list[i].schAmount+"</td>"
-                    							 +"<td>"+list[i].status+"</td>"
-                    							 +"<td>"+list[i].proDate+"</td>"
-                    							 +"<td>"+list[i].etc+"</td>"
-                    							 +"</tr>"
+                    							 +"<td>"+list[i].classTerm+"</td>";
+                    							 
+	                    						 if(list[i].schCategoryNo==1){
+	            	    							str+="<td>국가장학금</td>";
+	                							 }else if(list[i].schCategoryNo==2){
+	                								str+="<td>근로장학금</td>";
+	                							 }else if(list[i].schCategoryNo==3){
+	                								str+="<td>성적장학금</td>";
+	                							 }else if(list[i].schCategoryNo==4){
+	                								str+="<td>우수장학금</td>";
+	                							 }
+                    							 
+	                    						 str+="<td>"+list[i].schAmount.toLocaleString()+" 원 </td>";
+	                    						 
+	                    						 if(list[i].status=='W'){
+	                 								str+="<td>처리대기</td>";
+	                 							 }else if(list[i].status=='N'){
+	                 								str+="<td>취소</td>";	
+	                 							 }else{
+	                 								str+="<td>처리완료</td>";
+	                 							 }
+                    							 
+	                    						 str+="<td>"+list[i].proDate+"</td>";
+	                    						 
+                    							 if(list[i].etc==null){
+                     								str+="<td></td>";
+                     							 }else{
+                     								str+="<td>"+list[i].etc+"</td>";
+                     							 } 
+                    							 str+="</tr>";
                     					}
                     				}else{
                     					str += "<tr><td colspan='7'>데이터가 없습니다.</td></tr>" 
                     				}
+                    				$("#scholarList>tbody").html(str);
                     			},
                     			error : function(){
-									                    				
+									 alert("통신오류");                   				
                     			}
-                    			
                     		});
                     	}
                     

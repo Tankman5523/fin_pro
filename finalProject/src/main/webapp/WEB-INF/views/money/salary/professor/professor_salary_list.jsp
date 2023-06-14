@@ -45,8 +45,8 @@
                             <tr>
                                 <!--기간 설정 후 조회 클릭-->
                                 <td colspan="4">조회기간 
-                                <input type="date" name="startDate" id="startDate" value="${loginUser.entranceDate}"> ~ <input type="date" name="endDate" id="endDate" value="">
-                                <button onclick="">조회</button></td>
+                                <input type="date" name="startDate" id="startDate" value="${loginUser.entranceDate}" required> ~ <input type="date" name="endDate" id="endDate" value="" required>
+                                <button onclick="searchSalary()">조회</button></td>
                             </tr>
                         </table>
                         
@@ -63,7 +63,7 @@
                     </div>
                     <br>
                     <div>
-                        <table border="1" style="width: 100%;">
+                        <table border="1" id="payList" style="width: 100%;">
                             <thead>
                                 <tr>
                                     <th>No.</th>
@@ -76,35 +76,13 @@
                             </thead>
                             <tbody>
                             
-                            	<%-- <c:choose>
-                            		<c:when test="${not empty list}">
-                            			<c:forEach var="s" items="list">
-		                                <tr><!--tr 클릭시 급여명세서 페이지로 이동-->
-		                                    <td>${s.payNo}</td>
-		                                    <td>${s.paymentDate}</td>
-		                                    <td>${s.paymentTotal}</td>
-		                                    <td>${s.deductTotal}</td>
-		                                    <td>${s.realPay}</td>
-		                                    <td>${s.status}</td>
-		                                </tr>
-	                                	</c:forEach>
-	                                </c:when>
-	                                <c:otherwise>
-	                                	<tr>
-	                                		<td colspan="6">
-	                                			데이터가 없습니다.
-	                                		</td>
-	                                	</tr>
-	                                </c:otherwise>
-                                </c:choose> --%>
-                                
                             </tbody>
                         </table>
                         
                         <script>
-                        	function selectSalary(){
+                        	function searchSalary(){
                         		
-                        		var profNo = ${loginUser.professorNo}
+                        		var profNo = ${loginUser.professorNo};
                         		
                         		$.ajax({
                         			
@@ -117,7 +95,23 @@
                         			},
                         			success : function(list){
                         				console.log(list);
-                        				alert("잠시대기");
+                        				var str = "";
+                        				if(!list.isEmpty){
+                        					for(var i in list){
+                        						str +="<tr>"
+                        							 +"<td>"+list[i].payNo+"</td>"
+                        							 +"<td>"+list[i].paymentDate+"</td>"
+                        							 +"<td>"+list[i].paymentTotal+"</td>"
+                        							 +"<td>"+list[i].deductTotal+"</td>"
+                        							 +"<td>"+list[i].realPay+"</td>"
+                        							 +"<td>"+list[i].status+"</td>"
+                        							 +"</tr>"
+                        					}
+                        					
+                        				}else{
+                        					str +="<tr><td  colspan='6'>데이터가 없습니다.</td></tr>"
+                        				}
+                        				$("#payList>tbody").html(str);	
                         			},
                         			error : function(){
                         				alert("통신오류");

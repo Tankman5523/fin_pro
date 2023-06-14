@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class Salary {
 	private int payNo;
 	private String professorNo;
-	private Date paymentDate;
+	private String paymentDate; //
 	
 	private int basePay; //기본급
 	private int positionPay; //직책수당
@@ -27,7 +27,7 @@ public class Salary {
 	private int healthTax; // = (int)(paymentTotal * (double)(35/1000)); //건강보험
 	private int employTax; // = (int)(paymentTotal * (double)(9/1000)); //고용보험
 	
-	private int incomeTax;
+	private int incomeTax;// 소득세 = paymentTotal * 0.08 또는 0.15 
 	private int deductTotal; // = nationalTax + healthTax + employTax + incomeTax; //공제액계
 	
 	private int realPay; //실수령액
@@ -37,6 +37,7 @@ public class Salary {
 	private String professorName; //이름
 	private String position; //직책
 	private String accountNo; //급여계좌
+	private String phone; //연락처
 	
 	private Date startDate; //조회용 기한
 	private Date endDate; //조회용 기한

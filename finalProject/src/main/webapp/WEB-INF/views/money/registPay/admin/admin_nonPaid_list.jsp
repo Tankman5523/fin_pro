@@ -41,15 +41,15 @@
                     </div>
                     <hr>
                     <br>
-                    <button>일괄발송</button>
-                    <table border="1" style="width:100%;text-align: center;">
+                    <button id="sendAll">일괄발송</button>
+                    <table id="nonPaidList" border="1" style="width:100%;text-align: center;">
                         <thead>
                             <tr>
                                 <th><input type="checkbox" name="checkAll" id="checkAll"></th>
                                 <th>학번</th>
                                 <th>학생명</th>
                                 <th>미납액</th>
-                                <th>입금/취소</th>
+                                <th>입금상태</th>
                                 <th>납입 계좌(학교)</th>
                                 <th>학생 이메일</th>
                                 <th>연락처</th>
@@ -63,13 +63,13 @@
 			                            	<tr>
 				                                <td><input type="checkbox" name="" class="checkbox"></td>
 				                                <td>${r.studentNo}</td>
-				                                <td>${r.studentName}</td>
-				                                <td>${r.NonPaidAmount}</td>
+				                                <td class="studentName">${r.studentName}</td>
+				                                <td class="nonPaidAmount">${r.nonPaidAmount}</td>
 				                                <td>${r.payStatus}</td>
 				                                <td>${r.regAccountNo}</td>
-				                                <td>${r.studentEmail}</td>
-				                                <td>${r.studentPhone}</td>
-				                                <td><button>발송</button></td>
+				                                <td class="email" >${r.studentEmail}</td>
+				                                <td class="phone">${r.studentPhone}</td>
+				                                <td><button class="sendDunningBtn">발송</button></td>
 			                            	</tr>
 		                                </c:forEach>
 	                            </c:when>
@@ -85,5 +85,78 @@
             </div>
         </div>
     </div>
+    
+    <script>
+    	function sendDunning(){
+    		$.ajax({
+    			url : "dunning.rg",
+    			data : {
+    				studentName:$(".studentName").val(),
+    				phone:$(".")
+		    				
+    			},
+    			success : function(result){
+    				
+    			},
+    			error : function(){
+    				
+    			}
+    		});
+    	}
+    	
+    	$(function(){
+    		$("#checkAll").click(function(){
+        		var allcheck = $("#checkAll").is(":checked");
+        		
+        		if(allcheck){
+        			$("input:checkbox").prop("checked",true);
+        		}else{
+        			$("input:checkbox").prop("checked",false);
+        		}
+        	});
+        	
+        	$("#sendAll").click(function(){
+        		var control = confirm("선택된 학생에 모두 메시지를 보내겠습니까?");
+        		
+        		if(control){
+        			$("#nonPaidList>tbody>tr>td>input:checkbox:checked").each(function(index){
+        				var studentName = $(this).parent().siblings().eq(1).val();
+        				console.log(studentName);
+        				var nonPaidAmount = $(this).parent().siblings().eq(2).val();
+        				var phone = $(this).parent().siblings().eq(5).val();
+        				var email = $(this).parent().siblings().eq(6).val();
+        				//데이터 없어서 안되는중..
+        				
+        				//아무튼 ajax처리
+        				$.ajax({
+        					url : "dunning.rg",
+        					data : {
+        						studentName : studentName,
+        						phone : phone,
+        						email : email,
+        						nonPaidAmount : nonPaidAmount
+        					},
+        					success : function(result){
+        						if(result=="Y"){
+        							alert("이메일 및 sms메시지가 발송되었습니다.");
+        						}else{
+        							alert("sms 발송 오류. 수신자 : "+result);
+        						}
+        					},
+        					error : function(){
+        						alert("통신 오류");
+        					}
+        				});
+        			});
+        		}
+        	});
+    	});
+    	
+    	
+    	
+    </script>
+    
+    
+    
 </body>
 </html>

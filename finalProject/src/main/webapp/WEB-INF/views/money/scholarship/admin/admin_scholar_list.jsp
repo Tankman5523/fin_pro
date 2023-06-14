@@ -40,9 +40,9 @@
                         <!--filer / 변경시 ajax로 비동기처리-->
                         <select id="filter" name="filter">
                             <option value="all">==전체==</option>
+                            <option value="classYear">학년도</option>
                             <option value="studentNo">학번</option>
                             <option value="studentName">학생이름</option>
-                            <option value="classYear">학년도</option>
                         </select>
                         <input type="text" id="keyword" name="keyword">
                         <button onclick="selectList();">조회</button>
@@ -58,31 +58,11 @@
                                     <th>처리상태</th>
                                     <th>처리일자</th>
                                     <th>비고</th>
+                                    <th>처리</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            	<%-- <c:choose>
-                            		<c:when test="${not empty list}">
-                            			<c:forEach var="s" items="list">
-			                                <tr>
-			                                    <td>${s.studentNo}</td>
-			                                    <td>${s.stduentName}</td>
-			                                    <td>${s.classYear}</td>
-			                                    <td>${s.classTerm}</td>
-			                                    <td>${s.schCategoryNo}</td>
-			                                    <td>${s.schAmount}</td>
-			                                    <td>${s.status}</td>
-			                                    <td>${s.proDate}</td>
-			                                    <td>${s.etc}</td>
-			                                </tr>
-                                		</c:forEach>
-                            		</c:when>
-                           			<c:otherwise>
-                            			<tr>
-                            				<td colspan="7">데이터가 없습니다.</td>
-                            			</tr>
-                            		</c:otherwise>
-                           		</c:choose> --%>
+                            	<!-- ajax 처리 -->
                             </tbody>
                         </table>
                     </div>
@@ -103,21 +83,53 @@
     			},
     			//dataType : "json",
     			success : function(list){
-    				console.log(list);
     				var str = "";
-    				if(list !=null){
+    				if(!list.isEmpty){
     					for(var i in list){
     						str+="<tr>"
     							+"<td>"+list[i].studentNo+"</td>"
     							+"<td>"+list[i].studentName+"</td>"
     							+"<td>"+list[i].classYear+"</td>"
-    							+"<td>"+list[i].classTerm+"</td>"
-    							+"<td>"+list[i].schCategoryNo+"</td>"
-    							+"<td>"+list[i].schAmount+"</td>"
-    							+"<td>"+list[i].status+"</td>"
-    							+"<td>"+list[i].proDate+"</td>"
-    							+"<td>"+list[i].etc+"</td>"
-    							+"</tr>"
+    							+"<td>"+list[i].classTerm+"</td>";
+    							
+    							if(list[i].schCategoryNo==1){
+	    							str+="<td>국가장학금</td>";
+    							}else if(list[i].schCategoryNo==2){
+    								str+="<td>근로장학금</td>";
+    							}else if(list[i].schCategoryNo==3){
+    								str+="<td>성적장학금</td>";
+    							}else if(list[i].schCategoryNo==4){
+    								str+="<td>우수장학금</td>";
+    							}
+    							
+    							str+="<td>"+list[i].schAmount.toLocaleString()+" 원 </td>";
+    							
+    							if(list[i].status=='W'){
+    								str+="<td>처리대기</td>";
+    							}else if(list[i].status=='N'){
+    								str+="<td>취소</td>";	
+    							}else{
+    								str+="<td>처리완료</td>";
+    							}
+    							
+    							str+="<td>"+list[i].proDate+"</td>";
+    							
+    							if(list[i].etc==null){
+    								str+="<td></td>";
+    							}else{
+    								str+="<td>"+list[i].etc+"</td>";
+    							} 
+    							if(list[i].status=='W'){
+    								var upLocation = "location.href='update.sc?schNo="+list[i].schNo+"';";
+    								var delLocation = "location.href='delete.sc?schNo="+list[i].schNo+"';";
+    								str+="<td>"
+    								    +"<button onclick="+upLocation+">수정</button><button onclick="+delLocation+">삭제</button></td>";
+    							}else{ 
+    								str+="<td></td>";
+    							}
+    							
+    							str+="</tr>";
+    							
     					}
     				}else{
     					str+="<tr><td colspan='9'>데이터가 없습니다.</td></tr>"
@@ -130,7 +142,11 @@
     			}
     		});
     	}
+    	
+    	
+    	
     </script>
+    
     
 </body>
 </html>

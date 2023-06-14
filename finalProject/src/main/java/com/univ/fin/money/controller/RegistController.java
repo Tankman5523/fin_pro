@@ -1,83 +1,208 @@
 package com.univ.fin.money.controller;
 
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
+import com.univ.fin.common.template.Sms;
+import com.univ.fin.member.model.vo.Student;
+import com.univ.fin.money.model.service.RegistService;
+import com.univ.fin.money.model.vo.RegistPay;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 public class RegistController {
+	
+	@Autowired
+	private RegistService registService;
+	
+	@Autowired
+	private JavaMailSender mailSender;
 	
 	//학생
 	
 	@PostMapping("input.rg")
-	public String updateInputPay() {//학생이 등록금을 냈을때 정보수정
-		
-		
-		return "";
+	public void updateInputPay(RegistPay r) {//학생이 등록금을 냈을때 정보수정
+		//금액 , 입금학생계좌 , 입금시각/날짜, 입금학교계좌
+		int result = registService.updateInputPay(r);
+		if(result>0) {
+			log.info("inputPay Success) SchoolAccount : "+r.getRegAccountNo()+" ,amount : "+r.getInputPay());
+		}
+		else {
+			log.info("inputPay failed) SchoolAccount : "+r.getRegAccountNo());
+		}
 	}
 	
+	@ResponseBody
 	@GetMapping("list.rg")
-	public ModelAndView selectRegistList(ModelAndView mv) {//등록금납부정보(날짜,학기) 조회
+	public String selectMyRegistList(RegistPay r) {//등록금납부정보(날짜,학기) 조회
 		//학기와 날짜정보 추출 후 대조
-		
-		return mv;
+		ArrayList<RegistPay> list = registService.selectMyRegistList(r);
+		return new Gson().toJson(list);
 	}
 	
 	@GetMapping("onelist.rg")
-	public ModelAndView selectNowRegistInfo(ModelAndView mv) {//이번학기 등록금납부정보 조회
-		
+	public ModelAndView selectNewRegistInfo(ModelAndView mv,Student st) {//이번학기 등록금납부정보 조회
+		RegistPay r = registService.selectNewRegistInfo(st);
+		mv.addObject("r", r).setViewName("money/registPay/student/student_registPay_nowList");;
 		return mv;
 	}
 	
 	
-	
 	//관리자
-	@GetMapping("search.rg")
-	public ModelAndView searchRegistList(ModelAndView mv) {//이름,상태값으로 검색
-		
-		return mv;
+	@ResponseBody
+	@PostMapping(value = "allList.rg" , produces = "application/json;charset=utf-8")
+	public String searchRegistList(String keyword , String filter) {//이름,상태값으로 검색
+		HashMap<String,String> map = new HashMap<>();
+		map.put("keyword", keyword);
+		map.put("filter",filter);
+		ArrayList<RegistPay> list = registService.searchRegistList(map);;
+		return new Gson().toJson(list);
 	}
 	
 	@GetMapping("insert.rg")
 	public String insertRegistPayForm() {//학생이 내야할 등록금정보 등록 페이지
-		
-		
-		return "";
+		return "money/registPay/admin/admin_registPay_insertForm";
 	}
 	@PostMapping("insert.rg")
-	public String insertRegistPay() {//학생이 내야할 등록금정보 등록
-		
-		
-		return "";
+	public String insertRegistPay(RegistPay r,HttpSession session) {//학생이 내야할 등록금정보 등록
+		//적용 대기중인 장학금 조회 후 mustPay = mustPay - schAmount
+		int result = registService.insertRegistPay(r);
+		if(result>0) {
+			session.setAttribute("alertMsg", "등록금 입력 성공");
+		}else {
+			session.setAttribute("alertMsg", "등록금 입력 실패! 등록 실패한 학번 : "+r.getStudentNo());
+		}
+		return "redirct:allList.rg";
 	}
 	
 	@GetMapping("update.rg")
-	public String updateRegistPayForm() {//등록금정보 수정 페이지
-		
-		return "";
+	public ModelAndView updateRegistPayForm(ModelAndView mv,int regNo) {//등록금정보 수정 페이지
+		RegistPay r = registService.selectOneRegistPay(regNo);
+		mv.addObject("r", r).setViewName("money/registPay/admin/admin_registPay_updateForm");
+		return mv;
 	}
 	@PostMapping("update.rg")
-	public String updateRegistPay() {//등록금정보 수정
-		
-		return "";
+	public String updateRegistPay(RegistPay r,HttpSession session) {//등록금정보 수정
+		int result = registService.updateRegistPay(r);
+		if(result>0) {
+			session.setAttribute("alertMsg", "등록금 수정 성공");
+		}else {
+			session.setAttribute("alertMsg", "등록금 수정 실패 ! 수정 실패한 학번 : "+r.getStudentNo());
+		}
+		return "redirct:allList.rg";
 	}
 	
 	@GetMapping("nonPaidList.rg")
 	public ModelAndView selectRegistNonPaidList(ModelAndView mv) {//미납등록금정보 조회
-		
+		ArrayList<RegistPay> list = registService.selectRegistNonPaidList();
+		mv.addObject("list", list).setViewName("money/registPay/admin/admin_nonPaid_list");
 		return mv;
 	}
+	@ResponseBody
+	@GetMapping(value="nonPaidListSearch.rg",produces = "application/json;charset=utf-8")
+	public String selectRegistNonPaidListSearch(String keyword,String filter) {//미납등록금정보 조회
+		HashMap<String,String> map = new HashMap<>();
+		map.put("keyword", keyword);
+		map.put("filter",filter);
+		ArrayList<RegistPay> list = registService.selectRegistNonPaidListSearch(map);
+		return new Gson().toJson(list);
+	}
 	
+	@ResponseBody
 	@PostMapping("dunning.rg")
-	public String dunningToNonPaid() {//독촉문자,이메일 발송
+	public String dunningToNonPaid(String studentName ,String phone,String email,int nonPaidAmount) throws MessagingException {//독촉문자,이메일 발송
 		
-		return "";
+		//등록금 독촉 이메일
+		String setFrom = "ksh940813@naver.com"; //보내는 계정
+		String toMail = "ksh940813@naver.com"; //받는계정  /* email */
+		String title = "[FEASIBLE UNIVERSITY]미납 등록금 납부 부탁드립니다.";
+		String content = "귀하의 등록금이 미납 혹은 미달되어 연락 드립니다."
+					   + "<br>"
+					   + "미납된 금액은 "+nonPaidAmount+"(원) 입니다."
+					   + "<br>"
+					   + "해 사항에 대한 문의는 입학처 이메일인 ksh940813@naver.com "
+					   + "<br>"
+					   + "혹은 010-0000-0000 으로 연락바랍니다.";
+					   
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper messageHelper = new MimeMessageHelper(message,true,"UTF-8");
+		messageHelper.setFrom(setFrom);
+		messageHelper.setTo(toMail);
+		messageHelper.setSubject(title);
+		messageHelper.setText(content,true);
+		mailSender.send(message); //결과 판별불가...
+		//메일 완료
+		
+		//SMS 문자전송
+		Boolean check =false;
+		Sms smsMessage = new Sms();
+		int result = smsMessage.dunning_msg("01027552324", nonPaidAmount, studentName);
+		//문자 완료
+		
+		if(result>0) {
+			return "Y";
+		}else { //문자발송 실패시, 실패한 학생 이름,번호 반환
+			return studentName+" ("+phone+")";
+		}
+		
+		
 	}
 	
-	@PostMapping("refund.rg")
-	public String refundOverPaid() { //초과금 환급
+	@ResponseBody
+	@PostMapping(value="refund.rg" , produces = "application/json;charset=UTF-8")
+	public String refundOverPaid(RegistPay r) { //초과금 환급
+		//payAccountNo로 (inputPay - mustPay) 만큼을 반환했다고 가정. 
+		int remainPay = r.getInputPay() - r.getMustPay();
+		r.setInputPay(remainPay);
+		int result = registService.refundOverPaid(r);
+		if(result>0) {
+			return "Y";
+		}else {
+			return "N";
+		}
 		
-		return "";
 	}
+	
+	@GetMapping("activate.rg")
+	public void activateRegistPay(Date time) { //스케쥴러에 의해 등록금 활성화 개시 
+		int result = registService.activateRegistPay(time);
+		if(result>0) {
+			log.info("Activate RegistPay Success");
+		}else {
+			log.info("Activate RegistPay Failed");
+		}
+	}
+	
+	@GetMapping("deactivate.rg")
+	public void deactivateRegistPay() {//스케쥴러에 의해 등록금 비활성화 개시 
+		int result = registService.deactivateRegistPay();
+		if(result>0) {
+			log.info("Deactivate RegistPay Success");
+		}else {
+			log.info("Deactivate RegistPay Failed");
+		}
+	}
+	
+	@GetMapping("allList.rg")
+	public String selectRegistPayAllPage() { //등록금 전부조회 페이지로
+		return "money/registPay/admin/admin_registPay_list";
+	}
+	
 }

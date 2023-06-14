@@ -32,7 +32,7 @@ public class Professor {
 */
 	private String professorNo;
 	private int fileNo;
-	private int departmentNo;
+	private String departmentNo;
 	private int collegeNo;
 	private String professorName;
 	private String professorPwd;
