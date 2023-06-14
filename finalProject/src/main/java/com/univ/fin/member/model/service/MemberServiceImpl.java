@@ -102,16 +102,25 @@ public class MemberServiceImpl implements MemberService{
 
 	//예비수강신청 - 수강조회
 	@Override
-	public ArrayList<RegisterClass> preClass(RegisterClass rc2) {
-		ArrayList<RegisterClass> list = memberDao.preClass(sqlSession,rc2);
+	public ArrayList<RegisterClass> preRegClass(RegisterClass rc2) {
+		ArrayList<RegisterClass> list = memberDao.preRegClass(sqlSession,rc2);
+		return list;
+	}
+	
+	//수강신청 - 수강신청내역조회 (로그인 학생의 수강신청 년도/학기 추출)
+	@Override
+	public ArrayList<Classes> searchRegYear(String studentNo) {
+		
+		ArrayList<Classes> list = memberDao.searchRegYear(sqlSession,studentNo);
+		
 		return list;
 	}
 	
 	//예비수강신청 - 중복체크
 	@Override
-	public int checkPre(Bucket b) {
+	public int checkPreReg(Bucket b) {
 		
-		int chkClass = memberDao.checkPre(sqlSession,b);
+		int chkClass = memberDao.checkPreReg(sqlSession,b);
 		
 		return chkClass;
 	}
@@ -125,11 +134,101 @@ public class MemberServiceImpl implements MemberService{
 		return result;
 	}
 	
+	//예비수강신청 - 장바구니 조회
+	@Override
+	public ArrayList<RegisterClass> preRegList(RegisterClass rc2) {
+		
+		ArrayList<RegisterClass> list = memberDao.preRegList(sqlSession,rc2);
+		
+		return list;
+	}
+	
+	//예비수강신청 - 장바구니 수강취소
+	@Override
+	public int delPreRegList(RegisterClass rc) {
+		
+		int result = memberDao.delPreRegList(sqlSession,rc);
+		
+		return result;
+	}
+	
+	//수강신청 - 수강신청 (수강조회)
+	@Override
+	public ArrayList<RegisterClass> postRegClass(RegisterClass rc2) {
+		
+		ArrayList<RegisterClass> list = memberDao.postRegClass(sqlSession,rc2);
+		
+		return list;
+	}
+	
+	//수강신청 - 수강신청 (장바구니)
+	@Override
+	public ArrayList<RegisterClass> postRegBucket(RegisterClass rc2) {
+		
+		ArrayList<RegisterClass> list = memberDao.postRegBucket(sqlSession,rc2);
+		
+		return list;
+	}
+	
+	//수강신청 - 수강신청 (해당강의 조회)
+	@Override
+	public Classes selectClass(int classNo) {
+		
+		Classes c = memberDao.selectClass(sqlSession,classNo);
+		
+		return c;
+	}
+	
+	//수강신청 - 수강신청 (강의 시간 체크)
+	@Override
+	public int checkPostReg2(RegisterClass rc2) {
+		
+		int result2 = memberDao.checkPostReg2(sqlSession,rc2);
+		
+		return result2;
+	}
+	
 	//수강신청 - 수강신청
 	@Override
-	public ArrayList<RegisterClass> majorClass(RegisterClass rc2) {
+	public int postRegisterClass(RegisterClass rc3) {
 		
-		ArrayList<RegisterClass> list = memberDao.majorClass(sqlSession,rc2);
+		int result = memberDao.postRegisterClass(sqlSession,rc3);
+		
+		return result;
+	}
+	
+	//수강신청 - 수강신청(2시간짜리 강의)
+	@Override
+	public int postRegisterClass2(RegisterClass rc3) {
+		
+		int result = memberDao.postRegisterClass2(sqlSession,rc3);
+		
+		return result;
+	}
+	
+	//수강신청 - 수강신청내역 조회
+	@Override
+	public ArrayList<RegisterClass> postRegList(RegisterClass rc2) {
+		
+		ArrayList<RegisterClass> list = memberDao.postRegList(sqlSession,rc2);
+		
+		return list;
+	}
+	
+	//수강신청 - 수강신청 (수강신청내역 수강취소)
+	@Override
+	public int delPostRegList(RegisterClass rc) {
+		
+		int result = memberDao.delPostRegList(sqlSession,rc);
+		
+		return result;
+	}
+	
+	//수강신청 - 수강신청 내역조회
+	@Override
+	public ArrayList<HashMap<String, String>> searchRegList(HashMap<String, String> h) {
+		
+		ArrayList<HashMap<String, String>> list = memberDao.searchRegList(sqlSession,h);
 		
 		return list;
 	}
@@ -208,6 +307,15 @@ public class MemberServiceImpl implements MemberService{
 		
 		return result;
 	}
+	
+	//상담관리 - 상담내역 검색
+	@Override
+	public ArrayList<Counseling> selectSearchCounseling(HashMap<String, String> map) {
+		ArrayList<Counseling> list = memberDao.selectSearchCounseling(sqlSession,map);
+			
+		return list;
+	}
+	
 	// 강의시간표 -> 교수명 검색/과목 검색
 	@Override
 	public ArrayList<Classes> searchClassKeyword(HashMap<String, String> map) {
@@ -240,14 +348,20 @@ public class MemberServiceImpl implements MemberService{
 		return result;
 	}
 
-	//상담관리 - 상담내역 검색
+	// 개인시간표 -> 학년도,학기 조회
 	@Override
-	public ArrayList<Counseling> selectSearchCounseling(HashMap<String, String> map) {
-		ArrayList<Counseling> list = memberDao.selectSearchCounseling(sqlSession,map);
-		
-		return list;
+	public ArrayList<String> selectClassTerm2(String studentNo) {
+		ArrayList<String> classTerm = memberDao.selectClassTerm2(sqlSession, studentNo);
+		return classTerm;
 	}
 
+	// 개인시간표 -> 학기 선택 후 시간표 조회
+	@Override
+	public ArrayList<Classes> selectTimetable(HashMap<String, String> map) {
+		ArrayList<Classes> cList = memberDao.selectTimetable(sqlSession, map);
+		return cList;
+	}
+	
 	//(학생)휴,복학 신청 리스트 조회
 	@Override
 	public ArrayList<StudentRest> selectStuRestList(String studentNo) {
@@ -256,7 +370,7 @@ public class MemberServiceImpl implements MemberService{
 		
 		return list;
 	}
-
+	
 	//휴학횟수 가져옴
 	@Override
 	public int selectRestCount(String studentNo) {
@@ -265,28 +379,26 @@ public class MemberServiceImpl implements MemberService{
 		
 		return restCount;
 	}
-
+	
 	//(학생)가장 최근 휴학 정보 가져옴
 	@Override
 	public StudentRest selectRestInfo(String studentNo) {
 		StudentRest sr = memberDao.selectRestInfo(sqlSession,studentNo);
 		return sr;
 	}
-
+	
 	//(학생)휴학신청할떄 등록금 냈는지 확인
 	@Override
 	public RegistPay checkRegPay(RegistPay rp) {
 		RegistPay checkRp = memberDao.checkRegPay(sqlSession,rp);
 		return checkRp;
 	}
-
+	
 	//(학생)휴,복학 신청 인서트
 	@Override
 	public int insertStuRest(StudentRest sr) {
 		int result = memberDao.insertStuRest(sqlSession,sr);
 		return result;
 	}
-
-	
 
 }

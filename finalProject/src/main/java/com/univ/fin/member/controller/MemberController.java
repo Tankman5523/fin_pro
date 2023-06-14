@@ -55,20 +55,26 @@ public class MemberController {
 	public ModelAndView loginUser(ModelAndView mv,String userNo,String userPwd
 								 ,String saveId,HttpSession session,HttpServletResponse response) {
 		
-		if(userNo.charAt(0) == 'S') { //학생 로그인
+		//회원 식별문자 대문자 처리
+		String mno = (String.valueOf(userNo.charAt(0))).toUpperCase();
+		
+		//아이디 식별문자 소문자로 입력시 대문자로 변경
+		String memberNo = userNo.toUpperCase();
+		
+		if(mno.equals("S")) { //학생 로그인
 			
-			Student st = Student.builder().studentNo(userNo).build();
+			Student st = Student.builder().studentNo(memberNo).build();
 			
 			Student loginUser = memberService.loginStudent(st);
 			
 			if(loginUser == null) { //로그인 되었을때만 쿠키 생성 및 저장
-				session.setAttribute("alertMsg", "잘못 입력하셨습니다. 다시 입력해주세요");
+				session.setAttribute("alertMsg", "아이디 또는 비밀번호를 잘못 입력했습니다.");
 				mv.setViewName("member/login");
 			}else {
 				Cookie cookie = null;
 				
 				if(saveId != null && saveId.equals("on")) {
-					cookie = new Cookie("userNo",userNo);
+					cookie = new Cookie("userNo",memberNo);
 					cookie.setMaxAge(60*60*24); //1일
 					response.addCookie(cookie);
 				}else {
@@ -80,20 +86,20 @@ public class MemberController {
 				mv.setViewName("common/student_category");
 			}
 			
-		}else if(userNo.charAt(0) == 'P'){ //임직원 로그인
+		}else if(mno.equals("P")){ //임직원 로그인
 			
-			Professor pr = Professor.builder().professorNo(userNo).professorPwd(userPwd).build();
+			Professor pr = Professor.builder().professorNo(memberNo).professorPwd(userPwd).build();
 			
 			Professor loginUser = memberService.loginProfessor(pr);
 			
 			if(loginUser == null) { //로그인 되었을때만 쿠키 생성 및 저장
-				session.setAttribute("alertMsg", "잘못 입력하셨습니다. 다시 입력해주세요");
+				session.setAttribute("alertMsg", "아이디 또는 비밀번호를 잘못 입력했습니다.");
 				mv.setViewName("member/login");
 			}else {
 				Cookie cookie = null;
 				
 				if(saveId != null && saveId.equals("on")) {
-					cookie = new Cookie("userNo",userNo);
+					cookie = new Cookie("userNo",memberNo);
 					cookie.setMaxAge(60*60*24); //1일
 					response.addCookie(cookie);
 				}else {
@@ -116,7 +122,7 @@ public class MemberController {
 			}
 			
 		}else {
-			session.setAttribute("alertMsg", "잘못 입력하셨습니다. 다시 입력해주세요");
+			session.setAttribute("alertMsg", "아이디 또는 비밀번호를 잘못 입력했습니다.");
 			mv.setViewName("member/login");
 		}
 		

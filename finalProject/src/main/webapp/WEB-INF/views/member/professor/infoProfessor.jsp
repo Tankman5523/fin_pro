@@ -176,28 +176,28 @@
 
 <script>
 	
-	
-	function updateStudent(){
-		$("#crystalBtn").attr("form", "updateForm");
-		$("updateForm").submit();
-    }
-	
-	
-/* 	function convertReadonly(){
-		$("#phone").prop("readonly" , false);
-		$("#email").prop("readonly" , false);
-		$("#post").prop("readonly" , false);
-		$("#address").prop("readonly" , false);
+		var msg = "${msg}";
 		
-		$("#crystalBtn").attr("onclick", "updateStudent()");
+		$(document).ready(function(){
+			if(msg != ""){
+				alert(msg);
+			}
+		});
 		
-	}
-	
-	
-	
-	function changeReadonly(){
 		
-	} */
+		 function updateProfessor(){
+			 var flag = confirm("수정하시겠습니까?");
+			 
+			 if(flag){
+				 $("#updateForm").submit();	 
+			 }else{
+				 return false;
+			 }
+			  }
+		
+		 function convertReadonly(){
+			 $("#crystalBtn").attr("onclick", "updateProfessor()");
+		 }
 	
 	window.onload = function(){
 	    document.getElementById("address").addEventListener("click", function(){ //주소입력칸을 클릭하면
@@ -267,7 +267,7 @@
 			<ul id="nav">
 				<li><a href="#">홈</a></li>
 				<li><a href="#">등록/장학</a></li>
-				<li><a href="#">학사관리</a></li>
+				<li><a href="">학사관리</a></li>
 				<li><a href="#">상담관리</a></li>
 				<li><a href="#">수강신청</a></li>
 				<li><a href="#">수업관리</a></li>
@@ -312,18 +312,19 @@
 					<div id="basic_info">
 						<table class="basic_table">
 							<th>기본 정보</th>
-					<form id="updateForm" action="updateProfessor.me" method="post">
-							<button id="crystalBtn" onclick="convertReadonly()">수정하기</button>
+							<button id="crystalBtn" onclick="updateProfessor()">수정하기</button>
 						</table>
 						<br>
 						<hr>
 					</div>
+					<form id="updateForm" action="updateProfessor.pr" method="post">
+					<input type="hidden" id="professorNo" name="professorNo" value="${loginUser.professorNo }">
 					<div id="user_infomation">
 						<table id="user_info">
 							<thead>
 								<tr>
 									<th width="100px" height="30px">입사 년도 : </th>
-									<th><input type="text" class="user_info3" value="${loginUser.entranceDate}" readonly></th>
+									<th><input type="text"  class="user_info3" value="${loginUser.entranceDate}" readonly></th>
 									<th width="100px" height="30px">대학(원) : </th>
 									<th><input type="text" class="user_info3" value="${professorNo.collegeName}" readonly></th>
 								</tr>
@@ -357,9 +358,9 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">전화번호 : </th>
-									<th><input type="text" id="phone" class="user_info3" value="${loginUser.phone}"></th>
+									<th><input type="text" name="phone" id="phone" class="user_info3" value="${loginUser.phone}" maxlength="11"></th>
 									<th width="100px" height="30px">E-MAIL : </th>
-									<th><input type="text" id="email" class="user_info3" value="${loginUser.email}"></th>
+									<th><input type="text" name="email" id="email" class="user_info3" value="${loginUser.email}"></th>
 								</tr>
 							</thead>
 						</table>
@@ -368,9 +369,9 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">우편번호 : </th>
-									<th><input type="text" id="post"class="user_info3" value="${loginUser.post}"></th>
+									<th><input type="text" name="post" id="post"class="user_info3" value="${loginUser.post}"></th>
 									<th width="100px" height="30px">주소 : </th>
-									<th><input type="text" id="address"class="user_info3" value="${loginUser.address}"></th>
+									<th><input type="text" name="address" id="address"class="user_info3" value="${loginUser.address}"></th>
 								</tr>
 							</thead>
 						</table>

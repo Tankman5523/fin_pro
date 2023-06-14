@@ -13,7 +13,7 @@ public class Classes {
 	private String classNo;
 	private String professorNo;
 	private String departmentNo;
-	private int fileNo;
+	private String fileNo;
 	private String className;
 	private String classLevel;
 	private String classYear;

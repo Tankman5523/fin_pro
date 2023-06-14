@@ -16,10 +16,22 @@
                     <span style="margin: 0 auto;">학사관리</span>
                 </div>
                 <div class="child_title">
+                    <a href="infoStudent.st" style="color:#00aeff; font-weight: 550;">학적 정보 조회</a>
+                </div>
+				<div class="child_title">
+                    <a href="personalTimetable.st">개인 시간표</a>
+                </div>
+				<div class="child_title">
+                    <a href="studentRestEnroll.st">휴/복학 신청</a>
+                </div>
+				<div class="child_title">
                     <a href="studentRestList.st">휴/복학 조회</a>
                 </div>
-                <div class="child_title">
-                    <a href="studentRestEnroll.st">휴/복학 신청</a>
+				<div class="child_title">
+                    <a href="#">졸업사정표</a>
+                </div>
+				<div class="child_title">
+                    <a href="#">졸업 확정 신고</a>
                 </div>
             </div>
             <div id="content_1">
