@@ -39,7 +39,7 @@ public class StudentController {
 	}
 	
 	//예비수강신청 폼
-	@GetMapping("preRegisterClass.st")
+	@GetMapping("preRegisterClassForm.st")
 	public String preRegisterClassForm() {
 		return "member/student/preRegisterClass";
 	}
@@ -71,7 +71,8 @@ public class StudentController {
 		
 		int result = 0;
 		
-		int chkClass = memberService.checkPreReg(b); //예비수강 중복체크
+		//예비수강 중복체크
+		int chkClass = memberService.checkPreReg(b); 
 		
 		if(chkClass == 0) {
 			result = memberService.preRegisterClass(b);
@@ -392,9 +393,22 @@ public class StudentController {
 	public ModelAndView personalTimetable(ModelAndView mv, HttpSession session) {
 		Student st = (Student)session.getAttribute("loginUser");
 		String studentNo = st.getStudentNo();
-		ArrayList<String> classTerm = memberService.selectClassTerm(studentNo);
+		ArrayList<String> classTerm = memberService.selectClassTerm2(studentNo); // 수강한 학년도, 학기
 		
 		mv.addObject("classTerm", classTerm).setViewName("member/student/personalTimetableView");
 		return mv;
 	}
+
+	// 개인시간표 -> 학기 선택 후 시간표 조회
+	@ResponseBody
+	@RequestMapping(value = "selectTimetable.st", produces = "application/json; charset=UTF-8;")
+	public String selectTimetable(@RequestParam HashMap<String,String> map, HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
+		map.put("studentNo", studentNo);
+		
+		ArrayList<Classes> cList = memberService.selectTimetable(map);
+		return new Gson().toJson(cList);
+	}
+
 }

@@ -273,7 +273,7 @@
                     <span style="margin: 0 auto;">학사관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="#" style="color:#00aeff; font-weight: 550;">학적 정보 조회</a>
+                    <a href="infoStudent.st" style="color:#00aeff; font-weight: 550;">학적 정보 조회</a>
                 </div>
 				<div class="child_title">
                     <a href="personalTimetable.st">개인 시간표</a>
