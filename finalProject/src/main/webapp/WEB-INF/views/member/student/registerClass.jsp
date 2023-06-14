@@ -22,18 +22,18 @@
                     <a href="registerClassForm.st" style="color:#00aeff; font-weight: 550;">수강신청</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">수강취소</a>
+                    <a href="cancelRegClassForm.st">수강취소</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">수강신청 내역조회</a>
+                    <a href="searchRegClassForm.st">수강신청 내역조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="preRegisterClass.st">예비수강신청</a>
+                    <a href="preRegisterClassForm.st">예비수강신청</a>
                 </div>
             </div>
             <div id="content_1">
             	<div id="main_div">
-            		<p>담당자 문의 정보</p>
+            		<p>수강정보 - 수강신청</p>
             		<hr>
             		
             		<div id="sub_div1">
@@ -48,7 +48,7 @@
             			$(function(){
             				var now = new Date();
             				var year = now.getFullYear();
-            				var month = now.getMonth()+1
+            				var month = now.getMonth()+1;
             				$("#classYear").val(year);
             				if(month>2 && month<9){
             					$("#classTerm").val("1학기");
@@ -61,12 +61,11 @@
             		<hr>
             		
             		<div id="sub_div2">
-            		<!-- ajax에 num값만 다르게 해서 출력 -->
-            				<input id="major" type="radio" name="sub_div2_radio" onchange="mainContent(1);" checked> <label for="major">단과대학 전공별</label>
-            				<input id="elective" type="radio" name="sub_div2_radio" onchange="mainContent(2);"> <label for="elective">교양선택</label>
-            				<input id="proName" type="radio" name="sub_div2_radio" onchange="mainContent(3);"> <label for="proName">교수명검색</label>
-            				<input id="subject" type="radio" name="sub_div2_radio" onchange="mainContent(4);"> <label for="subject">과목검색</label>
-            				<input id="bucket" type="radio" name="sub_div2_radio" onchange="mainContent(5);"> <label for="bucket">장바구니</label>
+           				<input id="major" type="radio" name="sub_div2_radio" onchange="mainContent(1);" checked> <label for="major">단과대학 전공별</label>
+           				<input id="elective" type="radio" name="sub_div2_radio" onchange="mainContent(2);"> <label for="elective">교양선택</label>
+           				<input id="proName" type="radio" name="sub_div2_radio" onchange="mainContent(3);"> <label for="proName">교수명검색</label>
+           				<input id="subject" type="radio" name="sub_div2_radio" onchange="mainContent(4);"> <label for="subject">과목검색</label>
+           				<input id="bucket" type="radio" name="sub_div2_radio" onchange="mainContent(5);"> <label for="bucket">장바구니</label>
             		</div>
             		<hr>
             		<div id="contentDiv1">
@@ -187,7 +186,25 @@
            			</div>
            			<div id="contentDiv5">
            				<div id="main_content5">
-	           				<h2>5</h2>
+	           				<table class="mcTable" id="postBucketTable" border="1" >
+	           					<thead>
+	            					<tr>
+										<th>단과대학</th>
+							            <th>과목번호</th>
+							            <th>과목명</th>
+							            <th>교수명</th>
+							            <th>개설학과</th>
+							            <th>시간/학점</th>
+							            <th>수강인원</th>
+							            <th>강의시간(강의실)</th>
+							            <th>수강대상</th>
+							            <th>강의 신청</th>
+						            </tr>
+	           					</thead>
+	           					<tbody>
+	           						
+	           					</tbody>
+	           				</table>
 	           			</div>
            			</div>
            			
@@ -201,6 +218,7 @@
             		function mainContent(num){
             			$("div[id *= contentDiv]").css("display","none");
             			$("#departmentNo").hide();
+            			$("#categoryBtn").hide();
             			$(".selectReset").val(0);
             			$(".mcTable>tbody").html("");
             			$(".searchInput").val("");
@@ -216,6 +234,7 @@
 	            			case 4 : $("#contentDiv4").css("display","block");
 	            				break;
 	            			case 5 : $("#contentDiv5").css("display","block");
+	            						searchClass(5);
 	            				break;
             			}
             		}
@@ -227,9 +246,11 @@
             			
             			if($cno != 0){
             				$("#departmentNo").show();
+            				$("#categoryBtn").show();
             				$("#categoryBtn").attr("disabled",false);
             			}else{
             				$("#departmentNo").hide();
+            				$("#categoryBtn").hide();
             				$("#categoryBtn").attr("disabled",true);
             			}
             			
@@ -265,6 +286,45 @@
             				alert("교수명을 입력해 주세요");
             			}else if(num == 4 && !$("#searchClass").val()){
             				alert("과목명을 입력해 주세요");
+            			}else if(num == 5){
+            				$.ajax({
+            					url : "postRegBucket.st",
+            					data : {
+            						studentNo : "${loginUser.studentNo}",
+            						classYear : $("#classYear").val(),
+	            					classTerm : $("#classTerm").val()
+            					},
+            					success : function(list){
+                   					result += "<input type='hidden' id='hiddenNum' value='"+num+"'>"
+	            					if(list.length !== 0){
+		            					for(var i=0; i<list.length; i++){
+		            						result += "<tr ";
+		            								 if(i%2 == 0){
+		            									 result += "style = 'background-color:rgb(117, 200, 255);color : white;' >";
+		            								 }else{
+		            									 result += ">";
+		            								 }
+											  result +="<td>" + list[i].collegeName + "</td>"
+													 +"<td>" + list[i].classNo + "</td>"
+													 +"<td>" + list[i].className + "</td>"
+													 +"<td>" + list[i].professorName + "</td>"
+													 +"<td>" + list[i].departmentName + "</td>"
+													 +"<td>" + list[i].creditHour + "</td>"
+													 +"<td>" + list[i].postClassNos + "</td>"
+													 +"<td>" + list[i].classInfo + "</td>"
+													 +"<td>" + list[i].classLevel + "</td>"
+													 +"<td><button>수강신청</button></td>"
+													 +"</tr>";
+		            					}
+	            					}else{
+	            						result += "<tr><th colspan='10' style='font-size:20px;'>예비 수강신청한 강의가 존재하지 않거나 이미 신청한 강의입니다.</th></tr>";
+	            					}
+                   					$("#postBucketTable>tbody").html(result);
+            					},
+            					error : function(){
+            						console.log("장바구니조회 통신실패");
+            					}
+            				});
             			}else{
 	            			$.ajax({
 	            				url : "postRegClass.st",
@@ -292,9 +352,14 @@
 													 +"<td>" + list[i].className + "</td>"
 													 +"<td>" + list[i].professorName + "</td>"
 													 +"<td>" + list[i].departmentName + "</td>"
-													 +"<td>" + list[i].creditHour + "</td>"
-													 +"<td>" + list[i].postClassNos + "</td>"
-													 +"<td>" + list[i].classInfo + "</td>"
+													 +"<td>" + list[i].creditHour + "</td>";
+													 /* 신청인원과 최대수강인원이 같다면*/
+													 if(list[i].signUpNos == list[i].postClassNos){
+											  result +="<td><b style='color:red;'>" + list[i].signUpNos +"</b>/"+ list[i].postClassNos + "</td>";
+													 }else{
+											  result +="<td>" + list[i].signUpNos +"/"+ list[i].postClassNos + "</td>";
+													 }
+											  result +="<td>" + list[i].classInfo + "</td>"
 													 +"<td>" + list[i].classLevel + "</td>"
 													 +"<td><button>수강신청</button></td>"
 													 +"</tr>";
@@ -333,16 +398,18 @@
 	            				$.ajax({
 	            					url : "postRegisterClass.st",
 	            					data : {
+	            						classYear : $("#classYear").val(),
+		            					classTerm : $("#classTerm").val(),
 	            						classNo : cno, 
 	            						studentNo : "${loginUser.studentNo}"
 	            					},
 	            					success : function(result){
 	            						if(result > 0){
-	            							alert("수강신청에 성공하였습니다.");
+	            							alert("수강신청이 완료되었습니다.");
 	            							searchClass(num);
 	            							postRegList();
 	            						}else{
-	            							alert("수강신청이 실패하였습니다.");
+	            							alert("해당 강의를 신청하실 수 없습니다.");
 	            						}
 	            					},
 	            					error : function(){
@@ -396,7 +463,9 @@
             				$.ajax({
             					url : "postRegList.st",
             					data : {
-            						studentNo : "${loginUser.studentNo}"
+            						studentNo : "${loginUser.studentNo}",
+           							classYear : $("#classYear").val(),
+   	            					classTerm : $("#classTerm").val()
             					},
             					success : function(list){
             						var result = "";
@@ -424,7 +493,7 @@
 											sumCredit += parseInt((list[i].creditHour).charAt(2));
 		            					}
             						}else{
-            							result += "<tr><th colspan='10' style='font-size:20px;'>현재 예비 수강신청한 내역이 없습니다.</th></tr>";
+            							result += "<tr><th colspan='10' style='font-size:20px;'>현재 수강신청한 내역이 없습니다.</th></tr>";
             						}
             						$("#postRegisteredTable>tbody").html(result);
             						$("#sumCredit").val(sumCredit);

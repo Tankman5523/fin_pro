@@ -5,65 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>개인 시간표</title>
-<style>
-    .b_line {
-        border: 0.5px solid lightgray;
-        margin: 20px 0px;
-    }
-
-    .page_title {
-        margin-top: 5px;
-        margin-left: 5px;
-        margin-bottom: 0px;
-        font-weight: bold;
-    }
-
-    .selectTerm {
-        display: flex;
-        align-items: center;
-    }
-
-    .selectTerm * {
-        margin-left: 10px;
-    }
-
-    #selectList {
-        border-radius: 10px;
-    }
-
-    .schedule-area {
-        display: flex;
-        flex-flow: row wrap; /*줄 바꿈 가능*/
-        width: 100%;
-        height: 86%;
-        border: 1px solid black;
-        /* background-color: yellow; */
-    }
-
-    .schedule-area>div {
-        width: 16.6666667%;
-        height: 9.090909%;
-        border: 0.5px solid black;
-        text-align: center;
-    }
-    
-    .schedule-area>div[class*=day], .schedule-area>div[class*=period] {
-        line-height: 66px;
-        font-size: large;
-        font-weight: 600;
-    }
-
-    .student_class01 { background-color: #BE5EC2; }
-    .student_class02 { background-color: #F862A7; }
-    .student_class03 { background-color: #FF7B87; }
-    .student_class04 { background-color: #FFA26A; }
-    .student_class05 { background-color: #FFCE5E; }
-    .student_class06 { background-color: #F9F871; }
-    .student_class07 { background-color: #9BDE7E; }
-    .student_class08 { background-color: #4BBC8E; }
-    .student_class09 { background-color: #039590; }
-    .student_class10 { background-color: #1C6E7D; }
-</style>
+<link rel="stylesheet" href="resources/css/personalTimetableView.css">
 </head>
 <body>
 	<div class="wrap">
@@ -77,7 +19,7 @@
                     <a href="infoStudent.st">학적 정보 조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="#" style="color:#00aeff; font-weight: 550;">개인 시간표</a>
+                    <a href="personalTimetable.st" style="color:#00aeff; font-weight: 550;">개인 시간표</a>
                 </div>
                 <div class="child_title">
                     <a href="#">휴/복학 신청</a>
@@ -112,110 +54,121 @@
                 <div class="b_line"></div>
 
                 <div class="schedule-area">
-                    <div></div>
-                    <div class="day1">월</div>
-                    <div class="day2">화</div>
-                    <div class="day3">수</div>
-                    <div class="day4">목</div>
-                    <div class="day5">금</div>
-                    <div class="period01">1교시</div>
-<!--                     <div class="student_class01">와플온도이론1</div> -->
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div class="period02">2교시</div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div class="period03">3교시</div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div  class="period04">4교시</div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div class="period05">5교시</div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div class="period06">6교시</div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div class="period07">7교시</div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div class="period08">8교시</div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div class="period09">9교시</div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div class="period10">10교시</div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
+                    <div class="area1">
+                    	<div class="day0" style="width: 187.3px; border-bottom: 1px solid lightgray;"></div>
+	                    <div class="day1">월</div>
+	                    <div class="day2">화</div>
+	                    <div class="day3">수</div>
+	                    <div class="day4">목</div>
+	                    <div class="day5">금</div>
+                    </div>
+                    <div class="area2">
+	                    <div class="area21">
+		                    <div class="period01"><span>1교시<br>(09:00 ~ 10:00)</span></div>
+		                    <div class="period02"><span>2교시<br>(10:00 ~ 11:00)</span></div>
+		                    <div class="period03"><span>3교시<br>(11:00 ~ 12:00)</span></div>
+		                    <div class="period04"><span>4교시<br>(12:00 ~ 13:00)</span></div>
+		                    <div class="period05"><span>5교시<br>(13:00 ~ 14:00)</span></div>
+		                    <div class="period06"><span>6교시<br>(14:00 ~ 15:00)</span></div>
+		                    <div class="period07"><span>7교시<br>(15:00 ~ 16:00)</span></div>
+		                    <div class="period08"><span>8교시<br>(16:00 ~ 17:00)</span></div>
+	                    	<div class="period09"><span>9교시<br>(17:00 ~ 18:00)</span></div>
+	                    	<div class="period10"><span>10교시<br>(18:00 ~ 19:00)</span></div>
+	                    </div>
+	                    <div class="area22">
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass"></div>
+							<div class="divclass_last"></div>
+	                    </div>                    
+                    </div>
                 </div>
 
 				<script>
 					var arr = ${classTerm};
+					var $classSet = new Set();
+					var $classArr = [];
 	                
 	                $(function() {
-	                	$("select[name=year]").children().eq(0).prop("selected", true).change();
+	                	$("select[name=year]").children().first().prop("selected", true).change();
+	                	selectTimetable();
 	                    
 	                	$(".selectTerm").on("change", "#term", function() {
-	                		selectCategory();
+	                		selectTimetable();
 	                	});
+	                	
+	                	$(".period10").nextAll().css("border-bottom", "2px solid black");
 	                })
 	                
 	                function changeYear(e) {
 	                	var $year = e.value;
-	                	var count=0;
 	                	var str = "";
 	                	
 	                	for(var i=0;i<arr.length;i++) {
 	                		var tmp = arr[i].toString().substr(0,4);
 	                		if(tmp.includes($year)) {
-	                			count++;
+	                			var tmp2 = arr[i].toString().substr(5,);
+		                		if(tmp2 == "1") {
+		                			str += "<option value='1'>1학기</option>";
+		                		}
+		                		if(tmp2 == "2") {
+		                			str += "<option value='2'>2학기</option>";
+		                		}
 	                		}
 	                	}
 	                	
-	                	if(count!=0) {
-		                	str += "<option value='1'>1학기</option>";
-		                	if(count==2) {
-		                		str += "<option value='2'>2학기</option>";
-		                	}
-	                	}
 	                	$("#term").empty();
 	                	$("#term").append(str);
-	                	selectCategory();
+	                	clearPage();
 	                }
 	                
-	                function prevTerm() { // 마지막 학기일 경우 alert, 2학기->1학기, 1학기 -> 이전 년도 2학기
+	                function prevTerm() { // 마지막 학기일 경우 alert, 무조건 재학한 이전학기로
 	                	var $thisYear = $("select[name=year]");
 	                	var $term = $("select[name=term]");
 	                
@@ -223,18 +176,18 @@
 	                		alert("조회 내용이 없습니다.");
 	                	}
 	                	else {
-		                	if($term.val() == 1) { // 이전 년도 2학기로 바꿔야함
-		                		var $index = $thisYear.children("option:selected").index();
-		                		$thisYear.children().eq($index+1).prop("selected", true).change();
+							if($term.children().first().val() == $term.val()) { // 해 바뀜
+								var $index = $thisYear.children("option:selected").index();
+								$thisYear.children().eq($index+1).prop("selected", true).change();
 	                			$term.children().last().prop("selected", true).change();
-		                	}
-		                	else { // 같은 년도 1학기로 바꿔야함
+							}
+							else {
 		                		$term.children().first().prop("selected", true).change();
 		                	}
 	                	}
 	                }
 	                
-	                function nextTerm() { // 마지막 학기일 경우 alert, 1학기 -> 2학기, 2학기 -> 다음 년도 1학기
+	                function nextTerm() { // 마지막 학기일 경우 alert, 무조건 재학한 다음학기로
 	                	var $thisYear = $("select[name=year]");
 	                	var $term = $("select[name=term]");
 	                	
@@ -242,15 +195,77 @@
 	                		alert("조회 내용이 없습니다.");
 	                	}
 	                	else {
-		                	if($term.val() == 2) { // 다음 년도 1학기로 바꿔야함
+	                		if($term.children().last().val() == $term.val()) { // 해 바뀜
 		                		var $index = $thisYear.children("option:selected").index();
-		                		$thisYear.children().eq($index-1).prop("selected", true).change();
+	                			$thisYear.children().eq($index-1).prop("selected", true).change();
 	                			$term.children().first().prop("selected", true).change();
-		                	}
-		                	else { // 같은 년도 2학기로 바꿔야함
+	                		}
+	                		else {
 		                		$term.children().last().prop("selected", true).change();
 		                	}
 	                	}
+	                }
+	                
+	                function selectTimetable() {
+	                	clearPage();
+	                	
+	                	$.ajax({
+	                		url: "selectTimetable.st",
+	                		data: {
+	                			year: $("#year").val(),
+                				term: $("#term").val()
+	                		},
+	                		success: function(cList) {
+								for(var i=0;i<cList.length;i++) {
+									$classSet.add(cList[i].classNo);
+								}
+								$classArr = Array.from($classSet);
+								
+								var str = "";
+								var tmp = cList[0].classNo;
+								for(var i=0;i<cList.length;i++) {
+									var $index = $classArr.indexOf(cList[i].classNo);
+									
+									/* top: 66.7*(period-1), left: 186*(day-1) */
+									if(i>0) {
+										if(cList[i].classNo == tmp) { // 2시간 강의
+// 											str += "<div class='stClass-real' style='top:" + 70*(cList[i-1].period-1) + "px; left:" + 186*(cList[i].day-1)
+// 											+ "px; width:186px; height:140px;'><span>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
+											
+											str += "<div class='stClass_class" + $index + "' style='top:" + 70*(cList[i-1].period-1) + "px; left:" + 185.7*(cList[i].day-1)
+											+ "px; width:185.8px; height:140px;'><span style='margin: 20px auto; line-height: 200%;'>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
+										}
+										else { // 1시간 강의
+// 											str += "<div class='stClass-real' style='top:" + 70*(cList[i].period-1) + "px; left:" + 186*(cList[i].day-1)
+// 													+ "px; width:186px; height:70px;'><span>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
+													
+											str += "<div class='stClass_class" + $index + "' style='top:" + 70*(cList[i].period-1) + "px; left:" + 185.7*(cList[i].day-1)
+													+ "px; width:185.8px; height:70px;'><span style='margin: 5px auto;'>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
+										}
+										tmp = cList[i].classNo;
+									}
+									
+									// 한 줄씩 다른 색깔 나오게 시도....
+// 									if(cList[i].period%2 == 0) { // 짝수 교시
+// 										str += "<div class='stClass-real' style='top:" + 70*(cList[i].period-1) + "px; left:" + 186*(cList[i].day-1)
+// 											+ "px; width:186px; height:70px;'><span>" + cList[i].className + "<br>" + cList[i].classroom + "</span></div>";
+// 									}
+// 									else {
+// 										str += "<div style='top:" + 70*(cList[i].period-1) + "px; left:" + 186*(cList[i].day-1)
+// 										+ "px; width:186px; height:70px;'><span>" + cList[i].className + "<br>" + cList[i].classroom + "</span></div>";
+// 									}
+								}
+								
+								$(".area22").append(str);
+	                		},
+	                		error: function() {
+	                			console.log("통신 오류");
+	                		}
+	                	})
+	                }
+	                
+	                function clearPage() {
+	                	$("div[class*=stClass_class]").remove();
 	                }
 				</script>
             </div>

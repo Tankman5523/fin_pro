@@ -7,13 +7,17 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Department;
 import com.univ.fin.common.model.vo.RegisterClass;
+import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
+import com.univ.fin.money.model.vo.RegistPay;
 
 @Repository
 public class MemberDao {
@@ -58,6 +62,11 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.changePwd2", pr);
 	}
 	
+	//수강신청 - 수강신청내역조회 (로그인 학생의 수강신청 년도/학기 추출)
+	public ArrayList<Classes> searchRegYear(SqlSessionTemplate sqlSession, String studentNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.searchRegYear", studentNo);
+	}
+	
 	//예비수강신청 - 수강조회
 	public ArrayList<RegisterClass> preRegClass(SqlSessionTemplate sqlSession, RegisterClass rc2) {
 		return (ArrayList)sqlSession.selectList("memberMapper.preRegClass", rc2);
@@ -74,8 +83,8 @@ public class MemberDao {
 	}
 	
 	//예비수강신청 - 장바구니 조회
-	public ArrayList<RegisterClass> preRegList(SqlSessionTemplate sqlSession, String studentNo) {
-		return (ArrayList)sqlSession.selectList("memberMapper.preRegList", studentNo);
+	public ArrayList<RegisterClass> preRegList(SqlSessionTemplate sqlSession, RegisterClass rc2) {
+		return (ArrayList)sqlSession.selectList("memberMapper.preRegList", rc2);
 	}
 	
 	//예비수강신청 - 장바구니 수강취소
@@ -86,6 +95,11 @@ public class MemberDao {
 	//수강신청 - 수강신청 (수강조회)
 	public ArrayList<RegisterClass> postRegClass(SqlSessionTemplate sqlSession, RegisterClass rc2) {
 		return (ArrayList)sqlSession.selectList("memberMapper.postRegClass", rc2);
+	}
+	
+	//수강신청 - 수강신청 (장바구니)
+	public ArrayList<RegisterClass> postRegBucket(SqlSessionTemplate sqlSession, RegisterClass rc2) {
+		return (ArrayList)sqlSession.selectList("memberMapper.postRegBucket", rc2);
 	}
 	
 	//수강신청 - 수강신청 (해당강의 조회)
@@ -109,13 +123,18 @@ public class MemberDao {
 	}
 	
 	//수강신청 - 수강신청내역 조회
-	public ArrayList<RegisterClass> postRegList(SqlSessionTemplate sqlSession, String studentNo) {
-		return (ArrayList)sqlSession.selectList("memberMapper.postRegList", studentNo);
+	public ArrayList<RegisterClass> postRegList(SqlSessionTemplate sqlSession, RegisterClass rc2) {
+		return (ArrayList)sqlSession.selectList("memberMapper.postRegList", rc2);
 	}
 	
 	//수강신청 - 수강신청 (수강신청내역 수강취소)
 	public int delPostRegList(SqlSessionTemplate sqlSession, RegisterClass rc) {
 		return sqlSession.delete("memberMapper.delPostRegList", rc);
+	}
+	
+	//수강신청 - 수강신청 내역조회
+	public ArrayList<HashMap<String, String>> searchRegList(SqlSessionTemplate sqlSession, HashMap<String, String> h) {
+		return (ArrayList)sqlSession.selectList("memberMapper.postRegList", h);
 	}
 	
 	// 강의시간표 -> 학년도,학기 조회
@@ -165,11 +184,19 @@ public class MemberDao {
 		
 		return sqlSession.selectOne("memberMapper.selectProfessorForNo",professorNo);
 	}
+	
 	//상담관리 - 상담 요청내용 수정(학생)
 	public int updateCounContent(SqlSessionTemplate sqlSession, Counseling c) {
 		
 		return sqlSession.update("memberMapper.updateCounContent",c);
 	}
+	
+	//상담관리 - 상담 내역 검색
+	public ArrayList<Counseling> selectSearchCounseling(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+			
+		return (ArrayList)sqlSession.selectList("memberMapper.selectSearchCounList",map);
+	}
+	
 	//학적정보 수정 - 학생
 	public int updateStudent(SqlSessionTemplate sqlSession, Student st) {
 
@@ -191,9 +218,54 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.searchClassKeyword", map);
 	}
 
-	// 개인시간표 -> 학년도,학기 조회
-	public ArrayList<String> selectClassTerm(SqlSessionTemplate sqlSession, String studentNo) {
-		return (ArrayList)sqlSession.selectList("memberMapper.selectClassTerm2", studentNo);
-	}
+
 	
+
+	//(학생)휴,복학 신청 리스트 조회
+	public ArrayList<StudentRest> selectStuRestList(SqlSessionTemplate sqlSession, String studentNo) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.selectStuRestList",studentNo);
+	}
+
+	//(학생)휴학횟수 가져옴
+	public int selectRestCount(SqlSessionTemplate sqlSession, String studentNo) {
+		
+		return sqlSession.selectOne("memberMapper.selectRestCount",studentNo);
+	}
+
+	//(학생)가장 최근 휴학 정보 가져옴
+	public StudentRest selectRestInfo(SqlSessionTemplate sqlSession, String studentNo) {
+		
+		return sqlSession.selectOne("memberMapper.selectRestInfo",studentNo);
+	}
+
+	//(학생)휴학신청할떄 등록금 정보 가져오기
+	public RegistPay checkRegPay(SqlSessionTemplate sqlSession, RegistPay rp) {
+		
+		RegistPay checkRp = sqlSession.selectOne("memberMapper.checkRegPay",rp);
+		
+		return checkRp;
+	}
+
+	//(학생)휴,복학 신청 인서트
+	public int insertStuRest(SqlSessionTemplate sqlSession, StudentRest sr) {
+		
+		return sqlSession.insert("memberMapper.insertStuRest",sr);
+	}
+
+	// 학생 개인시간표 -> 학년도,학기 조회
+	public ArrayList<String> selectStudentClassTerm(SqlSessionTemplate sqlSession, String studentNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectStudentClassTerm", studentNo);
+	}
+
+	// 학생 개인시간표 -> 학기 선택 후 시간표 조회
+	public ArrayList<Classes> selectStudentTimetable(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectStudentTimetable", map);
+	}
+
+	// 교수 개인시간표 -> 학년도,학기 조회
+	public ArrayList<String> selectProfessorClassTerm(SqlSessionTemplate sqlSession, String professorNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectProfessorClassTerm", professorNo);
+	}
+
 }

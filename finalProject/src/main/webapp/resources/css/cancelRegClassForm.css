@@ -1,33 +1,3 @@
-.wrap{
-    height: 1500px !important;
-}
-
-#content{
-    height: 84% !important;
-}
-
-#header{
-    height: 164.69px !important;
-}
-
-#menubar{
-    height: 76.86px !important;
-}
-
-#category{
-    height: 100%;
-}
-
-#cate_title{
-	height: 94.2px !important;
-}
-
-.child_title{
-    height: 77.08px !important;
-}
-
-/* =========================================================== */
-
 #main_div{
     padding-top: 10px;
     position: relative;
@@ -105,10 +75,6 @@
     padding: 0px;
 }
 
-.contentBtn:hover{
-    box-shadow: 1px 1px 2px #000000;
-}
-
 div[id *= main_content]{
     width: 1090px;
     height: 528px;
@@ -129,7 +95,6 @@ div[id *= main_content]{
 }
 
 div[id *= contentDiv]{
-    display: none;
     padding : 0px 15px;
     margin-top: 10px;
 }
@@ -195,8 +160,10 @@ input[name = sub_div2_radio]:checked+label{
 }
 
 #sumCredit_span{
+    float: right;
     margin-left: auto;
     margin-right: 15px;
+    padding-left: 15px;
 }
 
 #sumCredit{

@@ -7,13 +7,17 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.RegisterClass;
+import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.dao.MemberDao;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
+import com.univ.fin.money.model.vo.RegistPay;
 
 @Service
 public class MemberServiceImpl implements MemberService{
@@ -103,6 +107,15 @@ public class MemberServiceImpl implements MemberService{
 		return list;
 	}
 	
+	//수강신청 - 수강신청내역조회 (로그인 학생의 수강신청 년도/학기 추출)
+	@Override
+	public ArrayList<Classes> searchRegYear(String studentNo) {
+		
+		ArrayList<Classes> list = memberDao.searchRegYear(sqlSession,studentNo);
+		
+		return list;
+	}
+	
 	//예비수강신청 - 중복체크
 	@Override
 	public int checkPreReg(Bucket b) {
@@ -123,9 +136,9 @@ public class MemberServiceImpl implements MemberService{
 	
 	//예비수강신청 - 장바구니 조회
 	@Override
-	public ArrayList<RegisterClass> preRegList(String studentNo) {
+	public ArrayList<RegisterClass> preRegList(RegisterClass rc2) {
 		
-		ArrayList<RegisterClass> list = memberDao.preRegList(sqlSession,studentNo);
+		ArrayList<RegisterClass> list = memberDao.preRegList(sqlSession,rc2);
 		
 		return list;
 	}
@@ -144,6 +157,15 @@ public class MemberServiceImpl implements MemberService{
 	public ArrayList<RegisterClass> postRegClass(RegisterClass rc2) {
 		
 		ArrayList<RegisterClass> list = memberDao.postRegClass(sqlSession,rc2);
+		
+		return list;
+	}
+	
+	//수강신청 - 수강신청 (장바구니)
+	@Override
+	public ArrayList<RegisterClass> postRegBucket(RegisterClass rc2) {
+		
+		ArrayList<RegisterClass> list = memberDao.postRegBucket(sqlSession,rc2);
 		
 		return list;
 	}
@@ -186,9 +208,9 @@ public class MemberServiceImpl implements MemberService{
 	
 	//수강신청 - 수강신청내역 조회
 	@Override
-	public ArrayList<RegisterClass> postRegList(String studentNo) {
+	public ArrayList<RegisterClass> postRegList(RegisterClass rc2) {
 		
-		ArrayList<RegisterClass> list = memberDao.postRegList(sqlSession,studentNo);
+		ArrayList<RegisterClass> list = memberDao.postRegList(sqlSession,rc2);
 		
 		return list;
 	}
@@ -200,6 +222,15 @@ public class MemberServiceImpl implements MemberService{
 		int result = memberDao.delPostRegList(sqlSession,rc);
 		
 		return result;
+	}
+	
+	//수강신청 - 수강신청 내역조회
+	@Override
+	public ArrayList<HashMap<String, String>> searchRegList(HashMap<String, String> h) {
+		
+		ArrayList<HashMap<String, String>> list = memberDao.searchRegList(sqlSession,h);
+		
+		return list;
 	}
 	
 	// 강의시간표 -> 학년도,학기 조회
@@ -276,6 +307,15 @@ public class MemberServiceImpl implements MemberService{
 		
 		return result;
 	}
+	
+	//상담관리 - 상담내역 검색
+	@Override
+	public ArrayList<Counseling> selectSearchCounseling(HashMap<String, String> map) {
+		ArrayList<Counseling> list = memberDao.selectSearchCounseling(sqlSession,map);
+			
+		return list;
+	}
+	
 	// 강의시간표 -> 교수명 검색/과목 검색
 	@Override
 	public ArrayList<Classes> searchClassKeyword(HashMap<String, String> map) {
@@ -308,11 +348,63 @@ public class MemberServiceImpl implements MemberService{
 		return result;
 	}
 
-	// 개인시간표 -> 학년도,학기 조회
+	// 학생 개인시간표 -> 학년도,학기 조회
 	@Override
-	public ArrayList<String> selectClassTerm(String studentNo) {
-		ArrayList<String> classTerm = memberDao.selectClassTerm(sqlSession, studentNo);
+	public ArrayList<String> selectStudentClassTerm(String studentNo) {
+		ArrayList<String> classTerm = memberDao.selectStudentClassTerm(sqlSession, studentNo);
 		return classTerm;
 	}
+
+	// 학생 개인시간표 -> 학기 선택 후 시간표 조회
+	@Override
+	public ArrayList<Classes> selectStudentTimetable(HashMap<String, String> map) {
+		ArrayList<Classes> cList = memberDao.selectStudentTimetable(sqlSession, map);
+		return cList;
+	}
 	
+	//(학생)휴,복학 신청 리스트 조회
+	@Override
+	public ArrayList<StudentRest> selectStuRestList(String studentNo) {
+		
+		ArrayList<StudentRest> list = memberDao.selectStuRestList(sqlSession,studentNo);
+		
+		return list;
+	}
+	
+	//휴학횟수 가져옴
+	@Override
+	public int selectRestCount(String studentNo) {
+		
+		int restCount = memberDao.selectRestCount(sqlSession,studentNo);
+		
+		return restCount;
+	}
+	
+	//(학생)가장 최근 휴학 정보 가져옴
+	@Override
+	public StudentRest selectRestInfo(String studentNo) {
+		StudentRest sr = memberDao.selectRestInfo(sqlSession,studentNo);
+		return sr;
+	}
+	
+	//(학생)휴학신청할떄 등록금 냈는지 확인
+	@Override
+	public RegistPay checkRegPay(RegistPay rp) {
+		RegistPay checkRp = memberDao.checkRegPay(sqlSession,rp);
+		return checkRp;
+	}
+	
+	//(학생)휴,복학 신청 인서트
+	@Override
+	public int insertStuRest(StudentRest sr) {
+		int result = memberDao.insertStuRest(sqlSession,sr);
+		return result;
+	}
+
+	// 교수 개인시간표 -> 학년도,학기 조회
+	@Override
+	public ArrayList<String> selectProfessorClassTerm(String professorNo) {
+		ArrayList<String> classTerm = memberDao.selectProfessorClassTerm(sqlSession, professorNo);
+		return classTerm;
+	}
 }
