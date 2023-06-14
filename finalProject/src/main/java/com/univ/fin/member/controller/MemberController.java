@@ -403,7 +403,12 @@ public class MemberController {
 	@RequestMapping("changePwd.me")
 	public String changePwd(String password, String memberNo,HttpSession session) {
 		
+		
 		int result = 0;
+		
+		if(memberNo.length() == 0) { //개발자도구켜서 억지로 호출했을경우 에러발생 제어. 
+			return new Gson().toJson(result);
+		}
 		
 		String encPwd = bcryptPasswordEncoder.encode(password);
 		
