@@ -1,14 +1,19 @@
 package com.univ.fin.member.model.service;
 
+import java.awt.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.RegisterClass;
+import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
+import com.univ.fin.money.model.vo.RegistPay;
 
 public interface MemberService {
 
@@ -86,6 +91,24 @@ public interface MemberService {
 
 	// 회원추가 (학생)
 	int insertStudent(Student st);
+
+	//상담내역 검색
+	ArrayList<Counseling> selectSearchCounseling(HashMap<String, String> map);
+
+	//(학생)휴,복학 신청 리스트 조회
+	ArrayList<StudentRest> selectStuRestList(String studentNo);
+
+	//(학생)휴학 횟수 가져옴
+	int selectRestCount(String studentNo);
+
+	//(학생)가장 최근 휴학 정보 가져옴
+	StudentRest selectRestInfo(String studentNo);
+
+	//(학생)휴학신청할떄 등록금 냈는지 확인
+	RegistPay checkRegPay(RegistPay rp);
+
+	//(학생)휴,복학 신청 인서트
+	int insertStuRest(StudentRest sr);
 
 
 

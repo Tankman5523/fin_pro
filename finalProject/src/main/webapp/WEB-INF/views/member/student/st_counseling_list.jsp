@@ -55,39 +55,33 @@
                 </div>
                 <div id="content_1">
                     <div id="search" style="border-bottom:1px solid black; height:10%">
-                        <form action="counselingSearch.st" id="searchForm">
+                        
                             <ul class="search_ul">
                                 <li class="option1">
                                     	학년도 
-                                    <select name="" id="">
-                                            <option value="*">===전체===</option>
-                                            <!-- 
-                                            <c:forEach var="c" items="${list }">
-                                            <c:set value="${c.applicationDate }" var="appDate"/>	
-                                            			<%
-                                            				String ADate = pageContext.getAttribute("appDate").toString();
-                                            				String year = ADate.substring(0,ADate.indexOf("-"));
-                                            				
-                                            				HashSet<String> set = new HashSet<String>();
-                                            				set.add(year);
-                                            			%>
-												<c:if test="">
-                                            		<option value="${c.applicationDate}">
-                                            			<%= %>
-                                            		</option>                                            
-													
-												</c:if>                                            			
-                                            </c:forEach>
-                                             -->
+                                    <select name="year" id="">
+                                       <option value="">===전체===</option>
+                                             
+                                        <% HashSet<String> set = new HashSet<String>(); //밑에서 중복 거르기 위한 hashset 선언및 초기화%>
+                                        <c:forEach var="c" items="${list }">
+	                                       <c:set value="${c.applicationDate }" var="appDate"/>	
+                                           <%
+                                            	String ADate = pageContext.getAttribute("appDate").toString(); //상담신청날짜
+                                            	String year = ADate.substring(0,ADate.indexOf("-")); //상담신청날짜에서 년도만 가져오기
                                             		
-                                            
-                                            
+                                            	if(!set.contains(year)){//년도가 중복된 년도가 아니라면
+                                            		set.add(year); //중복제거를 위해 set에 담고
+                                           %>
+                                            	
+                                            	<option value="<%=year%>"><%=year%></option>                                        
+                                            	<%} %>
+                                       </c:forEach>
                                     </select>
                                 </li>
                                 <li class="option1">
                                     	상담종류 
-                                    <select name="" id="">
-                                        <option value="*">===전체===</option>
+                                    <select name="counselArea">
+                                        <option value="">===전체===</option>
                                         <option value="진로(취업)">진로(취업)</option>
                                         <option value="학사(제적)">학사(제적)</option>
                                         <option value="학사(휴학)">학사(휴학)</option>
@@ -107,10 +101,10 @@
                             </ul>
                             
                         
-                        </form>
+                       
                     </div>
                     <div style="text-align: right; margin-right:40px">
-                        <button class="btn btn-secondary" type="submit" form="searchForm">조회</button>
+                        <button class="btn btn-secondary" type="button" onclick="searchCounseling();">조회</button>
                     </div>
                     <div align="center">
                         <table border="1" style="width:80%; text-align: center;table-layout: fixed;" id="board_list" >
@@ -124,6 +118,13 @@
                                     <th>완료여부</th>
                                 </tr>
                             </thead>
+                            	<!-- 테이블 fixed해서 일반적으로 width가 안먹어서 크기 정해주기 -->
+                            		<col width="15%">
+                            		<col width="15%">
+                            		<col width="40%">
+                            		<col width="13%">
+                            		<col width="13%">
+                            		<col width="4%">
                             <tbody>
                             	<c:choose>
                             		<c:when test="${empty list }">
@@ -132,36 +133,19 @@
                             			</tr>
                             		</c:when>
                             		<c:otherwise>
-                            		<!-- 테이블 fixed해서 일반적으로 width가 안먹어서 크기 정해주기 -->
-                            		<col width="15%">
-                            		<col width="15%">
-                            		<col width="40%">
-                            		<col width="13%">
-                            		<col width="13%">
-                            		<col width="4%">
 		                            	<c:forEach var="b" items="${ list }">
 		                            		<tr>
 		                            			<td style="display:none">${b.counselNo}</td>
 		                            			<td>${b.applicationDate}</td>
 		                            			<td>${b.requestDate}</td>
 		                            			<td class="con">${b.counselContent}</td>
-		                            			<td>${b.professorNo}</td>
+		                            			<td>${b.professorName}</td>
 		                            			<td>${b.counselArea}</td>
 		                            			<td>${b.status}</td>
 		                            		</tr>
 		                            	</c:forEach>
                             		</c:otherwise>
                             	</c:choose>
-                            <!-- 
-                                <tr>
-                                    <td>2023-04-27</td>
-                                    <td></td>
-                                    <td>어문경</td>
-                                    <td>진로(취업)</td>
-                                    <td>N</td>
-                                </tr>
-                             -->
-                                
                             </tbody>
                             
                         </table>
@@ -171,6 +155,7 @@
             </div>
                 
         </div>
+        
     <script>
     	//datepicker 구문
 		$("#datepicker1").datepicker();
@@ -187,6 +172,61 @@
 				location.href="stuCounDetail.st?counselNo="+cno;
 			});
 		});
+		
+		function searchCounseling(){ //상담 내역 검색 함수
+			var studentNo = '${loginUser.studentNo}'; //학생번호
+			var year = $('select[name=year]').val();//학년도 
+			var counselArea = $('select[name=counselArea]').val(); //상담영역(학사(휴학),기타 등등)
+			var start = $("#datepicker1").val(); //기간설정 (시작날짜)
+			var end = $("#datepicker2").val(); //기간설정 (마지막 날짜)
+			
+			var obj = new Object();
+			obj.studentNo = studentNo;
+			obj.year = year;
+			obj.counselArea = counselArea;
+			obj.startDate = start!=""?start:'1900-01-01';
+			obj.endDate = end!=""?end:'2999-12-31';
+			
+			
+			
+			console.log("첫번쨰"+year);
+			console.log("두번쨰"+counselArea);
+			console.log("세번쨰"+start);
+			console.log("네번쨰"+end);
+			console.log(obj);
+			
+			
+			$.ajax({
+				url:"counselingSearch.st",
+				data:{data:JSON.stringify(obj)},
+				success:function(list){
+					var result = "";
+					if(list.length==0){
+						result = "<tr>"+"<td colspan='6'>상담내역이 없습니다.</td>"+"</tr>"
+					}else{					
+						for(var i=0; i<list.length; i++){
+							console.log(i);
+							result += "<tr>"
+									+"<td style='display:none'>"+list[i].counselNo+"</td>"
+									+"<td>"+list[i].applicationDate+"</td>"
+									+"<td>"+list[i].requestDate+"</td>"
+									+"<td class='con'>"+list[i].counselContent+"</td>"
+									+"<td>"+list[i].professorName+"</td>"
+									+"<td>"+list[i].counselArea+"</td>"
+									+"<td>"+list[i].status+"</td>"
+									+"</tr>"
+						}
+						
+					}
+					$("#board_list tbody").html(result);
+					
+				},
+				error :function(){
+					alert("통신실패");
+				}
+			})			
+			
+		}
 	</script>
 </body>
 </html>

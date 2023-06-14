@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class Classes {
-	private int classNo;
+	private String classNo;
 	private String professorNo;
 	private String departmentNo;
 	private int fileNo;

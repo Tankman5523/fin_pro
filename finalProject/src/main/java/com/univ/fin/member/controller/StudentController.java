@@ -1,6 +1,7 @@
 package com.univ.fin.member.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
 
@@ -16,13 +17,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.RegisterClass;
+import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.common.template.DepartmentCategory;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
+import com.univ.fin.money.model.vo.RegistPay;
 
 @Controller
 public class StudentController {
@@ -134,8 +139,8 @@ public class StudentController {
 	@RequestMapping(value="departmentProList.st",produces = "application/json; charset = UTF-8")
 	public String selectDepartProList(String departmentNo) {
 		
-	//학과별 교수 조회해서 가져가기
-	ArrayList<Professor> list = memberService.selectDepartProList(departmentNo);
+	
+	ArrayList<Professor> list = memberService.selectDepartProList(departmentNo);//학과별 교수 조회해서 가져가기
 	
 	return new Gson().toJson(list);
 	} 
@@ -171,6 +176,7 @@ public class StudentController {
 	}
 	
 	
+	//상담 신청 내용 수정
 	@RequestMapping(value="counselingUpdate.st",method =RequestMethod.POST)
 	public ModelAndView StuCounUpdate(Counseling c,ModelAndView mv) {
 		
@@ -189,62 +195,156 @@ public class StudentController {
 		return mv;
 	}
 	
-	
-		//학적 정보조회 - 학생
-			@RequestMapping("infoStudent.me")
-			public String infoStudent() {		
-				
-				return "member/student/infoStudent";
-			}
-			
-			
-			//학적 정보수정 - 학생
-			@RequestMapping("updateStudent.me")
-			public ModelAndView updateStudent(Student st,
-											ModelAndView mv,
-											HttpSession session) {
-				int result = memberService.updateStudent(st);
-				
-				System.out.println("확인 : "+result);
-				
-				if(result>0) {
-					//유저 정보갱신
-					Student loginUser = memberService.loginStudent(st);
-					session.setAttribute("loginUser", loginUser);
-					session.setAttribute("alertMsg", "수정 완료");
-					mv.setViewName("redirect:infoStudent.me");
-				}else { //정보변경실패
-					mv.addObject("errorMsg","수정 실패함요").setViewName("redirect:infoStudent.me");
-				}
-				
-			return mv;
-				
-			}
-	
-			//학생등록 페이지
-			@RequestMapping("enrollStudent.me")
-			public String enrollStudent() {		
-				
-				return "member/student/enrollStudent";
-			}
-			
-			//학생등록 페이지 등록
-			@RequestMapping("insertStudent.me")
-			public String insertStudent(Student st,
-										Model model,
-										HttpSession session) {
-			
-			int result = memberService.insertStudent(st);
-				
-			if(result>0) {
-				session.setAttribute("alertMsg", "회원가입 성공");
-				return "redirect:enrollStudent";
-			}else {
-				model.addAttribute("errorMsg","회원가입 실패");
-			}
-			return "member/student/infoStudent";
-				
-			}
+	//상담 관리 - 상담 내역 검색
+	@ResponseBody
+	@RequestMapping(value="counselingSearch.st",produces = "application/json; charset = UTF-8")
+	public String counSearchList(String data) {
+								
+		HashMap<String,String> map = new HashMap<String, String>();
+
+		JsonObject con = (JsonObject) JsonParser.parseString(data);
+		String studentNo = con.get("studentNo").getAsString();
+		String year = con.get("year").getAsString();
+		String counselArea = con.get("counselArea").getAsString();
+		String startDate = con.get("startDate").getAsString();
+		String endDate = con.get("endDate").getAsString();
 		
+		map.put("studentNo",studentNo);
+		map.put("year",'%'+year+'%' );
+		map.put("counselArea", '%'+counselArea+'%');
+		//map.put("startDate",startDate!=""?startDate:"1900-01-01");
+		map.put("startDate",startDate);
+		//map.put("endDate",endDate!=null?endDate:"2999-12-31");
+		map.put("endDate",endDate);
+			
+		ArrayList<Counseling> list = memberService.selectSearchCounseling(map);
+		
+		return new Gson().toJson(list);
+		
+		
+	}
+	
+	//학적 정보조회 - 학생
+	@RequestMapping("infoStudent.me")
+	public String infoStudent() {		
+		
+		return "member/student/infoStudent";
+	}
+	
+	
+	//학적 정보수정 - 학생
+	@RequestMapping("updateStudent.me")
+	public ModelAndView updateStudent(Student st,
+			ModelAndView mv,
+			HttpSession session) {
+		int result = memberService.updateStudent(st);
+		
+		System.out.println("확인 : "+result);
+		
+		if(result>0) {
+			//유저 정보갱신
+			Student loginUser = memberService.loginStudent(st);
+			session.setAttribute("loginUser", loginUser);
+			session.setAttribute("alertMsg", "수정 완료");
+			mv.setViewName("redirect:infoStudent.me");
+		}else { //정보변경실패
+			mv.addObject("errorMsg","수정 실패함요").setViewName("redirect:infoStudent.me");
+		}
+		
+		return mv;
+		
+	}
+	
+	//학생등록 페이지
+	@RequestMapping("enrollStudent.me")
+	public String enrollStudent() {		
+		
+		return "member/student/enrollStudent";
+	}
+	
+	//학생등록 페이지 등록
+	@RequestMapping("insertStudent.me")
+	public String insertStudent(Student st,
+			Model model,
+			HttpSession session) {
+		
+		int result = memberService.insertStudent(st);
+		
+		if(result>0) {
+			session.setAttribute("alertMsg", "회원가입 성공");
+			return "redirect:enrollStudent";
+		}else {
+			model.addAttribute("errorMsg","회원가입 실패");
+		}
+		return "member/student/infoStudent";
+		
+	}
+	
+	//휴,복학 신청 조회(리스트) 페이지 이동(학생)
+	@RequestMapping("studentRestList.st")
+	public String selectStuRestList (HttpSession session,Model model) {
+		
+		
+		String studentNo = ((Student)session.getAttribute("loginUser")).getStudentNo();
+		
+		ArrayList<StudentRest> list = memberService.selectStuRestList(studentNo);
+		
+		model.addAttribute("list",list);
+		
+		return "member/student/st_rest_list";
+	}
+	
+	//휴,복학 신청 페이지 이동
+	@RequestMapping("studentRestEnroll.st")
+	public String StuRestForm (HttpSession session,Model model) {
+		
+		Student loginUser =(Student)session.getAttribute("loginUser");
+		
+		String studentNo = loginUser.getStudentNo();
+		
+		//휴학 횟수 가져옴
+		int restCount = memberService.selectRestCount(studentNo);
+		//현재 휴학중인지 알기위해 상태가져옴
+		String status = loginUser.getStatus();
+		
+		if(status.equals("휴학")) {//만약 휴학중이면 복학or휴학연장이기 때문에 휴학 정보 가져감
+			StudentRest sr = memberService.selectRestInfo(studentNo);
+			model.addAttribute("sr",sr);
+		}
+		
+		model.addAttribute("rcount",restCount);
+		
+		return "member/student/st_rest_enroll";
+	}
+	
+	//휴학하는 학기 등록금 납부 여부
+	@ResponseBody
+	@RequestMapping(value="studentCheckRegistPay.st",produces = "application/json; charset=UTF-8")
+	public String checkReg (RegistPay rp) {
+		
+		
+		RegistPay checkRp = memberService.checkRegPay(rp);
+		
+		
+		return new Gson().toJson(checkRp);
+	}
+	
+	//휴,복학 신청 인서트
+	@RequestMapping(value="studentRestInsert.st",method = RequestMethod.POST)
+	public String insertStuRest(StudentRest sr,Model model) {
+		
+		System.out.println("인서트 자료"+sr);
+		
+		int result = memberService.insertStuRest(sr);
+		
+		if(result>0) {
+			model.addAttribute("alertMsg","신청 성공");
+		}else {
+			model.addAttribute("errorMsg","신청 실패");
+		}
+		
+		return "redirect:studentRestList.st";
+	}
+	
 	
 }
