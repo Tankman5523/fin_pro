@@ -434,4 +434,11 @@ public class MemberServiceImpl implements MemberService{
 		return classTerm;
 	}
 
+	// 교수 개인시간표 -> 학기 선택 후 시간표 조회
+	@Override
+	public ArrayList<Classes> selectProfessorTimetable(HashMap<String, String> map) {
+		ArrayList<Classes> cList = memberDao.selectProfessorTimetable(sqlSession, map);
+		return cList;
+	}
+
 }
