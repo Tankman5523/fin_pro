@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.dao.MemberDao;
@@ -367,6 +368,24 @@ public class MemberServiceImpl implements MemberService{
 	public ArrayList<Classes> selectStudentTimetable(HashMap<String, String> map) {
 		ArrayList<Classes> cList = memberDao.selectStudentTimetable(sqlSession, map);
 		return cList;
+	}
+	
+	//학사관리 - 졸업사정표
+	@Override
+	public Graduation graduationInfo(String sno) {
+		
+		Graduation g = memberDao.graduationInfo(sqlSession,sno);
+		
+		return g;
+	}
+	
+	//학사관리 - 졸업사정표(전체 이수현황 조회)
+	@Override
+	public Graduation selectGraStatus(HashMap<String, String> h) {
+		
+		Graduation g = memberDao.selectGraStatus(sqlSession,h);
+		
+		return g;
 	}
 	
 	//(학생)휴,복학 신청 리스트 조회
