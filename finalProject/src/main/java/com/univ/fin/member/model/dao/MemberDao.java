@@ -11,6 +11,7 @@ import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Department;
+import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.vo.Professor;
@@ -221,9 +222,16 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.searchClassKeyword", map);
 	}
 
-
+	//학사관리 - 졸업사정표
+	public Graduation graduationInfo(SqlSessionTemplate sqlSession, String sno) {
+		return sqlSession.selectOne("memberMapper.graduationInfo", sno);
+	}
 	
-
+	//학사관리 - 졸업사정표(전체 이수현황 조회)
+	public Graduation selectGraStatus(SqlSessionTemplate sqlSession, HashMap<String, String> h) {
+		return sqlSession.selectOne("memberMapper.selectGraStatus", h);
+	}
+	
 	//(학생)휴,복학 신청 리스트 조회
 	public ArrayList<StudentRest> selectStuRestList(SqlSessionTemplate sqlSession, String studentNo) {
 		

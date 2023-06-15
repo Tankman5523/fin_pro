@@ -119,6 +119,21 @@
 		<result column="PAY_STATUS" property="payStatus"/>
 	</resultMap>
   	
+  	<resultMap type="graduation" id="graduationResultMap">
+  		<result column="STUDENT_NO" property="studentNo"/>
+  		<result column="STUDENT_NAME" property="studentName"/>
+  		<result column="ENTRANCE_DATE" property="entranceDate"/>
+  		<result column="COLLEGE_NAME" property="collegeName"/>
+  		<result column="DEPARTMENT_NAME" property="departmentName"/>
+  		<result column="STATUS" property="status"/>
+  		<result column="CLASS_LEVEL" property="classLevel"/>
+  		<result column="CLASS_TERM" property="classTerm"/>
+  		<result column="SUMCREDIT" property="sumCredit"/>
+  		<result column="COMMON_CLASS" property="commonClass"/>
+  		<result column="NOMAL_CLASS" property="nomalClass"/>
+  		<result column="MAJOR_CLASS" property="majorClass"/>
+  	</resultMap>
+  	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
   		SELECT STUDENT_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,FILE_NO,STUDENT_NAME,STUDENT_PWD,
@@ -486,6 +501,63 @@
 		FROM CLASS
 		GROUP BY CLASS_YEAR, CLASS_TERM
 		ORDER BY CLASS_YEAR DESC, CLASS_TERM ASC
+  	</select>
+  	
+  	<!-- 학사관리 - 졸업사정표 -->
+  	<select id="graduationInfo" parameterType="graduation" resultMap="graduationResultMap">
+  		SELECT STUDENT_NO,STUDENT_NAME
+		      ,TO_CHAR(ENTRANCE_DATE,'YYYY') "ENTRANCE_DATE"
+		      ,COLLEGE_NAME,DEPARTMENT_NAME,STATUS,CLASS_LEVEL
+		      ,NVL((SELECT A.CLASS_TERM
+		            FROM (SELECT CLASS_TERM
+		                  FROM GRADE
+		                  WHERE STUDENT_NO = #{studentNo}
+		                  ORDER BY CLASS_YEAR DESC) "A"
+		            WHERE ROWNUM = 1),1) "CLASS_TERM"
+		      ,(SELECT SUM(CREDIT)
+		        FROM CLASS C
+		        JOIN GRADE G USING (CLASS_NO)
+		        WHERE STUDENT_NO = #{studentNo}
+		        AND SCORE BETWEEN 60 AND 100) "SUMCREDIT"
+		FROM STUDENT S
+		JOIN COLLEGE C USING (COLLEGE_NO)
+		JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		WHERE STUDENT_NO = #{studentNo}
+  	</select>
+  	
+  	<!-- 학사관리 - 졸업사정표(전체 이수현황 조회) -->
+  	<select id="selectGraStatus" parameterType="hashmap" resultMap="graduationResultMap">
+	  	<![CDATA[
+  		SELECT DISTINCT(SELECT NVL(SUM(CREDIT),0)
+                FROM CLASS C
+                JOIN GRADE G USING (CLASS_NO)
+                WHERE STUDENT_NO = #{studentNo}
+                AND SCORE > 59
+                AND G.CLASS_YEAR <= #{year}
+                AND G.CLASS_TERM <= #{term}
+                AND C.DIVISION = 1) "COMMON_CLASS",
+                (SELECT NVL(SUM(CREDIT),0)
+                    FROM CLASS C
+                    JOIN GRADE G USING (CLASS_NO)
+                    JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+                    WHERE STUDENT_NO = #{studentNo}
+                    AND SCORE > 59
+                    AND G.CLASS_YEAR <= #{year}
+                    AND G.CLASS_TERM <= #{term}
+                    AND C.DIVISION = 0
+                    AND DEPARTMENT_NAME != #{departmentName}) "NOMAL_CLASS",
+                (SELECT NVL(SUM(CREDIT),0)
+                    FROM CLASS C
+                    JOIN GRADE G USING (CLASS_NO)
+                    JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+                    WHERE STUDENT_NO = #{studentNo}
+                    AND SCORE > 59
+                    AND G.CLASS_YEAR <= #{year}
+                    AND G.CLASS_TERM <= #{term}
+                    AND C.DIVISION = 0
+                    AND DEPARTMENT_NAME = #{departmentName}) "MAJOR_CLASS"
+		FROM GRADE
+		]]>
   	</select>
   	
   	<!-- (학생)상담신청 내역 가져오기 -->

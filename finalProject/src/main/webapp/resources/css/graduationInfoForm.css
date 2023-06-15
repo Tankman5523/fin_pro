@@ -36,6 +36,11 @@
     font-size: 19px;
 }
 
+#commentSpan{
+    float: right;
+    color: #e65f3e;
+}
+
 #sub_div1>table{
     margin-top: 10px;
     text-align: right;
@@ -68,4 +73,26 @@
     padding: 10px 0px 10px 10px;
     margin: 10px 30px 0px;
     font-size: 14px;
+}
+
+#statusTable{
+    margin-top: 10px;
+    width: 100%;
+    height: 90%;
+    text-align: center;
+}
+
+.tableLine{
+    background-color: linen;
+}
+
+.tableBtn{
+    background-color: blanchedalmond;
+    width: 100%;
+    height: 100%;
+    border: 0px;
+}
+
+p{
+    margin: 0px !important;
 }

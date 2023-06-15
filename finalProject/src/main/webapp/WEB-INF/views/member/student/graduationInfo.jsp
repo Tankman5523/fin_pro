@@ -11,6 +11,109 @@
 	<div class="wrap">
 		<%@include file="../../common/student_menubar.jsp" %>
 		<div id="content">
+		
+			<script>
+				
+				$(function(){
+					
+					/* 년도 및 월 추출 */
+					var now = new Date();
+					var year = now.getFullYear();
+					var month = now.getMonth()+1;
+					var day = now.getDate();
+					if(month>1 && month<8){ //2월~7월
+						$("#graDate").val(year+"-02-01");
+					}else{
+						$("#graDate").val(year+"-08-01");
+					}
+					
+					/* 전체 이수현황 조회 */
+					$.ajax({
+						url : "selectGraStatus.st",
+						data : {
+							studentNo : "${student.studentNo}",
+							departmentName : "${student.departmentName}",
+							graDate : $("#graDate").val()
+						},
+						success : function(result){
+							console.log(result.commonClass);
+							console.log(result.nomalClass);
+							console.log(result.majorClass);
+							
+							var genSum = result.commonClass + result.nomalClass;	//교양 소계 값 추출
+							var allSum = genSum + result.majorClass;				//총 취득학점 값 추출
+							$("#commonArea").text(result.commonClass);				//교양공통
+							$("#nomalArea").text(result.nomalClass);				//교양일반
+							$("#generalSumArea").text(genSum);						//교양 소계
+							$("#majorArea").text(result.majorClass);				//전공심화
+							$("#majorSumArea").text(result.majorClass);				//전공소계
+							$("#allSumArea").text(allSum);							//총 취득학점
+							
+							//교양공통 판정
+							if(result.commonClass >= parseInt($("#standardCommon").text())){  
+								$("#commonResult").text("합격");
+							}else{
+								$("#commonResult").html("<p style='color:#e65f3e'>불합격</p>");
+							}
+							
+							//교양일반 판정
+							if(result.nomalClass >= parseInt($("#standardNomal").text())){ 	
+								$("#nomalResult").text("합격");
+							}else{
+								$("#nomalResult").html("<p style='color:#e65f3e'>불합격</p>");
+							}
+							
+							//교양소계 판정
+							if(genSum >= parseInt($("#standardSumGen").text())){ 
+								$("#generalSumResult").text("합격");
+							}else{
+								$("#generalSumResult").html("<p style='color:#e65f3e'>불합격</p>");
+							}
+							
+							//전공심화 판정
+							if(result.majorClass >= parseInt($("#standardMajor").text())){
+								$("#majorResult").text("합격");
+							}else{
+								$("#majorResult").html("<p style='color:#e65f3e'>불합격</p>");
+							}
+							
+							//전공소계 판정
+							if(result.majorClass >= parseInt($("#standardSumMaj").text())){
+								$("#majorSumResult").text("합격");
+							}else{
+								$("#majorSumResult").html("<p style='color:#e65f3e'>불합격</p>");
+							}
+							
+							//총 취득학점 판정
+							if(allSum >= parseInt($("#standardSumAll").text())){
+								$("#SumResult").text("합격");
+							}else{
+								$("#SumResult").html("<p style='color:#e65f3e'>불합격</p>");
+							}
+							
+							//최종 판정결과
+							var endCheck = "";
+							$("#statusTable p").each(function(){
+								endCheck = $(this).text();
+							});
+							if(endCheck !== "불합격"){
+								$("#endResult").text("합격");
+							}else{
+								$("#endResult").html("<p style='color:#e65f3e'>불합격</p>");
+							}
+							
+							if(endCheck === "불합격"){
+								$("#commentSpan").text("코멘트 들어갈 곳");
+							}
+						},
+						error : function(){
+							console.log("전체 이수현황 조회 통신실패");
+						}
+					});
+				});
+				
+			</script>
+		
             <div id="category">
                 <div id="cate_title">
                     <span style="margin: 0 auto;">학사관리</span>
@@ -41,25 +144,25 @@
 	            		<hr>
 	            		<table>
 		            		<tr>
-		            			<td>학번 : <input type="text" readonly></td>
-		            			<td>성명 : <input type="text" readonly></td>
-		            			<td>학년 : <input type="text" readonly></td>
+		            			<td>학번 : <input type="text" value="${student.studentNo}" readonly></td>
+		            			<td>성명 : <input type="text" value="${student.studentName}" readonly></td>
+		            			<td>입학년도 : <input type="text" value="${student.entranceDate}" readonly></td>
 		            		</tr>
 		            		<tr>
-		            			<td>소속 : <input type="text" readonly></td>
-		            			<td>전공 : <input type="text" readonly></td>
-		            			<td>학적상태 : <input type="text" readonly></td>
+		            			<td>소속 : <input type="text" value="${student.collegeName}" readonly></td>
+		            			<td>전공 : <input type="text" value="${student.departmentName}" readonly></td>
+		            			<td>학적상태 : <input type="text" value="${student.status}" readonly></td>
 		            		</tr>
 		            		<tr>
-		            			<td>인정학점 : <input type="text" readonly></td>
-		            			<td>이수학기 : <input type="text" readonly></td>
-		            			<td>입학년도 : <input type="text" readonly></td>
-		            			<td>졸업사정일자 : <input type="text" readonly></td>
+		            			<td>학년 : <input type="text" value="${student.classLevel}" readonly></td>
+		            			<td>이수학기 : <input type="text" value="${student.classTerm}" readonly></td>
+		            			<td>총 취득학점 : <input type="text" value="${student.sumCredit}" readonly></td>
+		            			<td>졸업사정일자 : <input type="text" id="graDate" readonly></td>
 		            		</tr>
 	            		</table>
             		</div>
             		<div class="subDiv" id="sub_div2">
-            			<span class="mainSpan">Info</span>
+            			<span class="mainSpan">INFO</span>
             			<hr>
             			<div id="infoDiv">
             				- 상단의 졸업사정일자를 기준으로 반영한 내용이며 이후의 변경사항은 다음 졸업사정일에 반영됩니다.<br>
@@ -69,8 +172,80 @@
             			</div>
             		</div>
             		<div class="subDiv" id="sub_div3">
-            			<span class="mainSpan">졸업사정결과</span>
+            			<span class="mainSpan">전체 이수현황</span>
+            			<span id="commentSpan"></span>
             			<hr>
+            			<table id="statusTable" border=1>
+            				<tr class="tableLine">
+            					<th colspan="2">전공</th>
+            					<th colspan="4">세부</th>
+            				</tr>
+            				<tr>
+            					<td colspan="2">주전공</td>
+            					<td colspan="4">${student.departmentName}</td>
+            				</tr>
+            				<tr class="tableLine">
+            					<th colspan="2">적용년도</th>
+            					<th colspan="4">소속대학</th>
+            				</tr>
+            				<tr>
+            					<td colspan="2">${student.entranceDate}</td>
+            					<td colspan="4">${student.collegeName}</td>
+            				</tr>
+            				<tr class="tableLine">
+            					<th colspan="2">구분</th>
+            					<th>기준학점</th>
+            					<th>이수(수강)학점</th>
+            					<th colspan="2">판정</th>
+            				</tr>
+            				<tr>
+            					<th rowspan="3">교양</th>
+            					<td>교양공통(교공)</td>
+            					<td id="standardCommon">16</td>
+            					<td id="commonArea"></td>
+            					<td id="commonResult"></td>
+            					<td style="width:80px"><button class="tableBtn">버튼</button></td>
+            				</tr>
+            				<tr>
+            					<td>교양일반(교일)</td>
+            					<td id="standardNomal">0</td>
+            					<td id="nomalArea"></td>
+            					<td id="nomalResult"></td>
+            					<td><button class="tableBtn">버튼</button></td>
+            				</tr>
+            				<tr class="tableLine">
+            					<td>소계</td>
+            					<td id="standardSumGen">24</td>
+            					<td id="generalSumArea"></td>
+            					<td id="generalSumResult"></td>
+            					<td><button class="tableBtn">버튼</button></td>
+            				</tr>
+            				<tr>
+								<th rowspan="2">전공</th>
+            					<td colspan="1">전공심화(전심)</td>
+            					<td id="standardMajor">96</td>
+            					<td id="majorArea"></td>
+            					<td id="majorResult"></td>
+            					<td><button class="tableBtn">버튼</button></td>
+            				</tr>
+            				<tr class="tableLine">
+            					<td>소계</td>
+            					<td id="standardSumMaj">96</td>
+            					<td id="majorSumArea"></td>
+            					<td id="majorSumResult"></td>
+            					<td><button class="tableBtn">버튼</button></td>
+            				</tr>
+            				<tr>
+            					<th colspan="2">총 취득학점</th>
+            					<td id="standardSumAll">120</td>
+            					<td id="allSumArea"></td>
+            					<td id="SumResult" colspan="2"></td>
+            				</tr>
+            				<tr class="tableLine">
+            					<th id="standardEndResult" colspan="2">판정결과</th>
+            					<th id="endResult" colspan="4"></th>
+            				</tr>
+            			</table>
             		</div>
             	</div>
             </div>
