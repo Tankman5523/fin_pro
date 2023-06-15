@@ -7,8 +7,6 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -193,6 +191,15 @@ public class MemberServiceImpl implements MemberService{
 	public int postRegisterClass(RegisterClass rc3) {
 		
 		int result = memberDao.postRegisterClass(sqlSession,rc3);
+		
+		return result;
+	}
+	
+	//수강신청 - 수강신청(해당 과목 장바구니에서 지워주기)
+	@Override
+	public int postRegDelBucket(RegisterClass rc2) {
+		
+		int result = memberDao.postRegDelBucket(sqlSession,rc2);
 		
 		return result;
 	}
@@ -407,4 +414,5 @@ public class MemberServiceImpl implements MemberService{
 		ArrayList<String> classTerm = memberDao.selectProfessorClassTerm(sqlSession, professorNo);
 		return classTerm;
 	}
+
 }
