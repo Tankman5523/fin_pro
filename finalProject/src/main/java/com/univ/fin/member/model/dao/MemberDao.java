@@ -271,4 +271,9 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectProfessorClassTerm", professorNo);
 	}
 
+	// 교수 개인시간표 -> 학기 선택 후 시간표 조회
+	public ArrayList<Classes> selectProfessorTimetable(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectProfessorTimetable", map);
+	}
+
 }
