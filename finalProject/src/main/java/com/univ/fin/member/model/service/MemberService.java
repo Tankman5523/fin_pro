@@ -152,4 +152,7 @@ public interface MemberService {
 	// 교수 개인시간표 -> 학년도,학기 조회
 	ArrayList<String> selectProfessorClassTerm(String professorNo);
 
+	// 교수 개인시간표 -> 학기 선택 후 시간표 조회
+	ArrayList<Classes> selectProfessorTimetable(HashMap<String, String> map);
+
 }

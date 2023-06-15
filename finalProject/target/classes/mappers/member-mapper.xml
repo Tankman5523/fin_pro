@@ -658,9 +658,9 @@
   	
   	<!-- 학생 개인시간표 -> 학기 선택 후 시간표 조회 -->
   	<select id="selectStudentTimetable" parameterType="hashmap" resultMap="classResultMap">
-  		SELECT CLASS_NO, CLASS_NAME, PROFESSOR_NAME, S.DAY, S.PERIOD, CLASS_HOUR, STUDENT_NO, CLASSROOM
+  		SELECT CLASS_NO, CLASS_NAME, PROFESSOR_NAME, S.DAY, S.PERIOD, CLASS_HOUR, CLASSROOM
 		FROM CLASS C
-		JOIN SCHEDULE S  USING(CLASS_NO)
+		JOIN SCHEDULE S USING(CLASS_NO)
 		LEFT JOIN PROFESSOR P USING(PROFESSOR_NO)
 		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND S.STUDENT_NO = #{studentNo}
   	</select>
@@ -673,5 +673,13 @@
 		WHERE PROFESSOR_NO = 'P20150023'
 		GROUP BY CLASS_YEAR, CLASS_TERM
 		ORDER BY CLASS_YEAR DESC, CLASS_TERM ASC
+  	</select>
+  	
+  	<!-- 교수 개인시간표 -> 학기 선택 후 시간표 조회 -->
+  	<select id="selectProfessorTimetable" parameterType="hashmap" resultMap="classResultMap">
+  		SELECT CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DAY, PERIOD, CLASS_HOUR, CLASSROOM
+		FROM CLASS C
+		JOIN PROFESSOR P USING(PROFESSOR_NO)
+		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND PROFESSOR_NO = #{professorNo}
   	</select>
   </mapper>
