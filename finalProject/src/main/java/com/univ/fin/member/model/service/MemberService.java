@@ -71,6 +71,9 @@ public interface MemberService {
 	//수강신청 - 수강신청
 	int postRegisterClass(RegisterClass rc3);
 	
+	//수강신청 - 수강신청(해당 과목 장바구니에서 지워주기)
+	int postRegDelBucket(RegisterClass rc2);
+	
 	//수강신청 - 수강신청(2시간짜리 강의)
 	int postRegisterClass2(RegisterClass rc3);
 	
@@ -148,5 +151,8 @@ public interface MemberService {
 
 	// 교수 개인시간표 -> 학년도,학기 조회
 	ArrayList<String> selectProfessorClassTerm(String professorNo);
+
+	// 교수 개인시간표 -> 학기 선택 후 시간표 조회
+	ArrayList<Classes> selectProfessorTimetable(HashMap<String, String> map);
 
 }

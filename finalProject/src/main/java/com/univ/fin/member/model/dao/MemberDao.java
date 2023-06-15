@@ -7,8 +7,6 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -115,6 +113,11 @@ public class MemberDao {
 	//수강신청 - 수강신청
 	public int postRegisterClass(SqlSessionTemplate sqlSession, RegisterClass rc3) {
 		return sqlSession.insert("memberMapper.postRegisterClass", rc3);
+	}
+	
+	//수강신청 - 수강신청(해당 과목 장바구니에서 지워주기)
+	public int postRegDelBucket(SqlSessionTemplate sqlSession, RegisterClass rc2) {
+		return sqlSession.delete("memberMapper.postRegDelBucket", rc2);
 	}
 	
 	//수강신청 - 수강신청(2시간짜리 강의)
@@ -266,6 +269,11 @@ public class MemberDao {
 	// 교수 개인시간표 -> 학년도,학기 조회
 	public ArrayList<String> selectProfessorClassTerm(SqlSessionTemplate sqlSession, String professorNo) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectProfessorClassTerm", professorNo);
+	}
+
+	// 교수 개인시간표 -> 학기 선택 후 시간표 조회
+	public ArrayList<Classes> selectProfessorTimetable(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectProfessorTimetable", map);
 	}
 
 }
