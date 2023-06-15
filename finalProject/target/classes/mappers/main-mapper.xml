@@ -23,6 +23,8 @@
 		<result column="CATEGORY_NAME" property="categoryName"/>
 	</resultMap>
 	
+	
+	<!-- 공지사항 조회  -->
 	<select id="selectNoticeList" resultMap="noticeResultSet">
 		SELECT NOTICE_NO, FIELD, CATEGORY_NAME, NOTICE_TITLE, ORIGIN_NAME, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE"
 		FROM NOTICE N
@@ -33,18 +35,53 @@
 		ORDER BY CREATE_DATE DESC
 	</select>
 	
-	<select id="selectFaqCount" resultType="_int">
-		SELECT COUNT(*)
-		FROM NOTICE
-		WHERE STATUS='Y'
-		AND FIELD = 1
-	</select>
-	
-	<select id="selectFaqList" resultMap="noticeResultSet">
-		SELECT NOTICE_NO, FIELD,NOTICE_TITLE, NOTICE_CONTENT, NOTICE_CATEGORY, RANK() OVER(ORDER BY COUNT DESC) "RANK"
+	<!-- 학사 FAQ 조회 -->
+	<select id="selectHaksaList" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_CATEGORY, RANK() OVER(ORDER BY COUNT DESC) "RANK"
 		FROM NOTICE
 		WHERE FIELD = 1
 		AND STATUS='Y'
+        AND NOTICE_CATEGORY = 1
+        AND ROWNUM BETWEEN 1 AND 4
 	</select>
-  
+	
+	<!-- 장학 FAQ 조회 -->
+	<select id="selectJangHakList" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_CATEGORY, RANK() OVER(ORDER BY COUNT DESC) "RANK"
+		FROM NOTICE
+		WHERE FIELD = 1
+		AND STATUS='Y'
+        AND NOTICE_CATEGORY = 2
+        AND ROWNUM BETWEEN 1 AND 4
+	</select>
+	
+	<!-- 입학 FAQ 조회 -->
+	<select id="selectIpHakList" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_CATEGORY, RANK() OVER(ORDER BY COUNT DESC) "RANK"
+		FROM NOTICE
+		WHERE FIELD = 1
+		AND STATUS='Y'
+        AND NOTICE_CATEGORY = 3
+        AND ROWNUM BETWEEN 1 AND 4
+	</select>
+  	
+  	<!-- 채용 FAQ 조회 -->
+	<select id="selectChaeYongList" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_CATEGORY, RANK() OVER(ORDER BY COUNT DESC) "RANK"
+		FROM NOTICE
+		WHERE FIELD = 1
+		AND STATUS='Y'
+        AND NOTICE_CATEGORY = 4
+        AND ROWNUM BETWEEN 1 AND 4
+	</select>
+	
+	<!-- 기타 FAQ 조회 -->
+	<select id="selectGitaList" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_CATEGORY, RANK() OVER(ORDER BY COUNT DESC) "RANK"
+		FROM NOTICE
+		WHERE FIELD = 1
+		AND STATUS='Y'
+        AND NOTICE_CATEGORY = 5
+        AND ROWNUM BETWEEN 1 AND 4
+	</select>
   </mapper>

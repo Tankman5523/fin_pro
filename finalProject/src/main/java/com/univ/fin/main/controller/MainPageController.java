@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.PageInfo;
 import com.univ.fin.common.template.Pagination;
 import com.univ.fin.main.model.service.MainService;
@@ -55,20 +56,62 @@ public class MainPageController {
 		//공지사항 조회
 		ArrayList<Notice> list = mainService.selectNoticeList(pi);
 		
-		//총 FAQ 수 조회
-//		int faqCount = mainService.selectFaqCount();
-
-		//FAQ 조회
-		ArrayList<Notice> faq = mainService.selectFaqList();
-		
 		model.addAttribute("list", list);
 		model.addAttribute("pi", pi);
-		model.addAttribute("faq", faq);
-//		model.addAttribute("fc", faqCount);
 		
 		return "main/notice";
 	}
 	
+	@ResponseBody
+	@RequestMapping(value="loadFaq.mp",produces = "application/json; charset=UTF-8")
+	public String selectHaksaList(String active) {
+		
+		ArrayList<Notice> haksa = new ArrayList<>();
+		
+		if(active.equals("학사")) {
+			 haksa = mainService.selectHaksaList();
+			
+		}
+		
+		return new Gson().toJson(haksa);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="clickFaq.mp",produces = "application/json; charset=UTF-8")
+	public String selectFaqList(String active) {
+		
+		ArrayList<Notice> faq = new ArrayList<>();
+		
+		switch (active) {
+		case "학사":
+			faq = mainService.selectHaksaList();
+			break;
+		case "장학":
+			faq = mainService.selectJangHakList();
+			break;
+		case "입학":
+			faq = mainService.selectIpHakList();
+			break;
+		case "채용":
+			faq = mainService.selectChaeYongList();
+			break;
+		case "기타":
+			faq = mainService.selectGitaList();
+			break;
+		}
+		
+		return new Gson().toJson(faq);
+	}
+	
+	@GetMapping("search.mp")
+	public String searchBoardList(String keyword) {
+		
+		System.out.println(keyword);
+		
+		
+		
+		return null;
+	}
 	
 	@GetMapping("infoSystem.mp")
 	public String infoSystemMain() {
