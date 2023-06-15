@@ -11,109 +11,6 @@
 	<div class="wrap">
 		<%@include file="../../common/student_menubar.jsp" %>
 		<div id="content">
-		
-			<script>
-				
-				$(function(){
-					
-					/* 년도 및 월 추출 */
-					var now = new Date();
-					var year = now.getFullYear();
-					var month = now.getMonth()+1;
-					var day = now.getDate();
-					if(month>1 && month<8){ //2월~7월
-						$("#graDate").val(year+"-02-01");
-					}else{
-						$("#graDate").val(year+"-08-01");
-					}
-					
-					/* 전체 이수현황 조회 */
-					$.ajax({
-						url : "selectGraStatus.st",
-						data : {
-							studentNo : "${student.studentNo}",
-							departmentName : "${student.departmentName}",
-							graDate : $("#graDate").val()
-						},
-						success : function(result){
-							console.log(result.commonClass);
-							console.log(result.nomalClass);
-							console.log(result.majorClass);
-							
-							var genSum = result.commonClass + result.nomalClass;	//교양 소계 값 추출
-							var allSum = genSum + result.majorClass;				//총 취득학점 값 추출
-							$("#commonArea").text(result.commonClass);				//교양공통
-							$("#nomalArea").text(result.nomalClass);				//교양일반
-							$("#generalSumArea").text(genSum);						//교양 소계
-							$("#majorArea").text(result.majorClass);				//전공심화
-							$("#majorSumArea").text(result.majorClass);				//전공소계
-							$("#allSumArea").text(allSum);							//총 취득학점
-							
-							//교양공통 판정
-							if(result.commonClass >= parseInt($("#standardCommon").text())){  
-								$("#commonResult").text("합격");
-							}else{
-								$("#commonResult").html("<p style='color:#e65f3e'>불합격</p>");
-							}
-							
-							//교양일반 판정
-							if(result.nomalClass >= parseInt($("#standardNomal").text())){ 	
-								$("#nomalResult").text("합격");
-							}else{
-								$("#nomalResult").html("<p style='color:#e65f3e'>불합격</p>");
-							}
-							
-							//교양소계 판정
-							if(genSum >= parseInt($("#standardSumGen").text())){ 
-								$("#generalSumResult").text("합격");
-							}else{
-								$("#generalSumResult").html("<p style='color:#e65f3e'>불합격</p>");
-							}
-							
-							//전공심화 판정
-							if(result.majorClass >= parseInt($("#standardMajor").text())){
-								$("#majorResult").text("합격");
-							}else{
-								$("#majorResult").html("<p style='color:#e65f3e'>불합격</p>");
-							}
-							
-							//전공소계 판정
-							if(result.majorClass >= parseInt($("#standardSumMaj").text())){
-								$("#majorSumResult").text("합격");
-							}else{
-								$("#majorSumResult").html("<p style='color:#e65f3e'>불합격</p>");
-							}
-							
-							//총 취득학점 판정
-							if(allSum >= parseInt($("#standardSumAll").text())){
-								$("#SumResult").text("합격");
-							}else{
-								$("#SumResult").html("<p style='color:#e65f3e'>불합격</p>");
-							}
-							
-							//최종 판정결과
-							var endCheck = "";
-							$("#statusTable p").each(function(){
-								endCheck = $(this).text();
-							});
-							if(endCheck !== "불합격"){
-								$("#endResult").text("합격");
-							}else{
-								$("#endResult").html("<p style='color:#e65f3e'>불합격</p>");
-							}
-							
-							if(endCheck === "불합격"){
-								$("#commentSpan").text("코멘트 들어갈 곳");
-							}
-						},
-						error : function(){
-							console.log("전체 이수현황 조회 통신실패");
-						}
-					});
-				});
-				
-			</script>
-		
             <div id="category">
                 <div id="cate_title">
                     <span style="margin: 0 auto;">학사관리</span>
@@ -204,36 +101,34 @@
             					<td id="standardCommon">16</td>
             					<td id="commonArea"></td>
             					<td id="commonResult"></td>
-            					<td style="width:80px"><button class="tableBtn">버튼</button></td>
+            					<td style="width:80px"><button class="tableBtn" onclick="commonBtn()">버튼</button></td>
             				</tr>
             				<tr>
             					<td>교양일반(교일)</td>
             					<td id="standardNomal">0</td>
             					<td id="nomalArea"></td>
-            					<td id="nomalResult"></td>
-            					<td><button class="tableBtn">버튼</button></td>
+            					<td></td>
+            					<td><button class="tableBtn" onclick="">버튼</button></td>
             				</tr>
             				<tr class="tableLine">
             					<td>소계</td>
             					<td id="standardSumGen">24</td>
             					<td id="generalSumArea"></td>
-            					<td id="generalSumResult"></td>
-            					<td><button class="tableBtn">버튼</button></td>
+            					<td id="generalSumResult" colspan="2"></td>
             				</tr>
             				<tr>
 								<th rowspan="2">전공</th>
-            					<td colspan="1">전공심화(전심)</td>
+            					<td>전공심화(전심)</td>
             					<td id="standardMajor">96</td>
             					<td id="majorArea"></td>
             					<td id="majorResult"></td>
-            					<td><button class="tableBtn">버튼</button></td>
+            					<td><button class="tableBtn" onclick="">버튼</button></td>
             				</tr>
             				<tr class="tableLine">
             					<td>소계</td>
             					<td id="standardSumMaj">96</td>
             					<td id="majorSumArea"></td>
-            					<td id="majorSumResult"></td>
-            					<td><button class="tableBtn">버튼</button></td>
+            					<td id="majorSumResult" colspan="2"></td>
             				</tr>
             				<tr>
             					<th colspan="2">총 취득학점</th>
@@ -246,8 +141,108 @@
             					<th id="endResult" colspan="4"></th>
             				</tr>
             			</table>
+						<script>
+							$(function(){
+								
+								/* 년도 및 월 추출 */
+								var now = new Date();
+								var year = now.getFullYear();
+								var month = now.getMonth()+1;
+								var day = now.getDate();
+								if(month>1 && month<8){ //2월~7월
+									$("#graDate").val(year+"-02-01");
+								}else{
+									$("#graDate").val(year+"-08-01");
+								}
+								
+								/* 전체 이수현황 조회 */
+								$.ajax({
+									url : "selectGraStatus.st",
+									data : {
+										studentNo : "${student.studentNo}",
+										departmentName : "${student.departmentName}",
+										graDate : $("#graDate").val()
+									},
+									success : function(result){
+										var genSum = result.commonClass + result.nomalClass;	//교양 소계 값 추출
+										var allSum = genSum + result.majorClass;				//총 취득학점 값 추출
+										$("#commonArea").text(result.commonClass);				//교양공통
+										$("#nomalArea").text(result.nomalClass);				//교양일반
+										$("#generalSumArea").text(genSum);						//교양 소계
+										$("#majorArea").text(result.majorClass);				//전공심화
+										$("#majorSumArea").text(result.majorClass);				//전공소계
+										$("#allSumArea").text(allSum);							//총 취득학점
+										
+										//교양공통 판정
+										if(result.commonClass >= parseInt($("#standardCommon").text())){  
+											$("#commonResult").text("합격");
+										}else{
+											$("#commonResult").html("<p style='color:#e65f3e'>불합격</p>");
+										}
+										
+										//교양소계 판정
+										if(genSum >= parseInt($("#standardSumGen").text())){ 
+											$("#generalSumResult").text("합격");
+										}else{
+											$("#generalSumResult").html("<p style='color:#e65f3e'>불합격</p>");
+										}
+										
+										//전공심화 판정
+										if(result.majorClass >= parseInt($("#standardMajor").text())){
+											$("#majorResult").text("합격");
+										}else{
+											$("#majorResult").html("<p style='color:#e65f3e'>불합격</p>");
+										}
+										
+										//전공소계 판정
+										if(result.majorClass >= parseInt($("#standardSumMaj").text())){
+											$("#majorSumResult").text("합격");
+										}else{
+											$("#majorSumResult").html("<p style='color:#e65f3e'>불합격</p>");
+										}
+										
+										//총 취득학점 판정
+										if(allSum >= parseInt($("#standardSumAll").text())){
+											$("#SumResult").text("합격");
+										}else{
+											$("#SumResult").html("<p style='color:#e65f3e'>불합격</p>");
+										}
+										
+										//최종 판정결과
+										var endCheck = "";
+										$("#statusTable p").each(function(){
+											if($(this).text() === "불합격"){
+												endCheck = $(this).text(); //불합격
+											}
+										});
+										if(endCheck !== "불합격"){
+											$("#endResult").text("합격");
+										}else{
+											$("#endResult").html("<p style='color:#e65f3e'>불합격</p>");
+										}
+										
+										//코멘트 작성
+										if(endCheck === "불합격"){
+											$("#commentSpan").text("코멘트 들어갈 곳");
+										}
+									},
+									error : function(){
+										console.log("전체 이수현황 조회 통신실패");
+									}
+								});
+							});
+							/* 
+								ex)
+								1년에 교양공통 3개 전공 4개 => 120학점
+								1년에 교양공통 2개 전공 4개 + 교양일반 2개+ 교양공통1개or교양일반1개 => 120학점 이상
+							*/
+						</script>
             		</div>
             	</div>
+				<div id="modalArea">
+		         	<div class="modalDiv" id="commonModal">
+		         	</div>
+		        </div>
             </div>
 		</div>
 	</div>
