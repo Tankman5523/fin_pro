@@ -11,6 +11,7 @@ import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Grade;
+import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.dao.MemberDao;
@@ -370,6 +371,24 @@ public class MemberServiceImpl implements MemberService{
 		return cList;
 	}
 	
+	//학사관리 - 졸업사정표
+	@Override
+	public Graduation graduationInfo(String sno) {
+		
+		Graduation g = memberDao.graduationInfo(sqlSession,sno);
+		
+		return g;
+	}
+	
+	//학사관리 - 졸업사정표(전체 이수현황 조회)
+	@Override
+	public Graduation selectGraStatus(HashMap<String, String> h) {
+		
+		Graduation g = memberDao.selectGraStatus(sqlSession,h);
+		
+		return g;
+	}
+	
 	//(학생)휴,복학 신청 리스트 조회
 	@Override
 	public ArrayList<StudentRest> selectStuRestList(String studentNo) {
@@ -425,8 +444,8 @@ public class MemberServiceImpl implements MemberService{
 
 	// 성적관리 -> 수강중인 학생 조회
 	@Override
-	public ArrayList<Student> selectStudentGradeList(int classNo) {
-		ArrayList<Student> sList = memberDao.selectStudentGradeList(sqlSession, classNo);
+	public ArrayList<HashMap<String, String>> selectStudentGradeList(int classNo) {
+		ArrayList<HashMap<String, String>> sList = memberDao.selectStudentGradeList(sqlSession, classNo);
 		return sList;
 	}
 
@@ -442,6 +461,13 @@ public class MemberServiceImpl implements MemberService{
 	public int gradeUpdate(Grade g) {
 		int result = memberDao.gradeUpdate(sqlSession, g);
 		return result;
+	}
+
+	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
+	@Override
+	public ArrayList<HashMap<String, String>> selectClassList(HashMap<String, String> map) {
+		ArrayList<HashMap<String, String>> cList = memberDao.selectClassList(sqlSession, map);
+		return cList;
 	}
 
 }

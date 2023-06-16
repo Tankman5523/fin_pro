@@ -162,7 +162,7 @@
 	                	
 	                	$("#term").empty();
 	                	$("#term").append(str);
-	                	clearPage();
+	                	$("div[class*=stClass_class]").remove();
 	                }
 	                
 	                function prevTerm() { // 마지막 학기일 경우 alert, 무조건 재학한 이전학기로
@@ -206,7 +206,7 @@
 	                function selectTimetable() {
 	                	var $classSet = new Set();
 						var $classArr = [];
-	                	clearPage();
+						$("div[class*=stClass_class]").remove();
 	                	
 	                	$.ajax({
 	                		url: "selectStudentTimetable.st",
@@ -227,30 +227,14 @@
 									
 									/* top: 66.7*(period-1), left: 186*(day-1) */
 									if(cList[i].classNo == tmp) { // 2시간 강의
-// 										str += "<div class='stClass-real' style='top:" + 70*(cList[i-1].period-1) + "px; left:" + 186*(cList[i].day-1)
-// 										+ "px; width:186px; height:140px;'><span>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
-										
 										str += "<div class='stClass_class" + $index + "' style='top:" + 70*(cList[i-1].period-1) + "px; left:" + 185.7*(cList[i].day-1)
 										+ "px; width:185.8px; height:140px;'><span style='margin: 20px auto; line-height: 200%;'>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
 									}
 									else { // 1시간 강의
-// 										str += "<div class='stClass-real' style='top:" + 70*(cList[i].period-1) + "px; left:" + 186*(cList[i].day-1)
-// 												+ "px; width:186px; height:70px;'><span>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
-												
 										str += "<div class='stClass_class" + $index + "' style='top:" + 70*(cList[i].period-1) + "px; left:" + 185.7*(cList[i].day-1)
 												+ "px; width:185.8px; height:70px;'><span style='margin: 5px auto;'>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
 									}
 									tmp = cList[i].classNo;
-									
-									// 한 줄씩 다른 색깔 나오게 시도....
-// 									if(cList[i].period%2 == 0) { // 짝수 교시
-// 										str += "<div class='stClass-real' style='top:" + 70*(cList[i].period-1) + "px; left:" + 186*(cList[i].day-1)
-// 											+ "px; width:186px; height:70px;'><span>" + cList[i].className + "<br>" + cList[i].classroom + "</span></div>";
-// 									}
-// 									else {
-// 										str += "<div style='top:" + 70*(cList[i].period-1) + "px; left:" + 186*(cList[i].day-1)
-// 										+ "px; width:186px; height:70px;'><span>" + cList[i].className + "<br>" + cList[i].classroom + "</span></div>";
-// 									}
 								}
 								
 								$(".area22").append(str);
@@ -259,10 +243,6 @@
 	                			console.log("통신 오류");
 	                		}
 	                	})
-	                }
-	                
-	                function clearPage() {
-	                	$("div[class*=stClass_class]").remove();
 	                }
 				</script>
             </div>

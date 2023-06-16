@@ -23,6 +23,7 @@ import com.google.gson.JsonParser;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.common.template.DepartmentCategory;
@@ -274,12 +275,6 @@ public class StudentController {
 		return new Gson().toJson(list);
 	}
 	
-	// 수강신청 - 학기별 성적 조회
-	@RequestMapping("classManagement.st")
-	public String student_classManagement() {
-		return "member/student/gradeListView";
-	}
-	
 	// 수강신청 - 강의시간표
 	@RequestMapping("classListView.st")
 	public ModelAndView classListView(ModelAndView mv) {
@@ -457,9 +452,41 @@ public class StudentController {
 	@GetMapping("graduationInfoForm.st")
 	public String graduationInfoForm(Model model,HttpSession session) {
 		
-		/* 이름,학년,이수학기(?),학적상태,입학년도,소속(단과대학),전공,졸업사정일자(뷰에서처리),인정학점(?) */
+		Student st = (Student)session.getAttribute("loginUser");
+		
+		String sno = st.getStudentNo();
+		
+		Graduation g = memberService.graduationInfo(sno);
+		
+		model.addAttribute("student", g);
 		
 		return "member/student/graduationInfo";
+	}
+	
+	//학사관리 - 졸업사정표(전체 이수현황 조회)
+	@ResponseBody
+	@RequestMapping(value="selectGraStatus.st",produces = "application/json; charset=UTF-8")
+	public String selectGraStatus(String studentNo,String graDate,String departmentName) {
+		
+		String year = graDate.substring(0, 4);
+		int month = Integer.parseInt(graDate.substring(5,7));
+		
+		String term = "";
+		if(month>2 && month<9){
+			term = "1";
+		}else{
+			term = "2";
+		}
+		
+		HashMap<String,String> h = new HashMap<>();
+		h.put("studentNo", studentNo);
+		h.put("departmentName",departmentName);
+		h.put("year", year);
+		h.put("term", term);
+		
+		Graduation g = memberService.selectGraStatus(h);
+		
+		return new Gson().toJson(g);
 	}
 	
 	//학생등록 페이지
@@ -553,11 +580,24 @@ public class StudentController {
 		return "redirect:studentRestList.st";
 	}
 	
+	// 수업관리 - 학기별 성적 조회
+	@RequestMapping("classManagement.st")
+	public ModelAndView student_classManagement(ModelAndView mv) {
+		ArrayList<String> classTerm = memberService.selectClassTerm();
+		
+		mv.addObject("classTerm", classTerm).setViewName("member/student/gradeListView");
+		return mv;
+	}
 	
+	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
+	@ResponseBody
+	@RequestMapping(value="selectClassList.st",produces = "application/json; charset=UTF-8")
+	public String selectClassList(@RequestParam HashMap<String,String> map, HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
+		map.put("studentNo", studentNo);
+		
+		ArrayList<HashMap<String, String>> cList = memberService.selectClassList(map);
+		return new Gson().toJson(cList);
+	}
 }
-
-
-
-
-
-
