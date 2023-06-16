@@ -410,5 +410,14 @@ public class StudentController {
 		ArrayList<Classes> cList = memberService.selectTimetable(map);
 		return new Gson().toJson(cList);
 	}
-
+	
+	//학생1명 정보 ajax로 출력
+	@ResponseBody
+	@GetMapping(value = "selectForSc.st" ,produces = "text/html;charset=utf-8;")
+	public String selectStudentForSc(String studentNo) {
+		
+		String studentName = memberService.selectStudentForSc(studentNo);
+		
+		return studentName;
+	}
 }

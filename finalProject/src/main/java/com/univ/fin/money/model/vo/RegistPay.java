@@ -34,5 +34,8 @@ public class RegistPay { //등록금
 	
 	private String payTime;
 	private String regNo; //등록금번호
+	
+	private int collegeRegAmount; //단대별 등록금
+	private int schAmount;//장학금 총액
 
 }

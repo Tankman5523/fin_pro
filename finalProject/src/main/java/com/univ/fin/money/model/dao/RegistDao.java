@@ -60,4 +60,16 @@ public class RegistDao {
 	public int deactivateRegistPay(SqlSession sqlSession) {
 		return sqlSession.update("moneyMapper.deactivateRegistPay");
 	}
+
+	public ArrayList<RegistPay> studentListToInsert(SqlSession sqlSession, HashMap<String, Integer> map) {
+		return (ArrayList)sqlSession.selectList("moneyMapper.studentListToInsert",map);
+	}
+
+	public String selectAccountNo(SqlSession sqlSession, String studentNo) {
+		return sqlSession.selectOne("moneyMapper.selectAccountNo", studentNo);
+	}
+
+	public int accountCheck(SqlSession sqlSession, String regAccountNo) {
+		return sqlSession.selectOne("moneyMapper.accountCheck",regAccountNo);
+	}
 }

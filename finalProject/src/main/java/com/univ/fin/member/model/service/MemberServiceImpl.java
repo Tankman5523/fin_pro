@@ -348,4 +348,9 @@ public class MemberServiceImpl implements MemberService{
 		ArrayList<Classes> cList = memberDao.selectTimetable(sqlSession, map);
 		return cList;
 	}
+
+	@Override
+	public String selectStudentForSc(String studentNo) {
+		return memberDao.selectStudentForSc(sqlSession,studentNo);
+	}
 }

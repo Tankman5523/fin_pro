@@ -75,12 +75,12 @@
                     <span style="margin: 0 auto;">금전관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="#">등록금 관리</a>
+                    <a href="allList.rg">등록금 관리</a>
                 </div>
                 <div class="child_title">
                     <a href="allList.sc">장학금 관리</a>
                 </div>
-                <div class="child_title">
+                <div class="child_title" style="font-weight:bold;">
                     <a href="allList.sl">급여 관리</a>
                 </div>
             </div>
@@ -161,21 +161,29 @@
                 			method: "POST",
                 			success : function(list){
                 				var str = "";
+                				var status = "";
                 				if(!list.isEmpty){
                 					for(var i in list){
-                					str +="<tr>"
-                						 +"<td><input type='checkbox' name='check'></td>"
-                						 +"<td>"+list[i].professorNo+"</td>"
-                						 +"<td>"+list[i].position+"</td>"
-                						 +"<td>"+list[i].professorName+"</td>"
-                						 +"<td>"+list[i].realPay.toLocaleString()+"</td>"
-                						 +"<td>"+list[i].paymentTotal.toLocaleString()+"</td>"
-                						 +"<td>"+list[i].deductTotal.toLocaleString()+"</td>"
-                						 +"<td>"+list[i].accountNo+"</td>"
-                						 +"<td>"+list[i].paymentDate+"</td>"
-                						 +"<td>"+list[i].status+"</td>"
-                						 +"<td>"+"<input type='hidden' name='payNo' value="+list[i].payNo+"><button class='updateBtn'>수정</button>"+"</td>"
-                						 +"</tr>"
+                						if(list[i].status=='Y'){
+                							status = "지급완료";
+                						}else if(list[i].status=='E'){
+                							status = "지급오류";
+                						}else if(list[i].status='N'){
+                							status = "미지급";
+                						}
+	                					str +="<tr>"
+	                						 +"<td><input type='checkbox' name='check'></td>"
+	                						 +"<td>"+list[i].professorNo+"</td>"
+	                						 +"<td>"+list[i].position+"</td>"
+	                						 +"<td>"+list[i].professorName+"</td>"
+	                						 +"<td>"+list[i].realPay.toLocaleString()+"</td>"
+	                						 +"<td>"+list[i].paymentTotal.toLocaleString()+"</td>"
+	                						 +"<td>"+list[i].deductTotal.toLocaleString()+"</td>"
+	                						 +"<td>"+list[i].accountNo+"</td>"
+	                						 +"<td>"+list[i].paymentDate+"</td>"
+	                						 +"<td>"+status+"</td>"
+	                						 +"<td>"+"<input type='hidden' name='payNo' value="+list[i].payNo+"><button class='updateBtn'>수정</button>"+"</td>"
+	                						 +"</tr>"
                 					}
                 				}else{
                 					str +="<tr><td colspan='8'>데이터가 없습니다.</td></tr>"

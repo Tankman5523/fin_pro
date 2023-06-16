@@ -1,6 +1,7 @@
 package com.univ.fin.money.controller;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -49,8 +50,14 @@ public class RegistController {
 		}
 	}
 	
+	@GetMapping("listPage.rg")
+	public String registListPage() {
+		return "money/registPay/student/student_registPay_myList";
+	}
+	
+	
 	@ResponseBody
-	@GetMapping("list.rg")
+	@GetMapping(value="list.rg",produces = "application/json;charset=utf-8")
 	public String selectMyRegistList(RegistPay r) {//등록금납부정보(날짜,학기) 조회
 		//학기와 날짜정보 추출 후 대조
 		ArrayList<RegistPay> list = registService.selectMyRegistList(r);
@@ -58,11 +65,30 @@ public class RegistController {
 	}
 	
 	@GetMapping("onelist.rg")
-	public ModelAndView selectNewRegistInfo(ModelAndView mv,Student st) {//이번학기 등록금납부정보 조회
+	public ModelAndView selectNewRegistInfo(ModelAndView mv,HttpSession session) {//이번학기 등록금납부정보 조회
+		Student st = (Student)session.getAttribute("loginUser");
+		
+		//현재 날짜정보로 다음학기 , 년도 찾기
+		LocalDate now = LocalDate.now();
+		int classYear = now.getYear();
+		int month = now.getMonthValue();
+		int classTerm = 0;
+		
+		if(month>1 && month<8) {
+			classTerm = 2;
+		}else{
+			classYear +=1;
+			classTerm = 1;
+		}
+		
+		st.setClassLevel(classYear);
+		st.setFileNo(classTerm);
+		
 		RegistPay r = registService.selectNewRegistInfo(st);
-		mv.addObject("r", r).setViewName("money/registPay/student/student_registPay_nowList");;
+		mv.addObject("RegistPay", r).setViewName("money/registPay/student/student_registPay_nowList");
 		return mv;
 	}
+	
 	
 	
 	//관리자
@@ -80,16 +106,19 @@ public class RegistController {
 	public String insertRegistPayForm() {//학생이 내야할 등록금정보 등록 페이지
 		return "money/registPay/admin/admin_registPay_insertForm";
 	}
+	@ResponseBody
 	@PostMapping("insert.rg")
 	public String insertRegistPay(RegistPay r,HttpSession session) {//학생이 내야할 등록금정보 등록
-		//적용 대기중인 장학금 조회 후 mustPay = mustPay - schAmount
+		
+		//가상계좌 생성
+		r.setRegAccountNo(randomAccount(r.getStudentNo()));
+		
 		int result = registService.insertRegistPay(r);
 		if(result>0) {
-			session.setAttribute("alertMsg", "등록금 입력 성공");
+			return "Y";
 		}else {
-			session.setAttribute("alertMsg", "등록금 입력 실패! 등록 실패한 학번 : "+r.getStudentNo());
+			return "N";
 		}
-		return "redirct:allList.rg";
 	}
 	
 	@GetMapping("update.rg")
@@ -112,6 +141,7 @@ public class RegistController {
 	@GetMapping("nonPaidList.rg")
 	public ModelAndView selectRegistNonPaidList(ModelAndView mv) {//미납등록금정보 조회
 		ArrayList<RegistPay> list = registService.selectRegistNonPaidList();
+		System.out.println(list);
 		mv.addObject("list", list).setViewName("money/registPay/admin/admin_nonPaid_list");
 		return mv;
 	}
@@ -201,7 +231,38 @@ public class RegistController {
 	
 	@GetMapping("allList.rg")
 	public String selectRegistPayAllPage() { //등록금 전부조회 페이지로
-		return "money/registPay/admin/admin_registPay_list";
+		return "money/registPay/admin/admin_registPay_allList";
 	}
 	
+	@ResponseBody
+	@GetMapping(value="listForInsert.rg",produces = "application/json;charset=utf-8")
+	public String studentListToInsert(int classYear,int classTerm) {//insert하기 전 학생정보 및 장학금 , 등록금 조회구문
+		HashMap<String,Integer> map = new HashMap<>();
+		map.put("classYear", classYear);
+		map.put("classTerm", classTerm);
+		ArrayList<RegistPay> list = registService.studentListToInsert(map);
+		return new Gson().toJson(list);
+	}
+	
+	//가상계좌번호 생성기 (사용하지 않을 실제 가상계좌를 만들 수 없기에 기능점검용)
+	public String randomAccount(String studentNo) {
+		
+		String regAccountNo = null; //XXX-XXX-XXXXXX
+		int flag = 1;
+		
+		regAccountNo = registService.selectAccountNo(studentNo);
+			
+		if(regAccountNo==null){
+			while(flag>0) { //겹치는 계좌번호 없을때까지 반복
+				int first = (int)(Math.random()*900) +99;
+				int second = (int)(Math.random()*900) +99;
+				int third = (int)(Math.random()*900000) +99999;
+				regAccountNo = first+"-"+second+"-"+third;
+				
+				flag = registService.accountCheck(regAccountNo);
+			}
+		}
+		
+		return regAccountNo;
+	}  
 }

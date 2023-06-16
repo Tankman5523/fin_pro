@@ -72,23 +72,23 @@ public class ScholarshipController {
 			session.setAttribute("alertMsg", "장학금 입력 오류!");
 		}
 		
-		return "redirct:allList.sc";
+		return "redirect:allList.sc";
 	}
 	
 	/*장학금 수정,삭제는 상태값이 지급 예정인 데이터에 한해서 적용가능 (STATUS IN 'W','N') */
-	@GetMapping("delete.sc")
+	@ResponseBody
+	@GetMapping(value = "delete.sc")
 	public String deleteScholarship(Scholarship sc, HttpSession session) { //장학금 삭제
-		
+		System.out.println("sc : "+ sc);
 		int result = 0;
 		result = scholarshipService.deleteScholarship(sc);
 		
 		if(result>0) {//성공시
-			session.setAttribute("alertMsg", "장학금이 성공적으로 삭제되었습니다.");
+			return "Y";
 		}else {
-			session.setAttribute("alertMsg", "장학금 삭제 오류!");
+			return "N";
 		}
 		
-		return "redirct:allList.sc";
 	}
 	
 	@GetMapping("update.sc")
@@ -147,6 +147,8 @@ public class ScholarshipController {
 //		
 //		return ResponseEntity.ok().headers(headers).body(list);
 //	}
+	
+	
 	
 	
 }

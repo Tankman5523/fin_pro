@@ -18,29 +18,37 @@
                 <div id="cate_title">
                     <span style="margin: 0 auto;">금전관리</span>
                 </div>
+                <div class="child_title" style="font-weight:bold;">
+                    <a href="allList.rg">등록금 관리</a>
+                </div>
                 <div class="child_title">
-                    <a href="#">등록금 관리</a>
+                    <a href="allList.sc">장학금 관리</a>
+                </div>
+                <div class="child_title">
+                    <a href="allList.sl">급여 관리</a>
                 </div>
             </div>
             <!--컨텐츠 영역-->
             <div id="content_1">
 				<div style="width: 90%;height: 90%;margin: 5%;">
                     <div>
-                    <button>미납금관리</button> <button>등록금납부조회</button>
+                    <button onclick="location.href='allList.rg'">등록금 납부 현황</button> <button onclick="location.href='nonPaidList.rg'">미납금 조회</button>
+                    <button onclick="location.href='insert.rg'">등록금 입력</button>
                     </div>
             
                     <hr>
             
                     <div>
 	                    <h3>미납금 관리</h3>
-	                   	 미납인원 : ${list.size} (명) 
+	                   	 미납인원 : ${fn:length(list)} (명) 
+	                   	 <!-- 
 	                   	 미납금 총계 : 0 (원) 
 	                   	 <br>
 	                                             미입금 : 0 (명) 
-	                                             금액미달 : 0 (명)
+	                                             금액미달 : 0 (명) 
+                        -->
                     </div>
                     <hr>
-                    <br>
                     <button id="sendAll">일괄발송</button>
                     <table id="nonPaidList" border="1" style="width:100%;text-align: center;">
                         <thead>
@@ -59,13 +67,28 @@
                         <tbody>
                         	<c:choose >
                         		<c:when test="${not empty list}" >
-		                            	<c:forEach var="r" items="list">
+		                            	<c:forEach var="r" items="${list}" >
 			                            	<tr>
-				                                <td><input type="checkbox" name="" class="checkbox"></td>
+				                                <td><input type="checkbox" name="checkbox" class="checkbox"></td>
 				                                <td>${r.studentNo}</td>
 				                                <td class="studentName">${r.studentName}</td>
 				                                <td class="nonPaidAmount">${r.nonPaidAmount}</td>
-				                                <td>${r.payStatus}</td>
+				                                <td>
+				                                	<c:choose>
+				                                		<c:when test="${RegistPay.payStatus eq 'O'}">
+					                                		금액초과
+				                                		</c:when>
+				                                		<c:when test="${RegistPay.payStatus eq 'Y'}">
+				                                			등록완료
+				                                		</c:when>
+				                                		<c:when test="${RegistPay.payStatus eq 'D'}">
+				                                			금액미달
+				                                		</c:when>
+				                                		<c:otherwise>
+				                                			미납부
+				                                		</c:otherwise>
+				                                	</c:choose>
+				                                </td>
 				                                <td>${r.regAccountNo}</td>
 				                                <td class="email" >${r.studentEmail}</td>
 				                                <td class="phone">${r.studentPhone}</td>
@@ -121,11 +144,9 @@
         		if(control){
         			$("#nonPaidList>tbody>tr>td>input:checkbox:checked").each(function(index){
         				var studentName = $(this).parent().siblings().eq(1).val();
-        				console.log(studentName);
         				var nonPaidAmount = $(this).parent().siblings().eq(2).val();
         				var phone = $(this).parent().siblings().eq(5).val();
         				var email = $(this).parent().siblings().eq(6).val();
-        				//데이터 없어서 안되는중..
         				
         				//아무튼 ajax처리
         				$.ajax({

@@ -125,6 +125,8 @@ public interface MemberService {
 
 	// 개인시간표 -> 학기 선택 후 시간표 조회
 	ArrayList<Classes> selectTimetable(HashMap<String, String> map);
+
+	String selectStudentForSc(String studentNo);
 	
 
 }

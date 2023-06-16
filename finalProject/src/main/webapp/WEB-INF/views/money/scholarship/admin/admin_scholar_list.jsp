@@ -19,13 +19,13 @@
                     <span style="margin: 0 auto;">금전관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="#">등록금 관리</a>
+                    <a href="allList.rg">등록금 관리</a>
+                </div>
+                <div class="child_title" style="font-weight:bold;">
+                    <a href="allList.sc">장학금 관리</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">장학금 관리</a>
-                </div>
-                <div class="child_title">
-                    <a href="#">급여 관리</a>
+                    <a href="allList.sl">급여 관리</a>
                 </div>
             </div>
             <div id="content_1">
@@ -46,6 +46,7 @@
                         </select>
                         <input type="text" id="keyword" name="keyword">
                         <button onclick="selectList();">조회</button>
+                       	   조회결과 : <span id="countSearch"></span>
                         <table border="1" style="width: 100%;" id="schList">
                             <thead>
                                 <tr>
@@ -83,6 +84,8 @@
     			},
     			//dataType : "json",
     			success : function(list){
+    				var countSearch = list.length;
+    				$("#countSearch").html(countSearch+" 건")
     				var str = "";
     				if(!list.isEmpty){
     					for(var i in list){
@@ -121,9 +124,10 @@
     							} 
     							if(list[i].status=='W'){
     								var upLocation = "location.href='update.sc?schNo="+list[i].schNo+"';";
-    								var delLocation = "location.href='delete.sc?schNo="+list[i].schNo+"';";
-    								str+="<td>"
-    								    +"<button onclick="+upLocation+">수정</button><button onclick="+delLocation+">삭제</button></td>";
+    								
+    								str+="<td><input type='hidden' value="+list[i].schNo+">"
+    								    +"<button onclick="+upLocation+">수정</button><button class='delBtn' onclick='del("+list[i].schNo+");'>삭제</button></td>";
+    								
     							}else{ 
     								str+="<td></td>";
     							}
@@ -143,9 +147,30 @@
     		});
     	}
     	
-    	
-    	
+    	function del(num){
+    		var schNo = num;
+    		$.ajax({
+    			url : "delete.sc",
+    			data : {
+    				schNo : schNo
+    			},
+    			success : function(result){
+    				console.log(result);
+    				if(result=='Y'){
+    					alert("등록금 정보 삭제 성공");
+    					selectList();
+    				}else{
+    					alert("등록금 정보 삭제 실패");
+    				}
+    			},
+    			error : function(){
+    				alert("통신 오류");
+    			}
+    		});
+    	}
+    		
     </script>
+    
     
     
 </body>

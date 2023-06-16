@@ -19,12 +19,12 @@
                     <span style="margin: 0 auto;">등록/장학</span>
                 </div>
                 <div class="child_title">
-                    <a href="#">등록금 납부조회</a>
+                    <a href="onelist.rg">등록금 납부조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">등록금 납입이력</a>
+                    <a href="listPage.rg">등록금납입 이력</a>
                 </div>
-                <div class="child_title">
+                <div class="child_title" style="font-weight:bold;">
                     <a href="listPage.sc">장학금 수혜내역</a>
                 </div>
             </div>
@@ -86,7 +86,7 @@
 													</c:when>                                    				
 			                                    </c:choose>
 			                                    
-			                                    <td>${sc.schAmount}.toLocaleString() 원</td>
+			                                    <td>${sc.schAmount} 원</td>
 			                                    
 			                                    <c:choose>
 					                            	<c:when test="${sc.status eq 'Y'}">

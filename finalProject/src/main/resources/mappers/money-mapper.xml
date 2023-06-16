@@ -24,6 +24,7 @@
 		<result column="PAYTIME" property="payTime"/>
 		<result column="PHONE" property="studentPhone"/>
 		<result column="EMAIL" property="studentEmail"/> 
+		<result column="STUDENT_NAME" property="studentName"/>
 	</resultMap>
 	
 	<resultMap type="salary" id="salaryResultSet">
@@ -95,7 +96,7 @@
 	
 	<delete id="deleteScholarship">
 		DELETE SCHOLARSHIP
-		WHERE STUDENT_NO = #{studentNo}
+		WHERE SCH_NO = #{schNo}
 		AND STATUS IN ('W','N')
 	</delete>
 	
@@ -339,16 +340,19 @@
 			  ,END_DATE
 			  ,PAY_STATUS
 			  ,STUDENT_NAME
-			  ,TO_CHAR('HH:mm:ss',PAY_DATE) "PAYTIME"
+			  ,TO_CHAR(PAY_DATE,'HH:mm:ss') "PAYTIME"
 		FROM REG_ACC RG
 		JOIN STUDENT ST USING(STUDENT_NO)
-		WHERE CLASS_NO = #{classNo}
+		WHERE STUDENT_NO = #{studentNo}
 		AND STUDENT_NAME = #{studentName}
 		<if test="classTerm!=0"> 
 		AND CLASS_TERM = #{classTerm}
 		</if>
-		AND START_DATE BETWEEN #{startDate} AND #{endDate}
-		AND END_DATE BETWEEN #{startDate} AND #{endDate}
+		<if test="classYear!=0">
+		AND CLASS_YEAR = #{classYear}
+		</if>
+		<!-- AND START_DATE BETWEEN #{startDate} AND #{endDate}
+		AND END_DATE BETWEEN #{startDate} AND #{endDate} -->
 	</select>
 	
 	<select id="selectNewRegistInfo" resultMap="registPayResultSet">
@@ -365,11 +369,12 @@
 			  ,END_DATE
 			  ,PAY_STATUS
 			  ,STUDENT_NAME
-			  ,TO_CHAR('HH:mm:ss',PAY_DATE) "PAYTIME"
+			  ,TO_CHAR(PAY_DATE,'HH:mm:ss') "PAYTIME"
 		FROM REG_ACC RG
 		JOIN STUDENT ST USING(STUDENT_NO)
 		WHERE STUDENT_NO = #{studentNo}
-		AND SYSDATE BETWEEN START_DATE AND END_DATE <!-- 되는지 확인중 -->
+		AND CLASS_YEAR = #{classLevel}
+		AND CLASS_TERM = #{fileNo}
 	</select>
 	
 	<update id="updateInputPay">
@@ -495,7 +500,7 @@
 			  ,STUDENT_NAME
 			  ,EMAIL
 			  ,PHONE
-			  ,INPUT_PAY - MUST_PAY "NON_PAID_AMOUNT"
+			  ,ABS(INPUT_PAY-MUST_PAY) "NON_PAID_AMOUNT"
 		FROM REG_ACC RG
 		JOIN STUDENT ST USING(STUDENT_NO)
 		WHERE PAY_STATUS IN ('N','D')
@@ -522,5 +527,40 @@
 		SET STATUS = 'N'
 		WHERE #{time} &gt;= END_DATE;
 	</update>
+	
+	<resultMap type="student" id="resultSetForInsertRg">
+		<result column="STUDENT_NO" property="studentNo"/>
+		<result column="STUDENT_NAME" property="studentName"/>
+		<result column="COLLEGE_REG_AMOUNT" property="classLevel"/><!-- 필드 빌려쓰기 -->
+		<result column="SCH_TOTAL" property="post"/><!-- 필드 빌려쓰기 -->
+	</resultMap>
+	
+	<select id="studentListToInsert" resultMap="resultSetForInsertRg" parameterType="map">
+		<!-- 이번학기 등록금 값이 없는 재학중인 학생의 단대별등록금+총 장학금 -->
+		SELECT STUDENT_NO
+      		  ,STUDENT_NAME
+     		  ,COLLEGE_REG_AMOUNT
+     		  ,SCH.SCH_TOTAL
+		FROM (SELECT STUDENT_NO,SCH_TOTAL
+      		  FROM(SELECT STUDENT_NO,SUM(SCH_AMOUNT)"SCH_TOTAL"
+             	   FROM SCHOLARSHIP
+             	   GROUP BY STUDENT_NO))"SCH"
+		RIGHT JOIN STUDENT S USING(STUDENT_NO)
+		JOIN COLLEGE C USING(COLLEGE_NO)
+		WHERE S.STATUS ='재학'
+		AND STUDENT_NO NOT IN (SELECT STUDENT_NO FROM REG_ACC WHERE CLASS_YEAR=#{classYear} AND CLASS_TERM=#{classTerm})
+	</select>
+	
+	<select id="selectAccountNo" resultType="string" parameterType="string">
+		SELECT REG_ACCOUNT_NO
+		FROM REG_ACC
+		WHERE STUDENT_NO = #{studentNo} 
+	</select>
+	
+	<select id="accountCheck" resultType="int" parameterType="string">
+		SELECT COUNT(REG_ACCOUNT_NO)
+		FROM REG_ACC
+		WHERE REG_ACCOUNT_NO = #{regAccountNo}		
+	</select>
 	
 </mapper>

@@ -216,4 +216,8 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectTimetable", map);
 	}
 
+	public String selectStudentForSc(SqlSessionTemplate sqlSession, String studentNo) {
+		return sqlSession.selectOne("memberMapper.selectStudentForSc", studentNo);
+	}
+
 }

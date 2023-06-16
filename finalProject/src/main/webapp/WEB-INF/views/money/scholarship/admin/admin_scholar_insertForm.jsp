@@ -24,7 +24,7 @@
                     <span style="margin: 0 auto;">금전관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="#">등록금 관리</a>
+                    <a href="allList.rg">등록금 관리</a>
                 </div>
                 <div class="child_title" style="font-weight:bold;">
                     <a href="allList.sc">장학금 관리</a>
@@ -139,14 +139,14 @@
                     		}
                     		
                     		$.ajax({
-                    			url : /*스튜던트 셀렉트 매핑*/"",
-                    			
+                    			url : "selectForSc.st",
                     			data : {
                     				studentNo : studentNo
                     			},
-                    			success : function(result){
-                    				if(!result.studentName==null){
-	                    				$("#studentName").html(result.studentName);
+                    			success : function(result){//result : studentName
+                    				console.log(result);
+                    				if(result!=null){
+	                    				$("#studentName").val(result);
 	                    				$("#classYear").val(classYear);
 	                    				$("#classTerm").val(classTerm);
 	                    				$("#message").html("회원 검색 완료").css("color","blue");

@@ -32,5 +32,11 @@ public interface RegistService {
 	int activateRegistPay(Date time);
 
 	int deactivateRegistPay();
+
+	ArrayList<RegistPay> studentListToInsert(HashMap<String, Integer> map);
+
+	String selectAccountNo(String studentNo);
+
+	int accountCheck(String regAccountNo);
 	
 }

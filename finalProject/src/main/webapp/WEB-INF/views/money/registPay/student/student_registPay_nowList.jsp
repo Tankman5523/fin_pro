@@ -11,34 +11,37 @@
 <body>
     <div class="wrap">
         <!--===============================메뉴바-===============================-->
-        <%@include file="../../../common/admin_menubar.jsp" %>
+        <%@include file="../../../common/student_menubar.jsp" %>
         <!--===============================메뉴바-===============================-->
         <div id="content">
             <div id="category">
                 <div id="cate_title">
                     <span style="margin: 0 auto;">등록/장학</span>
                 </div>
-                <div class="child_title">
-                    <a href="#">등록금 납부조회</a>
+                <div class="child_title" style="font-weight:bold;">
+                    <a href="onelist.rg">등록금 납부조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">등록금납입 이력</a>
+                    <a href="listPage.rg">등록금납입 이력</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">장학금 수혜내역</a>
+                    <a href="listPage.sc">장학금 수혜내역</a>
                 </div>
             </div>
             <!--컨텐츠 영역-->
             <div id="content_1">
+            	
 				<div style="width: 90%;height: 90%;margin: 5%;">
+					<h4>등록금 납입 이력</h4>
+					<br>
                     <label for="classNo">학번</label><input type="text" name="classNo" id="classNo" value="${loginUser.studentNo}" readonly>
                     <br>
                     <label for="studentName">이름</label><input type="text" name="studentName" id="studentName" value="${loginUser.studentName}" readonly>
                     <br>
-                    <label for="">납부기간</label><input type="date" name="startDate" id="startDate" value="${RegistPay.startDate}" readonly> ~ <input type="date" name="endDate" id="endDate" value="${RegistPay.endDate}" readonly>
+                    <label for="startDate">납부기간</label><input type="date" name="startDate" id="startDate" value="${RegistPay.startDate}" readonly> ~ <input type="date" name="endDate" id="endDate" value="${RegistPay.endDate}" readonly>
                     <br><br>
                     <table border="1" style="width: 100%;">
-                        <thead>
+                        <thead style="background-color: bisque; ">
                             <tr>
                                 <th>납부일</th>
                                 <th>납부시간</th>
@@ -60,7 +63,22 @@
                                 <td>${RegistPay.mustPay}</td>
                                 <td>${RegistPay.payAccountNo}</td>
                                 <td>${RegistPay.regAccountNo}</td>
-                                <td>${RegistPay.payStatus}</td>
+                                <td>
+                                	<c:choose>
+                                		<c:when test="${RegistPay.payStatus eq 'O'}">
+	                                		금액초과
+                                		</c:when>
+                                		<c:when test="${RegistPay.payStatus eq 'Y'}">
+                                			등록완료
+                                		</c:when>
+                                		<c:when test="${RegistPay.payStatus eq 'D'}">
+                                			금액미달
+                                		</c:when>
+                                		<c:otherwise>
+                                			미납부
+                                		</c:otherwise>
+                                	</c:choose>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -78,5 +96,9 @@
             </div>
         </div>
     </div>
+    
+    <script>
+    	
+    </script>
 </body>
 </html>

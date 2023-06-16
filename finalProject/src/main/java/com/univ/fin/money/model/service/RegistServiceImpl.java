@@ -80,4 +80,19 @@ public class RegistServiceImpl implements RegistService{
 	public int deactivateRegistPay() {
 		return registDao.deactivateRegistPay(sqlSession);
 	}
+
+	@Override
+	public ArrayList<RegistPay> studentListToInsert(HashMap<String, Integer> map) {
+		return registDao.studentListToInsert(sqlSession, map);
+	}
+
+	@Override
+	public String selectAccountNo(String studentNo) {
+		return registDao.selectAccountNo(sqlSession,studentNo);
+	}
+
+	@Override
+	public int accountCheck(String regAccountNo) {
+		return registDao.accountCheck(sqlSession,regAccountNo);
+	}
 }

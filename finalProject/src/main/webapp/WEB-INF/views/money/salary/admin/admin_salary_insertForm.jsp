@@ -24,13 +24,13 @@
                     <span style="margin: 0 auto;">금전관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="#">등록금 관리</a>
+                    <a href="allList.rg">등록금 관리</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">장학금 관리</a>
+                    <a href="allList.sc">장학금 관리</a>
                 </div>
-                <div class="child_title">
-                    <a href="#">급여 관리</a>
+                <div class="child_title" style="font-weight:bold;">
+                    <a href="allList.sl">급여 관리</a>
                 </div>
             </div>
             <div id="content_1">

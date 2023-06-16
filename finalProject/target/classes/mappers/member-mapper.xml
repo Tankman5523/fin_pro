@@ -581,4 +581,10 @@
 		LEFT JOIN PROFESSOR P USING(PROFESSOR_NO)
 		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND S.STUDENT_NO = #{studentNo}
   	</select>
+  	
+  	<select id="selectStudentForSc" parameterType="string" resultType="string">
+  		SELECT STUDENT_NAME
+		FROM STUDENT  			   
+		WHERE STUDENT_NO = #{studentNo}  			   
+  	</select>
   </mapper>

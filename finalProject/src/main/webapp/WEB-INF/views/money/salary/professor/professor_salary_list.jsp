@@ -96,15 +96,24 @@
                         			success : function(list){
                         				console.log(list);
                         				var str = "";
+                        				var status = "";
                         				if(!list.isEmpty){
                         					for(var i in list){
+                        						if(list[i].status=='Y'){
+                        							status = "지급완료";
+                        						}else if(list[i].status=='E'){
+                        							status = "지급오류";
+                        						}else if(list[i].status='N'){
+                        							status = "미지급";
+                        						}
+                        						
                         						str +="<tr>"
                         							 +"<td>"+list[i].payNo+"</td>"
                         							 +"<td>"+list[i].paymentDate+"</td>"
                         							 +"<td>"+list[i].paymentTotal+"</td>"
                         							 +"<td>"+list[i].deductTotal+"</td>"
                         							 +"<td>"+list[i].realPay+"</td>"
-                        							 +"<td>"+list[i].status+"</td>"
+                        							 +"<td>"+status+"</td>"
                         							 +"</tr>"
                         					}
                         					
