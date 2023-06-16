@@ -12,6 +12,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -157,10 +159,10 @@ public class RegistController {
 	
 	@ResponseBody
 	@PostMapping("dunning.rg")
-	public String dunningToNonPaid(String studentName ,String phone,String email,int nonPaidAmount) throws MessagingException {//독촉문자,이메일 발송
+	public String dunningToNonPaid(String studentName,int nonPaidAmount ,String phone,String email) throws MessagingException {//독촉문자,이메일 발송
 		
 		//등록금 독촉 이메일
-		String setFrom = "ksh940813@naver.com"; //보내는 계정
+		String setFrom = ""; //보내는 계정
 		String toMail = "ksh940813@naver.com"; //받는계정  /* email */
 		String title = "[FEASIBLE UNIVERSITY]미납 등록금 납부 부탁드립니다.";
 		String content = "귀하의 등록금이 미납 혹은 미달되어 연락 드립니다."
@@ -171,18 +173,18 @@ public class RegistController {
 					   + "<br>"
 					   + "혹은 010-0000-0000 으로 연락바랍니다.";
 					   
-		MimeMessage message = mailSender.createMimeMessage();
-		MimeMessageHelper messageHelper = new MimeMessageHelper(message,true,"UTF-8");
-		messageHelper.setFrom(setFrom);
-		messageHelper.setTo(toMail);
-		messageHelper.setSubject(title);
-		messageHelper.setText(content,true);
-		mailSender.send(message); 
+		
+	    MimeMessage message = mailSender.createMimeMessage(); MimeMessageHelper
+	    messageHelper = new MimeMessageHelper(message,true,"UTF-8");
+	    messageHelper.setFrom(setFrom); messageHelper.setTo(toMail);
+	    messageHelper.setSubject(title); messageHelper.setText(content,true);
+	    mailSender.send(message);
+		 
 		//메일 완료
 		
 		//SMS 문자전송
 		Sms smsMessage = new Sms();
-		int result = smsMessage.dunningMsg("01046418415", nonPaidAmount, studentName);
+		int result = smsMessage.dunningMsg("01000000000", nonPaidAmount, studentName);
 		//문자 완료
 		
 		if(result>0) {
@@ -209,9 +211,13 @@ public class RegistController {
 		
 	}
 	
+	//@Scheduled(cron="* * * * * *");
+	@Async
 	@GetMapping("activate.rg")
 	public void activateRegistPay(Date time) { //스케쥴러에 의해 등록금 활성화 개시 
-		int result = registService.activateRegistPay(time);
+		
+		int result = 1;
+		//int result = registService.activateRegistPay(time);
 		if(result>0) {
 			log.info("Activate RegistPay Success");
 		}else {

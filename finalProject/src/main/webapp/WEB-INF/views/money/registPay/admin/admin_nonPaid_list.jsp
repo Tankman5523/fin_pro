@@ -92,7 +92,7 @@
 				                                <td>${r.regAccountNo}</td>
 				                                <td class="email" >${r.studentEmail}</td>
 				                                <td class="phone">${r.studentPhone}</td>
-				                                <td><button class="sendDunningBtn">발송</button></td>
+				                                <td><button class="sendDunningBtn">발송</button> <button class="cancelRegistBtn">등록취소</button></td>
 			                            	</tr>
 		                                </c:forEach>
 	                            </c:when>
@@ -110,23 +110,6 @@
     </div>
     
     <script>
-    	function sendDunning(){
-    		$.ajax({
-    			url : "dunning.rg",
-    			data : {
-    				studentName:$(".studentName").val(),
-    				phone:$(".")
-		    				
-    			},
-    			success : function(result){
-    				
-    			},
-    			error : function(){
-    				
-    			}
-    		});
-    	}
-    	
     	$(function(){
     		$("#checkAll").click(function(){
         		var allcheck = $("#checkAll").is(":checked");
@@ -138,24 +121,62 @@
         		}
         	});
         	
+    		$(".sendDunningBtn").click(function(){
+        		var control = confirm("선택된 학생에게 메시지를 보내겠습니까?");
+        		
+        		if(control){
+       				var studentName = $(this).parent().siblings().eq(2).text();
+       				var nonPaidAmount = $(this).parent().siblings().eq(3).text();
+       				var phone = $(this).parent().siblings().eq(7).text();
+       				var email = $(this).parent().siblings().eq(6).text();
+       				
+       				console.log(studentName);	
+       				//아무튼 ajax처리
+       				 
+       				$.ajax({
+       					url : "dunning.rg",
+       					data : {
+       						studentName : studentName,
+       						nonPaidAmount : nonPaidAmount,
+       						phone : phone,
+       						email : email
+       					},
+       					method:"POST",
+       					success : function(result){
+       						if(result=="Y"){
+       							alert("이메일 및 sms메시지가 발송되었습니다.");
+       						}else{
+       							alert("sms 발송 오류. 수신자 : "+result);
+       						}
+       					},
+       					error : function(){
+       						alert("통신 오류");
+       					}
+       				});  
+       				
+        		}
+        	});
+    		
+    		
         	$("#sendAll").click(function(){
         		var control = confirm("선택된 학생에 모두 메시지를 보내겠습니까?");
         		
         		if(control){
         			$("#nonPaidList>tbody>tr>td>input:checkbox:checked").each(function(index){
-        				var studentName = $(this).parent().siblings().eq(1).val();
-        				var nonPaidAmount = $(this).parent().siblings().eq(2).val();
-        				var phone = $(this).parent().siblings().eq(5).val();
-        				var email = $(this).parent().siblings().eq(6).val();
+        				var studentName = $(this).parent().siblings().eq(1).text();
+        				var nonPaidAmount = $(this).parent().siblings().eq(2).text();
+        				var phone = $(this).parent().siblings().eq(6).text();
+        				var email = $(this).parent().siblings().eq(5).text();
         				
         				//아무튼 ajax처리
+        				
         				$.ajax({
         					url : "dunning.rg",
         					data : {
         						studentName : studentName,
+        						nonPaidAmount : nonPaidAmount,
         						phone : phone,
-        						email : email,
-        						nonPaidAmount : nonPaidAmount
+        						email : email
         					},
         					success : function(result){
         						if(result=="Y"){
@@ -167,9 +188,15 @@
         					error : function(){
         						alert("통신 오류");
         					}
-        				});
+        				}); 
+        				
         			});
         		}
+        	});
+        	
+        	$(".cancelRegistBtn").on("click",function(){
+        		//var no = $(this);
+        		
         	});
     	});
     	

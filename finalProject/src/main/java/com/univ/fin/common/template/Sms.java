@@ -157,14 +157,14 @@ public class Sms {
         JSONObject toJson = new JSONObject();
         JSONArray  toArr = new JSONArray();
         
-        toJson.put("to",tel);
+        toJson.put("to","01000000000"); //보내는사람
         toArr.add(toJson);
         
         bodyJson.put("type","sms");
         bodyJson.put("contentType","COMM");
         bodyJson.put("countryCode","82");
         
-        bodyJson.put("from","01046418415");		
+        bodyJson.put("from",tel);	//받는사람	
         bodyJson.put("content","[FEASIBLE UNIVERSITY] "+studentName+"님의 등록금 미납액 ["+nonPaidAmount+"(원)] 입니다. 등록 기간내에 납부바랍니다.");		
         bodyJson.put("messages", toArr);
         
