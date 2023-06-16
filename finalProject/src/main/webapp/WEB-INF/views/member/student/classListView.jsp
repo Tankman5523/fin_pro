@@ -75,7 +75,7 @@
 	                    <select name="department" id="department">
 	                        <option value=""> ====전공==== </option>
 	                    </select>
-	                    <button type="button" class="btn btn-primary btn-sm" id="selectList" onclick="selectMajor();">조회</button>
+	                    <button type="button" class="btn btn-outline-primary btn-sm" id="selectList" onclick="selectMajor();">조회</button>
                 	</div>
                     <br>
                     

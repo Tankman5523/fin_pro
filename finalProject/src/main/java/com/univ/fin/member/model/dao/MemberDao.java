@@ -11,6 +11,7 @@ import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Department;
+import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.vo.Professor;
@@ -274,6 +275,21 @@ public class MemberDao {
 	// 교수 개인시간표 -> 학기 선택 후 시간표 조회
 	public ArrayList<Classes> selectProfessorTimetable(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectProfessorTimetable", map);
+	}
+
+	// 성적관리 -> 수강중인 학생 조회
+	public ArrayList<Student> selectStudentGradeList(SqlSessionTemplate sqlSession, int classNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectStudentGradeList", classNo);
+	}
+
+	// 성적관리 -> 성적 입력
+	public int gradeInsert(SqlSessionTemplate sqlSession, Grade g) {
+		return sqlSession.insert("memberMapper.gradeInsert", g);
+	}
+
+	// 성적관리 -> 성적 수정
+	public int gradeUpdate(SqlSessionTemplate sqlSession, Grade g) {
+		return sqlSession.update("memberMapper.gradeUpdate", g);
 	}
 
 }

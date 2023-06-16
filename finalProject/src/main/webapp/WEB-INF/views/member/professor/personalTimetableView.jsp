@@ -43,8 +43,7 @@
 														<c:set var="previous" value="${fn:substring(y, 0, 4) }"/>
 												</c:forEach>
                                         </select>
-                    <span>학기: </span> <select name="term" id="term">
-                                       </select>
+                    <span>학기: </span> <select name="term" id="term"></select>
                     <button type="button" class="btn btn-outline-primary btn-sm" id="selectList" style="margin-left:2%;" onclick="prevTerm();">이전 학기</button>
                     <button type="button" class="btn btn-outline-primary btn-sm" id="selectList" style="margin-left:0;" onclick="nextTerm();">다음 학기</button>
                 </div>
@@ -163,7 +162,7 @@
 	                	clearPage();
 	                }
 	                
-	                function prevTerm() { // 마지막 학기일 경우 alert, 무조건 재학한 이전학기로
+	                function prevTerm() { // 마지막 학기일 경우 alert, 무조건 강의한 이전학기로
 	                	var $thisYear = $("select[name=year]");
 	                	var $term = $("select[name=term]");
 	                
@@ -182,7 +181,7 @@
 	                	}
 	                }
 	                
-	                function nextTerm() { // 마지막 학기일 경우 alert, 무조건 재학한 다음학기로
+	                function nextTerm() { // 마지막 학기일 경우 alert, 무조건 강의한 다음학기로
 	                	var $thisYear = $("select[name=year]");
 	                	var $term = $("select[name=term]");
 	                	

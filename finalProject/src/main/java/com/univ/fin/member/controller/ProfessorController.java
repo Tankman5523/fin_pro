@@ -10,6 +10,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Classes;
+import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
@@ -63,7 +66,6 @@ public class ProfessorController {
 		Professor st = (Professor)session.getAttribute("loginUser");
 		String professorNo = st.getProfessorNo();
 		ArrayList<String> classTerm = memberService.selectProfessorClassTerm(professorNo); // 강의한 학년도, 학기
-		System.out.println(classTerm);
 		
 		mv.addObject("classTerm", classTerm).setViewName("member/professor/personalTimetableView");
 		return mv;
@@ -79,6 +81,42 @@ public class ProfessorController {
 		
 		ArrayList<Classes> cList = memberService.selectProfessorTimetable(map);
 		return new Gson().toJson(cList);
+	}
+	
+	// 수업관리 - 성적관리
+	@GetMapping("gradeInsert.pr")
+	public ModelAndView gradeInsertView(ModelAndView mv, HttpSession session) {
+		Professor st = (Professor)session.getAttribute("loginUser");
+		String professorNo = st.getProfessorNo();
+		ArrayList<String> classTerm = memberService.selectProfessorClassTerm(professorNo); // 강의한 학년도, 학기
+		
+		mv.addObject("classTerm", classTerm).setViewName("member/professor/gradeInsertView");
+		return mv;
+	}
+	
+	// 성적관리 -> 수강중인 학생 조회
+	@ResponseBody
+	@RequestMapping(value = "selectStudentGradeList.pr", produces = "application/json; charset=UTF-8;")
+	public String selectStudentGradeList(String cn) {
+		int classNo = Integer.parseInt(cn);
+		ArrayList<Student> sList = memberService.selectStudentGradeList(classNo);
+		return new Gson().toJson(sList);
+	}
+	
+	// 성적관리 -> 성적 입력
+	@ResponseBody
+	@PostMapping("gradeInsert.pr")
+	public String gradeInsert(Grade g) {
+		int result = memberService.gradeInsert(g);
+		return (result>0)? "Y": "N";
+	}
+	
+	// 성적관리 -> 성적 수정
+	@ResponseBody
+	@PostMapping("gradeUpdate.pr")
+	public String gradeUpdate(Grade g) {
+		int result = memberService.gradeUpdate(g);
+		return (result>0)? "Y": "N";
 	}
 
 }

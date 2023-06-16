@@ -118,6 +118,15 @@
 		<result column="END_DATE" property="endDate"/>
 		<result column="PAY_STATUS" property="payStatus"/>
 	</resultMap>
+	
+	<resultMap type="grade" id="gradeResultMap">
+		<result column="DEPARTMENT_NAME" property="departmentName"/>
+		<result column="STUDENT_NO" property="studentNo"/>
+		<result column="CLASS_LEVEL" property="classLevel"/>
+		<result column="STUDENT_NAME" property="studentName"/>
+		<result column="SCORE" property="score"/>
+		<result column="GRADE_LEVEL" property="gradeLevel"/>
+	</resultMap>
   	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
@@ -682,4 +691,33 @@
 		JOIN PROFESSOR P USING(PROFESSOR_NO)
 		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND PROFESSOR_NO = #{professorNo}
   	</select>
+  	
+  	<!-- 성적관리 -> 수강중인 학생 조회 -->
+  	<select id="selectStudentGradeList" parameterType="_int" resultMap="gradeResultMap">
+  		SELECT DEPARTMENT_NAME, A.STUDENT_NO, CLASS_LEVEL, STUDENT_NAME, NVL(SCORE, 0) AS SCORE, NVL(GRADE_LEVEL,' ') AS GRADE_LEVEL
+		FROM (SELECT CLASS_NO, STUDENT_NO
+		        FROM SCHEDULE
+		        GROUP BY CLASS_NO, STUDENT_NO) A
+		JOIN STUDENT S ON(A.STUDENT_NO = S.STUDENT_NO)
+		LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO)
+		JOIN DEPARTMENT D USING(DEPARTMENT_NO)
+		WHERE A.CLASS_NO = #{classNo}
+		ORDER BY DEPARTMENT_NAME, STUDENT_NO
+  	</select>
+  	
+  	<!-- 성적관리 -> 성적 입력 -->
+  	<insert id="gradeInsert" parameterType="grade">
+  		INSERT INTO GRADE VALUES(SEQ_GNO.NEXTVAL, #{studentNo}, #{classNo}
+  								, (SELECT CLASS_YEAR FROM CLASS WHERE CLASS_NO = #{classNo})
+  								, (SELECT CLASS_TERM FROM CLASS WHERE CLASS_NO = #{classNo})
+  								, #{score}, #{gradeLevel})
+  	</insert>
+  	
+  	<!-- 성적관리 -> 성적 수정 -->
+  	<update id="gradeUpdate" parameterType="grade">
+  		UPDATE GRADE
+  		SET SCORE = #{score}
+  		  , GRADE_LEVEL = #{gradeLevel}
+  		WHERE STUDENT_NO = #{studentNo} AND CLASS_NO = #{classNo}
+  	</update>
   </mapper>
