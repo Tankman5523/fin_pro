@@ -304,7 +304,7 @@ body {
 	margin: 50px 0;
 	height: 40px;
 }
-#searchForm>select{
+#btn-area>select{
 	width: 120px;
 	height: 40px;
 	text-align: center;
@@ -313,35 +313,36 @@ body {
 	border: 1px solid #c0c0c0;
 	padding: 1px 0;
 }
-#searchForm>select:focus{
+#btn-area>select:focus{
 	outline: none;
 }
-#searchForm>label{
-	position: relative;
-	display: inline-block;
-	z-index: -1;
+#btn-area{
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
-#searchForm>label>input{
+#btn-area>input{
 	width: 300px;
 	height: 36px;
 	line-height: 36px;
 	margin-left: 10px;
-	padding: 1px 50px 1px 10px;
+/* 	padding: 1px 50px 1px 10px; */
 	border-radius: 5px;
 	border: 1px solid #c0c0c0;
+	border-right: none;
 }
-#searchForm>label>input:focus{
+#btn-area>input:focus{
 	outline: none;
 }
-#searchForm>label>button{
-	position: absolute;
+#btn-area>button{
 	width: 50px;
 	height: 40px;
-	margin-left: -50px;
+	padding: 0;
+	margin-left: -5px;
 	border-radius: 0 5px 5px 0;
 	border: 1px solid #c0c0c0;
 }
-#searchForm>label>button:hover{
+#btn-area>button:hover{
 	background-color: #0091EA;
 	color: white;
 	border: none;
