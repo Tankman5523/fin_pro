@@ -185,4 +185,13 @@ public interface MemberService {
 	// 성적관리 -> 성적 수정
 	int gradeUpdate(Grade g);
 
+	// (관리자)강의개설 일괄 승인
+	int updateClassPermitAll(String cno);
+
+	// (관리자)강의개설 개별 승인
+	int updateClassPermit(int cno);
+
+	// (관리자)강의개설 반려 업데이트
+	int updateClassReject(Classes c);
+
 }

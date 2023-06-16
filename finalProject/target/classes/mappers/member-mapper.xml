@@ -837,4 +837,20 @@
   		  , GRADE_LEVEL = #{gradeLevel}
   		WHERE STUDENT_NO = #{studentNo} AND CLASS_NO = #{classNo}
   	</update>
+  	
+  	<!-- 강의개설 일괄승인(관리자) -->
+  	<update id="updateClassPermitAll">
+  		UPDATE CLASS
+  		SET STATUS = 'Y'
+  		WHERE CLASS_NO IN (#{cno})
+  	</update>
+  	
+  	<!-- 강의개설 반려 (관리자) -->
+  	<update id="updateClassReject">
+  		UPDATE CLASS
+  		SET STATUS = 'C'
+  		,	EXPLAIN = #{explain}
+  		WHERE CLASS_NO = #{classNo}
+  		AND STATUS = 'B'
+  	</update>
   </mapper>
