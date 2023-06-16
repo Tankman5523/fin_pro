@@ -67,43 +67,43 @@ public class AdminController {
 	}
 	
 	//강의 개설 일괄 승인
-		@RequestMapping("permitAllClassCreate.ad")
-		public String updateClassPermitAll(int cArr[]) {
+	@RequestMapping("permitAllClassCreate.ad")
+	public String updateClassPermitAll(int cArr[]) {
 			
 			
-			String cnoArr = Arrays.toString(cArr);//강의 번호 배열 스트링으로 바꿈
+		String cnoArr = Arrays.toString(cArr);//강의 번호 배열 스트링으로 바꿈
 			
-			String cno = cnoArr.replaceAll("\\[", "").replaceAll("\\]", "");// 중괄호 뺌
+		String cno = cnoArr.replaceAll("\\[", "").replaceAll("\\]", "");// 중괄호 뺌
 			
-			int result = memberService.updateClassPermitAll(cno);
+		int result = memberService.updateClassPermitAll(cno);
 			
-			if(result>0) {//업데이트(개설승인) 성공
+		if(result>0) {//업데이트(개설승인) 성공
 				
-			}else {//업데이트(개설승인) 실패
+		}else {//업데이트(개설승인) 실패
 				
-			}
-			
-			return "redirect:classManagePage.ad";
 		}
+			
+		return "redirect:classManagePage.ad";
+	}
 		
-		//강의 개설 개별 승인
-		@ResponseBody
-		@RequestMapping(value="permitClassCreate.ad")
-		public int updateClassPermit(int cno) {
-			System.out.println(cno);
-			int result = memberService.updateClassPermit(cno);
-			
-			return result;
-		}
+	//강의 개설 개별 승인
+	@ResponseBody
+	@RequestMapping(value="permitClassCreate.ad")
+	public int updateClassPermit(int cno) {
 		
-		//강의 개설 반려
-		@RequestMapping("rejectClassCreate.ad")
-		public String updateClassReject(Classes c) {
+		int result = memberService.updateClassPermit(cno);
 			
-			int result = memberService.updateClassReject(c);
+		return result;
+	}
+		
+	//강의 개설 반려
+	@RequestMapping("rejectClassCreate.ad")
+	public String updateClassReject(Classes c) {
 			
-			return "redirect:classManagePage.ad";
-		}
+		int result = memberService.updateClassReject(c);
+			
+		return "redirect:classManagePage.ad";
+	}
 
 }
 
