@@ -528,35 +528,35 @@
   	<!-- 학사관리 - 졸업사정표(전체 이수현황 조회) -->
   	<select id="selectGraStatus" parameterType="hashmap" resultMap="graduationResultMap">
 	  	<![CDATA[
-  		SELECT DISTINCT(SELECT NVL(SUM(CREDIT),0)
-                FROM CLASS C
-                JOIN GRADE G USING (CLASS_NO)
-                WHERE STUDENT_NO = #{studentNo}
-                AND SCORE > 59
-                AND G.CLASS_YEAR <= #{year}
-                AND G.CLASS_TERM <= #{term}
-                AND C.DIVISION = 1) "COMMON_CLASS",
-                (SELECT NVL(SUM(CREDIT),0)
-                    FROM CLASS C
-                    JOIN GRADE G USING (CLASS_NO)
-                    JOIN DEPARTMENT D USING (DEPARTMENT_NO)
-                    WHERE STUDENT_NO = #{studentNo}
-                    AND SCORE > 59
-                    AND G.CLASS_YEAR <= #{year}
-                    AND G.CLASS_TERM <= #{term}
-                    AND C.DIVISION = 0
-                    AND DEPARTMENT_NAME != #{departmentName}) "NOMAL_CLASS",
-                (SELECT NVL(SUM(CREDIT),0)
-                    FROM CLASS C
-                    JOIN GRADE G USING (CLASS_NO)
-                    JOIN DEPARTMENT D USING (DEPARTMENT_NO)
-                    WHERE STUDENT_NO = #{studentNo}
-                    AND SCORE > 59
-                    AND G.CLASS_YEAR <= #{year}
-                    AND G.CLASS_TERM <= #{term}
-                    AND C.DIVISION = 0
-                    AND DEPARTMENT_NAME = #{departmentName}) "MAJOR_CLASS"
-		FROM GRADE
+  		SELECT NVL(A.CREDIT,0)"COMMON_CLASS", NVL(B.CREDIT,0) "NOMAL_CLASS", NVL(C.CREDIT,0) "MAJOR_CLASS"
+		FROM (SELECT NVL(SUM(CREDIT),0)"CREDIT"
+				FROM CLASS C
+			    JOIN GRADE G USING (CLASS_NO)
+			    WHERE STUDENT_NO = #{studentNo}
+			    AND SCORE > 59
+			    AND G.CLASS_YEAR <= #{year}
+			    AND G.CLASS_TERM <= #{term}
+			    AND C.DIVISION = 1) "A",
+		     (SELECT NVL(SUM(CREDIT),0) "CREDIT"
+		        FROM CLASS C
+		        JOIN GRADE G USING (CLASS_NO)
+		        JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		        WHERE STUDENT_NO = #{studentNo}
+		        AND SCORE > 59
+		        AND G.CLASS_YEAR <= #{year}
+		        AND G.CLASS_TERM <= #{term}
+		        AND C.DIVISION = 0
+		        AND DEPARTMENT_NAME != #{departmentName}) "B",
+		    (SELECT NVL(SUM(CREDIT),0) "CREDIT"
+		        FROM CLASS C
+		        JOIN GRADE G USING (CLASS_NO)
+		        JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		        WHERE STUDENT_NO = #{studentNo}
+		        AND SCORE > 59
+		        AND G.CLASS_YEAR <= #{year}
+		        AND G.CLASS_TERM <= #{term}
+		        AND C.DIVISION = 0
+		        AND DEPARTMENT_NAME = #{departmentName}) "C"
 		]]>
   	</select>
   	

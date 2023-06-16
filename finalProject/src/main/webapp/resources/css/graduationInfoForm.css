@@ -96,3 +96,23 @@
 p{
     margin: 0px !important;
 }
+
+#modalArea{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: none;
+}
+
+.modalDiv{
+    background-color: cornflowerblue;
+    width: 750px;
+    height: 800px;
+}
