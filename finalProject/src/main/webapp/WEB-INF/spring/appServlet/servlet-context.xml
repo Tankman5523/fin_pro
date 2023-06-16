@@ -5,8 +5,10 @@
 	xmlns:websocket="http://www.springframework.org/schema/websocket"
 	xmlns="http://www.springframework.org/schema/mvc"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.3.xsd
 		http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 
@@ -28,5 +30,10 @@
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
 	</context:component-scan>
+	
+	 <!-- 스케줄러 사용 설정 -->
+	 <task:annotation-driven executor="ee" scheduler="scheduler"/>
+	 <task:scheduler id="scheduler" pool-size="10"/> <!-- 스케쥴러 쓰레드 풀사이즈 -->
+	 <task:executor id="ee" pool-size="10"/> <!-- 일반 쓰레드 풀사이즈 -->
 	
 </beans:beans>

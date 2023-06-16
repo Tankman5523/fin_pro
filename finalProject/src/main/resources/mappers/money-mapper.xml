@@ -519,13 +519,15 @@
 	<update id="activateRegistPay" parameterType="date">
 		UPDATE REG_ACC
 		SET STATUS = 'Y'
-		WHERE #{time} BETWEEN START_DATE AND END_DATE
+		WHERE #{date} BETWEEN START_DATE AND END_DATE
+		AND STATUS = 'N'
 	</update>
 	
-	<update id="deactivateRegistPay">
+	<update id="deactivateRegistPay" parameterType="date">
 		UPDATE REG_ACC
 		SET STATUS = 'N'
-		WHERE #{time} &gt;= END_DATE;
+		WHERE #{date} &gt;= END_DATE
+		AND STATUS = 'Y'
 	</update>
 	
 	<resultMap type="student" id="resultSetForInsertRg">

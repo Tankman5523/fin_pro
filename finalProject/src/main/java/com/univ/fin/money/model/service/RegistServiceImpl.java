@@ -77,8 +77,8 @@ public class RegistServiceImpl implements RegistService{
 	}
 
 	@Override
-	public int deactivateRegistPay() {
-		return registDao.deactivateRegistPay(sqlSession);
+	public int deactivateRegistPay(Date date) {
+		return registDao.deactivateRegistPay(sqlSession,date);
 	}
 
 	@Override

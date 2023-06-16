@@ -13,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
+@EnableAsync
 public class RegistController {
 	
 	@Autowired
@@ -211,27 +214,35 @@ public class RegistController {
 		
 	}
 	
-	//@Scheduled(cron="* * * * * *");
+	
+	//@GetMapping("activate.rg") //나중에 스케줄러 고장나면 버튼으로 처리
+	//@Scheduled(cron = "0 0 10 * * *")//매일 아침 10시마다 실행
+	@Scheduled(cron = "9/60 * * * * *")//테스트용. 10초마다 실행
 	@Async
-	@GetMapping("activate.rg")
-	public void activateRegistPay(Date time) { //스케쥴러에 의해 등록금 활성화 개시 
-		
-		int result = 1;
-		//int result = registService.activateRegistPay(time);
+	public void activateRegistPay() { //스케쥴러에 의해 등록금 활성화 개시 
+		int result = 0;
+		LocalDate now = LocalDate.now(); //현재시간
+		Date date = java.sql.Date.valueOf(now);
+		result = registService.activateRegistPay(date);
 		if(result>0) {
-			log.info("Activate RegistPay Success");
+			log.info("등록금 활성화 성공 / 테스트중입니다.");
 		}else {
-			log.info("Activate RegistPay Failed");
+			log.info("등록금 활성화 실패 / 테스트중입니다.");
 		}
 	}
 	
-	@GetMapping("deactivate.rg")
+	//@GetMapping("deactivate.rg") //나중에 스케줄러 고장나면 버튼으로 처리
+	@Scheduled(cron = "10/60 * * * * *")//매일 새벽 1시마다 실행
+	@Async
 	public void deactivateRegistPay() {//스케쥴러에 의해 등록금 비활성화 개시 
-		int result = registService.deactivateRegistPay();
+		int result = 0;
+		LocalDate now = LocalDate.now(); //현재시간
+		Date date = java.sql.Date.valueOf(now);
+		result = registService.deactivateRegistPay(date);
 		if(result>0) {
-			log.info("Deactivate RegistPay Success");
+			log.info("등록금 비활성화 성공 / 테스트중입니다.");
 		}else {
-			log.info("Deactivate RegistPay Failed");
+			log.info("등록금 비활성화 실패 / 테스트중입니다.");
 		}
 	}
 	

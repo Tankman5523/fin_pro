@@ -31,7 +31,7 @@ public interface RegistService {
 	
 	int activateRegistPay(Date time);
 
-	int deactivateRegistPay();
+	int deactivateRegistPay(Date date);
 
 	ArrayList<RegistPay> studentListToInsert(HashMap<String, Integer> map);
 

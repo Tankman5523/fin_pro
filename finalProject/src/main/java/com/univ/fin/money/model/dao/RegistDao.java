@@ -53,12 +53,12 @@ public class RegistDao {
 		return sqlSession.update("moneyMapper.refundOverPaid", r);
 	}
 	
-	public int activateRegistPay(SqlSession sqlSession, Date time) {
-		return sqlSession.update("moneyMapper.activateRegistPay",time);
+	public int activateRegistPay(SqlSession sqlSession, Date date) {
+		return sqlSession.update("moneyMapper.activateRegistPay",date);
 	}
 
-	public int deactivateRegistPay(SqlSession sqlSession) {
-		return sqlSession.update("moneyMapper.deactivateRegistPay");
+	public int deactivateRegistPay(SqlSession sqlSession,Date date) {
+		return sqlSession.update("moneyMapper.deactivateRegistPay",date);
 	}
 
 	public ArrayList<RegistPay> studentListToInsert(SqlSession sqlSession, HashMap<String, Integer> map) {
