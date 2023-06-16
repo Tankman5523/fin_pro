@@ -83,11 +83,11 @@
 }
 
 .tableLine{
-    background-color: linen;
+    background-color: gainsboro;
 }
 
 .tableBtn{
-    background-color: blanchedalmond;
+    background-color: gainsboro;
     width: 100%;
     height: 100%;
     border: 0px;
@@ -98,21 +98,125 @@ p{
 }
 
 #modalArea{
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
+    background-color: rgba(0, 0, 0, 0.4);
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0, 0, 0, 0.4);
+    position: absolute;
+    width: 100%;
+    height: 1100px;
+    min-height: 100%;
+    top: 0;
+    left: 0;
+    bottom: auto;
     display: none;
 }
 
 .modalDiv{
-    background-color: cornflowerblue;
+    position: relative;
+    background-color: aliceblue;
     width: 750px;
     height: 800px;
+    top: 94px;
+    box-shadow: 1px 0px 20px 3px #000000a7;
+}
+
+.modalDiv hr{
+    margin: 0px;
+}
+
+#commonModal{
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.common{
+    width: 100%;
+}
+
+#commonHeader{
+    background-color: rgb(52, 152, 219);
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    font-weight: bold;
+    font-size: 20px;
+    color: white;
+    border-radius: 9px 9px 0px 0px;
+}
+
+#commonBody{
+    height: 450px;
+    margin-bottom: 10px;
+    padding: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.subLine{
+    padding: 10px 10px 0px 10px;
+}
+
+.subLine span{
+    font-size: 15px;
+}
+
+#comBodyTable{
+    border: 1px solid black;
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+}
+
+#comBodyTable>thead{
+    background-color: rgb(52, 152, 219);
+    color: white;
+}
+
+#comBodyTable>tbody>tr{
+    height: 40px;
+}
+
+#commonBody2{
+    height: 170px;
+    padding: 10px;
+    font-size: 13px;
+}
+
+#commonFooter{
+    height: 50px;
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#commonFooter>button{
+    background-color: white;
+    border: 2px solid rgb(52, 152, 219);
+    width: 70px;
+    height: 30px;
+    font-size: 15px;
+    border-radius: 5px;
+    padding: 0px;
+}
+
+#commonFooter>button:hover{
+    box-shadow: 1px 1px 1px #000000;
+}
+
+#modalClose{
+    margin-left: auto;
+    background-color: transparent;
+    border: 0px;
+    width: 35px;
+    height: 100%;
+    font-size: 30px;
+    color: white;
+    text-shadow: 1px 1px 1px black;
+}
+
+#modalClose:hover{
+    text-shadow: 1px 1px 5px black;
 }

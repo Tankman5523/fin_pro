@@ -150,6 +150,9 @@ public interface MemberService {
 	//학사관리 - 졸업사정표(전체 이수현황 조회)
 	Graduation selectGraStatus(HashMap<String, String> h);
 	
+	//학사관리 - 졸업사정표 (교양공통 세부조회)
+	ArrayList<HashMap<String, String>> detailCommonGra(HashMap<String, String> h);
+	
 	//(학생)휴,복학 신청 리스트 조회
 	ArrayList<StudentRest> selectStuRestList(String studentNo);
 
