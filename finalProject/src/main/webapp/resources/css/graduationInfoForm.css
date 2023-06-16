@@ -170,6 +170,15 @@ p{
     margin-top: 10px;
 }
 
+#comBodyTable>thead{
+    background-color: rgb(52, 152, 219);
+    color: white;
+}
+
+#comBodyTable>tbody>tr{
+    height: 40px;
+}
+
 #commonBody2{
     height: 170px;
     padding: 10px;
@@ -190,6 +199,7 @@ p{
     height: 30px;
     font-size: 15px;
     border-radius: 5px;
+    padding: 0px;
 }
 
 #commonFooter>button:hover{
