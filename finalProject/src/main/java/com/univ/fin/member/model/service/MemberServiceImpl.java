@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -399,6 +400,39 @@ public class MemberServiceImpl implements MemberService{
 	public int insertStuRest(StudentRest sr) {
 		int result = memberDao.insertStuRest(sqlSession,sr);
 		return result;
+	}
+
+	//(교수)강의개설 신청 리스트 조회
+	@Override
+	public ArrayList<Classes> selectClassCreateList(String professorNo) {
+		
+		ArrayList<Classes> list = memberDao.selectClassCreateList(sqlSession,professorNo);
+		
+		return list;
+	}
+
+	//(교수)강의 개설 인서트 
+	@Override
+	public int insertClassCreate(Classes c, Attachment a) {
+		int result = memberDao.insertClassCreate(sqlSession,c,a);
+		return result;
+	}
+
+	//(관리자)강의 개설 전체 리스트 조회
+	@Override
+	public ArrayList<Classes> selectClassList() {
+		ArrayList<Classes> list = memberDao.selectClassList(sqlSession);
+		
+		return list;
+	}
+
+	//(관리자)강의 개설 첨부파일 가져오기
+	@Override
+	public ArrayList<Attachment> selectClassAttachment() {
+		
+		ArrayList<Attachment> alist = memberDao.selectClasAttachment(sqlSession);
+		
+		return alist;
 	}
 
 }
