@@ -279,30 +279,25 @@
                     <a href="personalTimetable.st">개인 시간표</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">휴/복학 신청</a>
+                    <a href="studentRestEnroll.st">휴/복학 신청</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">휴/복학 조회</a>
+                    <a href="studentRestList.st">휴/복학 조회</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">졸업사정표</a>
+                    <a href="graduationInfoForm.st">졸업사정표</a>
                 </div>
 				<div class="child_title">
                     <a href="#">졸업 확정 신고</a>
                 </div>
             </div>
             <div id="content_1">
-					<div>
-						<ul>
-							<img src="https://item.kakaocdn.net/do/1bc37545ead4d1b5ccf3af23d5bce5714022de826f725e10df604bf1b9725cfd" style="width:100px; height:100px;" alt="학생얼굴">
-						</ul>
-					</div>
 					<div id="basic_info">
 						<table class="basic_table">
+						<tr>
 							<th>기본 정보</th>
-							<!-- <button id="crystalBtn" onclick="convertReadonly()">수정하기</button> -->
-							<button id="crystalBtn" onclick="updateStudent()">수정하기</button>
-						
+							<th><button id="crystalBtn" onclick="updateStudent()">수정하기</button></th>
+						</tr>
 							
 						</table>
 						<br>
@@ -388,11 +383,10 @@
 								</tr>
 							</thead>
 						</table>
+						</div>
 					</form>
 					</div>
-
+				</div>
             </div>
-        </div>
-    </div>
 </body>
 </html>

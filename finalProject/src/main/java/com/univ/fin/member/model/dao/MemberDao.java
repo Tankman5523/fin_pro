@@ -7,13 +7,18 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Department;
+import com.univ.fin.common.model.vo.Grade;
+import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
+import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
+import com.univ.fin.money.model.vo.RegistPay;
 
 @Repository
 public class MemberDao {
@@ -113,6 +118,11 @@ public class MemberDao {
 		return sqlSession.insert("memberMapper.postRegisterClass", rc3);
 	}
 	
+	//수강신청 - 수강신청(해당 과목 장바구니에서 지워주기)
+	public int postRegDelBucket(SqlSessionTemplate sqlSession, RegisterClass rc2) {
+		return sqlSession.delete("memberMapper.postRegDelBucket", rc2);
+	}
+	
 	//수강신청 - 수강신청(2시간짜리 강의)
 	public int postRegisterClass2(SqlSessionTemplate sqlSession, RegisterClass rc3) {
 		return sqlSession.insert("memberMapper.postRegisterClass2", rc3);
@@ -180,11 +190,19 @@ public class MemberDao {
 		
 		return sqlSession.selectOne("memberMapper.selectProfessorForNo",professorNo);
 	}
+	
 	//상담관리 - 상담 요청내용 수정(학생)
 	public int updateCounContent(SqlSessionTemplate sqlSession, Counseling c) {
 		
 		return sqlSession.update("memberMapper.updateCounContent",c);
 	}
+	
+	//상담관리 - 상담 내역 검색
+	public ArrayList<Counseling> selectSearchCounseling(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+			
+		return (ArrayList)sqlSession.selectList("memberMapper.selectSearchCounList",map);
+	}
+	
 	//학적정보 수정 - 학생
 	public int updateStudent(SqlSessionTemplate sqlSession, Student st) {
 
@@ -198,7 +216,7 @@ public class MemberDao {
 
 	public int insertStudent(SqlSessionTemplate sqlSession, Student st) {
 
-		return sqlSession.insert("memberMapper.insertMapper",st);
+		return sqlSession.insert("memberMapper.insertStudent",st);
 	}
 
 	// 강의시간표 -> 교수명 검색/과목 검색
@@ -206,18 +224,114 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.searchClassKeyword", map);
 	}
 
-	// 개인시간표 -> 학년도,학기 조회
-	public ArrayList<String> selectClassTerm2(SqlSessionTemplate sqlSession, String studentNo) {
-		return (ArrayList)sqlSession.selectList("memberMapper.selectClassTerm2", studentNo);
+	//학사관리 - 졸업사정표
+	public Graduation graduationInfo(SqlSessionTemplate sqlSession, String sno) {
+		return sqlSession.selectOne("memberMapper.graduationInfo", sno);
+	}
+	
+	//학사관리 - 졸업사정표(전체 이수현황 조회)
+	public Graduation selectGraStatus(SqlSessionTemplate sqlSession, HashMap<String, String> h) {
+		return sqlSession.selectOne("memberMapper.selectGraStatus", h);
+	}
+	
+	//(학생)휴,복학 신청 리스트 조회
+	public ArrayList<StudentRest> selectStuRestList(SqlSessionTemplate sqlSession, String studentNo) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.selectStuRestList",studentNo);
 	}
 
-	// 개인시간표 -> 학기 선택 후 시간표 조회
-	public ArrayList<Classes> selectTimetable(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
-		return (ArrayList)sqlSession.selectList("memberMapper.selectTimetable", map);
+	//(학생)휴학횟수 가져옴
+	public int selectRestCount(SqlSessionTemplate sqlSession, String studentNo) {
+		
+		return sqlSession.selectOne("memberMapper.selectRestCount",studentNo);
 	}
 
-	public String selectStudentForSc(SqlSessionTemplate sqlSession, String studentNo) {
-		return sqlSession.selectOne("memberMapper.selectStudentForSc", studentNo);
+	//(학생)가장 최근 휴학 정보 가져옴
+	public StudentRest selectRestInfo(SqlSessionTemplate sqlSession, String studentNo) {
+		
+		return sqlSession.selectOne("memberMapper.selectRestInfo",studentNo);
+	}
+
+	//(학생)휴학신청할떄 등록금 정보 가져오기
+	public RegistPay checkRegPay(SqlSessionTemplate sqlSession, RegistPay rp) {
+		
+		RegistPay checkRp = sqlSession.selectOne("memberMapper.checkRegPay",rp);
+		
+		return checkRp;
+	}
+
+	//(학생)휴,복학 신청 인서트
+	public int insertStuRest(SqlSessionTemplate sqlSession, StudentRest sr) {
+		
+		return sqlSession.insert("memberMapper.insertStuRest",sr);
+	}
+
+	// 학생 개인시간표 -> 학년도,학기 조회
+	public ArrayList<String> selectStudentClassTerm(SqlSessionTemplate sqlSession, String studentNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectStudentClassTerm", studentNo);
+	}
+
+	// 학생 개인시간표 -> 학기 선택 후 시간표 조회
+	public ArrayList<Classes> selectStudentTimetable(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectStudentTimetable", map);
+	}
+
+	// 교수 개인시간표 -> 학년도,학기 조회
+	public ArrayList<String> selectProfessorClassTerm(SqlSessionTemplate sqlSession, String professorNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectProfessorClassTerm", professorNo);
+	}
+
+	// 교수 개인시간표 -> 학기 선택 후 시간표 조회
+	public ArrayList<Classes> selectProfessorTimetable(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectProfessorTimetable", map);
+	}
+
+	// 성적관리 -> 수강중인 학생 조회
+	public ArrayList<Student> selectStudentGradeList(SqlSessionTemplate sqlSession, int classNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectStudentGradeList", classNo);
+	}
+
+	// 성적관리 -> 성적 입력
+	public int gradeInsert(SqlSessionTemplate sqlSession, Grade g) {
+		return sqlSession.insert("memberMapper.gradeInsert", g);
+	}
+
+	// 성적관리 -> 성적 수정
+	public int gradeUpdate(SqlSessionTemplate sqlSession, Grade g) {
+		return sqlSession.update("memberMapper.gradeUpdate", g);
+	}
+	
+	//(교수)강의개설 신청 리스트 조회
+		public ArrayList<Classes> selectClassCreateList(SqlSessionTemplate sqlSession, String professorNo) {
+			
+			return (ArrayList)sqlSession.selectList("memberMapper.selectClassCreateList",professorNo);
+		}
+
+	//(교수)강의 개설 인서트
+	@Transactional
+	public int insertClassCreate(SqlSessionTemplate sqlSession, Classes c, Attachment a) {
+
+		//a가 null인지 안보는 이유는 강의계획서는 필수로 넣어야 신청 할 수 있게 하기 때문에
+		int	result = sqlSession.insert("memberMapper.insertClassAttachment",a);
+			
+		if(result>0) {
+			result = sqlSession.insert("memberMapper.insertClassCreate",c);
+				
+		}
+			
+		return result;
+	}
+
+	//(관리자) 강의 개설 리스트가져오기
+	public ArrayList<Classes> selectClassList(SqlSessionTemplate sqlSession) {
+			
+		return (ArrayList)sqlSession.selectList("memberMapper.selectClassCreateList");
+	}
+
+	//(관리자)강의 개설 첨부파일  리스트 가져오기
+	public ArrayList<Attachment> selectClasAttachment(SqlSessionTemplate sqlSession) {
+			
+		return (ArrayList)sqlSession.selectList("memberMapper.selectClassAttList");
 	}
 
 }

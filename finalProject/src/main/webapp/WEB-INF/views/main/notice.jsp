@@ -7,6 +7,8 @@
 <meta charset="UTF-8">
 <title>공지사항 : Feasible University</title>
 <link rel="stylesheet" href="/fin/resources/css/notice.css">
+<!-- jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="wrap">
@@ -39,109 +41,137 @@
 			</ul>
 			
 			<div class="tab_contents">
-				
-				<ul class="tab_content active">
-					<li class="faq_content">
-						<span class="thumb_title">
-							${faq[1].noticeTitle }
-						</span>
-						<span class="thumb_content">
-							${faq[1].noticeContent }
-						</span>
-					</li>
-					<li class="faq_content">
-						<span class="thumb_title">
-							${faq[2].noticeTitle }
-						</span>
-						<span class="thumb_content">
-							${faq[2].noticeContent }
-						</span>
-					</li>
-					<li class="faq_content">
-						<span class="thumb_title">
-							${faq[3].noticeTitle }
-						</span>
-						<span class="thumb_content">
-							${faq[3].noticeContent }
-						</span>
-					</li>
-					<li class="faq_content">
-						<span class="thumb_title">
-							${faq[3].noticeTitle }
-						</span>
-						<span class="thumb_content">
-							${faq[3].noticeContent }
-						</span>
-					</li>
-				</ul>
-						
-				<div class="tab_content">
-					<div class="faq_content">
-						<div class="thumb_title">
-							${faq[i].noticeTitle }
-						</div>
-						<div class="thumb_content">
-							${faq[i].noticeContent }
-						</div>
-					</div>
+				<div class="tab_content active">
+					
 				</div>
-				
 				<div class="tab_content">
-					<div class="faq_content">
-						<div class="thumb_title">
-							${faq[i].noticeTitle }
-						</div>
-						<div class="thumb_content">
-							${faq[i].noticeContent }
-						</div>
-					</div>
+					
 				</div>
-				
 				<div class="tab_content">
-					<div class="faq_content">
-						<div class="thumb_title">
-							${faq[i].noticeTitle }
-						</div>
-						<div class="thumb_content">
-							${faq[i].noticeContent }
-						</div>
-					</div>
+					
 				</div>
-				
 				<div class="tab_content">
-					<div class="faq_content">
-						<div class="thumb_title">
-							${faq[i].noticeTitle }
-						</div>
-						<div class="thumb_content">
-							${faq[i].noticeContent }
-						</div>
-					</div>
+					
 				</div>
-				
+				<div class="tab_content">
+					
+				</div>
 			</div>
 			
 			<script type="text/javascript">
+			
 				const tabBtn = document.querySelectorAll('.tab_btn')
 				const tabCont = document.querySelectorAll('.tab_content')
 				
-				console.log(tabCont)
 				
-				tabBtn.forEach((tab, index) => {
+				$('document').ready(function(){
 					
+					const active = tabBtn[0].children[0].innerHTML
+					
+					$.ajax({
+		                url: "loadFaq.mp",
+		                data: {
+		                	active : active
+		                },
+		                success: function (result) {
+		                	var str = "";
+		                	
+		                	for(var i in result){
+			                	str +="<div class='faq_content'>"
+		                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
+			                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+			 		                +"</div>"
+		                	}
+		                	
+		                	$(".tab_contents").children().eq(0).html(str);
+		                },
+		                error : function(){
+		                	console.log("통신 오류")
+		                }
+					})
+				});
+			
+				var btnText = ""
+					
+				tabBtn.forEach(function(tab, index){
+										
 					tab.addEventListener('click', function(){
-						tabCont.forEach((cont) => {
+											
+						tabCont.forEach(function(cont){
 							cont.classList.remove('active')
 						})
 						
-						tabBtn.forEach((btn) => {
+						tabBtn.forEach(function(btn){
 							btn.classList.remove('active')
 						})
 						
-						tabBtn[index].classList.add('active')
 						tabCont[index].classList.add('active')
+						tabBtn[index].classList.add('active')
+						
+						$.ajax({
+			                url: "clickFaq.mp",
+			                data: {
+			                	active : tab.children[0].innerHTML
+			                },
+			                success: function (result) {
+			                	
+			                	var str = "";
+			                	
+			                	switch (result[0].noticeCategory) {
+								case 1:
+				                	for(var i in result){
+					                	str +="<div class='faq_content'>"
+				                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
+					                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+					 		                +"</div>"
+				                	}
+				                	$(".tab_contents").children().eq(0).html(str);
+									break;
+								case 2:
+				                	for(var i in result){
+					                	str +="<div class='faq_content'>"
+				                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
+					                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+					 		                +"</div>"
+				                	}
+				                	$(".tab_contents").children().eq(1).html(str);
+									break;
+								case 3:
+				                	for(var i in result){
+					                	str +="<div class='faq_content'>"
+				                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
+					                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+					 		                +"</div>"
+				                	}
+				                	$(".tab_contents").children().eq(2).html(str);
+									break;
+								case 4:
+				                	for(var i in result){
+					                	str +="<div class='faq_content'>"
+				                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
+					                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+					 		                +"</div>"
+				                	}
+				                	$(".tab_contents").children().eq(3).html(str);
+									break;
+								case 5:
+				                	for(var i in result){
+					                	str +="<div class='faq_content'>"
+				                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
+					                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+					 		                +"</div>"
+				                	}
+				                	$(".tab_contents").children().eq(4).html(str);
+									break;								
+								}
+			                },
+							error : function(){
+			                	console.log("통신 오류")
+			                }
+						})
+						
+						
 					})
-					
 				})
 			</script>
 		</div>
@@ -152,9 +182,9 @@
 				
 				<form id="searchForm" action="search.mp" method="get" align="center">
 					<select>
+						<option value="both">제목+내용</option>
 						<option value="title">제목</option>
 						<option value="content">내용</option>
-						<option value="both">제목+내용</option>
 					</select>				
 					<label>
 						<input type="text" name="keyword" placeholder="검색어를 입력해주세요.">
@@ -213,7 +243,7 @@
 						
 						<%-- 다음 페이지 --%>
 						<c:choose>
-							<c:when test="${pi.currentPage eq 1 }">
+							<c:when test="${pi.currentPage eq pi.maxPage }">
 								<li class="page-btn"><a class="pLink" href="#"><i class="fa-solid fa-chevron-right"></i></a></li>
 							</c:when>
 							<c:otherwise>

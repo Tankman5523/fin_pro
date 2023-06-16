@@ -1,0 +1,118 @@
+#main_div{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.subDiv{
+    position: relative;
+    margin-bottom: 10px;
+    padding : 10px 15px;
+}
+
+#main_div hr{
+    margin: 5px 0px;
+}
+
+#sub_div1{
+    position: relative;
+    width: 100%;
+    height: 18.5%;
+}
+
+#sub_div2{
+    position: relative;
+    width: 100%;
+    height: 21%;
+}
+
+#sub_div3{
+    position: relative;
+    width: 100%;
+    height: 57%;
+}
+
+.mainSpan{
+    font-size: 19px;
+}
+
+#commentSpan{
+    float: right;
+    color: #e65f3e;
+}
+
+#sub_div1>table{
+    margin-top: 10px;
+    text-align: right;
+    width: 100%;
+}
+
+#sub_div1>table td{
+    width: 100px;
+    padding-right: 30px;
+}
+
+#sub_div1>table input{
+    width: 130px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border: 1px solid rgba(118, 118, 118, 0.3);
+    text-indent: 5px;
+}
+
+#sub_div1>table input:focus{
+    outline: none;
+}
+
+#sub_div1>table input:hover{
+    cursor: auto;
+}
+
+#infoDiv{
+    border: 1px solid black;
+    padding: 10px 0px 10px 10px;
+    margin: 10px 30px 0px;
+    font-size: 14px;
+}
+
+#statusTable{
+    margin-top: 10px;
+    width: 100%;
+    height: 90%;
+    text-align: center;
+}
+
+.tableLine{
+    background-color: linen;
+}
+
+.tableBtn{
+    background-color: blanchedalmond;
+    width: 100%;
+    height: 100%;
+    border: 0px;
+}
+
+p{
+    margin: 0px !important;
+}
+
+#modalArea{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: none;
+}
+
+.modalDiv{
+    background-color: cornflowerblue;
+    width: 750px;
+    height: 800px;
+}

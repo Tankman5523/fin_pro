@@ -86,7 +86,7 @@
   		<result column="GRADUATION" property="graduation"/>
   	</resultMap>
   	
-  	<resultMap type="counseling" id="counselingMap">
+  	<resultMap type="counseling" id="counselingResultMap">
   		<result column="COUNSEL_NO" property="counselNo"/>
   		<result column="STUDENT_NO" property="studentNo"/>
   		<result column="PROFESSOR_NO" property="professorNo"/>
@@ -96,6 +96,60 @@
   		<result column="COUNSEL_CONTENT" property="counselContent"/>
   		<result column="COUNSEL_RESULT" property="counselResult"/>
   		<result column="STATUS" property="status"/>
+  		<result column="PROFESSOR_NAME" property="professorName"/>
+  	</resultMap>
+  	
+  	<resultMap type="studentRest" id="studentRestResultMap">
+  		<result column="REST_NO" property="restNo"/>
+  		<result column="STUDENT_NO" property="studentNo"/>
+  		<result column="CATEGORY" property="category"/>
+  		<result column="REASON" property="reason"/>
+  		<result column="REQUEST_DATE" property="requestDate"/>
+  		<result column="START_DATE" property="startDate"/>
+  		<result column="END_DATE" property="endDate"/>
+  		<result column="STATUS" property="status"/>
+  	</resultMap>
+  	
+  	<resultMap type="registPay" id="registPayResultSet">
+		<result column="REG_ACCOUNT_NO" property="regAccountNo"/>
+		<result column="MUST_PAY" property="mustPay"/>
+		<result column="INPUT_PAY" property="inputPay"/>
+		<result column="START_DATE" property="startDate"/>
+		<result column="END_DATE" property="endDate"/>
+		<result column="PAY_STATUS" property="payStatus"/>
+	</resultMap>
+	
+	<resultMap type="attachment" id="attachmentResultSet">
+  		<result column="FILE_NO" property="fileNo"/>
+  		<result column="ORIGIN_NAME" property="originName"/>
+  		<result column="CHANGE_NAME" property="changeName"/>
+  		<result column="FILE_PATH" property="filePath"/>
+  		<result column="UPLOAD_DATE" property="uploadDate"/>
+  		<result column="STATUS" property="status"/>
+  	</resultMap>
+	
+	<resultMap type="grade" id="gradeResultMap">
+		<result column="DEPARTMENT_NAME" property="departmentName"/>
+		<result column="STUDENT_NO" property="studentNo"/>
+		<result column="CLASS_LEVEL" property="classLevel"/>
+		<result column="STUDENT_NAME" property="studentName"/>
+		<result column="SCORE" property="score"/>
+		<result column="GRADE_LEVEL" property="gradeLevel"/>
+	</resultMap>
+  	
+  	<resultMap type="graduation" id="graduationResultMap">
+  		<result column="STUDENT_NO" property="studentNo"/>
+  		<result column="STUDENT_NAME" property="studentName"/>
+  		<result column="ENTRANCE_DATE" property="entranceDate"/>
+  		<result column="COLLEGE_NAME" property="collegeName"/>
+  		<result column="DEPARTMENT_NAME" property="departmentName"/>
+  		<result column="STATUS" property="status"/>
+  		<result column="CLASS_LEVEL" property="classLevel"/>
+  		<result column="CLASS_TERM" property="classTerm"/>
+  		<result column="SUMCREDIT" property="sumCredit"/>
+  		<result column="COMMON_CLASS" property="commonClass"/>
+  		<result column="NOMAL_CLASS" property="nomalClass"/>
+  		<result column="MAJOR_CLASS" property="majorClass"/>
   	</resultMap>
   	
   	<!-- 학생 로그인 -->
@@ -387,6 +441,13 @@
   		INSERT INTO SCHEDULE VALUES(#{classNo},#{studentNo},#{day},#{period})
   	</insert>
   	
+  	<!-- 수강신청 - 수강신청(해당 과목 장바구니에서 지워주기) -->
+  	<delete id="postRegDelBucket">
+  		DELETE FROM BUCKET
+  		WHERE STUDENT_NO = #{studentNo}
+  		AND CLASS_NO = #{classNo}
+  	</delete>
+  	
   	<!-- 수강신청 - 수강신청(2시간짜리 강의) -->
   	<insert id="postRegisterClass2">
   		INSERT INTO SCHEDULE VALUES(#{classNo},#{studentNo},#{day},#{period}+1)
@@ -460,13 +521,84 @@
 		ORDER BY CLASS_YEAR DESC, CLASS_TERM ASC
   	</select>
   	
+  	<!-- 학사관리 - 졸업사정표 -->
+  	<select id="graduationInfo" parameterType="graduation" resultMap="graduationResultMap">
+  		SELECT STUDENT_NO,STUDENT_NAME
+		      ,TO_CHAR(ENTRANCE_DATE,'YYYY') "ENTRANCE_DATE"
+		      ,COLLEGE_NAME,DEPARTMENT_NAME,STATUS,CLASS_LEVEL
+		      ,NVL((SELECT A.CLASS_TERM
+		            FROM (SELECT CLASS_TERM
+		                  FROM GRADE
+		                  WHERE STUDENT_NO = #{studentNo}
+		                  ORDER BY CLASS_YEAR DESC) "A"
+		            WHERE ROWNUM = 1),1) "CLASS_TERM"
+		      ,(SELECT SUM(CREDIT)
+		        FROM CLASS C
+		        JOIN GRADE G USING (CLASS_NO)
+		        WHERE STUDENT_NO = #{studentNo}
+		        AND SCORE BETWEEN 60 AND 100) "SUMCREDIT"
+		FROM STUDENT S
+		JOIN COLLEGE C USING (COLLEGE_NO)
+		JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		WHERE STUDENT_NO = #{studentNo}
+  	</select>
+  	
+  	<!-- 학사관리 - 졸업사정표(전체 이수현황 조회) -->
+  	<select id="selectGraStatus" parameterType="hashmap" resultMap="graduationResultMap">
+	  	<![CDATA[
+  		SELECT NVL(A.CREDIT,0)"COMMON_CLASS", NVL(B.CREDIT,0) "NOMAL_CLASS", NVL(C.CREDIT,0) "MAJOR_CLASS"
+		FROM (SELECT NVL(SUM(CREDIT),0)"CREDIT"
+				FROM CLASS C
+			    JOIN GRADE G USING (CLASS_NO)
+			    WHERE STUDENT_NO = #{studentNo}
+			    AND SCORE > 59
+			    AND G.CLASS_YEAR <= #{year}
+			    AND G.CLASS_TERM <= #{term}
+			    AND C.DIVISION = 1) "A",
+		     (SELECT NVL(SUM(CREDIT),0) "CREDIT"
+		        FROM CLASS C
+		        JOIN GRADE G USING (CLASS_NO)
+		        JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		        WHERE STUDENT_NO = #{studentNo}
+		        AND SCORE > 59
+		        AND G.CLASS_YEAR <= #{year}
+		        AND G.CLASS_TERM <= #{term}
+		        AND C.DIVISION = 0
+		        AND DEPARTMENT_NAME != #{departmentName}) "B",
+		    (SELECT NVL(SUM(CREDIT),0) "CREDIT"
+		        FROM CLASS C
+		        JOIN GRADE G USING (CLASS_NO)
+		        JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		        WHERE STUDENT_NO = #{studentNo}
+		        AND SCORE > 59
+		        AND G.CLASS_YEAR <= #{year}
+		        AND G.CLASS_TERM <= #{term}
+		        AND C.DIVISION = 0
+		        AND DEPARTMENT_NAME = #{departmentName}) "C"
+		]]>
+  	</select>
+  	
   	<!-- (학생)상담신청 내역 가져오기 -->
-  	<select id="selectCounStuList" resultMap="counselingMap">
-  		SELECT COUNSEL_NO,APPLICATION_DATE,REQUEST_DATE,COUNSEL_CONTENT,PROFESSOR_NAME,COUNSEL_AREA,C.STATUS
+  	<select id="selectCounStuList" resultMap="counselingResultMap">
+  		SELECT COUNSEL_NO,PROFESSOR_NO,PROFESSOR_NAME,APPLICATION_DATE,REQUEST_DATE,COUNSEL_CONTENT,COUNSEL_AREA,C.STATUS
   		FROM COUNSELING C
   		JOIN PROFESSOR P USING (PROFESSOR_NO)
   		WHERE STUDENT_NO = #{studentNo}
-  		ORDER BY COUNSEL_NO DESC
+  		ORDER BY APPLICATION_DATE DESC
+	 </select>
+	 
+	 <!-- (학생)상담신청 내역 검색해서 가져오기 -->
+	 <select id="selectSearchCounList" resultMap="counselingResultMap">
+		 
+		 	SELECT COUNSEL_NO,PROFESSOR_NO,PROFESSOR_NAME,APPLICATION_DATE,REQUEST_DATE,COUNSEL_CONTENT,COUNSEL_AREA,C.STATUS
+	  		FROM COUNSELING C
+	  		JOIN PROFESSOR P USING (PROFESSOR_NO)
+	  		WHERE STUDENT_NO = #{studentNo}
+	        AND   COUNSEL_AREA LIKE #{counselArea}
+	        AND   TO_CHAR(APPLICATION_DATE,'YYYY') LIKE #{year}
+	        AND   APPLICATION_DATE BETWEEN TO_DATE(#{startDate},'YYYY-MM-DD') AND TO_DATE(#{endDate},'YYYY-MM-DD')
+	  		ORDER BY APPLICATION_DATE DESC
+		 
 	 </select>
   	
   	<!-- 학과명으로 확과번호 조회 -->
@@ -492,7 +624,7 @@
   	</insert>
   	
   	<!-- 상담 상세보기 -->
-  	<select id="selectCounseling" resultMap="counselingMap">
+  	<select id="selectCounseling" resultMap="counselingResultMap">
   		SELECT *
   		FROM COUNSELING
   		WHERE COUNSEL_NO = #{counselNo}
@@ -513,6 +645,48 @@
   		WHERE COUNSEL_NO = #{counselNo}
   		AND STATUS = 'N'
   	</update>
+  	
+  	<!-- 휴,복학신청 리스트 조회(학생) -->
+  	<select id="selectStuRestList" resultMap="studentRestResultMap">
+  		SELECT *
+  		FROM STUDENT_REST
+  		WHERE STUDENT_NO = #{studentNo}
+  		ORDER BY REST_NO DESC
+  	</select>
+  	
+  	<!-- 휴학 횟수 가져오기 -->
+  	<select id="selectRestCount" resultType="int">
+  		SELECT COUNT(*)
+  		FROM STUDENT_REST
+  		WHERE STUDENT_NO = #{studentNo}
+  		AND STATUS = 'Y'
+  	</select>
+  	
+  	<!-- 휴학 정보 가져오기(학생) -->
+  	<select id="selectRestInfo" resultMap="studentRestResultMap">
+  		SELECT ROWNUM,S.*
+		FROM (SELECT *
+		      FROM STUDENT_REST
+		      WHERE STUDENT_NO = #{studentNo}
+		      ORDER BY REST_NO DESC) S
+		WHERE ROWNUM = 1
+  	</select>
+  	
+  	<!-- 등록금납부 했는지(학생) -->
+  	<select id="checkRegPay" resultMap="registPayResultSet">
+  		SELECT REG_NO,MUST_PAY,INPUT_PAY,REG_ACCOUNT_NO,PAY_STATUS
+		FROM REG_ACC
+		WHERE STUDENT_NO = #{studentNo}
+		AND   CLASS_YEAR = #{classYear}
+		AND   CLASS_TERM = #{classTerm}
+		AND   STATUS = 'Y'
+  	</select>
+  	
+  	<!-- 휴,복학 신청 인서트(학생) -->
+  	<insert id="insertStuRest">
+  		INSERT INTO STUDENT_REST(REST_NO,STUDENT_NO,CATEGORY,REASON,START_DATE,END_DATE)
+  		VALUES(SEQ_SRNO.NEXTVAL,#{studentNo},#{category},#{reason},#{startDate},#{endDate})
+  	</insert>
   	
   	<!-- 강의시간표 -> 교수명 검색/과목 검색 -->
   	<select id="searchClassKeyword" parameterType="hashmap" resultMap="classResultMap">
@@ -562,8 +736,8 @@
   	WHERE PROFESSOR_NO = #{professorNo}
   	</update>
   	  	
-  	<!-- 개인시간표 -> 학년도,학기 조회 -->
-  	<select id="selectClassTerm2" resultType="string">
+  	<!-- 학생 개인시간표 -> 학년도,학기 조회 -->
+  	<select id="selectStudentClassTerm" resultType="string">
   		SELECT CLASS_YEAR||'0'||CLASS_TERM
 		FROM CLASS
 		JOIN SCHEDULE USING(CLASS_NO)
@@ -572,19 +746,99 @@
 		ORDER BY CLASS_YEAR DESC, CLASS_TERM ASC
   	</select>
   	
-  	<!-- 개인시간표 -> 학기 선택 후 시간표 조회 -->
-  	<select id="selectTimetable" parameterType="hashmap" resultMap="classResultMap">
-  		SELECT CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DECODE(S.DAY, '1', '월', '2', '화', '3', '수', '4', '목', '5', '금') AS DAY
-		        , S.PERIOD, CLASS_HOUR, STUDENT_NO, CLASS_YEAR, CLASS_TERM
+  	<!-- 학생 개인시간표 -> 학기 선택 후 시간표 조회 -->
+  	<select id="selectStudentTimetable" parameterType="hashmap" resultMap="classResultMap">
+  		SELECT CLASS_NO, CLASS_NAME, PROFESSOR_NAME, S.DAY, S.PERIOD, CLASS_HOUR, CLASSROOM
 		FROM CLASS C
-		JOIN SCHEDULE S  USING(CLASS_NO)
+		JOIN SCHEDULE S USING(CLASS_NO)
 		LEFT JOIN PROFESSOR P USING(PROFESSOR_NO)
 		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND S.STUDENT_NO = #{studentNo}
   	</select>
   	
-  	<select id="selectStudentForSc" parameterType="string" resultType="string">
-  		SELECT STUDENT_NAME
-		FROM STUDENT  			   
-		WHERE STUDENT_NO = #{studentNo}  			   
+  	<!-- (교수)강의개설 신청 리스트 조회-->
+  	<select id="selectClassCreateList" resultMap="classResultMap">
+  		SELECT CLASS_NO,FILE_NO,DIVISION,DEPARTMENT_NAME,CLASS_NAME,CLASS_YEAR,CLASS_TERM
+        		,CLASSROOM,DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금') AS DAY
+        		,DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'9:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00')
+                                  ,2,DECODE(PERIOD,1,'9:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) AS PERIOD
+		        ,CLASS_LEVEL,CLASS_NOS,CREDIT,EXPLAIN,STATUS
+		FROM CLASS 
+		JOIN DEPARTMENT USING (DEPARTMENT_NO)
+		WHERE PROFESSOR_NO LIKE '%'||#{professorNo}||'%'
+		ORDER BY CLASS_NO DESC
   	</select>
+  	
+  	<!-- (교수)강의개설 첨부파일(강의계획서) 인서트 -->
+  	<insert id="insertClassAttachment">
+  		INSERT INTO ATTACHMENT(FILE_NO,ORIGIN_NAME,CHANGE_NAME,FILE_PATH,UPLOAD_DATE)
+		VALUES(SEQ_ANO.NEXTVAL,#{originName},#{changeName},#{filePath},SYSDATE)
+  	</insert>
+  	
+  	<!-- (교수)강의개설 신청 인서트 -->
+  	<insert id="insertClassCreate">
+  		INSERT INTO CLASS(CLASS_NO, PROFESSOR_NO, DEPARTMENT_NO, FILE_NO,CLASS_NAME, CLASS_LEVEL, CLASS_YEAR, CLASS_TERM, CLASSROOM, DAY, PERIOD, CLASS_HOUR, CLASS_NOS, CREDIT, DIVISION)
+		VALUES(SEQ_CNO.NEXTVAL,#{professorNo}
+				,(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo})
+				,SEQ_ANO.CURRVAL,#{className},#{classLevel},#{classYear},#{classTerm}
+				,#{classroom},#{day},#{period},#{classHour},#{classNos},#{credit},#{division})
+  	</insert>
+  	
+  	<!-- (관리자)강의개설 첨부파일 리스트 -->
+  	<select id="selectClassAttList" resultMap="attachmentResultSet">
+  		SELECT FILE_NO,ORIGIN_NAME,CHANGE_NAME,FILE_PATH,UPLOAD_DATE
+		FROM ATTACHMENT
+		WHERE FILE_NO IN (SELECT FILE_NO FROM CLASS)
+		ORDER BY FILE_NO DESC
+  	</select>
+  	
+  	<!-- 교수 개인시간표 -> 학년도,학기 조회 -->
+  	<select id="selectProfessorClassTerm" resultType="string">
+  		SELECT CLASS_YEAR||'0'||CLASS_TERM
+		FROM CLASS
+		JOIN PROFESSOR USING(PROFESSOR_NO)
+		WHERE PROFESSOR_NO = 'P20150023'
+		GROUP BY CLASS_YEAR, CLASS_TERM
+		ORDER BY CLASS_YEAR DESC, CLASS_TERM ASC
+  	</select>
+  	
+  	<!-- 교수 개인시간표 -> 학기 선택 후 시간표 조회 -->
+  	<select id="selectProfessorTimetable" parameterType="hashmap" resultMap="classResultMap">
+  		SELECT CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DAY, PERIOD, CLASS_HOUR, CLASSROOM
+		FROM CLASS C
+		JOIN PROFESSOR P USING(PROFESSOR_NO)
+		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND PROFESSOR_NO = #{professorNo}
+  	</select>
+  	
+  	<!-- 성적관리 -> 수강중인 학생 조회 -->
+  	<select id="selectStudentGradeList" parameterType="_int" resultMap="gradeResultMap">
+  		SELECT DEPARTMENT_NAME, A.STUDENT_NO, CLASS_LEVEL, STUDENT_NAME, NVL(SCORE, 0) AS SCORE, NVL(GRADE_LEVEL,' ') AS GRADE_LEVEL
+		FROM (SELECT CLASS_NO, STUDENT_NO
+		        FROM SCHEDULE
+		        GROUP BY CLASS_NO, STUDENT_NO) A
+		JOIN STUDENT S ON(A.STUDENT_NO = S.STUDENT_NO)
+		LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO)
+		JOIN DEPARTMENT D USING(DEPARTMENT_NO)
+		WHERE A.CLASS_NO = #{classNo}
+		ORDER BY DEPARTMENT_NAME, STUDENT_NO
+  	</select>
+  	
+  	<!-- 성적관리 -> 성적 입력 -->
+  	<insert id="gradeInsert" parameterType="grade">
+  		INSERT INTO GRADE VALUES(SEQ_GNO.NEXTVAL, #{studentNo}, #{classNo}
+  								, (SELECT CLASS_YEAR FROM CLASS WHERE CLASS_NO = #{classNo})
+  								, (SELECT CLASS_TERM FROM CLASS WHERE CLASS_NO = #{classNo})
+  								, #{score}, #{gradeLevel})
+  	</insert>
+  	
+  	<!-- 성적관리 -> 성적 수정 -->
+  	<update id="gradeUpdate" parameterType="grade">
+  		UPDATE GRADE
+  		SET SCORE = #{score}
+  		  , GRADE_LEVEL = #{gradeLevel}
+  		WHERE STUDENT_NO = #{studentNo} AND CLASS_NO = #{classNo}
+  	</update>
+  	<insert id="insertStudent">
+  	INSERT INTO STUDENT (STUDENT_NO, DEPARTMENT_NO, COLLEGE_NO, ENTRANCE_DATE, STUDENT_NAME, STUDENT_PWD, PHONE, EMAIL, POST, ADDRESS,CLASS_LEVEL)
+	VALUES (SEQ_SNO.NEXTVAL,(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
+  	</insert>
   </mapper>

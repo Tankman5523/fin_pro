@@ -27,15 +27,37 @@ public class MainDao {
 		return (ArrayList)sqlSession.selectList("mainMapper.selectNoticeList", null, rowBounds);
 	}
 
-	//총 FAQ 수 조회
-	public int selectFaqCount(SqlSessionTemplate sqlSession) {
-		return sqlSession.selectOne("mainMapper.selectFaqCount");
+	//학사 FAQ 조회
+	public ArrayList<Notice> selectHaksaList(SqlSessionTemplate sqlSession) {
+
+		return (ArrayList)sqlSession.selectList("mainMapper.selectHaksaList");
 	}
+
+	//장학 FAQ 조회
+	public ArrayList<Notice> selectJangHakList(SqlSessionTemplate sqlSession) {
+
+		return (ArrayList)sqlSession.selectList("mainMapper.selectJangHakList");
+	}
+
+	//입학 FAQ 조회
+	public ArrayList<Notice> selectIpHakList(SqlSessionTemplate sqlSession) {
+
+		return (ArrayList)sqlSession.selectList("mainMapper.selectIpHakList");
+	}
+
+	//채용 FAQ 조회
+	public ArrayList<Notice> selectChaeYongList(SqlSessionTemplate sqlSession) {
+
+		return (ArrayList)sqlSession.selectList("mainMapper.selectChaeYongList");
+	}
+
+	//기타 FAQ 조회
+	public ArrayList<Notice> selectGitaList(SqlSessionTemplate sqlSession) {
+
+		return (ArrayList)sqlSession.selectList("mainMapper.selectGitaList");
+	}
+
 	
-	//FAQ 조회
-	public ArrayList<Notice> selectFaqList(SqlSessionTemplate sqlSession) {
-		return (ArrayList)sqlSession.selectList("mainMapper.selectFaqList");
-	}
 
 
 	
