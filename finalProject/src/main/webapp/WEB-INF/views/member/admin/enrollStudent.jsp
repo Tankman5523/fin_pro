@@ -316,13 +316,13 @@
 	}
 	
 	// 영어, 특수문자, 한글 입력 막기
-	function characterCheck2(obj) {
+	/* function characterCheck2(obj) {
     var regExp = /[^]/g;
     if (regExp.test(obj.value)) {
         alert("영어, 특수문자, 한글은 입력하실 수 없습니다.");
         obj.value = obj.value.replace(regExp, ''); // 모든 문자를 제거
-    }
-}
+    } 
+}*/
 	
 	function randomPasswordBtn() {
 	    var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@";
