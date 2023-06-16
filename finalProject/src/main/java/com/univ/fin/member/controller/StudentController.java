@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -115,7 +116,6 @@ public class StudentController {
 	@ResponseBody
 	@RequestMapping(value="preRegList.st", produces = "application/json; charset=UTF-8")
 	public String preRegList(RegisterClass rc) {
-		
 		String term = String.valueOf(rc.getClassTerm().charAt(0)); //학기 추출
 		
 		RegisterClass rc2 = RegisterClass.builder()
@@ -373,6 +373,46 @@ public class StudentController {
 		return mv;
 	}
 	
+	
+		//학적 정보조회 - 학생
+			@RequestMapping("infoStudent.st")
+			public String infoStudent() {		
+				
+				return "member/student/infoStudent";
+			}
+			
+			
+			//학적 정보수정 - 학생
+			
+			@RequestMapping(value="updateStudent.st" , method = RequestMethod.POST)
+			public String updateStudent(Student st,
+											Model model,
+											HttpSession session) {
+				int result = memberService.updateStudent(st);
+				
+				System.out.println("확인 : "+st);
+				
+				if(result>0) {
+					//유저 정보갱신
+					Student loginUser = memberService.loginStudent(st);
+					session.setAttribute("loginUser", loginUser);
+					model.addAttribute("msg", "수정 완료");
+				}else { //정보변경실패
+					model.addAttribute("msg", "수정 실패");
+				}
+				
+			return "member/student/infoStudent";
+				
+			}
+			
+			//학생 강의 의의신청 
+			@RequestMapping("studentGradeReport.st")
+			public String studentGradeReport(String studentNo) {		
+				
+				return "member/student/studentGradeReport";
+			}
+			
+			
 	//상담 관리 - 상담 내역 검색
 	@ResponseBody
 	@RequestMapping(value="counselingSearch.st",produces = "application/json; charset = UTF-8")
@@ -402,36 +442,6 @@ public class StudentController {
 		
 	}
 	
-	//학적 정보조회 - 학생
-	@RequestMapping("infoStudent.st")
-	public String infoStudent() {		
-		
-		return "member/student/infoStudent";
-	}
-	
-	
-	//학적 정보수정 - 학생
-	
-	@RequestMapping(value="updateStudent.st" , method = RequestMethod.POST)
-	public String updateStudent(Student st,
-			Model model,
-			HttpSession session) {
-		int result = memberService.updateStudent(st);
-		
-		System.out.println("확인 : "+result);
-		
-		if(result>0) {
-			//유저 정보갱신
-			Student loginUser = memberService.loginStudent(st);
-			session.setAttribute("loginUser", loginUser);
-			model.addAttribute("msg", "수정 완료");
-		}else { //정보변경실패
-			model.addAttribute("msg", "수정 실패");
-		}
-		
-		return "member/student/infoStudent";
-		
-	}
 	
 	// 학사관리 - 개인시간표
 	@RequestMapping("personalTimetable.st")
@@ -603,6 +613,7 @@ public class StudentController {
 		return "redirect:studentRestList.st";
 	}
 	
+
 	
 }
 

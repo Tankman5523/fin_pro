@@ -216,7 +216,7 @@ public class MemberDao {
 
 	public int insertStudent(SqlSessionTemplate sqlSession, Student st) {
 
-		return sqlSession.insert("memberMapper.insertMapper",st);
+		return sqlSession.insert("memberMapper.insertStudent",st);
 	}
 
 	// 강의시간표 -> 교수명 검색/과목 검색

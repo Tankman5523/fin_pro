@@ -1,5 +1,6 @@
 package com.univ.fin.member.model.service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -21,7 +22,7 @@ import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
 
 @Service
-public class MemberServiceImpl implements MemberService{
+public  class MemberServiceImpl implements MemberService{
 
 	@Autowired
 	private MemberDao memberDao;
@@ -357,6 +358,8 @@ public class MemberServiceImpl implements MemberService{
 		
 		return result;
 	}
+	
+	
 
 	// 학생 개인시간표 -> 학년도,학기 조회
 	@Override
