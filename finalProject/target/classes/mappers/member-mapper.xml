@@ -406,14 +406,13 @@
 		WHERE S.DAY = #{day}
 		AND CLASS_YEAR = #{classYear}
 		AND CLASS_TERM = #{classTerm}
+		AND STUDENT_NO = #{studentNo}
   		<choose>
   			<when test="classHour == 2">
   				AND (S.PERIOD = #{period}+1 OR S.PERIOD = #{period})
-  				AND STUDENT_NO = #{studentNo}
   			</when>
   			<when test="classHour == 1">
   				AND S.PERIOD = #{period}
-  				AND STUDENT_NO = #{studentNo}
   			</when>
   		</choose>
   	</select>

@@ -202,6 +202,8 @@ public class StudentController {
 		//해당 강의 조회
 		Classes c = memberService.selectClass(rc.getClassNo());
 		
+		String term = String.valueOf(rc.getClassTerm().charAt(0)); //학기 추출
+		
 		if(c.getSpareNos() != c.getClassNos()) { // 수강인원 체크 (신청인원이 수강인원보다 적을때)
 			rc2 = RegisterClass.builder().day(c.getDay())
 										 .period(c.getPeriod())
@@ -209,7 +211,7 @@ public class StudentController {
 										 .studentNo(rc.getStudentNo())
 										 .classNo(rc.getClassNo())
 										 .classYear(rc.getClassYear())
-										 .classTerm(rc.getClassTerm())
+										 .classTerm(term)
 										 .build();
 			
 			//강의 시간 체크 (0반환이라면 겹치는 강의가 없다라는 의미)
