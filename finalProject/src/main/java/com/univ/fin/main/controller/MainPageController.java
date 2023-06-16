@@ -70,7 +70,6 @@ public class MainPageController {
 		
 		if(active.equals("학사")) {
 			 haksa = mainService.selectHaksaList();
-			
 		}
 		
 		return new Gson().toJson(haksa);
@@ -107,8 +106,6 @@ public class MainPageController {
 	public String searchBoardList(String keyword) {
 		
 		System.out.println(keyword);
-		
-		
 		
 		return null;
 	}
