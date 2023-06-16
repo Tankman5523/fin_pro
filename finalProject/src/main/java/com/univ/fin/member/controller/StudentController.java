@@ -285,7 +285,6 @@ public class StudentController {
 	@RequestMapping("classListView.st")
 	public ModelAndView classListView(ModelAndView mv) {
 		ArrayList<String> classTerm = memberService.selectClassTerm();
-		System.out.println(classTerm);
 		
 		mv.addObject("classTerm", classTerm).setViewName("member/student/classListView");
 		return mv;

@@ -5,13 +5,6 @@
     margin: 20px 0px;
 }
 
-.page_title {
-    margin-top: 5px;
-    margin-left: 5px;
-    margin-bottom: 0px;
-    font-weight: bold;
-}
-
 .selectTerm {
     display: flex;
     align-items: center;

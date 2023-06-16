@@ -6,6 +6,7 @@ import java.util.HashMap;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
@@ -161,5 +162,14 @@ public interface MemberService {
 
 	// 교수 개인시간표 -> 학기 선택 후 시간표 조회
 	ArrayList<Classes> selectProfessorTimetable(HashMap<String, String> map);
+
+	// 성적관리 -> 수강중인 학생 조회
+	ArrayList<Student> selectStudentGradeList(int classNo);
+
+	// 성적관리 -> 성적 입력
+	int gradeInsert(Grade g);
+
+	// 성적관리 -> 성적 수정
+	int gradeUpdate(Grade g);
 
 }
