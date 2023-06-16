@@ -1,5 +1,6 @@
 package com.univ.fin.member.model.service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -16,7 +17,7 @@ import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 
 @Service
-public class MemberServiceImpl implements MemberService{
+public  class MemberServiceImpl implements MemberService{
 
 	@Autowired
 	private MemberDao memberDao;
@@ -235,5 +236,7 @@ public class MemberServiceImpl implements MemberService{
 		
 		return result;
 	}
+	
+	
 
 }

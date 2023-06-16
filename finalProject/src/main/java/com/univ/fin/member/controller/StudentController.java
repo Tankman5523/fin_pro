@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -207,7 +208,7 @@ public class StudentController {
 											HttpSession session) {
 				int result = memberService.updateStudent(st);
 				
-				System.out.println("확인 : "+result);
+				System.out.println("확인 : "+st);
 				
 				if(result>0) {
 					//유저 정보갱신
@@ -221,31 +222,14 @@ public class StudentController {
 			return "member/student/infoStudent";
 				
 			}
-	
-			//학생등록 페이지
-			@RequestMapping("enrollStudent.ad")
-			public String enrollStudent() {		
+			
+			//학생 강의 의의신청 
+			@RequestMapping("studentGradeReport.st")
+			public String studentGradeReport(String studentNo) {		
 				
-				return "member/student/enrollStudent";
+				return "member/student/studentGradeReport";
 			}
 			
-			//학생등록 페이지 등록
-			@RequestMapping("insertStudent.ad")
-			public String insertStudent(Student st,
-										Model model,
-										HttpSession session) {
 			
-			int result = memberService.insertStudent(st);
-				
-			if(result>0) {
-				session.setAttribute("alertMsg", "회원가입 성공");
-				return "redirect:enrollStudent";
-			}else {
-				model.addAttribute("errorMsg","회원가입 실패");
-			}
-			return "member/student/infoStudent";
-				
-			}
-		
 	
 }

@@ -386,5 +386,8 @@
   		ADDRESS = #{address}
   	WHERE PROFESSOR_NO = #{professorNo}
   	</update>
-  	
+  	<insert id="insertStudent">
+  	INSERT INTO STUDENT (STUDENT_NO, DEPARTMENT_NO, COLLEGE_NO, ENTRANCE_DATE, STUDENT_NAME, STUDENT_PWD, PHONE, EMAIL, POST, ADDRESS,CLASS_LEVEL)
+	VALUES (SEQ_SNO.NEXTVAL,(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
+  	</insert>
   </mapper>

@@ -1,7 +1,9 @@
 package com.univ.fin.member.model.dao;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
@@ -141,14 +143,15 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.updateProfessor",pr);
 	}
 
-	public int insertStudent(SqlSessionTemplate sqlSession, Student st) {
-
-		return sqlSession.insert("memberMapper.insertMapper",st);
-	}
+	  public int insertStudent(SqlSessionTemplate sqlSession, Student st) {
+	  
+	  return sqlSession.insert("memberMapper.insertStudent",st); }
+	 
 
 	// 강의시간표 -> 교수명 검색/과목 검색
 	public ArrayList<Classes> searchClassKeyword(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
 		return (ArrayList)sqlSession.selectList("memberMapper.searchClassKeyword", map);
 	}
+
 
 }

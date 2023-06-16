@@ -152,6 +152,11 @@
 		width: 400px;
 		height: 30px;
 	}
+	.user_info4{
+		border-radius: 6px;
+		width: 234px;
+		height: 30px;
+	}
 	.user_info2{
 		padding: 10px;
 		border : 1px solid gray;
@@ -182,6 +187,18 @@
         border-radius: 8px;
         text-align: center;
     }
+    
+    #randombtn{
+		border: 0;
+        padding: 12px 18px;
+        border-radius: 10px;
+        margin-right: 12px;
+        font-size: 15px;
+        background-color:#4fc7ff;
+        color: whitesmoke;
+		float: right;
+		font-weight: bold;
+ 	}
  	
 
 
@@ -190,35 +207,58 @@
 
 <script>
 
+	var msg = "${msg}";
+	
 	$(document).ready(function(){
-		
+		if(msg != ""){
+			alert(msg);
+		}
 	});
-	
-	
-	 function updateStudent(){
-		$("#crystalBtn").attr("form", "updateForm");
-		$("updateForm").submit();
-    }
-	
-	 function convertReadonly(){
-		 $("#crystalBtn").attr("onclick", "updateStudent()");
-	 }
+
+
+ 	  function insertStudent(){
+		 var flag = confirm("학생 생성 하시겠습니까??");
+		 
+		 if(flag){
+			 $("#insertForm").submit();	 
+		 }else{
+			 return false;
+		 }
+ 	 }  
 	 
-	
-	/* function convertReadonly(){
-		$("#phone").prop("readonly" , false);
-		$("#email").prop("readonly" , false);
-		$("#post").prop("readonly" , false);
-		$("#address").prop("readonly" , false );
-		
-		$("#crystalBtn").attr("onclick", "updateStudent()");
-		
-	}
-	
-	
-	function changeReadonly(){
-		
-	} */ 
+ 	 
+ 	  function collegeChange(e){
+ 		  var depart1 = ["국어영문학과","영어영문학과","일어일문학과","사학과"];
+ 		  var depart2 = ["경제경영학과","회계학과","법학과","행정학과"];
+ 		  var depart3 = ["초등교육과","유아교육과"];
+ 		  var depart4 = ["생명공학과","수학과","물리학과","통계학과"];
+ 		  var depart5 = ["건축학과","기계학과","컴퓨터공학과","전자전기과","화학공학과"];
+ 		  var depart6 = ["시각디자인학과","패션디자인학과"];
+ 		  var depart7 = ["연극영화과","실용음악과"];
+ 		  var target = document.getElementById("department");
+ 		 
+ 		 var departmentNo = parseInt(e.value, 10);
+ 		  
+ 		  if(e.value=="1") var d = depart1;
+ 		  else if(e.value=="2") var d =depart2;
+ 		  else if(e.value=="3") var d =depart3;
+ 		  else if(e.value=="4") var d =depart4;
+ 		  else if(e.value=="5") var d =depart5;
+ 		  else if(e.value=="6") var d =depart6;
+ 		  else if(e.value=="7") var d =depart7;
+ 		
+ 		 target.options.length = 0;
+		  
+		  for (x in d) {
+				var opt = document.createElement("option");
+				
+				opt.value = d[x];
+				
+				opt.innerHTML = d[x];
+				target.appendChild(opt);
+			}
+ 	  }
+ 	 
 	
 	window.onload = function(){
 	    document.getElementById("address").addEventListener("click", function(){ //주소입력칸을 클릭하면
@@ -266,6 +306,43 @@
 	    });
 	}
 	
+	// 특수문자 한글 입력 막기
+	function characterCheck(obj) {
+	    var regExp = /[^\w\d\s]/g;
+	    if (regExp.test(obj.value)) {
+	        alert("특수문자와 한글은 입력하실 수 없습니다.");
+	        obj.value = obj.value.replace(regExp, ''); // 특수문자와 한글을 제거
+	    }
+	}
+	
+	// 영어, 특수문자, 한글 입력 막기
+	function characterCheck2(obj) {
+    var regExp = /[^]/g;
+    if (regExp.test(obj.value)) {
+        alert("영어, 특수문자, 한글은 입력하실 수 없습니다.");
+        obj.value = obj.value.replace(regExp, ''); // 모든 문자를 제거
+    }
+}
+	
+	function randomPasswordBtn() {
+	    var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@";
+	    
+	    var randomStr = "";
+	    
+	    for (var i = 0; i < 10; i++) {
+	        var randomIndex = Math.floor(Math.random() * chars.length);
+	        randomStr += chars[randomIndex];
+	        console.log(randomStr);
+	    }
+	    console.log(randomStr);
+	    
+	    var studentPwd = document.getElementById("studentPwd");
+	    if (studentPwd) {
+	        studentPwd.value = randomStr;
+	    }
+	}
+	
+	
 </script>
 </head>
 <body>
@@ -275,7 +352,7 @@
 				<table id="user_log">
 					 <tr>
 						 <td>
-							 님 환영합니다.
+							${loginUser.professorName } 정희재 님 환영합니다.
 						 </td>
 						 <td style="padding-left: 50px;">
 							 <button id="logout-btn" onclick="">로그아웃</button>
@@ -292,7 +369,7 @@
 				<li><a href="#">강의관리</a></li>
 			</ul>
 		</div>
-
+		
 
         <div id="content">
             <div id="category">
@@ -307,31 +384,29 @@
                 </div>
             </div>
             <div id="content_1">
-					<div>
-						<ul>
-							<img src="https://item.kakaocdn.net/do/1bc37545ead4d1b5ccf3af23d5bce5714022de826f725e10df604bf1b9725cfd" style="width:100px; height:100px;" alt="학생얼굴">
-						</ul>
-					</div>
+            	<br>
+					<th><button id="randombtn" onclick="randomPasswordBtn()">비밀번호 생성하기</button></th>
 					<form id="insertForm" action="insertStudent.ad" method="post">
 					<div id="basic_info">
 						<table class="basic_table">
+						<tr>
 							<th>기본 정보</th>
-							<!-- <button id="crystalBtn" onclick="convertReadonly()">수정하기</button> -->
-							<button id="crystalBtn" type="submit">등록하기</button>
-							
+							<button id="crystalBtn" onclick="insertStudent()">등록하기</button>
+						</tr>
 						</table>
 						<br>
 						<hr>
 					</div>
+					<input type="hidden" id="professorNo" name="professorNo" value="${loginUser.professorNo }">
 					<div id="user_infomation">
 						<table id="user_info">
 							<thead>
 								<tr>
 									<th width="100px" height="30px">입학 년도 : </th>
-									<th><input type="text" class="user_info3" id="entranceDate" placeholder="숫자로만 입력하세요."></th>
+									<th><input type="date" class="user_info4" name="entranceDate" id="entrance" ></th>
 									<th width="100px" height="30px">대학(원) : </th>
 									<th>
-										<select name="collage" id="collage" onChange="collegeChange(this.value,department)">
+										<select id="college" name="collegeNo" class="user_info4" onChange="collegeChange(this)">
                                             <option>-선택-</option>
                                             <option value="1">인문대학</option>
                                             <option value="2">사회과학대학</option>
@@ -342,42 +417,10 @@
                                             <option value="7">예술대학</option>
                                         </select>
 									</th>
-								</tr>
-							</thead>
-						</table>
-						<br>
-						<table class="user_info2">
-							<thead>
-								<tr>
-									<th width="100px" height="30px">학번 : </th>
-									<th><input type="text" class="user_info3" placeholder="Ex : S20230001"></th>
 									<th width="100px" height="30px">학과(부) : </th>
 									<th>
-										<select name="department" id="department" onChange="collegeChange2(this.value)">
+										<select id="department" name="departmentNo" class="user_info4">
                                             	<option>-선택-</option>
-                                                <option value="10">국어국문학과</option>
-                                                <option value="11">영어영문학과</option>
-                                                <option value="12">일어일문학과</option>
-                                                <option value="13">사학과</option>
-                                                <option value="14">경제경영학과</option>
-                                                <option value="15">회계학과</option>
-                                                <option value="16">법학과</option>
-                                                <option value="17">행정학과</option>
-                                                <option value="18">초등교육과</option>
-                                                <option value="19">유아교육과</option>
-                                                <option value="20">생명공학과</option>
-                                                <option value="21">수학과</option>
-                                                <option value="22">물리학과</option>
-                                                <option value="23">통계학과</option>
-                                                <option value="24">건축학과</option>
-                                                <option value="25">기계학과</option>
-                                                <option value="26">컴퓨터공학과</option>
-                                                <option value="27">전자전기과</option>
-                                                <option value="28">화학공학과</option>
-                                                <option value="29">시각디자인학과</option>
-                                                <option value="30">패션디자인학과</option>
-                                                <option value="31">연극영화과</option>
-                                                <option value="32">실용음악과</option>
                                             </select>
 									</th>
 								</tr>
@@ -387,10 +430,23 @@
 						<table class="user_info2">
 							<thead>
 								<tr>
-									<th width="100px" height="30px">이름 : </th>
-									<th><input type="text" class="user_info3" placeholder="정자로 입력하세요"></th>
+									<th width="100px" height="30px">학번 : </th>
+									<th><input type="text" class="user_info3" name="studentNo" maxlength="9" onkeyup="characterCheck(this)" onkeydown="characterCheck(this)"></th>
 									<th width="100px" height="30px">비밀번호 : </th>
-									<th><input type="password" id="userPassword" class="user_info3" placeholder="예비 비밀번호를 입력하세요"></th>
+									<th><input type="text" class="user_info3" id="studentPwd" name="studentPwd"><th>
+									<!-- <th width="212px" height="30px">랜덤 비밀번호:</th>
+									<th><button id="passwordBtn" onclick="randomPasswordBtn()">생성하기</button></th> -->
+								</tr>
+							</thead>
+						</table>
+						<br>
+						<table class="user_info2">
+							<thead>
+								<tr>
+									<th width="100px" height="30px">이름 : </th>
+									<th><input type="text" class="user_info3" name="studentName" maxlength="4" onkeyup="characterCheck2(this)" onkeydown="characterCheck2(this)"></th>
+									<th width="100px" height="30px">학년 : </th>
+									<th><input type="text" id="classLevel" name="classLevel" class="user_info3" maxlength="1" onkeyup="characterCheck2(this)" onkeydown="characterCheck2(this)"></th>
 									
 								</tr>
 							</thead>
@@ -400,9 +456,9 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">전화번호 : </th>
-									<th><input type="text" id="phone"class="user_info3" placeholder="(-)없이 입력하세요" ></th>
+									<th><input type="text"  class="user_info3" name="phone" placeholder="숫자만 입력하세요." maxlength="11" onkeyup="characterCheck2(this)" onkeydown="characterCheck2(this)"/></th>
 									<th width="100px" height="30px">E-MAIL : </th>
-									<th><input type="text" id="email"class="user_info3" placeholder="이메일을 입력하세요"></th>
+									<th><input type="text" id="email" name="email" class="user_info3" placeholder="example@example.com" required="이메일을 입력해주세요"></th>
 								</tr>
 							</thead>
 						</table>
@@ -411,18 +467,16 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">우편번호 : </th>
-									<th><input type="text" id="post"class="user_info3"></th>
+									<th><input type="text" id="post" name="post" class="user_info3" readonly></th>
 									<th width="100px" height="30px">주소 : </th>
-									<th><input type="text" id="address"class="user_info3"></th>
+									<th><input type="text" id="address" name="address" class="user_info3"></th>
 								</tr>
 							</thead>
 						</table>
-						<br>
+						</div>
 					</form>
 					</div>
-
+				</div>
             </div>
-        </div>
-    </div>
 </body>
 </html>
