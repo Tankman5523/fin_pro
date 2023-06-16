@@ -442,35 +442,6 @@ public class MemberController {
 		ArrayList<Classes> cList = memberService.selectDepartment(map);
 		return new Gson().toJson(cList);
 	}
-
-	//교수 학적정보 조회
-	@RequestMapping("infoProfessor.me")
-	public String infoProfessor() {
-		
-		return "member/professor/infoProfessor";
-	}
-	
-	//학적 정보수정 - 교수
-	@RequestMapping("updateProfessor.me")
-	public ModelAndView updateProfessor(Professor pr,
-									ModelAndView mv,
-									HttpSession session) {
-		int result = memberService.updateProfessor(pr);
-		
-		
-		if(result>0) {
-			//유저 정보갱신
-			Professor updateStudent = memberService.loginProfessor(pr);
-			session.setAttribute("loginUser", updateStudent);
-			session.setAttribute("alertMsg", "수정 완료");
-			mv.setViewName("redirect:infoProfessor.me");
-		}else { //정보변경실패
-			mv.addObject("errorMsg","수정 실패함요").setViewName("redirect:infoProfessor.me");
-		}
-		
-	return mv;
-		
-	}
 	
 	// 강의시간표 -> 교수명 검색/과목 검색
 	@ResponseBody

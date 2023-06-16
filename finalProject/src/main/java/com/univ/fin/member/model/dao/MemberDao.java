@@ -216,7 +216,7 @@ public class MemberDao {
 
 	public int insertStudent(SqlSessionTemplate sqlSession, Student st) {
 
-		return sqlSession.insert("memberMapper.insertMapper",st);
+		return sqlSession.insert("memberMapper.insertStudent",st);
 	}
 
 	// 강의시간표 -> 교수명 검색/과목 검색
@@ -233,6 +233,11 @@ public class MemberDao {
 	public Graduation selectGraStatus(SqlSessionTemplate sqlSession, HashMap<String, String> h) {
 		return sqlSession.selectOne("memberMapper.selectGraStatus", h);
 	}
+	
+	//학사관리 - 졸업사정표 (교양공통 세부조회)
+		public ArrayList<HashMap<String, String>> detailCommonGra(SqlSessionTemplate sqlSession,HashMap<String, String> h) {
+			return (ArrayList)sqlSession.selectList("memberMapper.detailCommonGra", h);
+		}
 	
 	//(학생)휴,복학 신청 리스트 조회
 	public ArrayList<StudentRest> selectStuRestList(SqlSessionTemplate sqlSession, String studentNo) {

@@ -1,6 +1,7 @@
 package com.univ.fin.money.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.univ.fin.money.model.vo.Scholarship;
 
@@ -15,5 +16,7 @@ public interface ScholarshipService {
 	Scholarship selectOneScholarship(int schNo);
 
 	int updateScholarship(Scholarship sc);
+
+	ArrayList<Scholarship> selectScholarshipListAll(HashMap<String, String> map);
 
 }

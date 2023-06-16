@@ -1,5 +1,6 @@
 package com.univ.fin.member.model.service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -127,9 +128,15 @@ public interface MemberService {
 	
 	//학적정보 수정 (교수)
 	int updateProfessor(Professor pr);
-
-	// 회원추가 (학생)
+	
+	//학생추가 (관리자)
 	int insertStudent(Student st);
+
+
+	
+
+
+
 	
 	// 학생 개인시간표 -> 학년도,학기 조회
 	ArrayList<String> selectStudentClassTerm(String studentNo);
@@ -142,6 +149,9 @@ public interface MemberService {
 	
 	//학사관리 - 졸업사정표(전체 이수현황 조회)
 	Graduation selectGraStatus(HashMap<String, String> h);
+	
+	//학사관리 - 졸업사정표 (교양공통 세부조회)
+	ArrayList<HashMap<String, String>> detailCommonGra(HashMap<String, String> h);
 	
 	//(학생)휴,복학 신청 리스트 조회
 	ArrayList<StudentRest> selectStuRestList(String studentNo);
@@ -195,3 +205,4 @@ public interface MemberService {
 	int updateClassReject(Classes c);
 
 }
+

@@ -424,14 +424,13 @@
 		WHERE S.DAY = #{day}
 		AND CLASS_YEAR = #{classYear}
 		AND CLASS_TERM = #{classTerm}
+		AND STUDENT_NO = #{studentNo}
   		<choose>
   			<when test="classHour == 2">
   				AND (S.PERIOD = #{period}+1 OR S.PERIOD = #{period})
-  				AND STUDENT_NO = #{studentNo}
   			</when>
   			<when test="classHour == 1">
   				AND S.PERIOD = #{period}
-  				AND STUDENT_NO = #{studentNo}
   			</when>
   		</choose>
   	</select>
@@ -576,6 +575,18 @@
 		        AND C.DIVISION = 0
 		        AND DEPARTMENT_NAME = #{departmentName}) "C"
 		]]>
+  	</select>
+  	
+  	<!-- 학사관리 - 졸업사정표 (교양공통 세부조회) -->
+  	<select id="detailCommonGra" resultType="HashMap">
+  		SELECT CLASS_NAME, CREDIT
+                 		 , C.CLASS_YEAR || '-' || C.CLASS_TERM || NVL(DECODE(GRADE_LEVEL,'F','학기'),'학기(이수)') "STATE"
+                 		 , GRADE_LEVEL,NVL(DECODE(GRADE_LEVEL,'F',0),CREDIT) "RESULT_CREDIT"
+		FROM CLASS C
+		JOIN GRADE G ON (C.CLASS_NO = G.CLASS_NO)
+		WHERE STUDENT_NO = #{studentNo}
+		AND G.CLASS_YEAR = #{year}
+		AND G.CLASS_TERM = #{term}
   	</select>
   	
   	<!-- (학생)상담신청 내역 가져오기 -->
@@ -853,4 +864,11 @@
   		WHERE CLASS_NO = #{classNo}
   		AND STATUS = 'B'
   	</update>
+  	
+  	<insert id="insertStudent">
+  	INSERT INTO STUDENT (STUDENT_NO, DEPARTMENT_NO, COLLEGE_NO, ENTRANCE_DATE, STUDENT_NAME, STUDENT_PWD, PHONE, EMAIL, POST, ADDRESS,CLASS_LEVEL)
+	VALUES (SEQ_SNO.NEXTVAL,(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
+  	</insert>
+  	
   </mapper>
+

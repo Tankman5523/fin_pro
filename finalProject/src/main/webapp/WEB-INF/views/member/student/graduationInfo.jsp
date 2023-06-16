@@ -239,12 +239,128 @@
 						</script>
             		</div>
             	</div>
-				<div id="modalArea">
-		         	<div class="modalDiv" id="commonModal">
-		         	</div>
-		        </div>
             </div>
 		</div>
+				<div id="modalArea">
+		         	<div class="modalDiv" id="commonModal">
+		         		<div class="common" id="commonHeader">
+		         		<span>졸업세부영역별현황</span>
+		         		<button id="modalClose" onclick="hideModal(1);">X</button>
+		         		</div>
+		         		<div class="subLine">
+		         			<span>교양공통(교공)</span>
+		         			<hr>
+		         		</div>
+		         		<div class="common" id="commonBody">
+		         			
+		         			<table id="comBodyTable" border="1">
+		         				<thead>
+			         				<tr>
+			         					<th>과목명</th>
+			         					<th>필수 이수학점</th>
+			         					<th>이수현황</th>
+			         					<th>등급</th>
+			         					<th>이수학점</th>
+			         				</tr>
+		         				</thead>
+		         				<tbody>
+		         				</tbody>
+		         			</table>
+		         		</div>
+		         		<div class="subLine">
+		         			<span>이수방법</span>
+		         			<hr>
+		         		</div>
+		         		<div class="common" id="commonBody2">
+		         			<ul>
+		         				<li>
+		         					교양공통 기준학점 이상 이수
+		         				</li>
+		         				<li>
+		         					폐지 혹은 면제된 과목은 이수하지 않아도 됨<br>
+		         					(단,폐지된 과목이라도 대체과목이 지정되어 있으면 해당과목은 이수해야 함)
+		         				</li>
+		         				<li>
+		         					공통 : 타대학(타기관)취득 학점은 자가진단 본화면에서는 집계되나 팝업창에서는 해당 과목 내역을 확인할 수 없음<br>
+		         					★주의사항★<br>
+		         					- 타전공 취득 학점은 교양일반으로 집계되며 해당 강의 학점으로 인정해줌<br>
+		         				</li>
+		         			</ul>
+		         		</div>
+		         		<div class="common" id="commonFooter">
+		         			<button onclick="hideModal(1)">확인</button>
+		         		</div>
+		         	</div>
+		        </div>
+		        
+		        <script>
+		        	/* 교양공통 세부확인 모달 */
+		        	function commonBtn(){
+		        		//년도 추출
+		        		var nowYear = $("#graDate").val().substring(0,4);
+		        		
+		        		$.ajax({
+		        			url : "detailCommonGra.st",
+		        			data : {
+		        				studentNo : "${student.studentNo}",
+		        				year : nowYear,
+		        				term : "${student.classTerm}"
+		        			},
+		        			success : function(list){
+		        				var result = "";
+		        				var sumCredit = 0; 		 //필수 이수학점 총계
+		        				var sumResultCredit = 0; //이수학점 총계
+		        				if(list.length !== 0){
+		        					for(var i=0; i<list.length; i++){
+		        						console.log(typeof list[i].GRADE_LEVEL);
+			        					result +="<tr>"
+			        						   +"<td>" + list[i].CLASS_NAME + "</td>"
+			        						   +"<td>" + list[i].CREDIT + "</td>"
+			        						   +"<td>" + list[i].STATE + "</td>";
+			        						   if(list[i].GRADE_LEVEL === "F"){
+			        							 result +="<td style='color:#e65f3e';><b>" + list[i].GRADE_LEVEL + "</b></td>";
+			        						   }else{
+												 result +="<td style='color:rgb(52, 152, 219)';><b>" + list[i].GRADE_LEVEL + "</b></td>";
+			        						   }
+			        					result +="<td>" + list[i].RESULT_CREDIT + "</td>"
+			        						   +"</tr>";
+			        						   sumCredit += list[i].CREDIT;
+			        						   sumResultCredit += list[i].RESULT_CREDIT;
+		        					}
+		        					result +="<tr>"
+		        						   +"<td>계</td>"
+		        						   +"<td>" + sumCredit + "</td>"
+		        						   +"<td colspan='2'></td>"
+		        						   +"<td><b>" + sumResultCredit + "</b></td>";
+		        				}else{
+		        					result += "<tr><th colspan='5'>해당 과목을 이수한 내역이 없습니다.</th></tr>";
+		        				}
+		        				$("#comBodyTable>tbody").html(result);
+		        			},
+		        			error : function(){
+		        				console.log("교양공통 세부확인조회 통신실패");
+		        			}
+		        		});
+		        		
+		        		document.getElementById("modalArea").style.display = 'flex';
+		        	}
+		        	
+		        	/* 모달창의 확인버튼 클릭 시 모달 닫기 */
+		        	function hideModal(num){
+		        		if(num == 1){
+		        			document.getElementById("modalArea").style.display = 'none';
+		        		}
+		        	}
+		        	
+		        	/* 모달영역 외 클릭 시 모달 닫기 */
+		        	$(function(){
+		        		$("#modalArea").on("click",function(e){
+		        			if(e.target.id == "modalArea"){
+		        				document.getElementById("modalArea").style.display = 'none';
+		        			}
+		        		});
+		        	});
+		        </script>
 	</div>
 </body>
 </html>
