@@ -181,15 +181,15 @@
 				<p>공지사항</p>
 				
 				<form id="searchForm" action="search.mp" method="get" align="center">
-					<select>
-						<option value="both">제목+내용</option>
-						<option value="title">제목</option>
-						<option value="content">내용</option>
-					</select>				
-					<label>
+					<div id="btn-area">
+						<select>
+							<option value="both">제목+내용</option>
+							<option value="title">제목</option>
+							<option value="content">내용</option>
+						</select>
 						<input type="text" name="keyword" placeholder="검색어를 입력해주세요.">
 						<button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-					</label>
+					</div>				
 				</form>
 				
 				<table class="notice_table">
@@ -204,7 +204,10 @@
 					<tbody>
 						<c:forEach var="n" items="${list }">
 							<tr>
-								<td>${n.categoryName }</td>
+								<td>
+									<input type="hidden" class="nno" value="${n.noticeNo }">
+									${n.categoryName }
+								</td>
 								<td>${n.noticeTitle }</td>
 								<td>
 									<c:if test="${not empty n.originName }">
@@ -252,6 +255,21 @@
 						</c:choose>
 					</ul>
 				</div>
+				
+				<script type="text/javascript">
+					const tr = document.querySelectorAll('tbody > tr')
+					
+					tr.forEach(function(tr, index){
+						
+						tr.addEventListener('click', function(){
+							const nno = tr.children[0].children[0].value
+							
+							
+						})
+						
+					})
+					
+				</script>
 			</div>
 		</div>
 	</div>
