@@ -7,6 +7,7 @@ import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Grade;
+import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.vo.Professor;
@@ -134,6 +135,12 @@ public interface MemberService {
 
 	// 학생 개인시간표 -> 학기 선택 후 시간표 조회
 	ArrayList<Classes> selectStudentTimetable(HashMap<String, String> map);
+	
+	//학사관리 - 졸업사정표
+	Graduation graduationInfo(String sno);
+	
+	//학사관리 - 졸업사정표(전체 이수현황 조회)
+	Graduation selectGraStatus(HashMap<String, String> h);
 	
 	//(학생)휴,복학 신청 리스트 조회
 	ArrayList<StudentRest> selectStuRestList(String studentNo);

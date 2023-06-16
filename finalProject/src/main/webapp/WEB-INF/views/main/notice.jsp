@@ -41,154 +41,138 @@
 			</ul>
 			
 			<div class="tab_contents">
-				
 				<div class="tab_content active">
-<!-- 					<div class="faq_content"> -->
-						<span>1</span>
-						<span>2</span>
-						<span>3</span>
-<!-- 					</div> -->
+					
 				</div>
-				
-<!-- 				<div class="tab_content janghak"> -->
-<!-- 					<div class="faq_content"> -->
-<!-- 						<span class="thumb_title"> -->
-<!-- 							2 -->
-<!-- 						</span> -->
-<!-- 						<span class="thumb_content"> -->
-<!-- 							2 -->
-<!-- 						</span> -->
-<!-- 					</div> -->
-<!-- 				</div> -->
-				
-<!-- 				<div class="tab_content iphak"> -->
-<!-- 					<div class="faq_content"> -->
-<!-- 						<span class="thumb_title"> -->
-<!-- 							3 -->
-<!-- 						</span> -->
-<!-- 						<span class="thumb_content"> -->
-<!-- 							3 -->
-<!-- 						</span> -->
-<!-- 					</div> -->
-<!-- 				</div> -->
-				
-<!-- 				<div class="tab_content chaeyong"> -->
-<!-- 					<div class="faq_content"> -->
-<!-- 						<span class="thumb_title"> -->
-<!-- 							4 -->
-<!-- 						</span> -->
-<!-- 						<span class="thumb_content"> -->
-<!-- 							4 -->
-<!-- 						</span> -->
-<!-- 					</div> -->
-<!-- 				</div> -->
-				
-<!-- 				<div class="tab_content gita"> -->
-<!-- 					<div class="faq_content"> -->
-<!-- 						<span class="thumb_title"> -->
-<!-- 							5 -->
-<!-- 						</span> -->
-<!-- 						<span class="thumb_content"> -->
-<!-- 							5 -->
-<!-- 						</span> -->
-<!-- 					</div> -->
-<!-- 				</div> -->
-				
+				<div class="tab_content">
+					
+				</div>
+				<div class="tab_content">
+					
+				</div>
+				<div class="tab_content">
+					
+				</div>
+				<div class="tab_content">
+					
+				</div>
 			</div>
 			
 			<script type="text/javascript">
+			
 				const tabBtn = document.querySelectorAll('.tab_btn')
 				const tabCont = document.querySelectorAll('.tab_content')
 				
-// 				const category = new Array()
-// 				const title = new Array()
-// 				const content = new Array()
 				
-// 				var btnText = ""
-				
-// 				const faqCont = document.getElementsByClassName('faq_content')
-				
-// 				const titleSpan = document.createElement('span')
-// 				titleSpan.className = 'thumb_title'
-				
-// 				const contentSpan = document.createElement('span')
-// 				contentSpan.className = 'thumb_content'
-				
-// 				<c:forEach var="f" items="${faq}">
-// 					category.push("${f.noticeCategory}")
-// 					title.push("${f.noticeTitle}")
-// 					content.push("${f.noticeContent}")
-// 				</c:forEach>
-				
-				tabBtn.forEach((tab, index) => {
+				$('document').ready(function(){
+					
+					const active = tabBtn[0].children[0].innerHTML
+					
+					$.ajax({
+		                url: "loadFaq.mp",
+		                data: {
+		                	active : active
+		                },
+		                success: function (result) {
+		                	var str = "";
+		                	
+		                	for(var i in result){
+			                	str +="<div class='faq_content'>"
+		                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
+			                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+			 		                +"</div>"
+		                	}
+		                	
+		                	$(".tab_contents").children().eq(0).html(str);
+		                },
+		                error : function(){
+		                	console.log("통신 오류")
+		                }
+					})
+				});
+			
+				var btnText = ""
+					
+				tabBtn.forEach(function(tab, index){
 										
 					tab.addEventListener('click', function(){
 											
-						tabCont.forEach((cont) => {
+						tabCont.forEach(function(cont){
 							cont.classList.remove('active')
 						})
 						
-						tabBtn.forEach((btn) => {
+						tabBtn.forEach(function(btn){
 							btn.classList.remove('active')
 						})
 						
 						tabCont[index].classList.add('active')
 						tabBtn[index].classList.add('active')
+						
+						$.ajax({
+			                url: "clickFaq.mp",
+			                data: {
+			                	active : tab.children[0].innerHTML
+			                },
+			                success: function (result) {
+			                	
+			                	var str = "";
+			                	
+			                	switch (result[0].noticeCategory) {
+								case 1:
+				                	for(var i in result){
+					                	str +="<div class='faq_content'>"
+				                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
+					                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+					 		                +"</div>"
+				                	}
+				                	$(".tab_contents").children().eq(0).html(str);
+									break;
+								case 2:
+				                	for(var i in result){
+					                	str +="<div class='faq_content'>"
+				                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
+					                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+					 		                +"</div>"
+				                	}
+				                	$(".tab_contents").children().eq(1).html(str);
+									break;
+								case 3:
+				                	for(var i in result){
+					                	str +="<div class='faq_content'>"
+				                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
+					                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+					 		                +"</div>"
+				                	}
+				                	$(".tab_contents").children().eq(2).html(str);
+									break;
+								case 4:
+				                	for(var i in result){
+					                	str +="<div class='faq_content'>"
+				                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
+					                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+					 		                +"</div>"
+				                	}
+				                	$(".tab_contents").children().eq(3).html(str);
+									break;
+								case 5:
+				                	for(var i in result){
+					                	str +="<div class='faq_content'>"
+				                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
+					                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+					 		                +"</div>"
+				                	}
+				                	$(".tab_contents").children().eq(4).html(str);
+									break;								
+								}
+			                },
+							error : function(){
+			                	console.log("통신 오류")
+			                }
+						})
+						
+						
 					})
-					
 				})
-				
-				
-				window.onload = function(){
-// 				(function(){
-					
-				
-					
-					const category = new Array()
-					const title = new Array()
-					const content = new Array()
-					
-					const active = document.getElementsByClassName('.tab_content active')
-					
-					console.log(active)
-// 					const faqCont = document.getElementsByClassName('faq_content')
-					
-					const faqCont = document.createElement('div')
-	 				faqCont.className = 'faq_content'
-	 				
-	 				const titleSpan = document.createElement('span')
-	 				titleSpan.className = 'thumb_title'
-					
-	 				const contentSpan = document.createElement('span')
-	 				contentSpan.className = 'thumb_content'
-					
-					var btnText = ""
-					
-					<c:forEach var="f" items="${faq}">
-						category.push("${f.noticeCategory}")
-						title.push("${f.noticeTitle}")
-						content.push("${f.noticeContent}")
-					</c:forEach>
-					
-						
-						
-// 					while (faqCont.length < 4) {
-						for(var i=0; i<category.length; i++){
-							if(category[i] == 1){
-								titleSpan.innerHTML = title[i]
-								contentSpan.innerHTML = content[i]
-								faqCont.append(titleSpan, contentSpan)
-// 								active.appendChild(faqCont)
-// 								console.log(active)
-							}
-						}
-// 					}			
-						
-						
-// 				})()	
-    			}
-				
-				
 			</script>
 		</div>
 		
@@ -198,9 +182,9 @@
 				
 				<form id="searchForm" action="search.mp" method="get" align="center">
 					<select>
+						<option value="both">제목+내용</option>
 						<option value="title">제목</option>
 						<option value="content">내용</option>
-						<option value="both">제목+내용</option>
 					</select>				
 					<label>
 						<input type="text" name="keyword" placeholder="검색어를 입력해주세요.">
@@ -259,7 +243,7 @@
 						
 						<%-- 다음 페이지 --%>
 						<c:choose>
-							<c:when test="${pi.currentPage eq 1 }">
+							<c:when test="${pi.currentPage eq pi.maxPage }">
 								<li class="page-btn"><a class="pLink" href="#"><i class="fa-solid fa-chevron-right"></i></a></li>
 							</c:when>
 							<c:otherwise>

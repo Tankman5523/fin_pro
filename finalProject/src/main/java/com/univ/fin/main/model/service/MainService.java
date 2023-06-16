@@ -13,8 +13,19 @@ public interface MainService {
 	//게시글 목록 조회
 	ArrayList<Notice> selectNoticeList(PageInfo pi);
 
-	//FAQ 조회
-	ArrayList<Notice> selectFaqList();
+	//학사 FAQ 조회
+	ArrayList<Notice> selectHaksaList();
+	
+	//장학 FAQ 조회
+	ArrayList<Notice> selectJangHakList();
 
-	int selectFaqCount();
+	//입학 FAQ 조회
+	ArrayList<Notice> selectIpHakList();
+
+	//채용 FAQ 조회
+	ArrayList<Notice> selectChaeYongList();
+
+	//기타 FAQ 조회
+	ArrayList<Notice> selectGitaList();
+
 }
