@@ -18,20 +18,21 @@
                 <div id="cate_title">
                     <span style="margin: 0 auto;">금전관리</span>
                 </div>
-                <div class="child_title">
-                    <a href="#">등록금 관리</a>
+                <div class="child_title" style="font-weight:bold;">
+                    <a href="allList.rg">등록금 관리</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">장학금 관리</a>
+                    <a href="allList.sc">장학금 관리</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">급여 관리</a>
+                    <a href="allList.sl">급여 관리</a>
                 </div>
             </div>
             <div id="content_1">
 				<div style="width: 90%;height: 90%;margin: 5%;">
                     <div>
-                        <button>장학금수혜내역</button> <button>장학금 입력</button>
+                        <button onclick="location.href='allList.rg'">등록금 납부 현황</button> <button onclick="location.href='nonPaidList.rg'">미납금 조회</button>
+                        <button onclick="location.href='insert.rg'">등록금 입력</button>
                         <hr>
                         <h3>등록금 납부 조회</h3>
                     </div>
@@ -43,19 +44,19 @@
                             </div>
                 
                             <div class="search" style="float:right">
-                                <label for="studentName">이름검색</label><input type="text" name="studentName">
-                                <select name="payStatus" id="">
+                                <label for="studentName">이름검색</label><input type="text" name="studentName" id="studentName">
+                                <select name="payStatus" id="payStatus">
                                     <!--미입금 / 금액부족은 미납에서 처리-->
                                     <option value="0">입금여부</option>
                                     <option value="1">입금</option>
                                     <option value="2">금액초과</option>
                                 </select>
-                                <button>조회</button>
+                                <button onclick="selectRegistPay()">조회</button>
                             </div>
                         </div>
                         <br>
                         <div class="listBody">
-                        <table border="1" style="width: 100%;text-align: center;">
+                        <table border="1" style="width: 100%;text-align: center;" id="registPayList">
                             <thead>
                             	<tr>
 	                                <th><input type="checkbox" name="checkAll" id="checkAll"></th>
@@ -71,35 +72,89 @@
                             </thead>
                 
                             <tbody>
-                            	<c:choose>
-                            		<c:when test="${not empty list}">
-                            			<c:forEach var="r" items="list">
-		                            	<tr>
-			                                <td><input type="checkbox" name="check" class="check"></td>
-			                                <td>${r.payDate}</td>
-			                                <td>${r.studentNo}</td>
-			                                <td>${r.studentName}</td>
-			                                <td>${r.inputPay}</td>
-			                                <td>${r.mustPay}</td>
-			                                <td>${r.payStatus}</td>
-			                                <td>${r.payAccountNo}</td>
-			                                <td><button>환급</button></td>
-		                                </tr>
-		                                </c:forEach>
-                                	</c:when>
-                                	<c:otherwise>
-                                		<tr>
-                                			<td colspan="9">데이터가 없습니다.</td>
-                                		</tr>
-                                	</c:otherwise>
-                                </c:choose>
+                            
                             </tbody>
                         </table>
                         </div>
                 
                         <script>
-                            var checkAll = document.querySelector("#checkAll");
+                           	function selectRegistPay(){
+                           		$.ajax({
+                           			url : "allList.rg",
+                           			data : {
+                           				keyword : $("#studentName").val(),
+                           				filter : $("#payStatus").val()
+                           			},
+                           			method : "POST",
+                           			success : function(list){
+                           				var str = "";
+                           				if(!list.isEmpty){
+                           					for(var i in list){
+                           						str +="<tr>"
+                           							 +"<td><input type='checkbox' name='check' class='check'></td>"
+                           							 +"<td>"+list[i].payDate+"</td>"
+                           							 +"<td>"+list[i].studentNo+"</td>"
+                           							 +"<td>"+list[i].studentName+"</td>"
+                           							 +"<td>"+list[i].inputPay+"</td>"
+                           							 +"<td>"+list[i].mustPay+"</td>"
+                           							 +"<td>"+list[i].payStatus+"</td>"
+                           							 +"<td>"+list[i].payAccountNo+"</td>"
+                           							 +"<td><button class='refundBtn'>환급</button><input type='hidden' name='regNo' id='regNo'></td>"
+                           							 +"</tr>"
+                           					}
+                           				}else{
+                           					str +="<tr><td colspan='9'>데이터가 없습니다.</td></tr>"
+                           				}
+                           				$("#registPayList>tbody").html(str);
+                           			},
+                           			error : function(){
+                           				alert("통신오류");
+                           			}
+                           				
+                           		});
+                           	}
                 			
+                           	$(function(){
+                           		$("#checkAll").click(function(){
+                            		var allcheck = $("#checkAll").is(":checked");
+                            		
+                            		if(allcheck){
+                            			$("input:checkbox").prop("checked",true);
+                            		}else{
+                            			$("input:checkbox").prop("checked",false);
+                            		}
+                            	});
+                           		
+                           		$(".refundBtn").on("click","button",function(){
+                           			var overValue = 0;
+                           			var control = comfirm("초과금액 "+overValue+"(원) 을 환급하시겠습니까?");
+                           			
+                           			$.ajax({
+                           				url : "refund.rg",
+                           				data : {
+                           					/*
+                           					inputPay : $(this),
+                           					mustPay : $(this),
+                           					regNo : $(this) 
+                           					*/
+                           				},
+                           				success : function(result){
+                           					if(result=='Y'){
+                           						alert("초과금 환급완료");
+                           					}else{
+                           						alert("환급 실패! 비정상적 데이터입니다.");
+                           					}
+                           				},
+                           				error : function(){
+                           					alert("통신 오류");
+                           				}
+                           			});
+                           		})
+                           	});
+                           	
+                           	
+                           	
+                           	
                         </script>
                 
                     </div>    
