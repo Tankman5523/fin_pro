@@ -28,7 +28,7 @@
                     <a href="searchRegClassForm.st">수강신청 내역조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="preRegisterClass.st">예비수강신청</a>
+                    <a href="preRegisterClassForm.st">예비수강신청</a>
                 </div>
             </div>
             <div id="content_1">
@@ -393,7 +393,7 @@
             				var regCredit = parseInt($(this).closest("tr").children().eq(5).text().charAt(2)); //신청하려는 강의 학점추출
             				var sumCredit = parseInt($("#sumCredit").val()); //신청된 강의의 학점 합계
             				if((sumCredit+regCredit)>20){
-            					alert("한 학기에 최대 20학점을 초과할 수 없습니다.")
+            					alert("한 학기에 최대 20학점을 초과할 수 없습니다.");
             				}else{
 	            				$.ajax({
 	            					url : "postRegisterClass.st",

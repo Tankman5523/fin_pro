@@ -2,11 +2,9 @@
 <beans:beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:websocket="http://www.springframework.org/schema/websocket"
 	xmlns="http://www.springframework.org/schema/mvc"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xsi:schemaLocation="http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.3.xsd
-		http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 
@@ -28,5 +26,37 @@
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
 	</context:component-scan>
+	
+  <mvc:interceptors>
+  
+  	<!-- 비로그인시 학생,임직원관련 접근 불가처리 -->
+ 	<mvc:interceptor>
+	   	<mvc:mapping path="/*.st"/>	<!-- 학생 -->
+	   	<mvc:mapping path="/*.pr"/>	<!-- 임직원 -->
+	   	<beans:bean class="com.univ.fin.common.interceptor.LoginUserInterceptor" id="loginUserInterceptor"/>
+    </mvc:interceptor>
+  
+    <!-- 넘어오는 값중에  studentNo가 있어야 처리 가능 -->
+    <mvc:interceptor>
+      <mvc:mapping path="/postRegBucket.st"/> 		<!-- 수강신청 - 수강 조회 리스트 -->
+      <mvc:mapping path="/postRegClass.st"/> 		<!-- 수강신청 - 수강 조회 리스트 -->
+      <mvc:mapping path="/postRegisterClass.st" /> 	<!-- 수강신청 - 수강신청-->
+      <mvc:mapping path="/postRegList.st"/> 		<!-- 수강신청 - 수강신청내역 조회 -->
+      <mvc:mapping path="/delPostRegList.st"/> 		<!-- 수강신청 - 수강신청내역 수강취소 -->
+      <mvc:mapping path="/preRegClass.st"/> 		<!-- 예비수강신청 - 수강 조회 리스트 -->
+      <mvc:mapping path="/preRegisterClass.st" />	<!-- 예비수강신청 - 수강담기 -->
+      <mvc:mapping path="/preRegList.st"/> 			<!-- 예비수강신청 - 장바구니 조회 -->
+      <mvc:mapping path="/delPreRegList.st"/>		<!-- 예비수강신청 - 장바구니 수강취소 -->
+      <mvc:mapping path="/searchRegList.st"/>		<!-- 해당 학생의 선택년도,학기 수강신청 내역 조회 -->
+      <beans:bean class="com.univ.fin.common.interceptor.StudentNoInterceptor" id="studentNoInterceptor"/>
+    </mvc:interceptor>
+    
+    <!-- 회원(학생,임직원) 인터셉터 -->
+    <mvc:interceptor>
+    	<mvc:mapping path="/changePwd.me"/> <!-- 비밀번호 초기화 - 비밀번호 변경 -->
+    	<beans:bean class="com.univ.fin.common.interceptor.MemberInterceptor" id="memberInterceptor"/>
+    </mvc:interceptor>
+    
+  </mvc:interceptors>
 	
 </beans:beans>

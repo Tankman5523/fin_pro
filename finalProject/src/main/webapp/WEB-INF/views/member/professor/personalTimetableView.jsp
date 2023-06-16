@@ -9,29 +9,26 @@
 </head>
 <body>
 	<div class="wrap">
-		<%@include file="../../common/student_menubar.jsp" %>
+		<%@include file="../../common/professor_menubar.jsp" %>
 		<div id="content">
             <div id="category">
                 <div id="cate_title">
                     <span style="margin: 0 auto;">학사관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="infoStudent.st">학적 정보 조회</a>
+                    <a href="infoProfessor.pr">교수 정보 관리</a>
                 </div>
-                <div class="child_title">
-                    <a href="personalTimetable.st" style="color:#00aeff; font-weight: 550;">개인 시간표</a>
+				<div class="child_title">
+                    <a href="#">강의 시간표</a>
                 </div>
-                <div class="child_title">
-                    <a href="#">휴/복학 신청</a>
+				<div class="child_title">
+                    <a href="personalTimetable.pr">개인 시간표</a>
                 </div>
-                <div class="child_title">
-                    <a href="#">휴/복학 조회</a>
+				<div class="child_title">
+                    <a href="#">안식/퇴직 신청 조회</a>
                 </div>
-                <div class="child_title">
-                    <a href="graduationInfoForm.st">졸업 사정표</a>
-                </div>
-                <div class="child_title">
-                    <a href="#">졸업 확정 신고</a>
+				<div class="child_title">
+                    <a href="#">안식/퇴직 신청</a>
                 </div>
             </div>
             <div id="content_1">
@@ -165,7 +162,7 @@
 	                	clearPage();
 	                }
 	                
-	                function prevTerm() { // 마지막 학기일 경우 alert, 무조건 재학한 이전학기로
+	                function prevTerm() { // 마지막 학기일 경우 alert, 무조건 강의한 이전학기로
 	                	var $thisYear = $("select[name=year]");
 	                	var $term = $("select[name=term]");
 	                
@@ -184,7 +181,7 @@
 	                	}
 	                }
 	                
-	                function nextTerm() { // 마지막 학기일 경우 alert, 무조건 재학한 다음학기로
+	                function nextTerm() { // 마지막 학기일 경우 alert, 무조건 강의한 다음학기로
 	                	var $thisYear = $("select[name=year]");
 	                	var $term = $("select[name=term]");
 	                	
@@ -204,53 +201,26 @@
 	                }
 	                
 	                function selectTimetable() {
-	                	var $classSet = new Set();
-						var $classArr = [];
 	                	clearPage();
 	                	
 	                	$.ajax({
-	                		url: "selectStudentTimetable.st",
+	                		url: "selectProfessorTimetable.pr",
 	                		data: {
 	                			year: $("#year").val(),
                 				term: $("#term").val()
 	                		},
 	                		success: function(cList) {
-								for(var i=0;i<cList.length;i++) {
-									$classSet.add(cList[i].classNo);
-								}
-								$classArr = Array.from($classSet);
-								
 								var str = "";
-								var tmp = 0;
 								for(var i=0;i<cList.length;i++) {
-									var $index = $classArr.indexOf(cList[i].classNo);
-									
 									/* top: 66.7*(period-1), left: 186*(day-1) */
-									if(cList[i].classNo == tmp) { // 2시간 강의
-// 										str += "<div class='stClass-real' style='top:" + 70*(cList[i-1].period-1) + "px; left:" + 186*(cList[i].day-1)
-// 										+ "px; width:186px; height:140px;'><span>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
-										
-										str += "<div class='stClass_class" + $index + "' style='top:" + 70*(cList[i-1].period-1) + "px; left:" + 185.7*(cList[i].day-1)
+									if(cList[i].period == 2) { // 2시간 강의
+										str += "<div class='stClass_class" + i + "' style='top:" + 70*(cList[i].period-1) + "px; left:" + 185.7*(cList[i].day-1)
 										+ "px; width:185.8px; height:140px;'><span style='margin: 20px auto; line-height: 200%;'>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
 									}
 									else { // 1시간 강의
-// 										str += "<div class='stClass-real' style='top:" + 70*(cList[i].period-1) + "px; left:" + 186*(cList[i].day-1)
-// 												+ "px; width:186px; height:70px;'><span>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
-												
-										str += "<div class='stClass_class" + $index + "' style='top:" + 70*(cList[i].period-1) + "px; left:" + 185.7*(cList[i].day-1)
+										str += "<div class='stClass_class" + i + "' style='top:" + 70*(cList[i].period-1) + "px; left:" + 185.7*(cList[i].day-1)
 												+ "px; width:185.8px; height:70px;'><span style='margin: 5px auto;'>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
 									}
-									tmp = cList[i].classNo;
-									
-									// 한 줄씩 다른 색깔 나오게 시도....
-// 									if(cList[i].period%2 == 0) { // 짝수 교시
-// 										str += "<div class='stClass-real' style='top:" + 70*(cList[i].period-1) + "px; left:" + 186*(cList[i].day-1)
-// 											+ "px; width:186px; height:70px;'><span>" + cList[i].className + "<br>" + cList[i].classroom + "</span></div>";
-// 									}
-// 									else {
-// 										str += "<div style='top:" + 70*(cList[i].period-1) + "px; left:" + 186*(cList[i].day-1)
-// 										+ "px; width:186px; height:70px;'><span>" + cList[i].className + "<br>" + cList[i].classroom + "</span></div>";
-// 									}
 								}
 								
 								$(".area22").append(str);

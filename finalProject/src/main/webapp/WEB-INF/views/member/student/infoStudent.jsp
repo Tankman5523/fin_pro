@@ -285,7 +285,7 @@
                     <a href="studentRestList.st">휴/복학 조회</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">졸업사정표</a>
+                    <a href="graduationInfoForm.st">졸업사정표</a>
                 </div>
 				<div class="child_title">
                     <a href="#">졸업 확정 신고</a>

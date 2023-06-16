@@ -38,7 +38,7 @@
 	    <ul id="nav">
             <li><a href="#">홈</a></li>
             <li><a href="#">등록/장학</a></li>
-            <li><a href="#">학사관리</a></li>
+            <li><a href="infoProfessor.pr">학사관리</a></li>
             <li><a href="#">상담관리</a></li>
             <li><a href="classCreateSelect.pr">강의관리</a></li>
             <li><a href="#">수업관리</a></li>

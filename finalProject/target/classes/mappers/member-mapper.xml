@@ -118,8 +118,8 @@
 		<result column="END_DATE" property="endDate"/>
 		<result column="PAY_STATUS" property="payStatus"/>
 	</resultMap>
-  	
-  	<resultMap type="attachment" id="attachmentResultSet">
+	
+	<resultMap type="attachment" id="attachmentResultSet">
   		<result column="FILE_NO" property="fileNo"/>
   		<result column="ORIGIN_NAME" property="originName"/>
   		<result column="CHANGE_NAME" property="changeName"/>
@@ -127,6 +127,31 @@
   		<result column="UPLOAD_DATE" property="uploadDate"/>
   		<result column="STATUS" property="status"/>
   	</resultMap>
+	
+	<resultMap type="grade" id="gradeResultMap">
+		<result column="DEPARTMENT_NAME" property="departmentName"/>
+		<result column="STUDENT_NO" property="studentNo"/>
+		<result column="CLASS_LEVEL" property="classLevel"/>
+		<result column="STUDENT_NAME" property="studentName"/>
+		<result column="SCORE" property="score"/>
+		<result column="GRADE_LEVEL" property="gradeLevel"/>
+	</resultMap>
+  	
+  	<resultMap type="graduation" id="graduationResultMap">
+  		<result column="STUDENT_NO" property="studentNo"/>
+  		<result column="STUDENT_NAME" property="studentName"/>
+  		<result column="ENTRANCE_DATE" property="entranceDate"/>
+  		<result column="COLLEGE_NAME" property="collegeName"/>
+  		<result column="DEPARTMENT_NAME" property="departmentName"/>
+  		<result column="STATUS" property="status"/>
+  		<result column="CLASS_LEVEL" property="classLevel"/>
+  		<result column="CLASS_TERM" property="classTerm"/>
+  		<result column="SUMCREDIT" property="sumCredit"/>
+  		<result column="COMMON_CLASS" property="commonClass"/>
+  		<result column="NOMAL_CLASS" property="nomalClass"/>
+  		<result column="MAJOR_CLASS" property="majorClass"/>
+  	</resultMap>
+  	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
   		SELECT STUDENT_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,FILE_NO,STUDENT_NAME,STUDENT_PWD,
@@ -416,6 +441,13 @@
   		INSERT INTO SCHEDULE VALUES(#{classNo},#{studentNo},#{day},#{period})
   	</insert>
   	
+  	<!-- 수강신청 - 수강신청(해당 과목 장바구니에서 지워주기) -->
+  	<delete id="postRegDelBucket">
+  		DELETE FROM BUCKET
+  		WHERE STUDENT_NO = #{studentNo}
+  		AND CLASS_NO = #{classNo}
+  	</delete>
+  	
   	<!-- 수강신청 - 수강신청(2시간짜리 강의) -->
   	<insert id="postRegisterClass2">
   		INSERT INTO SCHEDULE VALUES(#{classNo},#{studentNo},#{day},#{period}+1)
@@ -487,6 +519,63 @@
 		FROM CLASS
 		GROUP BY CLASS_YEAR, CLASS_TERM
 		ORDER BY CLASS_YEAR DESC, CLASS_TERM ASC
+  	</select>
+  	
+  	<!-- 학사관리 - 졸업사정표 -->
+  	<select id="graduationInfo" parameterType="graduation" resultMap="graduationResultMap">
+  		SELECT STUDENT_NO,STUDENT_NAME
+		      ,TO_CHAR(ENTRANCE_DATE,'YYYY') "ENTRANCE_DATE"
+		      ,COLLEGE_NAME,DEPARTMENT_NAME,STATUS,CLASS_LEVEL
+		      ,NVL((SELECT A.CLASS_TERM
+		            FROM (SELECT CLASS_TERM
+		                  FROM GRADE
+		                  WHERE STUDENT_NO = #{studentNo}
+		                  ORDER BY CLASS_YEAR DESC) "A"
+		            WHERE ROWNUM = 1),1) "CLASS_TERM"
+		      ,(SELECT SUM(CREDIT)
+		        FROM CLASS C
+		        JOIN GRADE G USING (CLASS_NO)
+		        WHERE STUDENT_NO = #{studentNo}
+		        AND SCORE BETWEEN 60 AND 100) "SUMCREDIT"
+		FROM STUDENT S
+		JOIN COLLEGE C USING (COLLEGE_NO)
+		JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		WHERE STUDENT_NO = #{studentNo}
+  	</select>
+  	
+  	<!-- 학사관리 - 졸업사정표(전체 이수현황 조회) -->
+  	<select id="selectGraStatus" parameterType="hashmap" resultMap="graduationResultMap">
+	  	<![CDATA[
+  		SELECT NVL(A.CREDIT,0)"COMMON_CLASS", NVL(B.CREDIT,0) "NOMAL_CLASS", NVL(C.CREDIT,0) "MAJOR_CLASS"
+		FROM (SELECT NVL(SUM(CREDIT),0)"CREDIT"
+				FROM CLASS C
+			    JOIN GRADE G USING (CLASS_NO)
+			    WHERE STUDENT_NO = #{studentNo}
+			    AND SCORE > 59
+			    AND G.CLASS_YEAR <= #{year}
+			    AND G.CLASS_TERM <= #{term}
+			    AND C.DIVISION = 1) "A",
+		     (SELECT NVL(SUM(CREDIT),0) "CREDIT"
+		        FROM CLASS C
+		        JOIN GRADE G USING (CLASS_NO)
+		        JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		        WHERE STUDENT_NO = #{studentNo}
+		        AND SCORE > 59
+		        AND G.CLASS_YEAR <= #{year}
+		        AND G.CLASS_TERM <= #{term}
+		        AND C.DIVISION = 0
+		        AND DEPARTMENT_NAME != #{departmentName}) "B",
+		    (SELECT NVL(SUM(CREDIT),0) "CREDIT"
+		        FROM CLASS C
+		        JOIN GRADE G USING (CLASS_NO)
+		        JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		        WHERE STUDENT_NO = #{studentNo}
+		        AND SCORE > 59
+		        AND G.CLASS_YEAR <= #{year}
+		        AND G.CLASS_TERM <= #{term}
+		        AND C.DIVISION = 0
+		        AND DEPARTMENT_NAME = #{departmentName}) "C"
+		]]>
   	</select>
   	
   	<!-- (학생)상담신청 내역 가져오기 -->
@@ -647,8 +736,8 @@
   	WHERE PROFESSOR_NO = #{professorNo}
   	</update>
   	  	
-  	<!-- 개인시간표 -> 학년도,학기 조회 -->
-  	<select id="selectClassTerm2" resultType="string">
+  	<!-- 학생 개인시간표 -> 학년도,학기 조회 -->
+  	<select id="selectStudentClassTerm" resultType="string">
   		SELECT CLASS_YEAR||'0'||CLASS_TERM
 		FROM CLASS
 		JOIN SCHEDULE USING(CLASS_NO)
@@ -657,12 +746,11 @@
 		ORDER BY CLASS_YEAR DESC, CLASS_TERM ASC
   	</select>
   	
-  	<!-- 개인시간표 -> 학기 선택 후 시간표 조회 -->
-  	<select id="selectTimetable" parameterType="hashmap" resultMap="classResultMap">
-  		SELECT CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DECODE(S.DAY, '1', '월', '2', '화', '3', '수', '4', '목', '5', '금') AS DAY
-		        , S.PERIOD, CLASS_HOUR, STUDENT_NO, CLASS_YEAR, CLASS_TERM
+  	<!-- 학생 개인시간표 -> 학기 선택 후 시간표 조회 -->
+  	<select id="selectStudentTimetable" parameterType="hashmap" resultMap="classResultMap">
+  		SELECT CLASS_NO, CLASS_NAME, PROFESSOR_NAME, S.DAY, S.PERIOD, CLASS_HOUR, CLASSROOM
 		FROM CLASS C
-		JOIN SCHEDULE S  USING(CLASS_NO)
+		JOIN SCHEDULE S USING(CLASS_NO)
 		LEFT JOIN PROFESSOR P USING(PROFESSOR_NO)
 		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND S.STUDENT_NO = #{studentNo}
   	</select>
@@ -703,9 +791,50 @@
 		ORDER BY FILE_NO DESC
   	</select>
   	
-  	<!-- (관리자)강의개설 리스트 가져오기 -->
-  	<select id="selectClassList">
-  		
+  	<!-- 교수 개인시간표 -> 학년도,학기 조회 -->
+  	<select id="selectProfessorClassTerm" resultType="string">
+  		SELECT CLASS_YEAR||'0'||CLASS_TERM
+		FROM CLASS
+		JOIN PROFESSOR USING(PROFESSOR_NO)
+		WHERE PROFESSOR_NO = 'P20150023'
+		GROUP BY CLASS_YEAR, CLASS_TERM
+		ORDER BY CLASS_YEAR DESC, CLASS_TERM ASC
   	</select>
   	
-</mapper>
+  	<!-- 교수 개인시간표 -> 학기 선택 후 시간표 조회 -->
+  	<select id="selectProfessorTimetable" parameterType="hashmap" resultMap="classResultMap">
+  		SELECT CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DAY, PERIOD, CLASS_HOUR, CLASSROOM
+		FROM CLASS C
+		JOIN PROFESSOR P USING(PROFESSOR_NO)
+		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND PROFESSOR_NO = #{professorNo}
+  	</select>
+  	
+  	<!-- 성적관리 -> 수강중인 학생 조회 -->
+  	<select id="selectStudentGradeList" parameterType="_int" resultMap="gradeResultMap">
+  		SELECT DEPARTMENT_NAME, A.STUDENT_NO, CLASS_LEVEL, STUDENT_NAME, NVL(SCORE, 0) AS SCORE, NVL(GRADE_LEVEL,' ') AS GRADE_LEVEL
+		FROM (SELECT CLASS_NO, STUDENT_NO
+		        FROM SCHEDULE
+		        GROUP BY CLASS_NO, STUDENT_NO) A
+		JOIN STUDENT S ON(A.STUDENT_NO = S.STUDENT_NO)
+		LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO)
+		JOIN DEPARTMENT D USING(DEPARTMENT_NO)
+		WHERE A.CLASS_NO = #{classNo}
+		ORDER BY DEPARTMENT_NAME, STUDENT_NO
+  	</select>
+  	
+  	<!-- 성적관리 -> 성적 입력 -->
+  	<insert id="gradeInsert" parameterType="grade">
+  		INSERT INTO GRADE VALUES(SEQ_GNO.NEXTVAL, #{studentNo}, #{classNo}
+  								, (SELECT CLASS_YEAR FROM CLASS WHERE CLASS_NO = #{classNo})
+  								, (SELECT CLASS_TERM FROM CLASS WHERE CLASS_NO = #{classNo})
+  								, #{score}, #{gradeLevel})
+  	</insert>
+  	
+  	<!-- 성적관리 -> 성적 수정 -->
+  	<update id="gradeUpdate" parameterType="grade">
+  		UPDATE GRADE
+  		SET SCORE = #{score}
+  		  , GRADE_LEVEL = #{gradeLevel}
+  		WHERE STUDENT_NO = #{studentNo} AND CLASS_NO = #{classNo}
+  	</update>
+  </mapper>

@@ -7,6 +7,8 @@ import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Grade;
+import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.vo.Professor;
@@ -72,6 +74,9 @@ public interface MemberService {
 	//수강신청 - 수강신청
 	int postRegisterClass(RegisterClass rc3);
 	
+	//수강신청 - 수강신청(해당 과목 장바구니에서 지워주기)
+	int postRegDelBucket(RegisterClass rc2);
+	
 	//수강신청 - 수강신청(2시간짜리 강의)
 	int postRegisterClass2(RegisterClass rc3);
 	
@@ -126,12 +131,17 @@ public interface MemberService {
 	// 회원추가 (학생)
 	int insertStudent(Student st);
 	
-	// 개인시간표 -> 학년도,학기 조회
-	ArrayList<String> selectClassTerm2(String studentNo);
+	// 학생 개인시간표 -> 학년도,학기 조회
+	ArrayList<String> selectStudentClassTerm(String studentNo);
 
-
-	// 개인시간표 -> 학기 선택 후 시간표 조회
-	ArrayList<Classes> selectTimetable(HashMap<String, String> map);
+	// 학생 개인시간표 -> 학기 선택 후 시간표 조회
+	ArrayList<Classes> selectStudentTimetable(HashMap<String, String> map);
+	
+	//학사관리 - 졸업사정표
+	Graduation graduationInfo(String sno);
+	
+	//학사관리 - 졸업사정표(전체 이수현황 조회)
+	Graduation selectGraStatus(HashMap<String, String> h);
 	
 	//(학생)휴,복학 신청 리스트 조회
 	ArrayList<StudentRest> selectStuRestList(String studentNo);
@@ -160,5 +170,19 @@ public interface MemberService {
 	//(관리자) 강의 개설 강의계획서 가져오기
 	ArrayList<Attachment> selectClassAttachment();
 	
+	// 교수 개인시간표 -> 학년도,학기 조회
+	ArrayList<String> selectProfessorClassTerm(String professorNo);
+
+	// 교수 개인시간표 -> 학기 선택 후 시간표 조회
+	ArrayList<Classes> selectProfessorTimetable(HashMap<String, String> map);
+
+	// 성적관리 -> 수강중인 학생 조회
+	ArrayList<Student> selectStudentGradeList(int classNo);
+
+	// 성적관리 -> 성적 입력
+	int gradeInsert(Grade g);
+
+	// 성적관리 -> 성적 수정
+	int gradeUpdate(Grade g);
 
 }

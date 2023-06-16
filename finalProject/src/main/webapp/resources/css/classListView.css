@@ -23,6 +23,7 @@
 
 #selectList {
     border-radius: 10px;
+    margin-left: 20px;
 }
 
 input[name=search_category] {

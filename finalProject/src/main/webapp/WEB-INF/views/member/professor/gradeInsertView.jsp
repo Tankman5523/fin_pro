@@ -11,13 +11,6 @@
         margin: 20px 0px;
     }
 
-    .page_title {
-        margin-top: 5px;
-        margin-left: 5px;
-        margin-bottom: 0px;
-        font-weight: bold;
-    }
-
     .selectTerm {
         display: flex;
         align-items: center;
@@ -27,28 +20,52 @@
         margin-left: 10px;
     }
 
-    #selectList {
+    .selectTerm>button {
         border-radius: 10px;
-        margin-left: 30px;
+        margin-left: 20px;
     }
 
     .student-area {
         width: 100%;
-        height: 80%;
+        height: 86%;
         overflow: auto;
     }
 
     .student-table {
-        width: 100%;
-        height: 100%;
-        text-align: center;
-    }
-
-    .student-table>thead {
-        background-color: rgb(250, 250, 133);
-        position: sticky;
-        top: 0;
-    }
+		width: 100%;
+		text-align: center;
+		border-collapse: collapse;
+	}
+	
+	.student-table>thead {
+		background-color: #76D2FF;
+	    position: sticky;
+	    top: 0;
+	}
+	
+	.student-table>tbody>tr {
+		border-bottom: 0.5px solid gray;
+		height: 30px;
+	}
+	
+	.student-table>tbody>tr:not(.no-hover):hover {
+		background-color: #E0E0E0;
+		font-weight: 550;
+	}
+	
+	.student-table th, .student-table td {
+		border-left: 1px solid gray;
+	}
+	
+	.student-table>tbody input {
+		width: 100%;
+		text-align: center;
+		border: none;
+	}
+	
+	#insert, #update {
+		margin: 0 auto;
+	}
 </style>
 </head>
 <body>
@@ -67,256 +84,306 @@
                 </div>
             </div>
             <div id="content_1">
-				<br>
-				<span class="page_title">성적 관리</span>
-                <div class="b_line"></div>
-
+            	<br>
                 <div class="selectTerm">
-                    <span>학년도: </span> <select name="year" id="year" onchange="changeYear();">
-                                            <option value="2022">2022학년도</option>
-                                            <option value="2021">2021학년도</option>
-                                            <option value="2020">2020년도</option>
+                    <span>학년도: </span> <select name="year" id="year" onchange="changeYear(this);">
+ 												<c:set var="previous" value="0"/>
+												<c:forEach var="y" items="${classTerm}">
+														<c:if test="${fn:substring(y, 0, 4) ne previous }">
+															<option value="${fn:substring(y, 0, 4) }">${fn:substring(y, 0, 4) }년도</option>
+														</c:if>
+														<c:set var="previous" value="${fn:substring(y, 0, 4) }"/>
+												</c:forEach>
                                         </select>
-                    <span>학기: </span> <select name="term" id="term">
-                                            <option value="1">1학기</option>
-                                            <option value="2">2학기</option>
-                                       </select>
-                    <span>교과목명: </span> <select name="term" id="term">
-                                                <option value="알고리즘A"> 알고리즘A </option>
-                                                <option value="알고리즘B"> 알고리즘B </option>
-                                            </select>
-                    <button type="button" class="btn btn-primary btn-sm" id="selectList">조회</button>
+                    <span>학기: </span> <select name="term" id="term"></select>
+                    <span>교과목명: </span> <select name="classList" id="classList"></select>
+                    <button type="button" class="btn btn-outline-primary btn-sm" id="selectList" onclick="selectStudentGradeList();">조회</button>
+                    <button type="button" class="btn btn-warning" id="possible" onclick="possibleInsert();" style="margin-left: 35%; display:none;">성적 입력</button>
+                    <button type="button" class="btn btn-danger" id="impossible" onclick="impossibleInsert();" style="margin-left: 35%; display:none;">입력 완료</button>
                 </div>
-                <br>
+                <div class="b_line"></div>
 
                 <div class="student-area">
                     <table class="student-table">
                         <thead>
                             <tr>
-                                <th>학과</th>
-                                <th>학번</th>
-                                <th>학년</th>
-                                <th>이름</th>
-                                <th>성적</th>
-                                <th>등급</th>
+                                <th width="25%" style="border: 0;">학과</th>
+                                <th width="25%">학번</th>
+                                <th width="15%">학년</th>
+                                <th width="15%">이름</th>
+                                <th width="10%">성적</th>
+                                <th width="10%">등급</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <!--20명-->
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr>
-                            <!--25명까지 스크롤 안 생김-->
-                            <!-- <tr>
-                                <td>컴퓨터공학과</td>
-                                <td>20211111</td>
-                                <td>2학년</td>
-                                <td>김가영</td>
-                                <td>94</td>
-                                <td>A0</td>
-                            </tr> -->
-
                         </tbody>
                     </table>
                 </div>
+                
+                <script>
+	                var arr = ${classTerm};
+	                
+	                $(function() {
+	                	$("select[name=year]").children().first().prop("selected", true).change();
+	                	selectClassList();
+	                    
+	                	$(".selectTerm").on("change", "#term", function() {
+	                		selectClassList();
+	                	});
+	                	
+	                	$(".selectTerm").on("change", "#classList", function() {
+	                		$(".student-table>tbody").html("");
+	                	});
+	                	
+	                })
+	                
+	                function changeYear(e) {
+	                	var $year = e.value;
+	                	var str = "";
+	                	
+	                	for(var i=0;i<arr.length;i++) {
+	                		var tmp = arr[i].toString().substr(0,4);
+	                		if(tmp.includes($year)) {
+	                			var tmp2 = arr[i].toString().substr(5,);
+		                		if(tmp2 == "1") {
+		                			str += "<option value='1'>1학기</option>";
+		                		}
+		                		if(tmp2 == "2") {
+		                			str += "<option value='2'>2학기</option>";
+		                		}
+	                		}
+	                	}
+	                	
+	                	$("#term").empty();
+	                	$("#term").append(str);
+	                	selectClassList();
+	                }
+	                
+	               function selectClassList() {
+	            	   $(".student-table>tbody").html("");
+	            	   var str = "";
+               		
+	               		$.ajax({
+	               			url: "selectProfessorTimetable.pr",
+	               			data: {
+	               				year: $("#year").val(),
+	               				term: $("#term").val()
+	               			},
+	               			success: function(cList) {
+	               				for(var i=0;i<cList.length;i++) {
+	               					str += "<option value='" + cList[i].classNo + "'>"
+	               						 + cList[i].className + "</option>";
+	               				}
+			               		
+			               		$("#classList").empty();
+			                	$("#classList").append(str);
+	               			},
+	               			error: function() {
+	               				console.log("통신 오류");
+	               			}
+	               		});
+	               }
+	               
+	               function selectStudentGradeList() {
+	            	   var str = "";
+	            	   
+	            	   $.ajax({
+	            		   url: "selectStudentGradeList.pr",
+	            		   data: { cn: $("#classList").val() },
+	            		   success: function(sList) {
+	            			   if(sList != "") {
+		            			   for(var i=0;i<sList.length;i++) {
+		            				   str += "<tr>"
+		            				   		+ "<td style='border: 0;'>" + sList[i].departmentName + "</td>"
+		            				   		+ "<td>" + sList[i].studentNo + "</td>"
+		            				   		+ "<td>" + sList[i].classLevel + "</td>"
+		            				   		+ "<td>" + sList[i].studentName + "</td>"
+		            				   		+ "<td>" + sList[i].score + "</td>"
+		            				   		+ "<td>" + sList[i].gradeLevel + "</td>"
+		            				   		+ "</tr>";
+		            			   }
+		            			   
+		            			   if($("#possible").css("display") == "none" && $("#impossible").css("display") == "none") {
+		            				   $("#possible").css("display", "block");
+		            			   }
+	            			   }
+	            			   else {
+	            				   str += "<tr class='no_hover' style='border: 0; pointer-events: none;'><td colspan='6' style='border: 0;'>해당 테이블에 데이터가 없습니다</td></tr>";
+	            			   }
+	            			   
+	            			   $(".student-table>tbody").html(str);
+	            		   },
+	            		   error: function() {
+	            			   console.log("통신 오류");
+	            		   }
+	            	   })
+	               }
+	               
+	               function possibleInsert() {
+	            	   $(".student-table>tbody").on("click", "tr", function() {
+	            		   var $gradeLevel = $(this).children().eq(5).text();
+	            		   
+	                		$(".departmentName").val($(this).children().eq(0).text());
+	                		$(".studentNo").val($(this).children().eq(1).text());
+	                		$(".classLevel").val($(this).children().eq(2).text());
+	                		$(".studentName").val($(this).children().eq(3).text());
+	                		$(".score").val($(this).children().eq(4).text());
+	                		$(".gradeLevel").val($(this).children().eq(5).text());
+	                		
+	                		if($gradeLevel == " ") {
+	                			$("#insert").css("display", "block");
+	                			$("#update").css("display", "none");
+	                		}
+	                		else {
+	                			$("#insert").css("display", "none");
+	                			$("#update").css("display", "block");
+	                		}
+	                		
+	                		$("#myModal").modal("show");
+	               	   });
+	            	   
+	            	   $("#possible").css("display", "none");
+	            	   $("#impossible").css("display", "block");
+	               }
+	               
+	               function impossibleInsert() {
+	            	   $(".student-table>tbody").off("click", "tr");
+	            	   $("#possible").css("display", "block");
+	            	   $("#impossible").css("display", "none");
+	               }
+	               
+	               function scoreInsert(e) {
+	            	   var $score = Number(e.value);
+	            	   var $grade = "";
+	            	   
+	            	   if(0<= $score && $score < 60) {
+						   $grade = "F";
+	            	   }
+	            	   else if(60<= $score && $score <= 63) {
+	            		   $grade = "D-";
+	            	   }
+	            	   else if(64<= $score && $score <= 66) {
+	            		   $grade = "D0";
+	            	   }
+	            	   else if(67<= $score && $score <= 69) {
+	            		   $grade = "D+";
+	            	   }
+	            	   else if(70<= $score && $score <= 73) {
+	            		   $grade = "C-";
+	            	   }
+	            	   else if(74<= $score && $score <= 76) {
+	            		   $grade = "C0";
+	            	   }
+	            	   else if(77<= $score && $score <= 79) {
+	            		   $grade = "C+";
+	            	   }
+	            	   else if(80<= $score && $score <= 83) {
+	            		   $grade = "B-";
+	            	   }
+	            	   else if(84<= $score && $score <= 86) {
+	            		   $grade = "B0";
+	            	   }
+	            	   else if(87<= $score && $score <= 89) {
+	            		   $grade = "B+";
+	            	   }
+	            	   else if(90<= $score && $score <= 93) {
+	            		   $grade = "A-";
+	            	   }
+	            	   else if(94<= $score && $score <= 96) {
+	            		   $grade = "A0";
+	            	   }
+	            	   else if(94<= $score && $score <= 100) {
+	            		   $grade = "A+";
+	            	   }
+	            	   else {
+	            		   alert("0~100 사이의 숫자를 입력해주세요.");
+	            		   $(".score").val("");
+	            	   }
+	            	   $(".gradeLevel").val($grade);
+	               }
+	               
+	               function gradeInsert() {
+	               		$.ajax({
+	               			url: "gradeInsert.pr",
+	               			method: "post",
+	               			data: {
+	               				classNo: $("#classList").val(),
+	               				studentNo: $(".studentNo").val(),
+	               				score: $(".score").val(),
+	               				gradeLevel: $(".gradeLevel").val()
+	               			},
+	               			success: function(result) {
+	               				if(result=='Y') { // 성적 입력 성공
+	               					alert("성적이 입력되었습니다.");
+	               					$("#myModal").modal("hide");
+	               					selectStudentGradeList();
+	               				}
+	               				else {
+	               					alert("성적 입력 실패");
+	               				}
+	               			},
+	               			error: function() {
+	               				console.log("통신 오류");
+	               			}
+	               		});
+	               	}
+	               
+	               function gradeUpdate() {
+	               		$.ajax({
+	               			url: "gradeUpdate.pr",
+	               			method: "post",
+	               			data: {
+	               				classNo: $("#classList").val(),
+	               				studentNo: $(".studentNo").val(),
+	               				score: $(".score").val(),
+	               				gradeLevel: $(".gradeLevel").val()
+	               			},
+	               			success: function(result) {
+	               				if(result=='Y') { // 성적 입력 성공
+	               					alert("성적이 수정되었습니다.");
+	               					$("#myModal").modal("hide");
+	               					selectStudentGradeList();
+	               				}
+	               				else {
+	               					alert("성적 수정 실패");
+	               				}
+	               			},
+	               			error: function() {
+	               				console.log("통신 오류");
+	               			}
+	               		});
+	               	}
+                </script>
             </div>
+            
+             <!-- The Modal -->
+		    <div class="modal" id="myModal">
+		        <div class="modal-dialog modal-dialog-centered">
+		            <div class="modal-content">
+		        
+		                <!-- Modal Header -->
+		                <div class="modal-header">
+		                <h4 class="modal-title">성적 입력</h4>
+		                	<button type="button" class="close" data-dismiss="modal">&times;</button>
+		                </div>
+		        
+		                <!-- Modal body -->
+		                <div class="modal-body">
+	                		<input type="hidden" name="classNo" class="classNo">
+					                   학과: <input style="width: 150px;" type="text" class="departmentName" readonly>
+					                   학번: <input style="width: 150px;" type="text" class="studentNo" readonly> <br><br>
+					                   학년: <input style="width: 150px;" type="text" class="classLevel" readonly>
+					                   이름: <input style="width: 150px;" type="text" class="studentName" readonly> <br><br>
+					                   성적: <input style="width: 150px;" type="number" min="0" max="100" class="score" onchange="scoreInsert(this);">
+					                   등급: <input style="width: 150px;" type="text" class="gradeLevel" readonly>
+			                <br><br><br>
+			                
+			            	<button type="button" class="btn btn-warning" id="insert" onclick="gradeInsert();">등록</button>
+			            	<button type="button" class="btn btn-warning" id="update" onclick="gradeUpdate();">수정</button>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
         </div>
     </div>
 </body>

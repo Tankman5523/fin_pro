@@ -28,7 +28,7 @@
                     <a href="searchRegClassForm.st">수강신청 내역조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="preRegisterClass.st">예비수강신청</a>
+                    <a href="preRegisterClassForm.st">예비수강신청</a>
                 </div>
             </div>
             <div id="content_1">
@@ -75,7 +75,7 @@
 	                    <select name="department" id="department">
 	                        <option value=""> ====전공==== </option>
 	                    </select>
-	                    <button type="button" class="btn btn-primary btn-sm" id="selectList" onclick="selectMajor();">조회</button>
+	                    <button type="button" class="btn btn-outline-primary btn-sm" id="selectList" onclick="selectMajor();">조회</button>
                 	</div>
                     <br>
                     
