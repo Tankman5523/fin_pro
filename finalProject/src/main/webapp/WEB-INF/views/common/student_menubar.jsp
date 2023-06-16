@@ -37,7 +37,7 @@
 	<div id="menubar">
 	    <ul id="nav">
 	        <li><a href="#">홈</a></li>
-	        <li><a href="#">등록/장학</a></li>
+	        <li><a href="onelist.rg">등록/장학</a></li>
 	        <li><a href="infoStudent.st">학사관리</a></li>
 	        <li><a href="counselingList.st">상담관리</a></li>
 	        <li><a href="classListView.st">수강신청</a></li>

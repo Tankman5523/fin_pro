@@ -1,6 +1,7 @@
 package com.univ.fin.money.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,11 @@ public class ScholarshipServiceImpl implements ScholarshipService{
 	@Override
 	public int updateScholarship(Scholarship sc) {
 		return scholarshipDao.updateScholarship(sc,sqlSession);
+	}
+
+	@Override
+	public ArrayList<Scholarship> selectScholarshipListAll(HashMap<String, String> map) {
+		return scholarshipDao.selectScholarshipListAll(map,sqlSession);
 	}
 	
 }
