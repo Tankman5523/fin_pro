@@ -7,6 +7,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -298,6 +299,39 @@ public class MemberDao {
 	// 성적관리 -> 성적 수정
 	public int gradeUpdate(SqlSessionTemplate sqlSession, Grade g) {
 		return sqlSession.update("memberMapper.gradeUpdate", g);
+	}
+	
+	//(교수)강의개설 신청 리스트 조회
+		public ArrayList<Classes> selectClassCreateList(SqlSessionTemplate sqlSession, String professorNo) {
+			
+			return (ArrayList)sqlSession.selectList("memberMapper.selectClassCreateList",professorNo);
+		}
+
+	//(교수)강의 개설 인서트
+	@Transactional
+	public int insertClassCreate(SqlSessionTemplate sqlSession, Classes c, Attachment a) {
+
+		//a가 null인지 안보는 이유는 강의계획서는 필수로 넣어야 신청 할 수 있게 하기 때문에
+		int	result = sqlSession.insert("memberMapper.insertClassAttachment",a);
+			
+		if(result>0) {
+			result = sqlSession.insert("memberMapper.insertClassCreate",c);
+				
+		}
+			
+		return result;
+	}
+
+	//(관리자) 강의 개설 리스트가져오기
+	public ArrayList<Classes> selectClassList(SqlSessionTemplate sqlSession) {
+			
+		return (ArrayList)sqlSession.selectList("memberMapper.selectClassCreateList");
+	}
+
+	//(관리자)강의 개설 첨부파일  리스트 가져오기
+	public ArrayList<Attachment> selectClasAttachment(SqlSessionTemplate sqlSession) {
+			
+		return (ArrayList)sqlSession.selectList("memberMapper.selectClassAttList");
 	}
 
 }

@@ -3,6 +3,7 @@ package com.univ.fin.member.model.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -157,6 +158,18 @@ public interface MemberService {
 	//(학생)휴,복학 신청 인서트
 	int insertStuRest(StudentRest sr);
 
+	//(교수)강의개설 신청 리스트 조회
+	ArrayList<Classes> selectClassCreateList(String professorNo);
+
+	//(교수)강의 개설 인서트 
+	int insertClassCreate(Classes c, Attachment a);
+
+	//(관리자)강의 개설 전체 리스트 조회
+	ArrayList<Classes> selectClassList();
+
+	//(관리자) 강의 개설 강의계획서 가져오기
+	ArrayList<Attachment> selectClassAttachment();
+	
 	// 교수 개인시간표 -> 학년도,학기 조회
 	ArrayList<String> selectProfessorClassTerm(String professorNo);
 
