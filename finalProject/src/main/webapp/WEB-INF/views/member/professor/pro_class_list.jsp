@@ -12,10 +12,13 @@
         <div id="content">
             <div id="category">
                 <div id="cate_title">
-                    <span style="margin: 0 auto;">큰제목</span>
+                    <span style="margin: 0 auto;">강의관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="#">소제목</a>
+                    <a href="classCreateSelectt.pr">강의개설신청 내역</a>
+                </div>
+                <div class="child_title">
+                    <a href="classCreateEnroll.pr">강의 개설 신청</a>
                 </div>
             </div>
             <div id="content_1">
@@ -24,7 +27,6 @@
 
                     <table border="1" style="width:80%; text-align: center;">
                         <thead>
-
                             <tr>
                                 <th>강의번호</th>
                                 <th>전공/교양</th>
@@ -38,10 +40,38 @@
                                 <th>수강인원</th>
                                 <th>이수학점</th>
                                 <th>개설여부</th>
-                                
                             </tr>
                         </thead>
                         <tbody>
+                        	<c:choose>
+                        		<c:when test="${empty list }">
+                        			<tr>
+                        				<td colspan="12">강의 개설 신청 내역이 없습니다.</td>
+                        			</tr>
+                        		</c:when>
+                        	<c:otherwise>
+	                        	<c:forEach var="c" items="${list }">
+	                        		<tr>
+	                        			<td>${c.classNo }</td>
+	                        			<td>${c.division eq 0?'전공':'교양'}</td>
+	                        			<td>${c.departmentNo }</td>
+	                        			<td>${c.className }</td>
+	                        			<td>${c.classYear }년</td>
+	                        			<td>${c.classTerm }학기</td>
+	                        			<td>${c.classroom }</td>
+	                        			<td>
+	                        				${c.period }<br>
+	                        				${c.day }
+	                        			</td>
+	                        			<td>${c.classLevel }학년</td>
+	                        			<td>${c.classNos }</td>
+	                        			<td>${c.credit }</td>
+	                        			<td>${c.status }</td>
+	                        		</tr>
+	                        	</c:forEach>
+                        	</c:otherwise>
+                        	</c:choose>
+                        	<!-- 
                             <tr>
                                 <td>50</td>
                                 <td>전공</td>
@@ -59,6 +89,7 @@
                                 <td>3</td>
                                 <td>개설완료</td>
                             </tr>
+                        	 -->
                         </tbody>
                     </table>
                 </div>

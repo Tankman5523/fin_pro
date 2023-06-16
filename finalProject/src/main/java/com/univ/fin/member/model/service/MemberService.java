@@ -3,9 +3,11 @@ package com.univ.fin.member.model.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
@@ -156,10 +158,31 @@ public interface MemberService {
 	//(학생)휴,복학 신청 인서트
 	int insertStuRest(StudentRest sr);
 
+	//(교수)강의개설 신청 리스트 조회
+	ArrayList<Classes> selectClassCreateList(String professorNo);
+
+	//(교수)강의 개설 인서트 
+	int insertClassCreate(Classes c, Attachment a);
+
+	//(관리자)강의 개설 전체 리스트 조회
+	ArrayList<Classes> selectClassList();
+
+	//(관리자) 강의 개설 강의계획서 가져오기
+	ArrayList<Attachment> selectClassAttachment();
+	
 	// 교수 개인시간표 -> 학년도,학기 조회
 	ArrayList<String> selectProfessorClassTerm(String professorNo);
 
 	// 교수 개인시간표 -> 학기 선택 후 시간표 조회
 	ArrayList<Classes> selectProfessorTimetable(HashMap<String, String> map);
+
+	// 성적관리 -> 수강중인 학생 조회
+	ArrayList<Student> selectStudentGradeList(int classNo);
+
+	// 성적관리 -> 성적 입력
+	int gradeInsert(Grade g);
+
+	// 성적관리 -> 성적 수정
+	int gradeUpdate(Grade g);
 
 }
