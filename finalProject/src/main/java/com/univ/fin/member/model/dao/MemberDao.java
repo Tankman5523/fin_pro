@@ -234,6 +234,11 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.selectGraStatus", h);
 	}
 	
+	//학사관리 - 졸업사정표 (교양공통 세부조회)
+		public ArrayList<HashMap<String, String>> detailCommonGra(SqlSessionTemplate sqlSession,HashMap<String, String> h) {
+			return (ArrayList)sqlSession.selectList("memberMapper.detailCommonGra", h);
+		}
+	
 	//(학생)휴,복학 신청 리스트 조회
 	public ArrayList<StudentRest> selectStuRestList(SqlSessionTemplate sqlSession, String studentNo) {
 		

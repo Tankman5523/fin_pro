@@ -253,7 +253,7 @@
 		         		</div>
 		         		<div class="common" id="commonBody">
 		         			
-		         			<table id="comBodyTable">
+		         			<table id="comBodyTable" border="1">
 		         				<thead>
 			         				<tr>
 			         					<th>과목명</th>
@@ -296,17 +296,49 @@
 		        <script>
 		        	/* 교양공통 세부확인 모달 */
 		        	function commonBtn(){
+		        		//년도 추출
+		        		var nowYear = $("#graDate").val().substring(0,4);
 		        		
 		        		$.ajax({
-		        			url : "",
+		        			url : "detailCommonGra.st",
 		        			data : {
-		        				
+		        				studentNo : "${student.studentNo}",
+		        				year : nowYear,
+		        				term : "${student.classTerm}"
 		        			},
 		        			success : function(list){
-		        				
+		        				var result = "";
+		        				var sumCredit = 0; 		 //필수 이수학점 총계
+		        				var sumResultCredit = 0; //이수학점 총계
+		        				if(list.length !== 0){
+		        					for(var i=0; i<list.length; i++){
+		        						console.log(typeof list[i].GRADE_LEVEL);
+			        					result +="<tr>"
+			        						   +"<td>" + list[i].CLASS_NAME + "</td>"
+			        						   +"<td>" + list[i].CREDIT + "</td>"
+			        						   +"<td>" + list[i].STATE + "</td>";
+			        						   if(list[i].GRADE_LEVEL === "F"){
+			        							 result +="<td style='color:#e65f3e';><b>" + list[i].GRADE_LEVEL + "</b></td>";
+			        						   }else{
+												 result +="<td style='color:rgb(52, 152, 219)';><b>" + list[i].GRADE_LEVEL + "</b></td>";
+			        						   }
+			        					result +="<td>" + list[i].RESULT_CREDIT + "</td>"
+			        						   +"</tr>";
+			        						   sumCredit += list[i].CREDIT;
+			        						   sumResultCredit += list[i].RESULT_CREDIT;
+		        					}
+		        					result +="<tr>"
+		        						   +"<td>계</td>"
+		        						   +"<td>" + sumCredit + "</td>"
+		        						   +"<td colspan='2'></td>"
+		        						   +"<td><b>" + sumResultCredit + "</b></td>";
+		        				}else{
+		        					result += "<tr><th colspan='5'>해당 과목을 이수한 내역이 없습니다.</th></tr>";
+		        				}
+		        				$("#comBodyTable>tbody").html(result);
 		        			},
 		        			error : function(){
-		        				console.log("교양공통 세부확인조회 통신실패);
+		        				console.log("교양공통 세부확인조회 통신실패");
 		        			}
 		        		});
 		        		

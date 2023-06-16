@@ -497,6 +497,21 @@ public class StudentController {
 		return new Gson().toJson(g);
 	}
 	
+	//학사관리 - 졸업사정표 (교양공통 세부조회)
+	@ResponseBody
+	@RequestMapping(value="detailCommonGra.st", produces = "application/json; charset=UTF-8")
+	public String detailCommonGra(String studentNo, String year, String term) {
+		
+		HashMap<String, String> h = new HashMap<>();
+		h.put("studentNo", studentNo);
+		h.put("year", year);
+		h.put("term", term);
+		
+		ArrayList<HashMap<String, String>> list = memberService.detailCommonGra(h);
+		
+		return new Gson().toJson(list);
+	}
+	
 	//학생등록 페이지
 	@RequestMapping("enrollStudent.me")
 	public String enrollStudent() {		

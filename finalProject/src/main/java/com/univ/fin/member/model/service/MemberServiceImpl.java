@@ -390,6 +390,15 @@ public class MemberServiceImpl implements MemberService{
 		return g;
 	}
 	
+	//학사관리 - 졸업사정표 (교양공통 세부조회)
+	@Override
+	public ArrayList<HashMap<String, String>> detailCommonGra(HashMap<String, String> h) {
+		
+		ArrayList<HashMap<String, String>> list = memberDao.detailCommonGra(sqlSession,h);
+		
+		return list;
+	}
+	
 	//(학생)휴,복학 신청 리스트 조회
 	@Override
 	public ArrayList<StudentRest> selectStuRestList(String studentNo) {
