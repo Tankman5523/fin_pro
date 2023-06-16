@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ import com.google.gson.JsonParser;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.common.template.DepartmentCategory;
@@ -114,7 +116,6 @@ public class StudentController {
 	@ResponseBody
 	@RequestMapping(value="preRegList.st", produces = "application/json; charset=UTF-8")
 	public String preRegList(RegisterClass rc) {
-		
 		String term = String.valueOf(rc.getClassTerm().charAt(0)); //학기 추출
 		
 		RegisterClass rc2 = RegisterClass.builder()
@@ -284,7 +285,6 @@ public class StudentController {
 	@RequestMapping("classListView.st")
 	public ModelAndView classListView(ModelAndView mv) {
 		ArrayList<String> classTerm = memberService.selectClassTerm();
-		System.out.println(classTerm);
 		
 		mv.addObject("classTerm", classTerm).setViewName("member/student/classListView");
 		return mv;
@@ -371,6 +371,46 @@ public class StudentController {
 		return mv;
 	}
 	
+	
+		//학적 정보조회 - 학생
+			@RequestMapping("infoStudent.st")
+			public String infoStudent() {		
+				
+				return "member/student/infoStudent";
+			}
+			
+			
+			//학적 정보수정 - 학생
+			
+			@RequestMapping(value="updateStudent.st" , method = RequestMethod.POST)
+			public String updateStudent(Student st,
+											Model model,
+											HttpSession session) {
+				int result = memberService.updateStudent(st);
+				
+				System.out.println("확인 : "+st);
+				
+				if(result>0) {
+					//유저 정보갱신
+					Student loginUser = memberService.loginStudent(st);
+					session.setAttribute("loginUser", loginUser);
+					model.addAttribute("msg", "수정 완료");
+				}else { //정보변경실패
+					model.addAttribute("msg", "수정 실패");
+				}
+				
+			return "member/student/infoStudent";
+				
+			}
+			
+			//학생 강의 의의신청 
+			@RequestMapping("studentGradeReport.st")
+			public String studentGradeReport(String studentNo) {		
+				
+				return "member/student/studentGradeReport";
+			}
+			
+			
 	//상담 관리 - 상담 내역 검색
 	@ResponseBody
 	@RequestMapping(value="counselingSearch.st",produces = "application/json; charset = UTF-8")
@@ -400,36 +440,6 @@ public class StudentController {
 		
 	}
 	
-	//학적 정보조회 - 학생
-	@RequestMapping("infoStudent.st")
-	public String infoStudent() {		
-		
-		return "member/student/infoStudent";
-	}
-	
-	
-	//학적 정보수정 - 학생
-	
-	@RequestMapping(value="updateStudent.st" , method = RequestMethod.POST)
-	public String updateStudent(Student st,
-			Model model,
-			HttpSession session) {
-		int result = memberService.updateStudent(st);
-		
-		System.out.println("확인 : "+result);
-		
-		if(result>0) {
-			//유저 정보갱신
-			Student loginUser = memberService.loginStudent(st);
-			session.setAttribute("loginUser", loginUser);
-			model.addAttribute("msg", "수정 완료");
-		}else { //정보변경실패
-			model.addAttribute("msg", "수정 실패");
-		}
-		
-		return "member/student/infoStudent";
-		
-	}
 	
 	// 학사관리 - 개인시간표
 	@RequestMapping("personalTimetable.st")
@@ -458,9 +468,41 @@ public class StudentController {
 	@GetMapping("graduationInfoForm.st")
 	public String graduationInfoForm(Model model,HttpSession session) {
 		
-		/* 이름,학년,이수학기(?),학적상태,입학년도,소속(단과대학),전공,졸업사정일자(뷰에서처리),인정학점(?) */
+		Student st = (Student)session.getAttribute("loginUser");
+		
+		String sno = st.getStudentNo();
+		
+		Graduation g = memberService.graduationInfo(sno);
+		
+		model.addAttribute("student", g);
 		
 		return "member/student/graduationInfo";
+	}
+	
+	//학사관리 - 졸업사정표(전체 이수현황 조회)
+	@ResponseBody
+	@RequestMapping(value="selectGraStatus.st",produces = "application/json; charset=UTF-8")
+	public String selectGraStatus(String studentNo,String graDate,String departmentName) {
+		
+		String year = graDate.substring(0, 4);
+		int month = Integer.parseInt(graDate.substring(5,7));
+		
+		String term = "";
+		if(month>2 && month<9){
+			term = "1";
+		}else{
+			term = "2";
+		}
+		
+		HashMap<String,String> h = new HashMap<>();
+		h.put("studentNo", studentNo);
+		h.put("departmentName",departmentName);
+		h.put("year", year);
+		h.put("term", term);
+		
+		Graduation g = memberService.selectGraStatus(h);
+		
+		return new Gson().toJson(g);
 	}
 	
 	//학생등록 페이지
@@ -554,6 +596,7 @@ public class StudentController {
 		return "redirect:studentRestList.st";
 	}
 	
+
 	
 }
 

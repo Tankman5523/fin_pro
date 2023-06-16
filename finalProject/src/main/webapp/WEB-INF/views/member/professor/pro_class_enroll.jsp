@@ -5,6 +5,22 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style>
+	#class_enroll{
+        width: 90%;
+        margin: 5%;
+        border-collapse:separate;
+        border-spacing:10px;
+    }
+    #class_enroll>tr{
+        margin-top: 20px;
+    }
+    #classTerm,#classYear{  
+    -webkit-appearance:none; /* 크롬 화살표 없애기 */
+    -moz-appearance:none; /* 파이어폭스 화살표 없애기 */
+    appearance:none /* 화살표 없애기 */
+    }
+</style>
 </head>
 <body>
     <div class="wrap">
@@ -12,55 +28,58 @@
         <div id="content">
             <div id="category">
                 <div id="cate_title">
-                    <span style="margin: 0 auto;">큰제목</span>
+                    <span style="margin: 0 auto;">강의관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="#">소제목</a>
+                    <a href="classCreateSelect.pr">강의개설신청 내역</a>
+                </div>
+                <div class="child_title">
+                    <a href="classCreateEnroll.pr">강의 개설 신청</a>
                 </div>
             </div>
             <div id="content_1">
 				<h3>강의개설 신청</h3>
                 <div style="border-top:1px solid black">
-                    <form action="">
+                    <form action="classCreateInsert.pr" method="POST" enctype="multipart/form-data">
                         
                         <table id="class_enroll">
                             <tr>
                                 <td>개설학과 </td>
-                                <td><input type="text" name="" id="" value="정보가져와서 넣을예정" readonly></td>
+                                <td><input type="text" value="${loginUser.departmentNo }" disabled></td>
                                 <td>교수명</td>
-                                <td><input type="text" name="" id="" value="정보가져와서 넣을예정" readonly></td>
-                                <td>강의명</td>
-                                <td><input type="text" name="className" id=""></td>
+                                <td><input type="text" value="${loginUser.professorName }" disabled></td>
+                                <td>*강의명</td>
+                                <td><input type="text"  name="className" placeholder="최대 16글자"></td>
                             </tr>
                             <tr>
                                 <td>전공여부</td>
                                 <td>
-                                    <select name="division" id="division" onchange="changeDivision(this)">
-                                        <option value="1">전공</option>
-                                        <option value="0">교양</option>
+                                    <select name="division"  id="division" onchange="changeDivision(this)">
+                                        <option value="0">전공</option>
+                                        <option value="1">교양</option>
                                     </select>
                                 </td>
                                 <td>이수학점</td>
                                 <td>
-                                    <select name="credit" id="credit">
+                                    <select name="credit"  id="credit">
 
                                     </select>
                                 </td>
-                                <td>수강인원</td>
-                                <td><input type="text" name="classNos" id=""></td>
+                                <td>*수강인원</td>
+                                <td><input type="text" name="classNos"  maxlength="2" placeholder="ex)20"></td>
                             </tr>
                             <tr>
                                 <td>학년도</td>
-                                <td><select name="classYear" id="classYear"></select></td>
+                                <td><select name="classYear"  id="classYear"></select></td>
                                 <td>학기</td>
-                                <td><select name="classTerm" id="classTerm"></select></td>
-                                <td>강의실</td>
-                                <td><input type="text" name="classroom" id=""></td>
+                                <td><select name="classTerm"  id="classTerm"></select></td>
+                                <td>*강의실</td>
+                                <td><input type="text" name="classroom"  placeholder="ex)태양관 101호"></td>
                             </tr>
                             <tr>
                                 <td>요일</td>
                                 <td>
-                                    <select name="day" id="day">
+                                    <select name="day"  id="day">
                                         <option value="1">월요일</option>
                                         <option value="2">화요일</option>
                                         <option value="3">수요일</option>
@@ -70,7 +89,7 @@
                                 </td>
                                 <td>교시</td>
                                 <td>
-                                    <select name="period" onchange="changePeriod(this)">
+                                    <select name="period"  onchange="changePeriod(this)">
                                         <option value="1">1교시</option>
                                         <option value="2">2교시</option>
                                         <option value="3">3교시</option>
@@ -85,7 +104,7 @@
                                 </td>
                                 <td>수업시간</td>
                                 <td>
-                                    <select name="classHour" id="classHour">
+                                    <select name="classHour"  id="classHour">
                                         <option value="1">1시간</option>
                                         <option value="2">2시간</option>
                                     </select>
@@ -94,7 +113,7 @@
                             <tr>
                                 <td>수강대상</td>
                                 <td>
-                                    <select name="" id="">
+                                    <select name="classLevel" >
                                         <option value="0">전학년</option>
                                         <option value="1">1학년</option>
                                         <option value="2">2학년</option>
@@ -103,10 +122,13 @@
                                     </select>
                                 </td>
                                 <td>첨부파일</td>
-                                <td colspan="2"><input type="file" name="" id=""></td>
+                                <td colspan="2"><input type="file" name="upfile" required></td>
                                 
                             </tr>
                         </table>
+                        <div style="text-align:center">
+                        	<button type="submit" class="btn btn-primary">신청</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -129,7 +151,7 @@
                 select.options[select.options.length]=new Option("2학기",2);
                 classYear.options[classYear.options.length]=new Option((year+"년"),year);
             };
-            $("#division").val(1).trigger("change");//기본으로 전공 골라져있으니 전공옵션띄우기
+            $("#division").val(0).trigger("change");//기본으로 전공 골라져있으니 전공옵션띄우기
         })
         
         function changeDivision(target){ //전공or교양 고른거에 따라 학점 옵션 바꿔주기
@@ -137,7 +159,7 @@
             var credit = document.querySelector("#credit");//학점 셀렉트 가져옴
             
             credit.options.length=0; // 학점 셀렉트 비우기
-            if(division==1){
+            if(division==0){
                 credit.options[credit.options.length]=new Option("3학점",3);
             }else{
                 credit.options[credit.options.length]=new Option("2학점",2);

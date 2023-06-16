@@ -1,11 +1,15 @@
 package com.univ.fin.member.model.service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Grade;
+import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.vo.Professor;
@@ -124,15 +128,27 @@ public interface MemberService {
 	
 	//학적정보 수정 (교수)
 	int updateProfessor(Professor pr);
-
-	// 회원추가 (학생)
+	
+	//학생추가 (관리자)
 	int insertStudent(Student st);
+
+
+	
+
+
+
 	
 	// 학생 개인시간표 -> 학년도,학기 조회
 	ArrayList<String> selectStudentClassTerm(String studentNo);
 
 	// 학생 개인시간표 -> 학기 선택 후 시간표 조회
 	ArrayList<Classes> selectStudentTimetable(HashMap<String, String> map);
+	
+	//학사관리 - 졸업사정표
+	Graduation graduationInfo(String sno);
+	
+	//학사관리 - 졸업사정표(전체 이수현황 조회)
+	Graduation selectGraStatus(HashMap<String, String> h);
 	
 	//(학생)휴,복학 신청 리스트 조회
 	ArrayList<StudentRest> selectStuRestList(String studentNo);
@@ -149,10 +165,31 @@ public interface MemberService {
 	//(학생)휴,복학 신청 인서트
 	int insertStuRest(StudentRest sr);
 
+	//(교수)강의개설 신청 리스트 조회
+	ArrayList<Classes> selectClassCreateList(String professorNo);
+
+	//(교수)강의 개설 인서트 
+	int insertClassCreate(Classes c, Attachment a);
+
+	//(관리자)강의 개설 전체 리스트 조회
+	ArrayList<Classes> selectClassList();
+
+	//(관리자) 강의 개설 강의계획서 가져오기
+	ArrayList<Attachment> selectClassAttachment();
+	
 	// 교수 개인시간표 -> 학년도,학기 조회
 	ArrayList<String> selectProfessorClassTerm(String professorNo);
 
 	// 교수 개인시간표 -> 학기 선택 후 시간표 조회
 	ArrayList<Classes> selectProfessorTimetable(HashMap<String, String> map);
+
+	// 성적관리 -> 수강중인 학생 조회
+	ArrayList<Student> selectStudentGradeList(int classNo);
+
+	// 성적관리 -> 성적 입력
+	int gradeInsert(Grade g);
+
+	// 성적관리 -> 성적 수정
+	int gradeUpdate(Grade g);
 
 }

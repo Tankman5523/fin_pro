@@ -1,5 +1,6 @@
 package com.univ.fin.member.model.service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -7,9 +8,12 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Grade;
+import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.dao.MemberDao;
@@ -18,7 +22,7 @@ import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
 
 @Service
-public class MemberServiceImpl implements MemberService{
+public  class MemberServiceImpl implements MemberService{
 
 	@Autowired
 	private MemberDao memberDao;
@@ -354,6 +358,8 @@ public class MemberServiceImpl implements MemberService{
 		
 		return result;
 	}
+	
+	
 
 	// 학생 개인시간표 -> 학년도,학기 조회
 	@Override
@@ -367,6 +373,24 @@ public class MemberServiceImpl implements MemberService{
 	public ArrayList<Classes> selectStudentTimetable(HashMap<String, String> map) {
 		ArrayList<Classes> cList = memberDao.selectStudentTimetable(sqlSession, map);
 		return cList;
+	}
+	
+	//학사관리 - 졸업사정표
+	@Override
+	public Graduation graduationInfo(String sno) {
+		
+		Graduation g = memberDao.graduationInfo(sqlSession,sno);
+		
+		return g;
+	}
+	
+	//학사관리 - 졸업사정표(전체 이수현황 조회)
+	@Override
+	public Graduation selectGraStatus(HashMap<String, String> h) {
+		
+		Graduation g = memberDao.selectGraStatus(sqlSession,h);
+		
+		return g;
 	}
 	
 	//(학생)휴,복학 신청 리스트 조회
@@ -408,6 +432,39 @@ public class MemberServiceImpl implements MemberService{
 		return result;
 	}
 
+	//(교수)강의개설 신청 리스트 조회
+	@Override
+	public ArrayList<Classes> selectClassCreateList(String professorNo) {
+		
+		ArrayList<Classes> list = memberDao.selectClassCreateList(sqlSession,professorNo);
+		
+		return list;
+	}
+
+	//(교수)강의 개설 인서트 
+	@Override
+	public int insertClassCreate(Classes c, Attachment a) {
+		int result = memberDao.insertClassCreate(sqlSession,c,a);
+		return result;
+	}
+
+	//(관리자)강의 개설 전체 리스트 조회
+	@Override
+	public ArrayList<Classes> selectClassList() {
+		ArrayList<Classes> list = memberDao.selectClassList(sqlSession);
+		
+		return list;
+	}
+
+	//(관리자)강의 개설 첨부파일 가져오기
+	@Override
+	public ArrayList<Attachment> selectClassAttachment() {
+		
+		ArrayList<Attachment> alist = memberDao.selectClasAttachment(sqlSession);
+		
+		return alist;
+	}
+	
 	// 교수 개인시간표 -> 학년도,학기 조회
 	@Override
 	public ArrayList<String> selectProfessorClassTerm(String professorNo) {
@@ -420,6 +477,29 @@ public class MemberServiceImpl implements MemberService{
 	public ArrayList<Classes> selectProfessorTimetable(HashMap<String, String> map) {
 		ArrayList<Classes> cList = memberDao.selectProfessorTimetable(sqlSession, map);
 		return cList;
+	}
+
+	// 성적관리 -> 수강중인 학생 조회
+	@Override
+	public ArrayList<Student> selectStudentGradeList(int classNo) {
+		ArrayList<Student> sList = memberDao.selectStudentGradeList(sqlSession, classNo);
+		return sList;
+	}
+
+	// 성적관리 -> 성적 입력
+	@Override
+	public int gradeInsert(Grade g) {
+		int result = memberDao.gradeInsert(sqlSession, g);
+		return result;
+	}
+
+	// 성적관리 -> 성적 수정
+	@Override
+	public int gradeUpdate(Grade g) {
+		int result = memberDao.gradeUpdate(sqlSession, g);
+		
+		return result;
+
 	}
 
 }
