@@ -145,12 +145,18 @@ body {
 
 .tab_content{
 	display: none;
-	width: 100%;
 	height: auto;
 	padding: 50px;
 }
 .tab_content.active{
 	display: flex;
+}
+
+.tab_contents ul{
+	margin: 0;
+}
+.tab_contents>ul li{
+	list-style-type: none;
 }
 
 .tab_content:first-child:hover{
@@ -240,15 +246,14 @@ body {
 	display: flex;
 	align-items: center;
 	height: 80px;
-	background-color: lightcoral;
+	background-color: white;
 	margin: 0;
 	font-size: 25px;
 	padding: 0 10px;
-	color: 
 }
 .thumb_content{
-	height: 100px;
-	background-color: lightgreen;
+	height: 80px;
+	background-color: white;
 	margin: 0;
 	margin-top: 10px;
 	font-size: 22px;
@@ -257,19 +262,20 @@ body {
  	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 3;
 	overflow: hidden;
+	color: gray;
 }
 
 
 /*=================공지사항 영역 설정=================*/
 .notice_area{
 	width: 80%;
-	height: 1000px;
+	height: auto;
 	margin: auto;
-	border: 1px solid lightcoral;
 }
 .notice_area p{
 	font-size: 40px;
 	text-align: center;
+	margin: 100px 0 0 0;
 }
 
 .notice_table {
@@ -287,32 +293,40 @@ body {
 .notice_table td {
 	height: 50px;
 }
+.notice_table tr:hover {
+	cursor: pointer;
+	background-color: rgba(210,210,210, 10);
+	transition: all 0.2s ease-out;
+}
 
 /*=================검색창 설정=================*/
 #searchForm{
-	widht: 800px;
 	margin: 50px 0;
+	height: 40px;
 }
 #searchForm>select{
 	width: 120px;
-	height: 36px;
+	height: 40px;
 	text-align: center;
 	margin: 0 10px;
 	border-radius: 5px;
 	border: 1px solid #c0c0c0;
+	padding: 1px 0;
 }
 #searchForm>select:focus{
 	outline: none;
 }
 #searchForm>label{
 	position: relative;
+	display: inline-block;
+	z-index: -1;
 }
 #searchForm>label>input{
 	width: 300px;
-	height: 32px;
+	height: 36px;
+	line-height: 36px;
 	margin-left: 10px;
-	padding-left: 10px;
-	padding-right: 50px;
+	padding: 1px 50px 1px 10px;
 	border-radius: 5px;
 	border: 1px solid #c0c0c0;
 }
@@ -322,8 +336,7 @@ body {
 #searchForm>label>button{
 	position: absolute;
 	width: 50px;
-	height: 35.5px;
-	z-index: 1;
+	height: 40px;
 	margin-left: -50px;
 	border-radius: 0 5px 5px 0;
 	border: 1px solid #c0c0c0;
@@ -332,4 +345,53 @@ body {
 	background-color: #0091EA;
 	color: white;
 	border: none;
+}
+
+/*=================페이징=================*/
+.pagination{
+    width: 100%;
+    margin: 0 0 100px 0;
+    padding: 0%;
+    list-style-type: none;
+    text-align: center;
+}
+.page-btn{
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    vertical-align: top;
+    text-align: center;
+    margin: auto 5px;
+}
+.page-btn:hover{
+	cursor: pointer;
+/* 	background-color: rgb(59, 193, 255); */
+	border-radius: 50px;
+}
+.pLink{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 10px;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: bold;
+    color: black;
+    height: 40px;
+}
+.page-btn .pLink.active{
+	border-bottom: 2px solid rgb(59, 193, 255);
+/* 	border-radius: 50px; */
+	color: rgb(59, 193, 255);
+}
+.page-btn a:hover{
+    color: rgb(59, 193, 255);
+}
+.fa-solid.fa-chevron-left,
+.fa-solid.fa-chevron-right{
+	height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }

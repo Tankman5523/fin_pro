@@ -265,52 +265,27 @@
 </head>
 <body>
     <div class="wrap">
-		<div id="header">
-			<div id="header_1">
-				<table id="user_log">
-					 <tr>
-						 <td>
-							${loginUser.studentName} 님 환영합니다.
-						 </td>
-						 <td style="padding-left: 50px;">
-							 <button id="logout-btn" onclick="">로그아웃</button>
-						 </td>
-					 </tr>
-				 </table>
-			</div>
-		</div>
-		<div id="menubar">
-			<ul id="nav">
-				<li><a href="#">홈</a></li>
-				<li><a href="#">등록/장학</a></li>
-				<li><a href="#">학사관리</a></li>
-				<li><a href="#">상담관리</a></li>
-				<li><a href="#">수강신청</a></li>
-				<li><a href="#">수업관리</a></li>
-				
-			</ul>
-		</div>
-
+		<%@include file="../../common/student_menubar.jsp" %>
 
         <div id="content">
             <div id="category">
                 <div id="cate_title">
-                    <h3>학사관리</h3>
+                    <span style="margin: 0 auto;">학사관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="#">학적정보조회</a>
+                    <a href="infoStudent.st" style="color:#00aeff; font-weight: 550;">학적 정보 조회</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">개인 시간표</a>
+                    <a href="personalTimetable.st">개인 시간표</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">휴/복학 신청</a>
+                    <a href="studentRestEnroll.st">휴/복학 신청</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">휴/복학 조회</a>
+                    <a href="studentRestList.st">휴/복학 조회</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">졸업사정표</a>
+                    <a href="graduationInfoForm.st">졸업사정표</a>
                 </div>
 				<div class="child_title">
                     <a href="#">졸업 확정 신고</a>

@@ -16,19 +16,19 @@
                     <span style="margin: 0 auto;">수강신청</span>
                 </div>
                 <div class="child_title">
-                    <a href="#" style="color:#00aeff; font-weight: 550;">강의시간표</a>
+                    <a href="classListView.st" style="color:#00aeff; font-weight: 550;">강의시간표</a>
                 </div>
                 <div class="child_title">
                     <a href="registerClassForm.st">수강신청</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">수강취소</a>
+                    <a href="cancelRegClassForm.st">수강취소</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">수강신청 내역조회</a>
+                    <a href="searchRegClassForm.st">수강신청 내역조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="preRegisterClass.st">예비수강신청</a>
+                    <a href="preRegisterClassForm.st">예비수강신청</a>
                 </div>
             </div>
             <div id="content_1">
@@ -75,7 +75,7 @@
 	                    <select name="department" id="department">
 	                        <option value=""> ====전공==== </option>
 	                    </select>
-	                    <button type="button" class="btn btn-primary btn-sm" id="selectList" onclick="selectMajor();">조회</button>
+	                    <button type="button" class="btn btn-outline-primary btn-sm" id="selectList" onclick="selectMajor();">조회</button>
                 	</div>
                     <br>
                     
@@ -199,11 +199,10 @@
 
                 <script>
                 	var arr = ${classTerm};
-                	
                 
 	                $(function() {
 	                    $(".content_major").css("display", "block");
-	                    changeYear($("#year"));
+	                    $("select[name=year]").children().first().prop("selected", true).change();
 	                    
 	                	$(".selectTerm").on("change", "#term", function() {
 	                		selectCategory();
@@ -226,9 +225,10 @@
 	                	if(count==2) {
 	                		str += "<option value='2'>2학기</option>";
 	                	}
+	                	
 	                	$("#term").empty();
 	                	$("#term").append(str);
-	                	selectCategory();
+	                	clearPage();
 	                }
 	                
 	                function prevTerm() { // 마지막 학기일 경우 alert, 2학기->1학기, 1학기 -> 이전 년도 2학기
@@ -239,8 +239,8 @@
 	                		alert("조회 내용이 없습니다.");
 	                	}
 	                	else {
-		                	if($term.val() == 1) { // 이전 년도 2학기로 바꿔야함
-		                		var $index = $thisYear.children("option:selected").index();
+	                		if($term.children().first().val() == $term.val()) { // 이전 년도 2학기로 바꿔야함
+				                var $index = $thisYear.children("option:selected").index();
 		                		$thisYear.children().eq($index+1).prop("selected", true).change();
 	                			$term.children().last().prop("selected", true).change();
 		                	}
@@ -258,28 +258,22 @@
 	                		alert("조회 내용이 없습니다.");
 	                	}
 	                	else {
-		                	if($term.val() == 2) { // 다음 년도 1학기로 바꿔야함
+		                	if($term.children().last().val() == $term.val()) { // 다음 년도 1학기로 바꿔야함
 		                		var $index = $thisYear.children("option:selected").index();
-		                		$thisYear.children().eq($index-1).prop("selected", true).change();
+	                			$thisYear.children().eq($index-1).prop("selected", true).change();
 	                			$term.children().first().prop("selected", true).change();
-		                	}
-		                	else { // 같은 년도 2학기로 바꿔야함
+	                		}
+	                		else { // 같은 년도 2학기로 바꿔야함
 		                		$term.children().last().prop("selected", true).change();
 		                	}
 	                	}
 	                }
 	
 	                function selectCategory() {
-                		$("#college").val("");
-                		$("#department").val("");
-                		$("#professorName").val("");
-                		$("#subjectName").val("");
 	                	$("div[class*=content]").each(function() {
                             $(this).css("display", "none");
                         });
-	                	$("tbody[id*=tbody]").each(function() {
-	                		$(this).html("<tr class='no-hover' style='border: 0;'><td colspan='10' style='border: 0;'>해당 테이블에 데이터가 없습니다.</td></tr>");
-	                	})
+	                	clearPage();
 	                	
 	                    if($('#major').is(':checked')){
 	                        $(".content_major").css("display", "block");
@@ -313,6 +307,7 @@
 	                }
 	
 	                function selectCollege(e) {
+	                	$("#class-table-tbody").html("<tr class='no-hover' style='border: 0;'><td colspan='10' style='border: 0;'>해당 테이블에 데이터가 없습니다.</td></tr>");
 	                    var $college = e.value;
 	                    var str = "";
 	                    
@@ -401,11 +396,11 @@
             			if(cList != "") {
         					for(var i=0;i<cList.length;i++) {
             					str += "<tr>";
-            					if(cList[i].fileNo == 0) {
+            					if(cList[i].fileNo == null) {
             						str += "<td style='border-left: 0;'></td>";
             					}
             					else { // 클릭하면 강의계획서 볼 수 있게
-            						str += "<td style='border-left: 0;'><i class='fa-solid fa-file-pdf fa-sm' style='color: #7cd7fe;'></i></td>";
+            						str += "<td style='border-left: 0;'><i class='fa-solid fa-file-pdf fa-sm fileDown' style='color: #7cd7fe;'></i></td>";
             					}
         						 str += "<td>" + cList[i].classNo + "</td>"
         						 + "<td>" + cList[i].className + "</td>"
@@ -419,11 +414,20 @@
             				}
         				}
         				else {
-        					alert("검색 결과가 없습니다.");
-        					str += "<tr class='no-hover'><td colspan='10' style='border: 0;''>해당 테이블에 데이터가 없습니다.</td></tr>";
+        					str += "<tr class='no-hover' style='border: 0;'><td colspan='10' style='border: 0;'>해당 테이블에 데이터가 없습니다</td></tr>";
         				}
             			
             			return str;
+	                }
+	                
+	                function clearPage() {
+	                	$("#college").val("");
+                		$("#department").val("");
+                		$("#professorName").val("");
+                		$("#subjectName").val("");
+	                	$("tbody[id*=tbody]").each(function() {
+	                		$(this).html("<tr class='no-hover' style='border: 0;'><td colspan='10' style='border: 0;'>해당 테이블에 데이터가 없습니다.</td></tr>");
+	                	});
 	                }
                 </script>
             </div>

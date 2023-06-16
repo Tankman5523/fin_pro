@@ -68,4 +68,11 @@
 	 	</property>
 	 </bean>
 	 
+	 <!-- 파일 업로드 관련 빈 등록 -->
+	  <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver">
+	  	<property name="defaultEncoding" value="UTF-8"/><!-- 업로드 파일 인코딩 -->
+	  	<property name="maxUploadSize" value="10000000"/> <!-- 업로드 파일 용량제한 -->
+	  	<property name="maxInMemorySize" value="10000000"/> <!-- 메모리 보관 최대크기 -->
+	  </bean>
+	 
 </beans>

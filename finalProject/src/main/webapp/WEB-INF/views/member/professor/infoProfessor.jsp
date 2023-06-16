@@ -16,117 +16,6 @@
 
 </head>
 <style>
-	div{
-	    box-sizing: border-box;
-	}
-	.wrap{
-	    width: 1400px;
-	    height: 1100px;
-	    margin: auto;
-	}
-	.wrap>div{
-	    width: 100%;
-	}
-	#header{
-	    height: 15%;
-	}
-	#menubar{
-	    height: 6%;
-	    background-color: #4fc7ff
-	}
-	#content{
-	    width: 100%;
-	    height: 78%;
-	}
-	#header_1{
-	    height: 65%;
-	}
-	#category{
-		border : 1px solid gray;
-	    width: 20%;
-	    height: 100%;
-	    float: left;
-	}
-	#content_1{
-		border : 1px solid gray;
-	    width: 80%;
-	    height: 100%;
-	    float: right;
-	}
-	/*=========메뉴바 영역===========*/
-    #nav{
-        margin: 0%;
-        padding: 0%;
-        list-style-type: none;
-		
-		
-    }
-    #nav>li{
-        width: 9.5%;
-        height: 100%;
-        display: inline-block;
-        line-height: 70px;
-        text-align: center;
-        vertical-align: top;
-    }
-    #menubar a{
-        width: 100%;
-        height: 100%;
-        display: block;
-        text-decoration: none;
-        font-size: 23px;
-        font-weight: bold;
-        color: whitesmoke;
-    }
-    /*===============로그인 유저============*/
-	#user_log{
-	    margin: 0 50px;
-	    float: right;
-	    line-height: 137px;
-	}
-	#user_log td{
-	    text-align: right;
-	}
-	#logout-btn{
-	    width: 80px;
-	    height: 30px;
-	    border: none;
-	    border-radius: 5px;
-	    background-color: #4fc7ff;
-	    /* color: white; */
-	    font-weight: bold;
-	}
-
-
-    /*===========카테고리 영역=============*/
-    #cate_title{
-        width: 100%;
-        height: 9%;
-        font-size: 25px;
-        border-bottom: 1px solid black;
-        position: relative;
-    }
-    #cate_title>h3{
-        margin: 0%;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-    }
-    .child_title{
-        display: flex;
-        align-items: center;
-        width: 100%;
-        height: 7%;
-        border-bottom: 1px solid black;
-        text-align: center;
-        font-size: 25px;
-    }
-    .child_title a{
-        margin-left: 50px;
-        text-decoration: none;
-        color: black;
-    }
 	/*======================수정======================*/
 	input:read-only{
 		background-color: #D3D3D3;
@@ -249,58 +138,27 @@
 </head>
 <body>
     <div class="wrap">
-		<div id="header">
-			<div id="header_1">
-				<table id="user_log">
-					 <tr>
-						 <td>
-							${loginUser.professorName} 님 환영합니다.
-						 </td>
-						 <td style="padding-left: 50px;">
-							 <button id="logout-btn" onclick="">로그아웃</button>
-						 </td>
-					 </tr>
-				 </table>
-			</div>
-		</div>
-		<div id="menubar">
-			<ul id="nav">
-				<li><a href="#">홈</a></li>
-				<li><a href="#">등록/장학</a></li>
-				<li><a href="">학사관리</a></li>
-				<li><a href="#">상담관리</a></li>
-				<li><a href="#">수강신청</a></li>
-				<li><a href="#">수업관리</a></li>
-				
-			</ul>
-		</div>
-
-
+		<%@include file="../../common/professor_menubar.jsp" %>
+		
         <div id="content">
             <div id="category">
                 <div id="cate_title">
-                    <h3>학사관리</h3>
+                    <span style="margin: 0 auto;">학사관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="#">학적정보조회</a>
-                </div>
-				<div class="child_title">
-                    <a href="#">개인 시간표</a>
+                    <a href="infoProfessor.pr">교수 정보 관리</a>
                 </div>
 				<div class="child_title">
                     <a href="#">강의 시간표</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">휴/복학 신청</a>
+                    <a href="personalTimetable.pr">개인 시간표</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">휴/복학 조회</a>
+                    <a href="#">안식/퇴직 신청 조회</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">졸업사정표</a>
-                </div>
-				<div class="child_title">
-                    <a href="#">졸업 확정 신고</a>
+                    <a href="#">안식/퇴직 신청</a>
                 </div>
             </div>
             <div id="content_1">

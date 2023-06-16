@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="mainMapper">
+  
+	<select id="selectListCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM NOTICE
+		WHERE STATUS='Y'
+		AND FIELD = 0
+	</select>
+	
+	<resultMap type="notice" id="noticeResultSet">
+		<result column="NOTICE_NO" property="noticeNo"/>
+		<result column="NOTICE_CATEGORY" property="noticeCategory"/>
+		<result column="NOTICE_TITLE" property="noticeTitle"/>
+		<result column="NOTICE_CONTENT" property="noticeContent"/>
+		<result column="CREATE_DATE" property="createDate"/>
+		<result column="FIELD" property="field"/>
+		<result column="ORIGIN_NAME" property="originName"/>
+		<result column="CATEGORY_NAME" property="categoryName"/>
+	</resultMap>
+	
+	
+	<!-- 공지사항 조회  -->
+	<select id="selectNoticeList" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, FIELD, CATEGORY_NAME, NOTICE_TITLE, ORIGIN_NAME, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE"
+		FROM NOTICE N
+		LEFT JOIN NOTICE_ATTACHMENT NA USING(NOTICE_NO)
+		JOIN NOTICE_CATEGORY NC ON(CATEGORY_NO = NOTICE_CATEGORY)
+		WHERE N.STATUS='Y'
+		AND FIELD = 0
+		ORDER BY CREATE_DATE DESC
+	</select>
+	
+	<!-- 학사 FAQ 조회 -->
+	<select id="selectHaksaList" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_CATEGORY, RANK() OVER(ORDER BY COUNT DESC) "RANK"
+		FROM NOTICE
+		WHERE FIELD = 1
+		AND STATUS='Y'
+        AND NOTICE_CATEGORY = 1
+        AND ROWNUM BETWEEN 1 AND 4
+	</select>
+	
+	<!-- 장학 FAQ 조회 -->
+	<select id="selectJangHakList" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_CATEGORY, RANK() OVER(ORDER BY COUNT DESC) "RANK"
+		FROM NOTICE
+		WHERE FIELD = 1
+		AND STATUS='Y'
+        AND NOTICE_CATEGORY = 2
+        AND ROWNUM BETWEEN 1 AND 4
+	</select>
+	
+	<!-- 입학 FAQ 조회 -->
+	<select id="selectIpHakList" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_CATEGORY, RANK() OVER(ORDER BY COUNT DESC) "RANK"
+		FROM NOTICE
+		WHERE FIELD = 1
+		AND STATUS='Y'
+        AND NOTICE_CATEGORY = 3
+        AND ROWNUM BETWEEN 1 AND 4
+	</select>
+  	
+  	<!-- 채용 FAQ 조회 -->
+	<select id="selectChaeYongList" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_CATEGORY, RANK() OVER(ORDER BY COUNT DESC) "RANK"
+		FROM NOTICE
+		WHERE FIELD = 1
+		AND STATUS='Y'
+        AND NOTICE_CATEGORY = 4
+        AND ROWNUM BETWEEN 1 AND 4
+	</select>
+	
+	<!-- 기타 FAQ 조회 -->
+	<select id="selectGitaList" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, NOTICE_CATEGORY, RANK() OVER(ORDER BY COUNT DESC) "RANK"
+		FROM NOTICE
+		WHERE FIELD = 1
+		AND STATUS='Y'
+        AND NOTICE_CATEGORY = 5
+        AND ROWNUM BETWEEN 1 AND 4
+	</select>
+  </mapper>
