@@ -88,6 +88,7 @@
 
 .tableBtn{
     background-color: gainsboro;
+    padding: 0px;
     width: 100%;
     height: 100%;
     border: 0px;
@@ -112,6 +113,18 @@ p{
     display: none;
 }
 
+#commonModal{
+    display: none;
+}
+
+#nomalModal{
+    display: none;
+}
+
+#majorModal{
+    display: none;
+}
+
 .modalDiv{
     position: relative;
     background-color: aliceblue;
@@ -126,6 +139,11 @@ p{
 }
 
 #commonModal{
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+#nomalModal{
     border: 1px solid black;
     border-radius: 10px;
 }
@@ -166,7 +184,8 @@ p{
 #comBodyTable{
     border: 1px solid black;
     width: 100%;
-    text-align: center;
+    text-align: left;
+    text-indent: 10px;
     margin-top: 10px;
 }
 
@@ -219,4 +238,38 @@ p{
 
 #modalClose:hover{
     text-shadow: 1px 1px 5px black;
+}
+
+#nomBodyTable{
+    border: 1px solid black;
+    width: 100%;
+    text-align: left;
+    text-indent: 10px;
+    margin-top: 10px;
+}
+
+#nomBodyTable>thead{
+    background-color: rgb(52, 152, 219);
+    color: white;
+}
+
+#nomBodyTable>tbody>tr{
+    height: 40px;
+}
+
+#majorBodyTable{
+    border: 1px solid black;
+    width: 100%;
+    text-align: left;
+    text-indent: 10px;
+    margin-top: 10px;
+}
+
+#majorBodyTable>thead{
+    background-color: rgb(52, 152, 219);
+    color: white;
+}
+
+#majorBodyTable>tbody>tr{
+    height: 40px;
 }

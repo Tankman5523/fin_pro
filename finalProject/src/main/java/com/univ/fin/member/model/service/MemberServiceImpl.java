@@ -401,6 +401,24 @@ public  class MemberServiceImpl implements MemberService{
 		
 		return list;
 	}
+
+	//학사관리 - 졸업사정표 (교양일반 세부조회)
+	@Override
+	public ArrayList<HashMap<String, String>> detailNomalGra(HashMap<String, String> h) {
+		
+		ArrayList<HashMap<String,String>> list = memberDao.detailNomalGra(sqlSession,h);
+		
+		return list;
+	}
+	
+	//학사관리 - 졸업사정표 (전공심화 세부조회)
+	@Override
+	public ArrayList<HashMap<String, String>> detailmajorGra(HashMap<String, String> h) {
+		
+		ArrayList<HashMap<String,String>> list = memberDao.detailmajorGra(sqlSession,h);
+		
+		return list;
+	}
 	
 	//(학생)휴,복학 신청 리스트 조회
 	@Override
@@ -531,5 +549,5 @@ public  class MemberServiceImpl implements MemberService{
 		int result = memberDao.updateClassReject(sqlSession,c);
 		return result;
 	}
-
+	
 }
