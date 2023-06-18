@@ -511,4 +511,25 @@ public  class MemberServiceImpl implements MemberService{
 
 	}
 
+	// (관리자)강의개설 일괄 승인
+	@Override
+	public int updateClassPermitAll(String cno) {
+		int result = memberDao.updateClassPermitAll(sqlSession,cno);
+		return result;
+	}
+
+	// (관리자)강의개설 개별 승인
+	@Override
+	public int updateClassPermit(int cno) {
+		int result = memberDao.updateclassPermit(sqlSession,cno);
+		return result;
+	}
+
+	// (관리자)강의개설 반려 업데이트
+	@Override
+	public int updateClassReject(Classes c) {
+		int result = memberDao.updateClassReject(sqlSession,c);
+		return result;
+	}
+
 }
