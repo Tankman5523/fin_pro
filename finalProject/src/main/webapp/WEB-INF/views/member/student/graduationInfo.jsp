@@ -101,14 +101,22 @@
             					<td id="standardCommon">16</td>
             					<td id="commonArea"></td>
             					<td id="commonResult"></td>
-            					<td style="width:80px"><button class="tableBtn" onclick="commonBtn()">버튼</button></td>
+            					<td style="width:50px">
+	            					<button class="tableBtn" onclick="commonBtn();">
+	            						<img src="resources/icon/graduationInfo_detail.png">
+	            					</button>
+            					</td>
             				</tr>
             				<tr>
             					<td>교양일반(교일)</td>
             					<td id="standardNomal">0</td>
             					<td id="nomalArea"></td>
             					<td></td>
-            					<td><button class="tableBtn" onclick="">버튼</button></td>
+            					<td>
+	            					<button class="tableBtn" onclick="nomalBtn();">
+	            						<img src="resources/icon/graduationInfo_detail.png">
+	            					</button>
+            					</td>
             				</tr>
             				<tr class="tableLine">
             					<td>소계</td>
@@ -122,7 +130,11 @@
             					<td id="standardMajor">96</td>
             					<td id="majorArea"></td>
             					<td id="majorResult"></td>
-            					<td><button class="tableBtn" onclick="">버튼</button></td>
+            					<td>
+	            					<button class="tableBtn" onclick="majorBtn();">
+	            						<img src="resources/icon/graduationInfo_detail.png">
+	            					</button>
+            					</td>
             				</tr>
             				<tr class="tableLine">
             					<td>소계</td>
@@ -239,12 +251,346 @@
 						</script>
             		</div>
             	</div>
-				<div id="modalArea">
-		         	<div class="modalDiv" id="commonModal">
-		         	</div>
-		        </div>
             </div>
 		</div>
+		<!-- ================================= Modal Area ================================= -->
+		<div id="modalArea">
+			<!-- ================================= Common Modal ================================= -->
+         	<div class="modalDiv" id="commonModal">
+         		<div class="common" id="commonHeader">
+         		<span>졸업세부영역별현황</span>
+         		<button id="modalClose" onclick="hideModal(1);">X</button>
+         		</div>
+         		<div class="subLine">
+         			<span>교양공통(교공)</span>
+         			<hr>
+         		</div>
+         		<div class="common" id="commonBody">
+         			
+         			<table id="comBodyTable" border="1">
+         				<thead>
+	         				<tr>
+	         					<th>과목명</th>
+	         					<th>필수 이수학점</th>
+	         					<th>이수현황</th>
+	         					<th>등급</th>
+	         					<th>이수학점</th>
+	         				</tr>
+         				</thead>
+         				<tbody>
+         				</tbody>
+         			</table>
+         		</div>
+         		<div class="subLine">
+         			<span>이수방법</span>
+         			<hr>
+         		</div>
+         		<div class="common" id="commonBody2">
+         			<ul>
+         				<li>
+         					교양공통 기준학점 이상 이수
+         				</li>
+         				<li>
+         					폐지 혹은 면제된 과목은 이수하지 않아도 됨<br>
+         					(단,폐지된 과목이라도 대체과목이 지정되어 있으면 해당과목은 이수해야 함)
+         				</li>
+         				<li>
+         					공통 : 타대학(타기관)취득 학점은 자가진단 본화면에서는 집계되나 팝업창에서는 해당 과목 내역을 확인할 수 없음<br>
+         					★주의사항★<br>
+         					- 타전공 취득 학점은 교양일반으로 집계되며 해당 강의 학점으로 인정해줌<br>
+         				</li>
+         			</ul>
+         		</div>
+         		<div class="common" id="commonFooter">
+         			<button onclick="hideModal(1)">확인</button>
+         		</div>
+         	</div>
+         	
+         	<!-- ================================= Nomal Modal ================================= -->
+         	<div class="modalDiv" id="nomalModal">
+         		<div class="common" id="commonHeader">
+         		<span>졸업세부영역별현황</span>
+         		<button id="modalClose" onclick="hideModal(2);">X</button>
+         		</div>
+         		<div class="subLine">
+         			<span>교양일반(교일)</span>
+         			<hr>
+         		</div>
+         		<div class="common" id="commonBody">
+         			
+         			<table id="nomBodyTable" border="1">
+         				<thead>
+	         				<tr>
+	         					<th>과목명</th>
+	         					<th>필수 이수학점</th>
+	         					<th>이수현황</th>
+	         					<th>등급</th>
+	         					<th>이수학점</th>
+	         				</tr>
+         				</thead>
+         				<tbody>
+         				</tbody>
+         			</table>
+         		</div>
+         		<div class="subLine">
+         			<span>이수방법</span>
+         			<hr>
+         		</div>
+         		<div class="common" id="commonBody2">
+         			<ul>
+         				<li>
+         					교양일반 기준학점 이상 이수
+         				</li>
+         				<li>
+         					폐지 혹은 면제된 과목은 이수하지 않아도 됨<br>
+         					(단,폐지된 과목이라도 대체과목이 지정되어 있으면 해당과목은 이수해야 함)
+         				</li>
+         				<li>
+         					공통 : 타대학(타기관)취득 학점은 자가진단 본화면에서는 집계되나 팝업창에서는 해당 과목 내역을 확인할 수 없음<br>
+         					★주의사항★<br>
+         					- 타전공 취득 학점은 교양일반으로 집계되며 해당 강의 학점으로 인정해줌<br>
+         				</li>
+         			</ul>
+         		</div>
+         		<div class="common" id="commonFooter">
+         			<button onclick="hideModal(2)">확인</button>
+         		</div>
+         	</div>
+         	
+         	<!-- ================================= Major Modal ================================= -->
+         	<div class="modalDiv" id="majorModal">
+         		<div class="common" id="commonHeader">
+         		<span>졸업세부영역별현황</span>
+         		<button id="modalClose" onclick="hideModal(3);">X</button>
+         		</div>
+         		<div class="subLine">
+         			<span>전공심화(전심)</span>
+         			<hr>
+         		</div>
+         		<div class="common" id="commonBody">
+         			
+         			<table id="majorBodyTable" border="1">
+         				<thead>
+	         				<tr>
+	         					<th>과목명</th>
+	         					<th>필수 이수학점</th>
+	         					<th>이수현황</th>
+	         					<th>등급</th>
+	         					<th>이수학점</th>
+	         				</tr>
+         				</thead>
+         				<tbody>
+         				</tbody>
+         			</table>
+         		</div>
+         		<div class="subLine">
+         			<span>이수방법</span>
+         			<hr>
+         		</div>
+         		<div class="common" id="commonBody2">
+         			<ul>
+         				<li>
+         					전공심화 기준학점 이상 이수
+         				</li>
+         				<li>
+         					폐지 혹은 면제된 과목은 이수하지 않아도 됨<br>
+         					(단,폐지된 과목이라도 대체과목이 지정되어 있으면 해당과목은 이수해야 함)
+         				</li>
+         				<li>
+         					공통 : 타대학(타기관)취득 학점은 자가진단 본화면에서는 집계되나 팝업창에서는 해당 과목 내역을 확인할 수 없음<br>
+         					★주의사항★<br>
+         					- 타전공 취득 학점은 교양일반으로 집계되며 해당 강의 학점으로 인정해줌<br>
+         				</li>
+         			</ul>
+         		</div>
+         		<div class="common" id="commonFooter">
+         			<button onclick="hideModal(3)">확인</button>
+         		</div>
+         	</div>
+        </div>
+        
+        <script>
+        
+        	/* 교양공통 세부확인 모달 */
+        	function commonBtn(){
+        		
+	       		//년도 추출
+	       		var nowYear = $("#graDate").val().substring(0,4);
+	       		
+        		$.ajax({
+        			url : "detailCommonGra.st",
+        			data : {
+        				studentNo : "${student.studentNo}",
+        				year : nowYear
+        			},
+        			success : function(list){
+        				var result = "";
+        				var sumCredit = 0; 		 //필수 이수학점 총계
+        				var sumResultCredit = 0; //이수학점 총계
+        				if(list.length !== 0){
+        					for(var i=0; i<list.length; i++){
+	        					result +="<tr>"
+	        						   +"<td>" + list[i].CLASS_NAME + "</td>"
+	        						   +"<td>" + list[i].CREDIT + "</td>"
+	        						   +"<td>" + list[i].STATE + "</td>";
+	        						   if(list[i].GRADE_LEVEL === "F"){
+	        							 result +="<td style='color:#e65f3e';><b>" + list[i].GRADE_LEVEL + "</b></td>";
+	        						   }else{
+										 result +="<td style='color:rgb(52, 152, 219)';><b>" + list[i].GRADE_LEVEL + "</b></td>";
+	        						   }
+	        					result +="<td>" + list[i].RESULT_CREDIT + "</td>"
+	        						   +"</tr>";
+	        						   sumCredit += list[i].CREDIT;
+	        						   sumResultCredit += list[i].RESULT_CREDIT;
+        					}
+        					result +="<tr>"
+        						   +"<td>계</td>"
+        						   +"<td>" + sumCredit + "</td>"
+        						   +"<td colspan='2'></td>"
+        						   +"<td><b>" + sumResultCredit + "</b></td>";
+        				}else{
+        					result += "<tr><th colspan='5'>해당 과목을 이수한 내역이 없습니다.</th></tr>";
+        				}
+        				$("#comBodyTable>tbody").html(result);
+        			},
+        			error : function(){
+        				console.log("교양공통 세부확인조회 통신실패");
+        			}
+        		});
+        		
+        		document.getElementById("modalArea").style.display = 'flex';
+        		document.getElementById("commonModal").style.display = 'block';
+        	}
+        	
+        	/* 교양일반 세부확인 모달 */
+        	function nomalBtn(){
+        		
+	       		//년도 추출
+	       		var nowYear = $("#graDate").val().substring(0,4);
+	       		
+        		$.ajax({
+        			url : "detailNomalGra.st",
+        			data : {
+        				studentNo : "${student.studentNo}",
+        				departmentName : "${student.departmentName}",
+        				year : nowYear
+        			},
+        			success : function(list){
+        				var result = "";
+        				var sumCredit = 0; 		 //필수 이수학점 총계
+        				var sumResultCredit = 0; //이수학점 총계
+        				if(list.length !== 0){
+        					for(var i=0; i<list.length; i++){
+	        					result +="<tr>"
+	        						   +"<td>" + list[i].CLASS_NAME + "</td>"
+	        						   +"<td>" + list[i].CREDIT + "</td>"
+	        						   +"<td>" + list[i].STATE + "</td>";
+	        						   if(list[i].GRADE_LEVEL === "F"){
+	        							 result +="<td style='color:#e65f3e';><b>" + list[i].GRADE_LEVEL + "</b></td>";
+	        						   }else{
+										 result +="<td style='color:rgb(52, 152, 219)';><b>" + list[i].GRADE_LEVEL + "</b></td>";
+	        						   }
+	        					result +="<td>" + list[i].RESULT_CREDIT + "</td>"
+	        						   +"</tr>";
+	        						   sumCredit += list[i].CREDIT;
+	        						   sumResultCredit += list[i].RESULT_CREDIT;
+        					}
+        					result +="<tr>"
+        						   +"<td>계</td>"
+        						   +"<td>" + sumCredit + "</td>"
+        						   +"<td colspan='2'></td>"
+        						   +"<td><b>" + sumResultCredit + "</b></td>";
+        				}else{
+        					result += "<tr><th colspan='5'>해당 과목을 이수한 내역이 없습니다.</th></tr>";
+        				}
+        				$("#nomBodyTable>tbody").html(result);
+        			},
+        			error : function(){
+        				console.log("교양일반 세부확인조회 통신실패");
+        			}
+        		});
+        		
+        		document.getElementById("modalArea").style.display = 'flex';
+        		document.getElementById("nomalModal").style.display = 'block';
+        	}
+        	
+        	/* 전공심화 세부확인 모달 */
+        	function majorBtn(){
+        		
+	       		//년도 추출
+	       		var nowYear = $("#graDate").val().substring(0,4);
+	       		
+        		$.ajax({
+        			url : "detailmajorGra.st",
+        			data : {
+        				studentNo : "${student.studentNo}",
+        				departmentName : "${student.departmentName}",
+        				year : nowYear
+        			},
+        			success : function(list){
+        				var result = "";
+        				var sumCredit = 0; 		 //필수 이수학점 총계
+        				var sumResultCredit = 0; //이수학점 총계
+        				if(list.length !== 0){
+        					for(var i=0; i<list.length; i++){
+	        					result +="<tr>"
+	        						   +"<td>" + list[i].CLASS_NAME + "</td>"
+	        						   +"<td>" + list[i].CREDIT + "</td>"
+	        						   +"<td>" + list[i].STATE + "</td>";
+	        						   if(list[i].GRADE_LEVEL === "F"){
+	        							 result +="<td style='color:#e65f3e';><b>" + list[i].GRADE_LEVEL + "</b></td>";
+	        						   }else{
+										 result +="<td style='color:rgb(52, 152, 219)';><b>" + list[i].GRADE_LEVEL + "</b></td>";
+	        						   }
+	        					result +="<td>" + list[i].RESULT_CREDIT + "</td>"
+	        						   +"</tr>";
+	        						   sumCredit += list[i].CREDIT;
+	        						   sumResultCredit += list[i].RESULT_CREDIT;
+        					}
+        					result +="<tr>"
+        						   +"<td>계</td>"
+        						   +"<td>" + sumCredit + "</td>"
+        						   +"<td colspan='2'></td>"
+        						   +"<td><b>" + sumResultCredit + "</b></td>";
+        				}else{
+        					result += "<tr><th colspan='5'>해당 과목을 이수한 내역이 없습니다.</th></tr>";
+        				}
+        				$("#majorBodyTable>tbody").html(result);
+        			},
+        			error : function(){
+        				console.log("교양일반 세부확인조회 통신실패");
+        			}
+        		});
+        		
+        		document.getElementById("modalArea").style.display = 'flex';
+        		document.getElementById("majorModal").style.display = 'block';
+        	}
+        	
+        	/* 모달창의 확인버튼 클릭 시 모달 닫기 */
+        	function hideModal(num){
+       			document.getElementById("modalArea").style.display = 'none';
+        		if(num == 1){
+	       			document.getElementById("commonModal").style.display = 'none';
+        		}else if(num == 2){
+        			document.getElementById("nomalModal").style.display = 'none';
+        		}else{
+        			document.getElementById("majorModal").style.display = 'none';
+        		}
+        	}
+        	
+        	/* 모달영역 외 클릭 시 모달 닫기 */
+        	$(function(){
+        		$("#modalArea").on("click",function(e){
+        			if(e.target.id == "modalArea"){
+        				document.getElementById("modalArea").style.display = 'none';
+        				document.getElementById("commonModal").style.display = 'none';
+        				document.getElementById("nomalModal").style.display = 'none';
+        				document.getElementById("majorModal").style.display = 'none';
+        			}
+        		});
+        	});
+        	
+        </script>
 	</div>
 </body>
 </html>

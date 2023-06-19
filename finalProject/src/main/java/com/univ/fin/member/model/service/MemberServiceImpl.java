@@ -393,6 +393,33 @@ public  class MemberServiceImpl implements MemberService{
 		return g;
 	}
 	
+	//학사관리 - 졸업사정표 (교양공통 세부조회)
+	@Override
+	public ArrayList<HashMap<String, String>> detailCommonGra(HashMap<String, String> h) {
+		
+		ArrayList<HashMap<String, String>> list = memberDao.detailCommonGra(sqlSession,h);
+		
+		return list;
+	}
+
+	//학사관리 - 졸업사정표 (교양일반 세부조회)
+	@Override
+	public ArrayList<HashMap<String, String>> detailNomalGra(HashMap<String, String> h) {
+		
+		ArrayList<HashMap<String,String>> list = memberDao.detailNomalGra(sqlSession,h);
+		
+		return list;
+	}
+	
+	//학사관리 - 졸업사정표 (전공심화 세부조회)
+	@Override
+	public ArrayList<HashMap<String, String>> detailmajorGra(HashMap<String, String> h) {
+		
+		ArrayList<HashMap<String,String>> list = memberDao.detailmajorGra(sqlSession,h);
+		
+		return list;
+	}
+	
 	//(학생)휴,복학 신청 리스트 조회
 	@Override
 	public ArrayList<StudentRest> selectStuRestList(String studentNo) {
@@ -502,4 +529,25 @@ public  class MemberServiceImpl implements MemberService{
 
 	}
 
+	// (관리자)강의개설 일괄 승인
+	@Override
+	public int updateClassPermitAll(String cno) {
+		int result = memberDao.updateClassPermitAll(sqlSession,cno);
+		return result;
+	}
+
+	// (관리자)강의개설 개별 승인
+	@Override
+	public int updateClassPermit(int cno) {
+		int result = memberDao.updateclassPermit(sqlSession,cno);
+		return result;
+	}
+
+	// (관리자)강의개설 반려 업데이트
+	@Override
+	public int updateClassReject(Classes c) {
+		int result = memberDao.updateClassReject(sqlSession,c);
+		return result;
+	}
+	
 }
