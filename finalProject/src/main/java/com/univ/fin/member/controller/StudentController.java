@@ -1,4 +1,3 @@
-
 package com.univ.fin.member.controller;
 
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,19 +25,39 @@ import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
+import com.univ.fin.common.template.ChatBot;
 import com.univ.fin.common.template.DepartmentCategory;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
 
-
-
 @Controller
 public class StudentController {
 
 	@Autowired
 	private MemberService memberService;
+	
+	//챗봇
+	@ResponseBody
+	@RequestMapping(value = "chatBot.cb", produces = "application/json; charset=UTF-8")
+	public String chatBot(String question,@RequestParam(value = "num", defaultValue = "0") int num) {
+		String result = "";
+		
+		ChatBot c = new ChatBot();
+		if(num == 0) {
+			if(question != "") {
+				result = c.answer(question);
+			}else {
+				result = "<div>뭐가 문제야 쎄이 썸띵?</div><br>";
+				result += c.select();
+			}
+		}else {
+			result += c.detailSelect(num);
+		}
+		
+		return new Gson().toJson(result);
+	}
 	
 	//수강신청 폼
 	@RequestMapping("registerClassForm.st")
@@ -202,6 +220,8 @@ public class StudentController {
 		//해당 강의 조회
 		Classes c = memberService.selectClass(rc.getClassNo());
 		
+		String term = String.valueOf(rc.getClassTerm().charAt(0)); //학기 추출
+		
 		if(c.getSpareNos() != c.getClassNos()) { // 수강인원 체크 (신청인원이 수강인원보다 적을때)
 			rc2 = RegisterClass.builder().day(c.getDay())
 										 .period(c.getPeriod())
@@ -209,7 +229,7 @@ public class StudentController {
 										 .studentNo(rc.getStudentNo())
 										 .classNo(rc.getClassNo())
 										 .classYear(rc.getClassYear())
-										 .classTerm(rc.getClassTerm())
+										 .classTerm(term)
 										 .build();
 			
 			//강의 시간 체크 (0반환이라면 겹치는 강의가 없다라는 의미)
@@ -273,12 +293,6 @@ public class StudentController {
 		ArrayList<HashMap<String, String>> list = memberService.searchRegList(h);
 		
 		return new Gson().toJson(list);
-	}
-	
-	// 수강신청 - 학기별 성적 조회
-	@RequestMapping("classManagement.st")
-	public String student_classManagement() {
-		return "member/student/gradeListView";
 	}
 	
 	// 수강신청 - 강의시간표
@@ -505,6 +519,50 @@ public class StudentController {
 		return new Gson().toJson(g);
 	}
 	
+	//학사관리 - 졸업사정표 (교양공통 세부조회)
+	@ResponseBody
+	@RequestMapping(value="detailCommonGra.st", produces = "application/json; charset=UTF-8")
+	public String detailCommonGra(String studentNo, String year, String term) {
+		
+		HashMap<String, String> h = new HashMap<>();
+		h.put("studentNo", studentNo);
+		h.put("year", year);
+		
+		ArrayList<HashMap<String, String>> list = memberService.detailCommonGra(h);
+		
+		return new Gson().toJson(list);
+	}
+	
+	//학사관리 - 졸업사정표 (교양일반 세부조회)
+	@ResponseBody
+	@RequestMapping(value="detailNomalGra.st", produces = "application/json; charset=UTF-8")
+	public String detailNomalGra(String studentNo, String departmentName, String year, String term) {
+		
+		HashMap<String, String> h = new HashMap<>();
+		h.put("studentNo", studentNo);
+		h.put("departmentName", departmentName);
+		h.put("year", year);
+		
+		ArrayList<HashMap<String, String>> list = memberService.detailNomalGra(h);
+		
+		return new Gson().toJson(list);
+	}
+	
+	//학사관리 - 졸업사정표 (전공심화 세부조회)
+	@ResponseBody
+	@RequestMapping(value="detailmajorGra.st", produces = "application/json; charset=UTF-8")
+	public String detailmajorGra(String studentNo, String departmentName, String year, String term) {
+		
+		HashMap<String, String> h = new HashMap<>();
+		h.put("studentNo", studentNo);
+		h.put("departmentName", departmentName);
+		h.put("year", year);
+		
+		ArrayList<HashMap<String, String>> list = memberService.detailmajorGra(h);
+		
+		return new Gson().toJson(list);
+	}
+	
 	//학생등록 페이지
 	@RequestMapping("enrollStudent.me")
 	public String enrollStudent() {		
@@ -596,12 +654,24 @@ public class StudentController {
 		return "redirect:studentRestList.st";
 	}
 	
-
+	// 수업관리 - 학기별 성적 조회
+	@RequestMapping("classManagement.st")
+	public ModelAndView student_classManagement(ModelAndView mv) {
+		ArrayList<String> classTerm = memberService.selectClassTerm();
+		
+		mv.addObject("classTerm", classTerm).setViewName("member/student/gradeListView");
+		return mv;
+	}
 	
+	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
+	@ResponseBody
+	@RequestMapping(value="selectClassList.st",produces = "application/json; charset=UTF-8")
+	public String selectClassList(@RequestParam HashMap<String,String> map, HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
+		map.put("studentNo", studentNo);
+		
+		ArrayList<HashMap<String, String>> cList = memberService.selectClassList(map);
+		return new Gson().toJson(cList);
+	}
 }
-
-
-
-
-
-

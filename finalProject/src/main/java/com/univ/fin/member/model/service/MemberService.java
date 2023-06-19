@@ -1,6 +1,5 @@
 package com.univ.fin.member.model.service;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -131,12 +130,6 @@ public interface MemberService {
 	
 	//학생추가 (관리자)
 	int insertStudent(Student st);
-
-
-	
-
-
-
 	
 	// 학생 개인시간표 -> 학년도,학기 조회
 	ArrayList<String> selectStudentClassTerm(String studentNo);
@@ -149,6 +142,15 @@ public interface MemberService {
 	
 	//학사관리 - 졸업사정표(전체 이수현황 조회)
 	Graduation selectGraStatus(HashMap<String, String> h);
+	
+	//학사관리 - 졸업사정표 (교양공통 세부조회)
+	ArrayList<HashMap<String, String>> detailCommonGra(HashMap<String, String> h);
+	
+	//학사관리 - 졸업사정표 (교양일반 세부조회)
+	ArrayList<HashMap<String, String>> detailNomalGra(HashMap<String, String> h);
+	
+	//학사관리 - 졸업사정표 (전공심화 세부조회)
+	ArrayList<HashMap<String, String>> detailmajorGra(HashMap<String, String> h);
 	
 	//(학생)휴,복학 신청 리스트 조회
 	ArrayList<StudentRest> selectStuRestList(String studentNo);
@@ -184,7 +186,7 @@ public interface MemberService {
 	ArrayList<Classes> selectProfessorTimetable(HashMap<String, String> map);
 
 	// 성적관리 -> 수강중인 학생 조회
-	ArrayList<Student> selectStudentGradeList(int classNo);
+	ArrayList<HashMap<String, String>> selectStudentGradeList(int classNo);
 
 	// 성적관리 -> 성적 입력
 	int gradeInsert(Grade g);
@@ -192,4 +194,15 @@ public interface MemberService {
 	// 성적관리 -> 성적 수정
 	int gradeUpdate(Grade g);
 
+	// (관리자)강의개설 일괄 승인
+	int updateClassPermitAll(String cno);
+
+	// (관리자)강의개설 개별 승인
+	int updateClassPermit(int cno);
+
+	// (관리자)강의개설 반려 업데이트
+	int updateClassReject(Classes c);
+
+	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
+	ArrayList<HashMap<String, String>> selectClassList(HashMap<String, String> map);
 }

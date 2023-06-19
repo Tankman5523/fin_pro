@@ -128,11 +128,17 @@
   		<result column="STATUS" property="status"/>
   	</resultMap>
 	
-	<resultMap type="grade" id="gradeResultMap">
+	<resultMap type="hashmap" id="gradeHashMap">
+		<result column="CLASS_NO" property="classNo"/>
+		<result column="CLASS_NAME" property="className"/>
+		<result column="CLASS_YEAR" property="classYear"/>
+		<result column="CLASS_TERM" property="classTerm"/>
+		<result column="CREDIT" property="credit"/>
 		<result column="DEPARTMENT_NAME" property="departmentName"/>
+		<result column="PROFESSOR_NAME" property="professorName"/>
 		<result column="STUDENT_NO" property="studentNo"/>
-		<result column="CLASS_LEVEL" property="classLevel"/>
 		<result column="STUDENT_NAME" property="studentName"/>
+		<result column="CLASS_LEVEL" property="classLevel"/>
 		<result column="SCORE" property="score"/>
 		<result column="GRADE_LEVEL" property="gradeLevel"/>
 	</resultMap>
@@ -424,14 +430,13 @@
 		WHERE S.DAY = #{day}
 		AND CLASS_YEAR = #{classYear}
 		AND CLASS_TERM = #{classTerm}
+		AND STUDENT_NO = #{studentNo}
   		<choose>
   			<when test="classHour == 2">
   				AND (S.PERIOD = #{period}+1 OR S.PERIOD = #{period})
-  				AND STUDENT_NO = #{studentNo}
   			</when>
   			<when test="classHour == 1">
   				AND S.PERIOD = #{period}
-  				AND STUDENT_NO = #{studentNo}
   			</when>
   		</choose>
   	</select>
@@ -575,6 +580,55 @@
 		        AND G.CLASS_TERM <= #{term}
 		        AND C.DIVISION = 0
 		        AND DEPARTMENT_NAME = #{departmentName}) "C"
+		]]>
+  	</select>
+  	
+  	<!-- 학사관리 - 졸업사정표 (교양공통 세부조회) -->
+  	<select id="detailCommonGra" resultType="HashMap">
+  		<![CDATA[
+  		SELECT CLASS_NAME, CREDIT
+                 		 , G.CLASS_YEAR || '-' || G.CLASS_TERM || NVL(DECODE(GRADE_LEVEL,'F','학기'),'학기(이수)') "STATE"
+                 		 , GRADE_LEVEL,NVL(DECODE(GRADE_LEVEL,'F',0),CREDIT) "RESULT_CREDIT"
+		FROM CLASS C
+		JOIN GRADE G ON (C.CLASS_NO = G.CLASS_NO)
+		WHERE STUDENT_NO = #{studentNo}
+		AND G.CLASS_YEAR <= #{year}
+		AND DIVISION = 1
+		ORDER BY G.CLASS_YEAR DESC,G.CLASS_TERM DESC
+		]]>
+  	</select>
+  	
+  	<!-- 학사관리 - 졸업사정표 (교양일반 세부조회) -->
+  	<select id="detailNomalGra" resultType="HashMap">
+		<![CDATA[
+  		SELECT CLASS_NAME, CREDIT
+                 		 , G.CLASS_YEAR || '-' || G.CLASS_TERM || NVL(DECODE(GRADE_LEVEL,'F','학기'),'학기(이수)') "STATE"
+                 		 , GRADE_LEVEL,NVL(DECODE(GRADE_LEVEL,'F',0),CREDIT) "RESULT_CREDIT"
+		FROM CLASS C
+		JOIN GRADE G ON (C.CLASS_NO = G.CLASS_NO)
+		JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		WHERE STUDENT_NO = #{studentNo}
+		AND G.CLASS_YEAR <= #{year}
+		AND DIVISION = 0
+		AND DEPARTMENT_NAME != #{departmentName}
+		ORDER BY G.CLASS_YEAR DESC,G.CLASS_TERM DESC
+		]]>
+  	</select>
+  	
+  	<!-- 학사관리 - 졸업사정표 (전공심화 세부조회) -->
+  	<select id="detailmajorGra" resultType="HashMap">
+		<![CDATA[
+  		SELECT CLASS_NAME, CREDIT
+                 		 , G.CLASS_YEAR || '-' || G.CLASS_TERM || NVL(DECODE(GRADE_LEVEL,'F','학기'),'학기(이수)') "STATE"
+                 		 , GRADE_LEVEL,NVL(DECODE(GRADE_LEVEL,'F',0),CREDIT) "RESULT_CREDIT"
+		FROM CLASS C
+		JOIN GRADE G ON (C.CLASS_NO = G.CLASS_NO)
+		JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		WHERE STUDENT_NO = #{studentNo}
+		AND G.CLASS_YEAR <= #{year}
+		AND DIVISION = 0
+		AND DEPARTMENT_NAME = #{departmentName}
+		ORDER BY G.CLASS_YEAR DESC,G.CLASS_TERM DESC
 		]]>
   	</select>
   	
@@ -753,6 +807,7 @@
 		JOIN SCHEDULE S USING(CLASS_NO)
 		LEFT JOIN PROFESSOR P USING(PROFESSOR_NO)
 		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND S.STUDENT_NO = #{studentNo}
+		ORDER BY CLASS_NO, PERIOD
   	</select>
   	
   	<!-- (교수)강의개설 신청 리스트 조회-->
@@ -796,7 +851,7 @@
   		SELECT CLASS_YEAR||'0'||CLASS_TERM
 		FROM CLASS
 		JOIN PROFESSOR USING(PROFESSOR_NO)
-		WHERE PROFESSOR_NO = 'P20150023'
+		WHERE PROFESSOR_NO = #{professorNo}
 		GROUP BY CLASS_YEAR, CLASS_TERM
 		ORDER BY CLASS_YEAR DESC, CLASS_TERM ASC
   	</select>
@@ -810,13 +865,13 @@
   	</select>
   	
   	<!-- 성적관리 -> 수강중인 학생 조회 -->
-  	<select id="selectStudentGradeList" parameterType="_int" resultMap="gradeResultMap">
+  	<select id="selectStudentGradeList" parameterType="_int" resultMap="gradeHashMap">
   		SELECT DEPARTMENT_NAME, A.STUDENT_NO, CLASS_LEVEL, STUDENT_NAME, NVL(SCORE, 0) AS SCORE, NVL(GRADE_LEVEL,' ') AS GRADE_LEVEL
 		FROM (SELECT CLASS_NO, STUDENT_NO
 		        FROM SCHEDULE
 		        GROUP BY CLASS_NO, STUDENT_NO) A
 		JOIN STUDENT S ON(A.STUDENT_NO = S.STUDENT_NO)
-		LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO)
+		LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
 		JOIN DEPARTMENT D USING(DEPARTMENT_NO)
 		WHERE A.CLASS_NO = #{classNo}
 		ORDER BY DEPARTMENT_NAME, STUDENT_NO
@@ -837,8 +892,40 @@
   		  , GRADE_LEVEL = #{gradeLevel}
   		WHERE STUDENT_NO = #{studentNo} AND CLASS_NO = #{classNo}
   	</update>
+  	
+  	<!-- 학기별 성적 조회 -> 학기 선택 후 강의 조회 -->
+  	<select id="selectClassList" parameterType="hashmap" resultMap="gradeHashMap">
+  		SELECT C.CLASS_YEAR, C.CLASS_TERM, C.CLASS_NO, CLASS_NAME, PROFESSOR_NAME, CREDIT, NVL(SCORE, 0) AS SCORE, NVL(GRADE_LEVEL,' ') AS GRADE_LEVEL
+		FROM (SELECT CLASS_NO, STUDENT_NO
+		        FROM SCHEDULE
+		        GROUP BY CLASS_NO, STUDENT_NO) A
+		JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
+		LEFT JOIN GRADE G ON(A.CLASS_NO = G.CLASS_NO)
+		JOIN PROFESSOR P USING(PROFESSOR_NO)
+		WHERE C.CLASS_YEAR = #{year} AND C.CLASS_TERM = #{term} AND A.STUDENT_NO = #{studentNo}
+		ORDER BY CLASS_NAME
+  	</select>
+  	
+  	<!-- 강의개설 일괄승인(관리자) -->
+  	<update id="updateClassPermitAll">
+  		UPDATE CLASS
+  		SET STATUS = 'Y'
+  		WHERE CLASS_NO IN (#{cno})
+  	</update>
+  	
+  	<!-- 강의개설 반려 (관리자) -->
+  	<update id="updateClassReject">
+  		UPDATE CLASS
+  		SET STATUS = 'C'
+  		,	EXPLAIN = #{explain}
+  		WHERE CLASS_NO = #{classNo}
+  		AND STATUS = 'B'
+  	</update>
+  	
   	<insert id="insertStudent">
   	INSERT INTO STUDENT (STUDENT_NO, DEPARTMENT_NO, COLLEGE_NO, ENTRANCE_DATE, STUDENT_NAME, STUDENT_PWD, PHONE, EMAIL, POST, ADDRESS,CLASS_LEVEL)
 	VALUES (SEQ_SNO.NEXTVAL,(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
   	</insert>
+  	
   </mapper>
+
