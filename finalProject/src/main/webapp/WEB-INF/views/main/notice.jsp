@@ -202,7 +202,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach var="n" items="${list }">
+						<c:forEach var="n" items="${list}">
 							<tr>
 								<td>
 									<input type="hidden" class="nno" value="${n.noticeNo }">
