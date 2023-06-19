@@ -119,6 +119,15 @@
 		<result column="PAY_STATUS" property="payStatus"/>
 	</resultMap>
 	
+	<resultMap type="attachment" id="attachmentResultSet">
+  		<result column="FILE_NO" property="fileNo"/>
+  		<result column="ORIGIN_NAME" property="originName"/>
+  		<result column="CHANGE_NAME" property="changeName"/>
+  		<result column="FILE_PATH" property="filePath"/>
+  		<result column="UPLOAD_DATE" property="uploadDate"/>
+  		<result column="STATUS" property="status"/>
+  	</resultMap>
+	
 	<resultMap type="hashmap" id="gradeHashMap">
 		<result column="CLASS_NO" property="classNo"/>
 		<result column="CLASS_NAME" property="className"/>
@@ -421,14 +430,13 @@
 		WHERE S.DAY = #{day}
 		AND CLASS_YEAR = #{classYear}
 		AND CLASS_TERM = #{classTerm}
+		AND STUDENT_NO = #{studentNo}
   		<choose>
   			<when test="classHour == 2">
   				AND (S.PERIOD = #{period}+1 OR S.PERIOD = #{period})
-  				AND STUDENT_NO = #{studentNo}
   			</when>
   			<when test="classHour == 1">
   				AND S.PERIOD = #{period}
-  				AND STUDENT_NO = #{studentNo}
   			</when>
   		</choose>
   	</select>
@@ -572,6 +580,55 @@
 		        AND G.CLASS_TERM <= #{term}
 		        AND C.DIVISION = 0
 		        AND DEPARTMENT_NAME = #{departmentName}) "C"
+		]]>
+  	</select>
+  	
+  	<!-- 학사관리 - 졸업사정표 (교양공통 세부조회) -->
+  	<select id="detailCommonGra" resultType="HashMap">
+  		<![CDATA[
+  		SELECT CLASS_NAME, CREDIT
+                 		 , G.CLASS_YEAR || '-' || G.CLASS_TERM || NVL(DECODE(GRADE_LEVEL,'F','학기'),'학기(이수)') "STATE"
+                 		 , GRADE_LEVEL,NVL(DECODE(GRADE_LEVEL,'F',0),CREDIT) "RESULT_CREDIT"
+		FROM CLASS C
+		JOIN GRADE G ON (C.CLASS_NO = G.CLASS_NO)
+		WHERE STUDENT_NO = #{studentNo}
+		AND G.CLASS_YEAR <= #{year}
+		AND DIVISION = 1
+		ORDER BY G.CLASS_YEAR DESC,G.CLASS_TERM DESC
+		]]>
+  	</select>
+  	
+  	<!-- 학사관리 - 졸업사정표 (교양일반 세부조회) -->
+  	<select id="detailNomalGra" resultType="HashMap">
+		<![CDATA[
+  		SELECT CLASS_NAME, CREDIT
+                 		 , G.CLASS_YEAR || '-' || G.CLASS_TERM || NVL(DECODE(GRADE_LEVEL,'F','학기'),'학기(이수)') "STATE"
+                 		 , GRADE_LEVEL,NVL(DECODE(GRADE_LEVEL,'F',0),CREDIT) "RESULT_CREDIT"
+		FROM CLASS C
+		JOIN GRADE G ON (C.CLASS_NO = G.CLASS_NO)
+		JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		WHERE STUDENT_NO = #{studentNo}
+		AND G.CLASS_YEAR <= #{year}
+		AND DIVISION = 0
+		AND DEPARTMENT_NAME != #{departmentName}
+		ORDER BY G.CLASS_YEAR DESC,G.CLASS_TERM DESC
+		]]>
+  	</select>
+  	
+  	<!-- 학사관리 - 졸업사정표 (전공심화 세부조회) -->
+  	<select id="detailmajorGra" resultType="HashMap">
+		<![CDATA[
+  		SELECT CLASS_NAME, CREDIT
+                 		 , G.CLASS_YEAR || '-' || G.CLASS_TERM || NVL(DECODE(GRADE_LEVEL,'F','학기'),'학기(이수)') "STATE"
+                 		 , GRADE_LEVEL,NVL(DECODE(GRADE_LEVEL,'F',0),CREDIT) "RESULT_CREDIT"
+		FROM CLASS C
+		JOIN GRADE G ON (C.CLASS_NO = G.CLASS_NO)
+		JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		WHERE STUDENT_NO = #{studentNo}
+		AND G.CLASS_YEAR <= #{year}
+		AND DIVISION = 0
+		AND DEPARTMENT_NAME = #{departmentName}
+		ORDER BY G.CLASS_YEAR DESC,G.CLASS_TERM DESC
 		]]>
   	</select>
   	
@@ -753,6 +810,42 @@
 		ORDER BY CLASS_NO, PERIOD
   	</select>
   	
+  	<!-- (교수)강의개설 신청 리스트 조회-->
+  	<select id="selectClassCreateList" resultMap="classResultMap">
+  		SELECT CLASS_NO,FILE_NO,DIVISION,DEPARTMENT_NAME,CLASS_NAME,CLASS_YEAR,CLASS_TERM
+        		,CLASSROOM,DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금') AS DAY
+        		,DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'9:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00')
+                                  ,2,DECODE(PERIOD,1,'9:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) AS PERIOD
+		        ,CLASS_LEVEL,CLASS_NOS,CREDIT,EXPLAIN,STATUS
+		FROM CLASS 
+		JOIN DEPARTMENT USING (DEPARTMENT_NO)
+		WHERE PROFESSOR_NO LIKE '%'||#{professorNo}||'%'
+		ORDER BY CLASS_NO DESC
+  	</select>
+  	
+  	<!-- (교수)강의개설 첨부파일(강의계획서) 인서트 -->
+  	<insert id="insertClassAttachment">
+  		INSERT INTO ATTACHMENT(FILE_NO,ORIGIN_NAME,CHANGE_NAME,FILE_PATH,UPLOAD_DATE)
+		VALUES(SEQ_ANO.NEXTVAL,#{originName},#{changeName},#{filePath},SYSDATE)
+  	</insert>
+  	
+  	<!-- (교수)강의개설 신청 인서트 -->
+  	<insert id="insertClassCreate">
+  		INSERT INTO CLASS(CLASS_NO, PROFESSOR_NO, DEPARTMENT_NO, FILE_NO,CLASS_NAME, CLASS_LEVEL, CLASS_YEAR, CLASS_TERM, CLASSROOM, DAY, PERIOD, CLASS_HOUR, CLASS_NOS, CREDIT, DIVISION)
+		VALUES(SEQ_CNO.NEXTVAL,#{professorNo}
+				,(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo})
+				,SEQ_ANO.CURRVAL,#{className},#{classLevel},#{classYear},#{classTerm}
+				,#{classroom},#{day},#{period},#{classHour},#{classNos},#{credit},#{division})
+  	</insert>
+  	
+  	<!-- (관리자)강의개설 첨부파일 리스트 -->
+  	<select id="selectClassAttList" resultMap="attachmentResultSet">
+  		SELECT FILE_NO,ORIGIN_NAME,CHANGE_NAME,FILE_PATH,UPLOAD_DATE
+		FROM ATTACHMENT
+		WHERE FILE_NO IN (SELECT FILE_NO FROM CLASS)
+		ORDER BY FILE_NO DESC
+  	</select>
+  	
   	<!-- 교수 개인시간표 -> 학년도,학기 조회 -->
   	<select id="selectProfessorClassTerm" resultType="string">
   		SELECT CLASS_YEAR||'0'||CLASS_TERM
@@ -812,4 +905,26 @@
 		WHERE C.CLASS_YEAR = #{year} AND C.CLASS_TERM = #{term} AND A.STUDENT_NO = #{studentNo}
 		ORDER BY CLASS_NAME
   	</select>
+  	
+  	<!-- 강의개설 일괄승인(관리자) -->
+  	<update id="updateClassPermitAll">
+  		UPDATE CLASS
+  		SET STATUS = 'Y'
+  		WHERE CLASS_NO IN (#{cno})
+  	</update>
+  	
+  	<!-- 강의개설 반려 (관리자) -->
+  	<update id="updateClassReject">
+  		UPDATE CLASS
+  		SET STATUS = 'C'
+  		,	EXPLAIN = #{explain}
+  		WHERE CLASS_NO = #{classNo}
+  		AND STATUS = 'B'
+  	</update>
+  	
+  	<insert id="insertStudent">
+  	INSERT INTO STUDENT (STUDENT_NO, DEPARTMENT_NO, COLLEGE_NO, ENTRANCE_DATE, STUDENT_NAME, STUDENT_PWD, PHONE, EMAIL, POST, ADDRESS,CLASS_LEVEL)
+	VALUES (SEQ_SNO.NEXTVAL,(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
+  	</insert>
+  	
   </mapper>

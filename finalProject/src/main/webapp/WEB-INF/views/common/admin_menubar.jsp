@@ -37,9 +37,9 @@
 	<div id="menubar">
 	    <ul id="nav">
             <li><a href="#">홈</a></li>
-            <li><a href="#">금전관리</a></li>
+            <li><a href="allList.rg">금전관리</a></li>
             <li><a href="#">학사관리</a></li>
-            <li><a href="#">강의관리</a></li>
+            <li><a href="classManagePage.ad">강의관리</a></li>
         </ul>
 	</div>
 </body>

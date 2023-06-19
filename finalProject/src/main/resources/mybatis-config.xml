@@ -19,6 +19,7 @@
 		<typeAlias type="com.univ.fin.common.model.vo.Department" alias="department"/>
 		<typeAlias type="com.univ.fin.common.model.vo.Counseling" alias="counseling"/>
 		<typeAlias type="com.univ.fin.common.model.vo.StudentRest" alias="studentRest"/>
+		<typeAlias type="com.univ.fin.common.model.vo.Attachment" alias="attachment"/>
 		<typeAlias type="com.univ.fin.common.model.vo.Grade" alias="grade"/>
 		<typeAlias type="com.univ.fin.common.model.vo.Graduation" alias="graduation"/>
 		<typeAlias type="com.univ.fin.main.model.vo.Notice" alias="notice"/>

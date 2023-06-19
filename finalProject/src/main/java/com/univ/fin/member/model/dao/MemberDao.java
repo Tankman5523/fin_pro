@@ -7,6 +7,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -215,7 +216,7 @@ public class MemberDao {
 
 	public int insertStudent(SqlSessionTemplate sqlSession, Student st) {
 
-		return sqlSession.insert("memberMapper.insertMapper",st);
+		return sqlSession.insert("memberMapper.insertStudent",st);
 	}
 
 	// 강의시간표 -> 교수명 검색/과목 검색
@@ -231,6 +232,21 @@ public class MemberDao {
 	//학사관리 - 졸업사정표(전체 이수현황 조회)
 	public Graduation selectGraStatus(SqlSessionTemplate sqlSession, HashMap<String, String> h) {
 		return sqlSession.selectOne("memberMapper.selectGraStatus", h);
+	}
+	
+	//학사관리 - 졸업사정표 (교양공통 세부조회)
+	public ArrayList<HashMap<String, String>> detailCommonGra(SqlSessionTemplate sqlSession,HashMap<String, String> h) {
+		return (ArrayList)sqlSession.selectList("memberMapper.detailCommonGra", h);
+	}
+	
+	//학사관리 - 졸업사정표 (교양일반 세부조회)
+	public ArrayList<HashMap<String, String>> detailNomalGra(SqlSessionTemplate sqlSession, HashMap<String, String> h) {
+		return (ArrayList)sqlSession.selectList("memberMapper.detailNomalGra", h);
+	}
+	
+	//학사관리 - 졸업사정표 (전공심화 세부조회)
+	public ArrayList<HashMap<String, String>> detailmajorGra(SqlSessionTemplate sqlSession, HashMap<String, String> h) {
+		return (ArrayList)sqlSession.selectList("memberMapper.detailmajorGra", h);
 	}
 	
 	//(학생)휴,복학 신청 리스트 조회
@@ -319,5 +335,57 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.gradeUpdate", g);
 >>>>>>> branch '채영' of https://github.com/Tankman5523/fin_pro.git
 	}
+	
+	//(교수)강의개설 신청 리스트 조회
+		public ArrayList<Classes> selectClassCreateList(SqlSessionTemplate sqlSession, String professorNo) {
+			
+			return (ArrayList)sqlSession.selectList("memberMapper.selectClassCreateList",professorNo);
+		}
+
+	//(교수)강의 개설 인서트
+	@Transactional
+	public int insertClassCreate(SqlSessionTemplate sqlSession, Classes c, Attachment a) {
+
+		//a가 null인지 안보는 이유는 강의계획서는 필수로 넣어야 신청 할 수 있게 하기 때문에
+		int	result = sqlSession.insert("memberMapper.insertClassAttachment",a);
+			
+		if(result>0) {
+			result = sqlSession.insert("memberMapper.insertClassCreate",c);
+				
+		}
+			
+		return result;
+	}
+
+	//(관리자) 강의 개설 리스트가져오기
+	public ArrayList<Classes> selectClassList(SqlSessionTemplate sqlSession) {
+			
+		return (ArrayList)sqlSession.selectList("memberMapper.selectClassCreateList");
+	}
+
+	//(관리자)강의 개설 첨부파일  리스트 가져오기
+	public ArrayList<Attachment> selectClasAttachment(SqlSessionTemplate sqlSession) {
+			
+		return (ArrayList)sqlSession.selectList("memberMapper.selectClassAttList");
+	}
+
+	// (관리자)강의개설 일괄 승인
+	public int updateClassPermitAll(SqlSessionTemplate sqlSession, String cno) {
+		
+		return sqlSession.update("memberMapper.updateClassPermitAll",cno);
+	}
+
+	// (관리자)강의개설 개별 승인
+	public int updateclassPermit(SqlSessionTemplate sqlSession, int cno) {
+		
+		return sqlSession.update("memberMapper.updateClassPermitAll",cno);
+	}
+
+	// (관리자)강의개설 반려 업데이트
+	public int updateClassReject(SqlSessionTemplate sqlSession, Classes c) {
+		
+		return sqlSession.update("memberMapper.updateClassReject",c);
+	}
+
 
 }
