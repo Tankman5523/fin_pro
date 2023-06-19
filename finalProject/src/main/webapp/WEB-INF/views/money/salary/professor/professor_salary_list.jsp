@@ -52,12 +52,16 @@
                         
                         <script>
                         /*현재 시간 추출*/
-                        $(function(){
+                        $("document").ready(function(){
+                        	
                         	var today = new Date();
-                       		$("#endDate").val(today);
+                        	var year = today.getFullYear();
+                        	var month = ('0' + (today.getMonth() + 1)).slice(-2);
+                        	var day = ('0' + today.getDate()).slice(-2);
+                        	
+                        	var endDate = year+"-"+month+"-"+day;
+                       		$("#endDate").val(endDate);
                         });
-							
-                        
                         </script>
                         
                     </div>
@@ -80,9 +84,9 @@
                         </table>
                         
                         <script>
-                        	function searchSalary(){
+                        	function searchSalary(){ //현재 날짜보다 월급일이 나중이라 새로 추가한거 조회 안되는거 정상임~ 날짜바꾸면조회됩니다
                         		
-                        		var profNo = ${loginUser.professorNo};
+                        		var profNo = "${loginUser.professorNo}";
                         		
                         		$.ajax({
                         			
@@ -93,6 +97,7 @@
                         				startDate : $("#startDate").val(),
                         				endDate	: $("#endDate").val()
                         			},
+                        			method: "POST",
                         			success : function(list){
                         				console.log(list);
                         				var str = "";

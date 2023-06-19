@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Grade;
@@ -203,6 +204,12 @@ public interface MemberService {
 
 	// (관리자)강의개설 반려 업데이트
 	int updateClassReject(Classes c);
+	
+	// (학생)수강한 강의정보 조회
+	ArrayList<RegisterClass> classInfoForRating(Student st);
+	
+	// (학생)강의평가 입력
+	int insertClassRating(ClassRating cr);
 
 }
 

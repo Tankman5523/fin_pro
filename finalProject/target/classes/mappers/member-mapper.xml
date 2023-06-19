@@ -908,5 +908,40 @@
 	VALUES (SEQ_SNO.NEXTVAL,(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
   	</insert>
   	
+  	<resultMap type="classRating" id="classRatingResultMap">
+  		<result column="CLASS_NO" property="classNo"/>
+  		<result column="CLASS_NAME" property="className"/>
+  		<result column="PROFESSOR_NAME" property="professorName"/>
+  		<result column="CLASS_YEAR" property="classYear"/>
+  		<result column="CLASS_TERM" property="classTerm"/>
+  		<result column="STATUS" property="status"/>
+  		<result column="RATING_NO" property="ratingNo"/>
+  		<result column="ETC" property="etc"/>
+  		
+  		<result column="Q1" property="q1"/>
+  		<result column="Q2" property="q2"/>
+  		<result column="Q3" property="q3"/>
+  		<result column="Q4" property="q4"/>
+  		<result column="Q5" property="q5"/>
+  		<result column="Q6" property="q6"/>
+  		<result column="Q7" property="q7"/>
+  		<result column="Q8" property="q8"/>
+  		
+  	</resultMap>
+  	
+  	<select id="classInfoForRating" resultMap="classRatingResultMap">
+  		SELECT CLASS_NO,C.CLASS_NAME,P.PROFESSOR_NAME,C.CLASS_YEAR,C.CLASS_TERM,CR.STATUS
+		FROM SCHEDULE S
+		JOIN CLASS C USING(CLASS_NO)
+		JOIN PROFESSOR P USING(PROFESSOR_NO)
+		LEFT JOIN CLASS_RATING CR USING(CLASS_NO) <!-- 값이 없고 있을때를 판별 -->
+		WHERE S.STUDENT_NO = #{studentNo}
+  	</select>
+  	
+  	<insert id="insertClassRating">
+  		INSERT CLASS_RATING
+  		VALUES (SEQ_CRNO.NEXTVAL,#{classNo},#{studentNo},#{q1},#{q2},#{q3},#{q4},#{q5},#{q6},#{q7},#{q8},#{etc},'Y')
+  	</insert>
+  	
   </mapper>
 

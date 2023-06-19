@@ -134,16 +134,26 @@
 	    							</tr>
 	    						</thead>
 	    						<tbody>
-	    							<tr>
-	    								<td>${p.professorNo}</td>
-	    								<td>${p.professorName}</td>
-	    								<td>${p.position}</td>
-	    								<td>${p.phone}</td>
-	    								<td>${p.entranceDate }</td>
-	    								<td>${p.email}</td>
-	    								<td>${p.address}</td>
-	    								<td>${p.accountNo}</td>
-	    							</tr>
+	    							<c:choose>
+	    								<c:when test="${not empty p}">
+	    									<tr>
+			    								<td>${p.professorNo}</td>
+			    								<td>${p.professorName}</td>
+			    								<td>${p.position}</td>
+			    								<td>${p.phone}</td>
+			    								<td>${p.entranceDate }</td>
+			    								<td>${p.email}</td>
+			    								<td>${p.address}</td>
+			    								<td>${p.accountNo}</td>
+	    									</tr>
+	    								</c:when>
+	    								<c:otherwise>
+	    									<tr>
+	    										<td colspan="8">데이터가 없습니다.</td>
+	    									</tr>
+	    								</c:otherwise>
+	    							</c:choose>
+	    							
 	    						</tbody>
 	    					</table>
 	    				</div>	

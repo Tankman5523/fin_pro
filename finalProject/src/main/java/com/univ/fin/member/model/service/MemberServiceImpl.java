@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Grade;
@@ -548,6 +549,18 @@ public  class MemberServiceImpl implements MemberService{
 	public int updateClassReject(Classes c) {
 		int result = memberDao.updateClassReject(sqlSession,c);
 		return result;
+	}
+	
+	// (학생)수강한 강의정보 조회
+	@Override
+	public ArrayList<RegisterClass> classInfoForRating(Student st) {
+		return memberDao.classInfoForRating(sqlSession,st);
+	}
+	
+	// (학생)강의평가 입력
+	@Override
+	public int insertClassRating(ClassRating cr) {
+		return memberDao.insertClassRating(sqlSession,cr);
 	}
 	
 }

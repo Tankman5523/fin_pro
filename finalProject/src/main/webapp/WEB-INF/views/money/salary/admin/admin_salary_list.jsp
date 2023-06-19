@@ -93,7 +93,7 @@
                     </div>
 			        <div id="listHead">
 			            <div id="PayAllBtn" style="float:left">
-			                <button onclick="payAll();">일괄지급</button> <button id="deleteAll">일괄삭제</button>
+			                <button id="payAll">일괄지급</button> <button id="deleteAll">일괄삭제</button>
 			            </div>
 			            <div id="search" style="float:right">
 				            <form>
@@ -133,21 +133,31 @@
 			        </div>
 			        <div class="modal">
 			        	<div class="modalContent">
+			        		<span style="float:right;curser:pointer;" onclick="closeModal();"><b>X</b></span>
 			        		<h4><b>급여명세서</b></h4>
 			        		<br>
 			        		<table border="1" style="text-align: center;width: 100%;height: 60%;">
 			        		
 	                    	</table>
 	                    	<br>
-	                    	<div style="float:right;width:100%;">
+	                    	<div id="modalBtns" style="float:right;width:100%;">
 		                    	<button class="hiddenInput" onclick="calPay();">변경값계산</button>
-		                    	<button class="hiddenInput" onclick="updateSubmit();">적용</button><button class="showVal" onclick="updateMode();">수정</button><button onclick="closeModal();">창닫기</button>
+		                    	<button class="hiddenInput" onclick="updateSubmit();">적용</button>
+		                    	<button class="showVal" onclick="updateMode();">수정</button>
+		                    	<button id="sendSalaryBtn" onclick="sendSalary();">송금</button>
 	                    	</div>
 			        	</div>
 			        </div>
                 </div>
                 
                 <script>
+	              	//해당 영역에 이벤트 안걸리게하기
+	                $(function(){
+	                	$(".noEvent").on("click",function(){
+	                		event.cancelBubble = true;
+	                	});
+	                });
+                
                 	function search(){//검색기능
                 		var keyword = $("#keyword").val();
                 		var payStatus = $("#payStatus").val();
@@ -172,7 +182,7 @@
                 							status = "미지급";
                 						}
 	                					str +="<tr>"
-	                						 +"<td><input type='checkbox' name='check'></td>"
+	                						 +"<td class='noEvent'><input type='checkbox' name='check'></td>"
 	                						 +"<td>"+list[i].professorNo+"</td>"
 	                						 +"<td>"+list[i].position+"</td>"
 	                						 +"<td>"+list[i].professorName+"</td>"
@@ -182,8 +192,12 @@
 	                						 +"<td>"+list[i].accountNo+"</td>"
 	                						 +"<td>"+list[i].paymentDate+"</td>"
 	                						 +"<td>"+status+"</td>"
-	                						 +"<td>"+"<input type='hidden' name='payNo' value="+list[i].payNo+"><button class='updateBtn'>수정</button>"+"</td>"
-	                						 +"</tr>"
+	                						 +"<td class='noEvent'>"+"<input type='hidden' name='payNo' value="+list[i].payNo+">";
+                						 if(status!='지급완료'){
+                						 	str +="<button class='updateBtn'>수정</button>"
+                						 }
+                						 str+="</td>"
+                						 	 +"</tr>";
                 					}
                 				}else{
                 					str +="<tr><td colspan='8'>데이터가 없습니다.</td></tr>"
@@ -214,29 +228,34 @@
 	                   		var control = confirm("선택된 급여정보를 모두 삭제하시겠습니까?");
 	                   		
 	                   		if(control){
-	                   			
-	                			$("#salaryList>tbody>tr>td>input:checkbox:checked").each(function(index){
+                   			
+                			 	$("#salaryList>tbody>tr>td>input:checkbox:checked").each(function(index){
 	           						var payNo = $(this).parent().siblings().eq(9).children("input").val();
+	           						var status = $(this).parent().siblings().eq(8).text();
 	               					var flag = 0;
 	               					
-	           						$.ajax({
-	           			        		url: "delete.sl",
-	           			        		data:{
-	           			        			payNo: payNo
-	           			        		},
-	           			        		success: function(result){
-	           			        			if(result=='Y'){
-	           			        			}else{
-	           			        				flag+=1;
-	           			        			}
-	           			        		},
-	           			        		error: function(){
-	           			        			alert("통신 연결 실패");
-	           			        		},
-	           			        		complete: function() {
-	           			                    search();
-	           			                }
-	           			        	}); 
+	               					if(status!='지급완료'){ //이미 정상지급한 객체는 실패
+		           						$.ajax({
+		           			        		url: "delete.sl",
+		           			        		data:{
+		           			        			payNo: payNo
+		           			        		},
+		           			        		success: function(result){
+		           			        			if(result=='Y'){
+		           			        			}else{
+		           			        				flag+=1;
+		           			        			}
+		           			        		},
+		           			        		error: function(){
+		           			        			alert("통신 연결 실패");
+		           			        		},
+		           			        		complete: function() {
+		           			                    search();
+		           			                }
+		           			        	});
+	               					}else{
+	               						flag+= 1;
+	               					}
 	           						
 	           						if(flag>0){
 	           							alert("삭제 실패! 실패한 급여 수 :"+flag+"(개)");
@@ -244,7 +263,7 @@
 	           							alert("선택한 급여를 모두 삭제 완료하였습니다.");
 	           						}
 	           						
-	               				});
+	               				}); 
 	                   		}
                     	});
                 		
@@ -256,41 +275,45 @@
 	                   			
 	                			$("#salaryList>tbody>tr>td>input:checkbox:checked").each(function(index){
 	           						var payNo = $(this).parent().siblings().eq(9).children("input").val();
+	           						var status = $(this).parent().siblings().eq(8).text();
 	               					var flag = 0;
+	               					if(status!='지급완료'){ //이미 정상지급한 객체는 실패
+		           						$.ajax({
+		           			        		url: "pay.sl",
+		           			        		data:{
+		           			        			payNo: payNo
+		           			        		},
+		           			        		success: function(result){
+		           			        			if(result=='Y'){
+		           			        			}else{
+		           			        				flag+=1;
+		           			        			}
+		           			        		},
+		           			        		error: function(){
+		           			        			alert("통신 연결 실패");
+		           			        		},
+		           			        		complete: function() {
+		           			                    search();
+		           			                }
+		           			        	}); 
+	               					}else{
+	               						flag+=1;
+	               					}
 	               					
-	           						$.ajax({
-	           			        		url: "pay.sl",
-	           			        		data:{
-	           			        			payNo: payNo
-	           			        		},
-	           			        		success: function(result){
-	           			        			if(result=='Y'){
-	           			        			}else{
-	           			        				flag+=1;
-	           			        			}
-	           			        		},
-	           			        		error: function(){
-	           			        			alert("통신 연결 실패");
-	           			        		},
-	           			        		complete: function() {
-	           			                    search();
-	           			                }
-	           			        	}); 
-	           						
 	           						if(flag>0){
 	           							alert("송금 실패! 실패한 급여 수 :"+flag+"(개)");
 	           						}else{
 	           							alert("선택한 급여를 모두 송금 완료하였습니다.");
 	           						}
 	           						
-	               				});
+	               				}); 
 	                   		}
                     	});
                     	
                     	//급여명세서 모달로 띄워주기
                     	$("#salaryList>tbody").on("click","tr",function(){
                     		var payNo = $(this).children().siblings().eq(10).children("input").val();
-                    		
+                    		var status = $(this).children().siblings().eq(9).text();
                     		$.ajax({
                     			url : "modal.sl",
                     			data : {
@@ -349,7 +372,16 @@
 										 
 									$(".modalContent>table").html(str);	
 		                    		$(".modal").attr("class","modal show");
-                    			
+                    				
+		                    		var str2 = "";
+		                    		
+			                    	if(status!='지급완료'){ //이미 지급완료된 건에 대해서는 수정/송금 불가 
+		                    		str2+="<button class='hiddenInput' onclick='calPay();'>변경값계산</button>"
+			                    		 +"<button class='hiddenInput' onclick='updateSubmit();'>적용</button>"
+			                    		 +"<button class='showVal' onclick='updateMode();'>수정</button>"
+			                    		 +"<button class='showVal' onclick='sendSalary();'>송금</button>";
+			                    	}
+		                    		$("#modalBtns").html(str2);
                     			},
                     			error : function(){
                     				alert("통신에러");
@@ -357,6 +389,7 @@
                     		});
                     	});
                     });
+                	
                 	
                 	function closeModal(){ //모달닫기
                 		$(".modal").attr("class","modal");
@@ -446,8 +479,6 @@
                 				modalReload(payNo);
                 			}
                 		});
-                		
-                		
                 		$(".showInput").attr("class","hiddenInput");
                 		$(".hiddenVal").attr("class","showVal");
                 	}
@@ -517,6 +548,33 @@
                 				alert("통신에러");
                 			}
                 		});
+                	}
+                	
+                	function sendSalary(){
+                		var control = confirm("선택된 급여를 송금하시겠습니까?");
+                		if(control){
+	                		var payNo = $("#modal_payNo").val();
+	                		console.log(payNo);
+	                		$.ajax({
+       			        		url: "pay.sl",
+       			        		data:{
+       			        			payNo: payNo
+       			        		},
+       			        		success: function(result){
+       			        			if(result=='Y'){
+       			        				alert("송금 성공");
+       			        			}else{
+       			        				alert("송금 실패");
+       			        			}
+       			        		},
+       			        		error: function(){
+       			        			alert("통신 연결 실패");
+       			        		},
+       			        		complete: function() {
+       			                    search();
+       			                }
+       			        	});  
+                		}
                 	}
                 	
                 	

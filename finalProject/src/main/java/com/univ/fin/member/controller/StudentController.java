@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Graduation;
@@ -641,6 +642,26 @@ public class StudentController {
 		return "redirect:studentRestList.st";
 	}
 	
-
+	//강의평가에 필요한 본인이 수강한 강의정보 셀렉트
+	@GetMapping("classRatingInfo.st")
+	public ModelAndView classInfoForRating(ModelAndView mv,HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		ArrayList<RegisterClass> list = memberService.classInfoForRating(st);
+		System.out.println(list);
+		mv.addObject("list", list).setViewName("member/student/classRating");
+		return mv;
+	}
+	
+	//강의별 강의평가 인서트 
+	@ResponseBody
+	@PostMapping(value="insertRating.st")
+	public String insertClassRating(ClassRating cr) {
+		int result = memberService.insertClassRating(cr);
+		if(result>0) {
+			return "Y";
+		}else {
+			return "N";
+		}
+	}
 	
 }

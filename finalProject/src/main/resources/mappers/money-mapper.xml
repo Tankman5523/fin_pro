@@ -320,7 +320,7 @@
 	</select>
 	
 	<update id="sendSalary" parameterType="_int">
-		UPDATE SALARY
+		UPDATE PAY_STUB
 		SET STATUS = 'Y'
 		WHERE PAY_NO = #{payNo}
 		AND STATUS IN ('N','E')

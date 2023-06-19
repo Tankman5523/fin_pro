@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Department;
@@ -365,6 +366,15 @@ public class MemberDao {
 	public int updateClassReject(SqlSessionTemplate sqlSession, Classes c) {
 		
 		return sqlSession.update("memberMapper.updateClassReject",c);
+	}
+	
+	// (학생)수강한 강의정보 조회
+	public ArrayList<RegisterClass> classInfoForRating(SqlSessionTemplate sqlSession, Student st) {
+		return (ArrayList)sqlSession.selectList("memberMapper.classInfoForRating", st);
+	}
+
+	public int insertClassRating(SqlSessionTemplate sqlSession, ClassRating cr) {
+		return sqlSession.insert("memberMapper.insertClassRating", cr);
 	}
 
 
