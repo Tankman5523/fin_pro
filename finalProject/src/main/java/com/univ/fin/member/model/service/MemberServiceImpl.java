@@ -522,10 +522,18 @@ public  class MemberServiceImpl implements MemberService{
 
 	// 성적관리 -> 성적 수정
 	@Override
+	public int gradeUpdate(Grade g) {
 		int result = memberDao.gradeUpdate(sqlSession, g);
 		
 		return result;
 
+	}
+	
+	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
+	@Override
+	public ArrayList<HashMap<String, String>> selectClassList(HashMap<String, String> map) {
+		ArrayList<HashMap<String, String>> cList = memberDao.selectClassList(sqlSession, map);
+		return cList;
 	}
 
 	// (관리자)강의개설 일괄 승인
@@ -535,15 +543,6 @@ public  class MemberServiceImpl implements MemberService{
 		return result;
 	}
 
-<<<<<<< HEAD
-	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
-	@Override
-	public ArrayList<HashMap<String, String>> selectClassList(HashMap<String, String> map) {
-		ArrayList<HashMap<String, String>> cList = memberDao.selectClassList(sqlSession, map);
-		return cList;
-	}
-
-=======
 	// (관리자)강의개설 개별 승인
 	@Override
 	public int updateClassPermit(int cno) {
@@ -558,5 +557,4 @@ public  class MemberServiceImpl implements MemberService{
 		return result;
 	}
 	
->>>>>>> refs/remotes/origin/main
 }
