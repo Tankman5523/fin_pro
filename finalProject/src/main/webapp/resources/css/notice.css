@@ -163,70 +163,60 @@ body {
 	border: 3px solid #0091EA;
 	color: #0091EA;
 	font-weight: bold;
-	cursor: pointer;
 }
 .tab_content:first-child.active{
 	border: 3px solid #0091EA;
 	background-color: #0091EA;
 	color: white;
 	font-weight: bold;
-	cursor: pointer;
 }
 
 .tab_content:nth-child(2):hover{
 	border: 3px solid #43A047;
 	color: #43A047;
 	font-weight: bold;
-	cursor: pointer;
 }
 .tab_content:nth-child(2).active{
 	border: 3px solid #43A047;
 	background-color: #43A047;
 	color: white;
 	font-weight: bold;
-	cursor: pointer;
 }
 
 .tab_content:nth-child(3):hover{
 	border: 3px solid #FB8C00;
 	color: #FB8C00;
 	font-weight: bold;
-	cursor: pointer;
 }
 .tab_content:nth-child(3).active{
 	border: 3px solid #FB8C00;
 	background-color: #FB8C00;
 	color: white;
 	font-weight: bold;
-	cursor: pointer;
 }
 
 .tab_content:nth-child(4):hover{
 	border: 3px solid #8A2BE2;
 	color: #8A2BE2;
 	font-weight: bold;
-	cursor: pointer;
 }
 .tab_content:nth-child(4).active{
 	border: 3px solid #8A2BE2;
 	background-color: #8A2BE2;
 	color: white;
 	font-weight: bold;
-	cursor: pointer;
 }
 
 .tab_content:nth-child(5):hover{
 	border: 3px solid #A9A9A9;
 	color: #A9A9A9;
 	font-weight: bold;
-	cursor: pointer;
 }
 .tab_content:nth-child(5).active{
 	border: 3px solid #A9A9A9;
 	background-color: #A9A9A9;
 	color: white;
 	font-weight: bold;
-	cursor: pointer;
 }
 
 .faq_content{
@@ -240,6 +230,7 @@ body {
 }
 .faq_content:hover{
 	cursor: pointer;
+	
 }
 
 .thumb_title{

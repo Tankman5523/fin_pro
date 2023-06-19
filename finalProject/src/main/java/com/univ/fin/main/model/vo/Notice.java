@@ -20,6 +20,7 @@ public class Notice {
 	private String field;//	FIELD	VARCHAR2(2 BYTE)
 	private String status;//	STATUS	VARCHAR2(2 BYTE)
 	private String originName;
+	private String changeName;
 	private String categoryName;
 	private int rank;
 }
