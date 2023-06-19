@@ -5,68 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>성적 관리</title>
-<style>
-    .b_line {
-        border: 0.5px solid lightgray;
-        margin: 20px 0px;
-    }
-
-    .selectTerm {
-        display: flex;
-        align-items: center;
-    }
-
-    .selectTerm * {
-        margin-left: 10px;
-    }
-
-    .selectTerm>button {
-        border-radius: 10px;
-        margin-left: 20px;
-    }
-
-    .student-area {
-        width: 100%;
-        height: 86%;
-        overflow: auto;
-    }
-
-    .student-table {
-		width: 100%;
-		text-align: center;
-		border-collapse: collapse;
-	}
-	
-	.student-table>thead {
-		background-color: #76D2FF;
-	    position: sticky;
-	    top: 0;
-	}
-	
-	.student-table>tbody>tr {
-		border-bottom: 0.5px solid gray;
-		height: 30px;
-	}
-	
-	.student-table>tbody>tr:not(.no-hover):hover {
-		background-color: #E0E0E0;
-		font-weight: 550;
-	}
-	
-	.student-table th, .student-table td {
-		border-left: 1px solid gray;
-	}
-	
-	.student-table>tbody input {
-		width: 100%;
-		text-align: center;
-		border: none;
-	}
-	
-	#insert, #update {
-		margin: 0 auto;
-	}
-</style>
+<link rel="stylesheet" href="resources/css/gradeInsertView.css">
 </head>
 <body>
 	<div class="wrap">
@@ -106,8 +45,8 @@
                 <div class="student-area">
                     <table class="student-table">
                         <thead>
-                            <tr>
-                                <th width="25%" style="border: 0;">학과</th>
+                            <tr height="40">
+                                <th width="25%" style="border-left: 1px solid #76D2FF;">학과</th>
                                 <th width="25%">학번</th>
                                 <th width="15%">학년</th>
                                 <th width="15%">이름</th>
@@ -115,8 +54,7 @@
                                 <th width="10%">등급</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
                 
@@ -126,13 +64,16 @@
 	                $(function() {
 	                	$("select[name=year]").children().first().prop("selected", true).change();
 	                	selectClassList();
+	                	$("button[id*=possible]").css("display", "none");
 	                    
 	                	$(".selectTerm").on("change", "#term", function() {
 	                		selectClassList();
+	                		$("button[id*=possible]").css("display", "none");
 	                	});
 	                	
 	                	$(".selectTerm").on("change", "#classList", function() {
 	                		$(".student-table>tbody").html("");
+	                		$("button[id*=possible]").css("display", "none");
 	                	});
 	                	
 	                })

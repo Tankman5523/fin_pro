@@ -1,0 +1,66 @@
+@charset "UTF-8";
+
+.b_line {
+    border: 0.5px solid lightgray;
+    margin: 20px 0px;
+}
+
+.selectTerm {
+    display: flex;
+    align-items: center;
+}
+
+.selectTerm * {
+    margin-left: 10px;
+}
+
+.selectTerm>button {
+    border-radius: 10px;
+    margin-left: 20px;
+}
+
+.student-area {
+    width: 100%;
+    height: 86%;
+    overflow: auto;
+}
+
+.student-table {
+	width: 100%;
+	text-align: center;
+	border-collapse: collapse;
+}
+
+.student-table>thead {
+	background-color: #76D2FF;
+    position: sticky;
+    top: 0;
+}
+
+.student-table>thead>tr {
+	font-size: 17px;
+}
+
+.student-table>tbody>tr {
+	border-bottom: 0.5px solid gray;
+	height: 30px;
+}
+
+.student-table>tbody>tr:not(.no-hover):hover {
+	background-color: #E0E0E0;
+	font-weight: 550;
+}
+
+.student-table th, .student-table td {
+	border-left: 1px solid gray;
+}
+
+.student-table>tbody input {
+	width: 100%;
+	text-align: center;
+	border: none;
+}
+
+#insert, #update {
+	margin: 0 auto;
+}

@@ -1,6 +1,5 @@
 package com.univ.fin.member.model.service;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -508,8 +507,8 @@ public  class MemberServiceImpl implements MemberService{
 
 	// 성적관리 -> 수강중인 학생 조회
 	@Override
-	public ArrayList<Student> selectStudentGradeList(int classNo) {
-		ArrayList<Student> sList = memberDao.selectStudentGradeList(sqlSession, classNo);
+	public ArrayList<HashMap<String, String>> selectStudentGradeList(int classNo) {
+		ArrayList<HashMap<String, String>> sList = memberDao.selectStudentGradeList(sqlSession, classNo);
 		return sList;
 	}
 
@@ -527,6 +526,13 @@ public  class MemberServiceImpl implements MemberService{
 		
 		return result;
 
+	}
+	
+	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
+	@Override
+	public ArrayList<HashMap<String, String>> selectClassList(HashMap<String, String> map) {
+		ArrayList<HashMap<String, String>> cList = memberDao.selectClassList(sqlSession, map);
+		return cList;
 	}
 
 	// (관리자)강의개설 일괄 승인

@@ -27,7 +27,6 @@ import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
-import com.univ.fin.member.model.vo.Student;
 
 @Controller
 public class ProfessorController {
@@ -170,7 +169,7 @@ public class ProfessorController {
 	@RequestMapping(value = "selectStudentGradeList.pr", produces = "application/json; charset=UTF-8;")
 	public String selectStudentGradeList(String cn) {
 		int classNo = Integer.parseInt(cn);
-		ArrayList<Student> sList = memberService.selectStudentGradeList(classNo);
+		ArrayList<HashMap<String, String>> sList = memberService.selectStudentGradeList(classNo);
 		return new Gson().toJson(sList);
 	}
 	
