@@ -641,6 +641,24 @@ public class StudentController {
 		return "redirect:studentRestList.st";
 	}
 	
-
+	// 수업관리 - 학기별 성적 조회
+	@RequestMapping("classManagement.st")
+	public ModelAndView student_classManagement(ModelAndView mv) {
+		ArrayList<String> classTerm = memberService.selectClassTerm();
+		
+		mv.addObject("classTerm", classTerm).setViewName("member/student/gradeListView");
+		return mv;
+	}
 	
+	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
+	@ResponseBody
+	@RequestMapping(value="selectClassList.st",produces = "application/json; charset=UTF-8")
+	public String selectClassList(@RequestParam HashMap<String,String> map, HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
+		map.put("studentNo", studentNo);
+		
+		ArrayList<HashMap<String, String>> cList = memberService.selectClassList(map);
+		return new Gson().toJson(cList);
+	}
 }
