@@ -8,7 +8,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,19 +25,39 @@ import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
+import com.univ.fin.common.template.ChatBot;
 import com.univ.fin.common.template.DepartmentCategory;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
 
-
-
 @Controller
 public class StudentController {
 
 	@Autowired
 	private MemberService memberService;
+	
+	//챗봇
+	@ResponseBody
+	@RequestMapping(value = "chatBot.cb", produces = "application/json; charset=UTF-8")
+	public String chatBot(String question,@RequestParam(value = "num", defaultValue = "0") int num) {
+		String result = "";
+		
+		ChatBot c = new ChatBot();
+		if(num == 0) {
+			if(question != "") {
+				result = c.answer(question);
+			}else {
+				result = "<div>뭐가 문제야 쎄이 썸띵?</div><br>";
+				result += c.select();
+			}
+		}else {
+			result += c.detailSelect(num);
+		}
+		
+		return new Gson().toJson(result);
+	}
 	
 	//수강신청 폼
 	@RequestMapping("registerClassForm.st")
@@ -274,12 +293,6 @@ public class StudentController {
 		ArrayList<HashMap<String, String>> list = memberService.searchRegList(h);
 		
 		return new Gson().toJson(list);
-	}
-	
-	// 수강신청 - 학기별 성적 조회
-	@RequestMapping("classManagement.st")
-	public String student_classManagement() {
-		return "member/student/gradeListView";
 	}
 	
 	// 수강신청 - 강의시간표
