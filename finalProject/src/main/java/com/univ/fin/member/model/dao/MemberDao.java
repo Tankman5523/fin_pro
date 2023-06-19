@@ -286,6 +286,7 @@ public class MemberDao {
 	}
 
 	// 성적관리 -> 수강중인 학생 조회
+<<<<<<< HEAD
 	public ArrayList<HashMap<String, String>> selectStudentGradeList(SqlSessionTemplate sqlSession, int classNo) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectStudentGradeList", classNo);
 	}
@@ -303,6 +304,20 @@ public class MemberDao {
 	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
 	public ArrayList<HashMap<String, String>> selectClassList(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectClassList", map);
+=======
+	public ArrayList<Student> selectStudentGradeList(SqlSessionTemplate sqlSession, int classNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectStudentGradeList", classNo);
+	}
+
+	// 성적관리 -> 성적 입력
+	public int gradeInsert(SqlSessionTemplate sqlSession, Grade g) {
+		return sqlSession.insert("memberMapper.gradeInsert", g);
+	}
+
+	// 성적관리 -> 성적 수정
+	public int gradeUpdate(SqlSessionTemplate sqlSession, Grade g) {
+		return sqlSession.update("memberMapper.gradeUpdate", g);
+>>>>>>> branch '채영' of https://github.com/Tankman5523/fin_pro.git
 	}
 
 }
