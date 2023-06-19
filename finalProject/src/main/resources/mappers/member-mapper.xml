@@ -128,11 +128,17 @@
   		<result column="STATUS" property="status"/>
   	</resultMap>
 	
-	<resultMap type="grade" id="gradeResultMap">
+	<resultMap type="hashmap" id="gradeHashMap">
+		<result column="CLASS_NO" property="classNo"/>
+		<result column="CLASS_NAME" property="className"/>
+		<result column="CLASS_YEAR" property="classYear"/>
+		<result column="CLASS_TERM" property="classTerm"/>
+		<result column="CREDIT" property="credit"/>
 		<result column="DEPARTMENT_NAME" property="departmentName"/>
+		<result column="PROFESSOR_NAME" property="professorName"/>
 		<result column="STUDENT_NO" property="studentNo"/>
-		<result column="CLASS_LEVEL" property="classLevel"/>
 		<result column="STUDENT_NAME" property="studentName"/>
+		<result column="CLASS_LEVEL" property="classLevel"/>
 		<result column="SCORE" property="score"/>
 		<result column="GRADE_LEVEL" property="gradeLevel"/>
 	</resultMap>
@@ -626,7 +632,6 @@
 		]]>
   	</select>
   	
-  	
   	<!-- (학생)상담신청 내역 가져오기 -->
   	<select id="selectCounStuList" resultMap="counselingResultMap">
   		SELECT COUNSEL_NO,PROFESSOR_NO,PROFESSOR_NAME,APPLICATION_DATE,REQUEST_DATE,COUNSEL_CONTENT,COUNSEL_AREA,C.STATUS
@@ -802,6 +807,7 @@
 		JOIN SCHEDULE S USING(CLASS_NO)
 		LEFT JOIN PROFESSOR P USING(PROFESSOR_NO)
 		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND S.STUDENT_NO = #{studentNo}
+		ORDER BY CLASS_NO, PERIOD
   	</select>
   	
   	<!-- (교수)강의개설 신청 리스트 조회-->
@@ -845,7 +851,7 @@
   		SELECT CLASS_YEAR||'0'||CLASS_TERM
 		FROM CLASS
 		JOIN PROFESSOR USING(PROFESSOR_NO)
-		WHERE PROFESSOR_NO = 'P20150023'
+		WHERE PROFESSOR_NO = #{professorNo}
 		GROUP BY CLASS_YEAR, CLASS_TERM
 		ORDER BY CLASS_YEAR DESC, CLASS_TERM ASC
   	</select>
@@ -859,13 +865,13 @@
   	</select>
   	
   	<!-- 성적관리 -> 수강중인 학생 조회 -->
-  	<select id="selectStudentGradeList" parameterType="_int" resultMap="gradeResultMap">
+  	<select id="selectStudentGradeList" parameterType="_int" resultMap="gradeHashMap">
   		SELECT DEPARTMENT_NAME, A.STUDENT_NO, CLASS_LEVEL, STUDENT_NAME, NVL(SCORE, 0) AS SCORE, NVL(GRADE_LEVEL,' ') AS GRADE_LEVEL
 		FROM (SELECT CLASS_NO, STUDENT_NO
 		        FROM SCHEDULE
 		        GROUP BY CLASS_NO, STUDENT_NO) A
 		JOIN STUDENT S ON(A.STUDENT_NO = S.STUDENT_NO)
-		LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO)
+		LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
 		JOIN DEPARTMENT D USING(DEPARTMENT_NO)
 		WHERE A.CLASS_NO = #{classNo}
 		ORDER BY DEPARTMENT_NAME, STUDENT_NO
@@ -886,6 +892,19 @@
   		  , GRADE_LEVEL = #{gradeLevel}
   		WHERE STUDENT_NO = #{studentNo} AND CLASS_NO = #{classNo}
   	</update>
+  	
+  	<!-- 학기별 성적 조회 -> 학기 선택 후 강의 조회 -->
+  	<select id="selectClassList" parameterType="hashmap" resultMap="gradeHashMap">
+  		SELECT C.CLASS_YEAR, C.CLASS_TERM, C.CLASS_NO, CLASS_NAME, PROFESSOR_NAME, CREDIT, NVL(SCORE, 0) AS SCORE, NVL(GRADE_LEVEL,' ') AS GRADE_LEVEL
+		FROM (SELECT CLASS_NO, STUDENT_NO
+		        FROM SCHEDULE
+		        GROUP BY CLASS_NO, STUDENT_NO) A
+		JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
+		LEFT JOIN GRADE G ON(A.CLASS_NO = G.CLASS_NO)
+		JOIN PROFESSOR P USING(PROFESSOR_NO)
+		WHERE C.CLASS_YEAR = #{year} AND C.CLASS_TERM = #{term} AND A.STUDENT_NO = #{studentNo}
+		ORDER BY CLASS_NAME
+  	</select>
   	
   	<!-- 강의개설 일괄승인(관리자) -->
   	<update id="updateClassPermitAll">
@@ -942,6 +961,7 @@
   		INSERT CLASS_RATING
   		VALUES (SEQ_CRNO.NEXTVAL,#{classNo},#{studentNo},#{q1},#{q2},#{q3},#{q4},#{q5},#{q6},#{q7},#{q8},#{etc},'Y')
   	</insert>
+  	
   	
   </mapper>
 

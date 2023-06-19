@@ -1,14 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
+<!-- jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <title>공지사항 : Feasible University</title>
 <link rel="stylesheet" href="/fin/resources/css/notice.css">
-<!-- jQuery library -->
-<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="wrap">
@@ -48,7 +47,7 @@
 					
 				</div>
 				<div class="tab_content">
-					
+				
 				</div>
 				<div class="tab_content">
 					
@@ -63,6 +62,7 @@
 				const tabBtn = document.querySelectorAll('.tab_btn')
 				const tabCont = document.querySelectorAll('.tab_content')
 				
+				var nno = '';
 				
 				$('document').ready(function(){
 					
@@ -77,12 +77,13 @@
 		                	var str = "";
 		                	
 		                	for(var i in result){
-			                	str +="<div class='faq_content'>"
-		                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
+			                	str +="<div class='faq_content' onclick='test();'>"
+		                	   		+"<span class='thumb_title'><a href='faqDetail.mp?faqNo='"+result[i].noticeNo+"'>"
+		                	   		+result[i].noticeTitle
+		                	   		+"</a></span>"
 			                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
 			 		                +"</div>"
 		                	}
-		                	
 		                	$(".tab_contents").children().eq(0).html(str);
 		                },
 		                error : function(){
@@ -90,7 +91,17 @@
 		                }
 					})
 				});
-			
+				
+				function test(){
+					console.log(result)
+					
+// 					console.log(hidden)
+					
+// 					for(var i=0; i<hidden.length; i++){
+// 						console.log(hidden[i].value)
+// 					}
+				}
+				
 				var btnText = ""
 					
 				tabBtn.forEach(function(tab, index){
@@ -257,16 +268,14 @@
 				</div>
 				
 				<script type="text/javascript">
+				
 					const tr = document.querySelectorAll('tbody > tr')
 					
 					tr.forEach(function(tr, index){
-						
 						tr.addEventListener('click', function(){
-							const nno = tr.children[0].children[0].value
-							
-							
-						})
-						
+							var noticeNo = tr.children[0].children[0].value;
+							location.href = "detail.mp?noticeNo="+noticeNo;
+						})							
 					})
 					
 				</script>

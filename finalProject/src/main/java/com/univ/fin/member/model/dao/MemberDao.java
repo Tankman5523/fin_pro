@@ -303,7 +303,7 @@ public class MemberDao {
 	}
 
 	// 성적관리 -> 수강중인 학생 조회
-	public ArrayList<Student> selectStudentGradeList(SqlSessionTemplate sqlSession, int classNo) {
+	public ArrayList<HashMap<String, String>> selectStudentGradeList(SqlSessionTemplate sqlSession, int classNo) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectStudentGradeList", classNo);
 	}
 
@@ -316,7 +316,12 @@ public class MemberDao {
 	public int gradeUpdate(SqlSessionTemplate sqlSession, Grade g) {
 		return sqlSession.update("memberMapper.gradeUpdate", g);
 	}
-	
+
+	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
+	public ArrayList<HashMap<String, String>> selectClassList(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectClassList", map);
+	}
+
 	//(교수)강의개설 신청 리스트 조회
 		public ArrayList<Classes> selectClassCreateList(SqlSessionTemplate sqlSession, String professorNo) {
 			
