@@ -579,15 +579,53 @@
   	
   	<!-- 학사관리 - 졸업사정표 (교양공통 세부조회) -->
   	<select id="detailCommonGra" resultType="HashMap">
+  		<![CDATA[
   		SELECT CLASS_NAME, CREDIT
-                 		 , C.CLASS_YEAR || '-' || C.CLASS_TERM || NVL(DECODE(GRADE_LEVEL,'F','학기'),'학기(이수)') "STATE"
+                 		 , G.CLASS_YEAR || '-' || G.CLASS_TERM || NVL(DECODE(GRADE_LEVEL,'F','학기'),'학기(이수)') "STATE"
                  		 , GRADE_LEVEL,NVL(DECODE(GRADE_LEVEL,'F',0),CREDIT) "RESULT_CREDIT"
 		FROM CLASS C
 		JOIN GRADE G ON (C.CLASS_NO = G.CLASS_NO)
 		WHERE STUDENT_NO = #{studentNo}
-		AND G.CLASS_YEAR = #{year}
-		AND G.CLASS_TERM = #{term}
+		AND G.CLASS_YEAR <= #{year}
+		AND DIVISION = 1
+		ORDER BY G.CLASS_YEAR DESC,G.CLASS_TERM DESC
+		]]>
   	</select>
+  	
+  	<!-- 학사관리 - 졸업사정표 (교양일반 세부조회) -->
+  	<select id="detailNomalGra" resultType="HashMap">
+		<![CDATA[
+  		SELECT CLASS_NAME, CREDIT
+                 		 , G.CLASS_YEAR || '-' || G.CLASS_TERM || NVL(DECODE(GRADE_LEVEL,'F','학기'),'학기(이수)') "STATE"
+                 		 , GRADE_LEVEL,NVL(DECODE(GRADE_LEVEL,'F',0),CREDIT) "RESULT_CREDIT"
+		FROM CLASS C
+		JOIN GRADE G ON (C.CLASS_NO = G.CLASS_NO)
+		JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		WHERE STUDENT_NO = #{studentNo}
+		AND G.CLASS_YEAR <= #{year}
+		AND DIVISION = 0
+		AND DEPARTMENT_NAME != #{departmentName}
+		ORDER BY G.CLASS_YEAR DESC,G.CLASS_TERM DESC
+		]]>
+  	</select>
+  	
+  	<!-- 학사관리 - 졸업사정표 (전공심화 세부조회) -->
+  	<select id="detailmajorGra" resultType="HashMap">
+		<![CDATA[
+  		SELECT CLASS_NAME, CREDIT
+                 		 , G.CLASS_YEAR || '-' || G.CLASS_TERM || NVL(DECODE(GRADE_LEVEL,'F','학기'),'학기(이수)') "STATE"
+                 		 , GRADE_LEVEL,NVL(DECODE(GRADE_LEVEL,'F',0),CREDIT) "RESULT_CREDIT"
+		FROM CLASS C
+		JOIN GRADE G ON (C.CLASS_NO = G.CLASS_NO)
+		JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		WHERE STUDENT_NO = #{studentNo}
+		AND G.CLASS_YEAR <= #{year}
+		AND DIVISION = 0
+		AND DEPARTMENT_NAME = #{departmentName}
+		ORDER BY G.CLASS_YEAR DESC,G.CLASS_TERM DESC
+		]]>
+  	</select>
+  	
   	
   	<!-- (학생)상담신청 내역 가져오기 -->
   	<select id="selectCounStuList" resultMap="counselingResultMap">

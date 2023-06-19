@@ -235,9 +235,19 @@ public class MemberDao {
 	}
 	
 	//학사관리 - 졸업사정표 (교양공통 세부조회)
-		public ArrayList<HashMap<String, String>> detailCommonGra(SqlSessionTemplate sqlSession,HashMap<String, String> h) {
-			return (ArrayList)sqlSession.selectList("memberMapper.detailCommonGra", h);
-		}
+	public ArrayList<HashMap<String, String>> detailCommonGra(SqlSessionTemplate sqlSession,HashMap<String, String> h) {
+		return (ArrayList)sqlSession.selectList("memberMapper.detailCommonGra", h);
+	}
+	
+	//학사관리 - 졸업사정표 (교양일반 세부조회)
+	public ArrayList<HashMap<String, String>> detailNomalGra(SqlSessionTemplate sqlSession, HashMap<String, String> h) {
+		return (ArrayList)sqlSession.selectList("memberMapper.detailNomalGra", h);
+	}
+	
+	//학사관리 - 졸업사정표 (전공심화 세부조회)
+	public ArrayList<HashMap<String, String>> detailmajorGra(SqlSessionTemplate sqlSession, HashMap<String, String> h) {
+		return (ArrayList)sqlSession.selectList("memberMapper.detailmajorGra", h);
+	}
 	
 	//(학생)휴,복학 신청 리스트 조회
 	public ArrayList<StudentRest> selectStuRestList(SqlSessionTemplate sqlSession, String studentNo) {
@@ -356,5 +366,6 @@ public class MemberDao {
 		
 		return sqlSession.update("memberMapper.updateClassReject",c);
 	}
+
 
 }

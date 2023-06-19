@@ -131,12 +131,6 @@ public interface MemberService {
 	
 	//학생추가 (관리자)
 	int insertStudent(Student st);
-
-
-	
-
-
-
 	
 	// 학생 개인시간표 -> 학년도,학기 조회
 	ArrayList<String> selectStudentClassTerm(String studentNo);
@@ -152,6 +146,12 @@ public interface MemberService {
 	
 	//학사관리 - 졸업사정표 (교양공통 세부조회)
 	ArrayList<HashMap<String, String>> detailCommonGra(HashMap<String, String> h);
+	
+	//학사관리 - 졸업사정표 (교양일반 세부조회)
+	ArrayList<HashMap<String, String>> detailNomalGra(HashMap<String, String> h);
+	
+	//학사관리 - 졸업사정표 (전공심화 세부조회)
+	ArrayList<HashMap<String, String>> detailmajorGra(HashMap<String, String> h);
 	
 	//(학생)휴,복학 신청 리스트 조회
 	ArrayList<StudentRest> selectStuRestList(String studentNo);

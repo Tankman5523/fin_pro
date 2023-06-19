@@ -514,9 +514,38 @@ public class StudentController {
 		HashMap<String, String> h = new HashMap<>();
 		h.put("studentNo", studentNo);
 		h.put("year", year);
-		h.put("term", term);
 		
 		ArrayList<HashMap<String, String>> list = memberService.detailCommonGra(h);
+		
+		return new Gson().toJson(list);
+	}
+	
+	//학사관리 - 졸업사정표 (교양일반 세부조회)
+	@ResponseBody
+	@RequestMapping(value="detailNomalGra.st", produces = "application/json; charset=UTF-8")
+	public String detailNomalGra(String studentNo, String departmentName, String year, String term) {
+		
+		HashMap<String, String> h = new HashMap<>();
+		h.put("studentNo", studentNo);
+		h.put("departmentName", departmentName);
+		h.put("year", year);
+		
+		ArrayList<HashMap<String, String>> list = memberService.detailNomalGra(h);
+		
+		return new Gson().toJson(list);
+	}
+	
+	//학사관리 - 졸업사정표 (전공심화 세부조회)
+	@ResponseBody
+	@RequestMapping(value="detailmajorGra.st", produces = "application/json; charset=UTF-8")
+	public String detailmajorGra(String studentNo, String departmentName, String year, String term) {
+		
+		HashMap<String, String> h = new HashMap<>();
+		h.put("studentNo", studentNo);
+		h.put("departmentName", departmentName);
+		h.put("year", year);
+		
+		ArrayList<HashMap<String, String>> list = memberService.detailmajorGra(h);
 		
 		return new Gson().toJson(list);
 	}
