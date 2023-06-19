@@ -86,7 +86,7 @@
         AND ROWNUM BETWEEN 1 AND 4
 	</select>
 	
-	<!-- 조회수 증가 -->
+	<!-- 공지사항 조회수 증가 -->
 	<update id="increaseCount">
 		UPDATE NOTICE
 		SET COUNT = COUNT+1
@@ -109,5 +109,22 @@
 		FROM NOTICE_ATTACHMENT
 		WHERE STATUS = 'Y'
 		AND NOTICE_NO = #{noticeNo}
+	</select>
+	
+	<!-- FAQ 조회수 증가 -->
+	<update id="increaseFaqCount">
+		UPDATE NOTICE
+		SET COUNT = COUNT+1
+		WHERE NOTICE_NO = #{faqNo}
+		AND STATUS = 'Y'
+	</update>
+	
+	<!-- FAQ 상세 조회 -->
+	<select id="selectFaq" resultMap="noticeResultSet">
+		SELECT CATEGORY_NAME, N.NOTICE_TITLE, NOTICE_CONTENT, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE", COUNT
+		FROM NOTICE N
+		JOIN NOTICE_CATEGORY NC ON (NOTICE_CATEGORY=CATEGORY_NO)
+		WHERE N.STATUS = 'Y'
+		AND NOTICE_NO = #{faqNo}
 	</select>
   </mapper>

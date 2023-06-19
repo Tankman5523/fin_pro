@@ -80,7 +80,7 @@ public class MainServiceImpl implements MainService{
 		return gita;
 	}
 
-	//조회수 증가
+	//공지사항 조회수 증가
 	@Override
 	public int increaseCount(int noticeNo) {
 
@@ -105,6 +105,24 @@ public class MainServiceImpl implements MainService{
 		ArrayList<Notice> files = mainDao.selectFiles(sqlSession, noticeNo);
 		
 		return files;
+	}
+
+	//FAQ 조회수 증가
+	@Override
+	public int increaseFaqCount(int faqNo) {
+		
+		int result = mainDao.increaseFaqCount(sqlSession, faqNo);
+		
+		return result;
+	}
+
+	//FAQ 상세 조회
+	@Override
+	public Notice selectFaq(int faqNo) {
+		
+		Notice faq = mainDao.selectFaq(sqlSession, faqNo);
+		
+		return faq;
 	}
 	
 	
