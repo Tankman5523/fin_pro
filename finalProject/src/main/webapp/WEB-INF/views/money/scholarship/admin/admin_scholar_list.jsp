@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>교수</title>
+    <title>관리자_장학금수여내역 조회</title>
 </head>
 <body>
     <div class="wrap">
@@ -29,14 +29,14 @@
                 </div>
             </div>
             <div id="content_1">
-				<div style="width: 90%;height: 90%;margin: 5%;">
-                    <div>
+				<div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
+                    <div style="height:20%;">
                         <button onclick="location.href='allList.sc'">장학금수혜내역</button> <button onclick="location.href='insert.sc'">장학금 수여</button>
                         <hr>
                         <h3>장학금 수혜내역 조회</h3>
                     </div>
                     
-                    <div class="list">
+                    <div class="list" style="height:80%;">
                         <!--filer / 변경시 ajax로 비동기처리-->
                         <select id="filter" name="filter">
                             <option value="all">==전체==</option>
@@ -47,8 +47,8 @@
                         <input type="text" id="keyword" name="keyword">
                         <button onclick="selectList();">조회</button>
                        	   조회결과 : <span id="countSearch"></span>
-                        <table border="1" style="width: 100%;" id="schList">
-                            <thead>
+                        <table border="1" style="width:100%;text-align:center;width: 100%;" id="schList">
+                            <thead  style='background-color: #4fc7ff;'>
                                 <tr>
                                     <th>학번</th>
                                     <th>학생명</th>
@@ -87,7 +87,7 @@
     				var countSearch = list.length;
     				$("#countSearch").html(countSearch+" 건")
     				var str = "";
-    				if(!list.isEmpty){
+    				if(list[0]!=null){
     					for(var i in list){
     						str+="<tr>"
     							+"<td>"+list[i].studentNo+"</td>"

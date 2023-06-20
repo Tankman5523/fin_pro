@@ -373,8 +373,8 @@
 		FROM REG_ACC RG
 		JOIN STUDENT ST USING(STUDENT_NO)
 		WHERE STUDENT_NO = #{studentNo}
-		AND CLASS_YEAR = #{classLevel}
-		AND CLASS_TERM = #{fileNo}
+		AND CLASS_YEAR = #{classYear}
+		AND CLASS_TERM = #{classTerm}
 	</select>
 	
 	<update id="updateInputPay">

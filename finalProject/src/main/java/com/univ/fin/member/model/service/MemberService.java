@@ -208,9 +208,18 @@ public interface MemberService {
 	ArrayList<HashMap<String, String>> selectClassList(HashMap<String, String> map);
 	
 	// (학생)수강한 강의정보 조회
-	ArrayList<RegisterClass> classInfoForRating(Student st);
+	ArrayList<RegisterClass> classInfoForRating(ClassRating cr);
 	
 	// (학생)강의평가 입력
 	int insertClassRating(ClassRating cr);
+	
+	// (관리자) 강의평가 조회
+	ArrayList<ClassRating> classRatingList(ClassRating cr);
+	
+	// (관리자) 강의평가 기타건의 조회
+	ArrayList<ClassRating> classRatingEtcList(ClassRating cr);
+	
+	// (관리자) 강의평가 문항별 평균 점수 조회
+	ClassRating classRatingAverage(ClassRating cr);
 
 }

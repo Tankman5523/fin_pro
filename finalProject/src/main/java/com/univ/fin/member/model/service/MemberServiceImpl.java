@@ -559,14 +559,32 @@ public  class MemberServiceImpl implements MemberService{
 	
 	// (학생)수강한 강의정보 조회
 	@Override
-	public ArrayList<RegisterClass> classInfoForRating(Student st) {
-		return memberDao.classInfoForRating(sqlSession,st);
+	public ArrayList<RegisterClass> classInfoForRating(ClassRating cr) {
+		return memberDao.classInfoForRating(sqlSession,cr);
 	}
 	
 	// (학생)강의평가 입력
 	@Override
 	public int insertClassRating(ClassRating cr) {
 		return memberDao.insertClassRating(sqlSession,cr);
+	}
+	
+	// (관리자) 강의평가 조회
+	@Override
+	public ArrayList<ClassRating> classRatingList(ClassRating cr) {
+		return memberDao.classRatingList(sqlSession,cr);
+	}
+	
+	// (관리자) 강의평가 기타건의사항 조회
+	@Override
+	public ArrayList<ClassRating> classRatingEtcList(ClassRating cr) {
+		return memberDao.classRatingEtcList(sqlSession,cr);
+	}
+	
+	// (관리자) 강의평가 문항별 평균 점수 조회
+	@Override
+	public ClassRating classRatingAverage(ClassRating cr) {
+		return memberDao.classRatingAverage(sqlSession,cr);
 	}
 	
 }

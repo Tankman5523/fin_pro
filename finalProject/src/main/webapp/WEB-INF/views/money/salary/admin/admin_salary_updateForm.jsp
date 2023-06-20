@@ -143,11 +143,11 @@
                 
                 <script>
                 
-	                $('document').ready(function hideStub(){
+	                $('document').ready(function hideStub(){ //급여 입력div 숨김처리
 						$("#pay_stub").hide();                		
 	            	});
 	            	
-	            	$('document').ready(function hideList(){
+	            	$('document').ready(function hideList(){ //직원 리스트div 숨김처리
 						$("#searchMemberList").hide();                		
 	            	});
 	            	
@@ -168,7 +168,7 @@
                 			success : function(list){
                 				console.log(list);
                 				var str = "";
-                				if(!list.isEmpty){
+                				if(list[0]!=null){
                 					for(var i in list){
                 					str +="<tr>"
                 						 +"<td>"+list[i].professorNo+"</td>"
@@ -224,7 +224,7 @@
                     			   +"<input type='hidden' name='paymentDate' value="+payDay+">";
                     		$("#hiddenNo").html(str);
                     		
-                    		
+                    		//급여 및 공제 계산 함수 실행
                     		inputPay();
                     		calPay();
                     		calDeduct();
@@ -232,7 +232,7 @@
                     	});
                 	});
                 	
-                	function inputPay(){
+                	function inputPay(){ //고정 기본급여 자동 계산
                 		var position = $("#position").val();
                 		if(position=='행정직원'){
                 			$("#basePay").val(2800000);
@@ -293,7 +293,7 @@
                 		$("#deductTotal").val(deductTotal);
                 	}
                 	
-                	function calReal(){
+                	function calReal(){ //실급여 계산
                 		var realPay = $("#paymentTotal").val() - parseInt($("#deductTotal").val()); 
                 		$("#realPay").val(realPay);
                 	}

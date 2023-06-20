@@ -1,5 +1,7 @@
 package com.univ.fin.member.controller;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -680,8 +682,27 @@ public class StudentController {
 	@GetMapping("classRatingInfo.st")
 	public ModelAndView classInfoForRating(ModelAndView mv,HttpSession session) {
 		Student st = (Student)session.getAttribute("loginUser");
-		ArrayList<RegisterClass> list = memberService.classInfoForRating(st);
-		System.out.println(list);
+		
+		//현재 날짜정보로 현재학기 , 년도 찾기
+		LocalDate now = LocalDate.now();
+		String classYear = Integer.toString(now.getYear());
+		int month = now.getMonthValue();
+		String classTerm = "";
+		
+		
+		if(month<2 && month>8) {
+			classTerm = "2";
+		}else{
+			classTerm = "1";
+		}
+		
+		ClassRating cr = ClassRating.builder()
+									.studentNo(st.getStudentNo())
+									.classTerm(classTerm)
+									.classYear(classYear)
+									.build();
+		
+		ArrayList<RegisterClass> list = memberService.classInfoForRating(cr);
 		mv.addObject("list", list).setViewName("member/student/classRating");
 		return mv;
 	}
@@ -690,6 +711,7 @@ public class StudentController {
 	@ResponseBody
 	@PostMapping(value="insertRating.st")
 	public String insertClassRating(ClassRating cr) {
+		System.out.println(cr);
 		int result = memberService.insertClassRating(cr);
 		if(result>0) {
 			return "Y";

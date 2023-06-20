@@ -7,6 +7,7 @@ import java.util.HashMap;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
 
@@ -17,8 +18,8 @@ public class RegistDao {
 		return (ArrayList)sqlSession.selectList("moneyMapper.selectMyRegistList", r);
 	}
 
-	public RegistPay selectNewRegistInfo(SqlSession sqlSession, Student st) {
-		return sqlSession.selectOne("moneyMapper.selectNewRegistInfo", st);
+	public RegistPay selectNewRegistInfo(SqlSession sqlSession, ClassRating cr) {
+		return sqlSession.selectOne("moneyMapper.selectNewRegistInfo", cr);
 	}
 
 	public int updateInputPay(SqlSession sqlSession, RegistPay r) {

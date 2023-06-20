@@ -11,6 +11,15 @@
     	.readonly{
     		background-color : lightgray;
     	}
+    	.pay{
+    		background-color:rgb(69, 190, 238);
+    	}
+    	.deduct{
+    		background-color:lightcoral;
+    	}
+    	.total{
+    		background-color:lightyellow;
+    	}
     </style>
 </head>
 <body>
@@ -35,13 +44,13 @@
             </div>
             <div id="content_1">
 				<div style="width: 90%;height: 90%;margin: 5%;">
-                    <div>
+                    <div style="height:15%;">
                         <button onclick="location.href='allList.sl'">급여내역조회</button> <button onclick="location.href='insert.sl'">급여 입력</button>
                         <hr>
                         <h2>급여 입력</h2>
                     </div>
                     <br>
-                    <div>
+                    <div style="height:80%;overflow-y: auto;">
                         <table align="center">
                             <tr>
                                 <td><label for="professorName">교수명</label></td>
@@ -70,31 +79,31 @@
 	                    	</div>
 	                    	<table border="1" style="text-align: center;width: 80%;" align="center">
 	                    		<tr>
-	                    			<th>기본급</th>
+	                    			<th class="pay">기본급</th>
 	                    			<td><input type="number" id="basePay" name="basePay"></td>
-	                    			<th>국민연금</th>
+	                    			<th class="deduct">국민연금</th>
 	                    			<td><input type="number" id="nationalTax" name="nationalTax"></td>
 	                    		</tr>
 	                    		<tr>
-	                    			<th>직책수당</th>
+	                    			<th class="pay">직책수당</th>
 	                    			<td><input type="number" id="positionPay" name="positionPay"></td>
-	                    			<th>건강보험</th>
+	                    			<th class="deduct">건강보험</th>
 	                    			<td><input type="number" id="healthTax" name="healthTax"></td>
 	                    		</tr>
 	                    		<tr>
-	                    			<th>연장근로수당</th>
+	                    			<th class="pay">연장근로수당</th>
 	                    			<td><input type="number" id="extensionPay" name="extensionPay"></td>
-	                    			<th>고용보험</th>
+	                    			<th class="deduct">고용보험</th>
 	                    			<td><input type="number" id="employTax" name="employTax"></td>
 	                    		</tr>
 	                    		<tr>
-	                    			<th>휴일근로수당</th>
+	                    			<th class="pay">휴일근로수당</th>
 	                    			<td><input type="number" id="holidayPay" name="holidayPay"></td>
-	                    			<th>소득세</th>
+	                    			<th class="deduct">소득세</th>
 	                    			<td><input type="number" id="incomeTax" name="incomeTax"></td>
 	                    		</tr>
 	                    		<tr>
-	                    			<th>연구비</th>
+	                    			<th class="pay">연구비</th>
 	                    			<td><input type="number" id="researchPay" name="researchPay"></td>
 	                    			<th></th>
 	                    			<td></td>
@@ -102,13 +111,13 @@
 	                    		<tr>
 	                    			<th></th>
 	                    			<td></td>
-	                    			<th>공제액계</th>
+	                    			<th class="deduct">공제액계</th>
 	                    			<td><input type="number" id="deductTotal" name="deductTotal"></td>
 	                    		</tr>
 	                    		<tr>
-	                    			<th>지급액계</th>
+	                    			<th class="pay">지급액계</th>
 	                    			<td><input type="number" id="paymentTotal" name="paymentTotal"></td>
-	                    			<th>실수령액</th>
+	                    			<th class="total">실수령액</th>
 	                    			<td><input type="number" id="realPay" name="realPay"></td>
 	                    		</tr>
 	                    	</table>
@@ -119,9 +128,10 @@
 	                    
 	                    <br>
 	                    <hr>
-	    				<div id="searchMemberList" border="1" style="text-align: center;width: 100%;">
-	    					<table align="center">
-	    						<thead style="background-color:orange;">
+	    				<div id="searchMemberList" >
+	    					<span>검색결과 [ <span id="searchedMemberCount" style="color:blue;"></span> 명 ]</span>
+	    					<table align="center" border="1" style="text-align: center;width: 100%;" >
+	    						<thead style='background-color: #4fc7ff;'>
 	    							<tr>
 	    								<th>직번</th>
 	    								<th>성명</th>
@@ -185,9 +195,11 @@
                 			},
                 			
                 			success : function(list){
-                				console.log(list);
+                				
+                				$("#searchedMemberCount").html("<b>"+list.length+"</b>");
+                				
                 				var str = "";
-                				if(!list.isEmpty){
+                				if(list[0]!=null){
                 					for(var i in list){
                 					str +="<tr>"
                 						 +"<td>"+list[i].professorNo+"</td>"

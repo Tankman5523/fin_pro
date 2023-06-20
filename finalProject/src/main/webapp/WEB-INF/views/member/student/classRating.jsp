@@ -26,7 +26,7 @@
                 </div>
             </div>
             <div id="content_1">
-					<div style="width: 90%;height: 90%;margin: 5%;">
+					<div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
                     <div class="info">
                         <h4>강의평가</h4>
                     </div>
@@ -71,11 +71,11 @@
 	                                	-->
 	                                	
 	                                	<!-- 테스트용입니다 -->
-	                                	<td>200</td>
-	                                	<td>테스트강의</td>
-		                                <td>테스트교수</td>
-		                                <td>2055</td>
-		                                <td>3</td>
+	                                	<td>168</td>
+	                                	<td>환경무용론</td>
+		                                <td>하재호</td>
+		                                <td>2023</td>
+		                                <td>2</td>
 		                                <td><button class="ratingStartBtn">평가시작</button></td>
 	                                </tr>
                             		</c:otherwise>
@@ -193,11 +193,11 @@
 					
 					<script>
 					
-					 	$('document').ready(function hideForm(){
+					 	$('document').ready(function hideForm(){ // div 숨기기
 							$(".hide").hide();                		
 		            	});
 					 	
-					 	$(".ratingStartBtn").on("click",function(){
+					 	$(".ratingStartBtn").on("click",function(){ // 강의평가 폼 show , 해당 강의 정보 입력
 					 		$(".hide").show();
 					 		
 					 		var hiddenClassNo = $(this).parent().siblings().eq(0).text();
@@ -211,7 +211,7 @@
 					 		
 					 	});
 					 	
-					 	$("#submitBtn").on("click",function(){
+					 	$("#submitBtn").on("click",function(){ //강의평가 submit 
 					 		var classNo = $("#hiddenClassNo").val();
 					 		
 					 		var q1 = $('input:radio[name=q1]:checked').val();
@@ -246,8 +246,8 @@
 					 			success : function(result){
 					 				if(result=='Y'){
 						 				alert("해당 강의에 대한 강의 평가를 완료하였습니다.");
-						 				location.reload();
-						 				//다른 방법이 있다면 좋겠지만 객체 선택에 실패해서 그냥 돌려버림
+						 				location.reload(); //동기화 새로고침
+						 				//비동기처리를 하기엔 너무 비합리적임.
 					 				}else{
 					 					alert("너무많은 텍스트를 입력하였거나 , 입력하지 않은 항목이 있습니다.");
 					 				}
@@ -257,8 +257,6 @@
 					 			}
 					 			
 					 		});
-					 		
-					 		
 					 	});
 					 	
 					</script>

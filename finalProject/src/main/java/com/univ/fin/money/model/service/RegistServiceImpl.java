@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.dao.RegistDao;
 import com.univ.fin.money.model.vo.RegistPay;
@@ -27,8 +28,8 @@ public class RegistServiceImpl implements RegistService{
 	}
 
 	@Override
-	public RegistPay selectNewRegistInfo(Student st) {
-		return registDao.selectNewRegistInfo(sqlSession,st);
+	public RegistPay selectNewRegistInfo(ClassRating cr) {
+		return registDao.selectNewRegistInfo(sqlSession,cr);
 	}
 
 	@Override

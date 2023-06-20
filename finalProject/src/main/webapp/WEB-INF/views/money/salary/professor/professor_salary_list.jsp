@@ -24,7 +24,7 @@
             </div>
             <!--내용 시작-->
             <div id="content_1">
-                <div style="width: 90%;height: 90%;margin: 5%;">
+                <div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
                     <div>
                         <table border="1" style="width: 100%;">
                             <!--로그인유저 자동입력-->
@@ -84,7 +84,9 @@
                         </table>
                         
                         <script>
-                        	function searchSalary(){ //현재 날짜보다 월급일이 나중이라 새로 추가한거 조회 안되는거 정상임~ 날짜바꾸면조회됩니다
+                        	function searchSalary(){ 
+                        		//본인 급여 조회
+                        		//현재 날짜보다 월급일이 나중이라 새로 추가한거 조회 안되는거 정상임~ 날짜바꾸면조회됩니다
                         		
                         		var profNo = "${loginUser.professorNo}";
                         		
@@ -102,7 +104,7 @@
                         				console.log(list);
                         				var str = "";
                         				var status = "";
-                        				if(!list.isEmpty){
+                        				if(list[0]!=null){
                         					for(var i in list){
                         						if(list[i].status=='Y'){
                         							status = "지급완료";

@@ -85,7 +85,7 @@
                 </div>
             </div>
             <div id="content_1">
-				<div style="width: 90%;height: 90%;margin: 5%;">
+				<div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
 					<div>
                         <button onclick="location.href='allList.sl'">급여내역조회</button> <button onclick="location.href='insert.sl'">급여 입력</button>
                         <hr>
@@ -110,7 +110,7 @@
 			            <br>
 			            <div>
 			                <table id="salaryList" border="1" style="text-align: center;width: 100%;">
-			                    <thead style="background-color: antiquewhite;">
+			                    <thead style='background-color: #4fc7ff;'>
 			                        <tr>
 			                            <th><input type="checkbox" name="checkAll" id="checkAll"></th>
 			                            <th>직번</th>
@@ -172,7 +172,7 @@
                 			success : function(list){
                 				var str = "";
                 				var status = "";
-                				if(!list.isEmpty){
+                				if(list[0]!=null){
                 					for(var i in list){
                 						if(list[i].status=='Y'){
                 							status = "지급완료";
@@ -550,7 +550,7 @@
                 		});
                 	}
                 	
-                	function sendSalary(){
+                	function sendSalary(){ //급여 송금 (상태값 변경)
                 		var control = confirm("선택된 급여를 송금하시겠습니까?");
                 		if(control){
 	                		var payNo = $("#modal_payNo").val();

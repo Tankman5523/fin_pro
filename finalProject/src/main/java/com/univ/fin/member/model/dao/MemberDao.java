@@ -374,12 +374,28 @@ public class MemberDao {
 	}
 	
 	// (학생)수강한 강의정보 조회
-	public ArrayList<RegisterClass> classInfoForRating(SqlSessionTemplate sqlSession, Student st) {
-		return (ArrayList)sqlSession.selectList("memberMapper.classInfoForRating", st);
+	public ArrayList<RegisterClass> classInfoForRating(SqlSessionTemplate sqlSession, ClassRating cr) {
+		return (ArrayList)sqlSession.selectList("memberMapper.classInfoForRating", cr);
 	}
-
+	
+	// (학생)강의평가 입력
 	public int insertClassRating(SqlSessionTemplate sqlSession, ClassRating cr) {
 		return sqlSession.insert("memberMapper.insertClassRating", cr);
+	}
+	
+	// (관리자) 강의평가 조회
+	public ArrayList<ClassRating> classRatingList(SqlSessionTemplate sqlSession, ClassRating cr) {
+		return (ArrayList)sqlSession.selectList("memberMapper.classRatingList", cr);
+	}
+
+	// (관리자) 강의평가 기타건의사항 조회
+	public ArrayList<ClassRating> classRatingEtcList(SqlSessionTemplate sqlSession, ClassRating cr) {
+		return (ArrayList)sqlSession.selectList("memberMapper.classRatingEtcList",cr);
+	}
+	
+	// (관리자) 강의평가 문항별 평균 점수 조회
+	public ClassRating classRatingAverage(SqlSessionTemplate sqlSession, ClassRating cr) {
+		return sqlSession.selectOne("memberMapper.classRatingAverage", cr);
 	}
 
 
