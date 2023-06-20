@@ -28,7 +28,7 @@ public interface MainService {
 	//기타 FAQ 조회
 	ArrayList<Notice> selectGitaList();
 
-	//조회수 증가
+	//공지사항 조회수 증가
 	int increaseCount(int noticeNo);
 
 	//게시글 목록 조회
@@ -36,6 +36,12 @@ public interface MainService {
 
 	//첨부파일 조회
 	ArrayList<Notice> selectFiles(int noticeNo);
+
+	//FAQ 조회수 증가
+	int increaseFaqCount(int faqNo);
+
+	//FAQ 상세 조회
+	Notice selectFaq(int faqNo);
 	
 
 }

@@ -228,10 +228,6 @@ body {
 	border-radius: 20px;
 	padding: 20px;
 }
-.faq_content:hover{
-	cursor: pointer;
-	
-}
 
 .thumb_title{
 	display: flex;
@@ -241,6 +237,15 @@ body {
 	margin: 0;
 	font-size: 25px;
 	padding: 0 10px;
+}
+.thumb_title> button{
+	background-color: white;
+	border:none;
+	margin-left: 130px;
+	color: blue;
+}
+.thumb_title> button:hover{
+	cursor: pointer;
 }
 .thumb_content{
 	height: 80px;
@@ -358,7 +363,6 @@ body {
 }
 .page-btn:hover{
 	cursor: pointer;
-/* 	background-color: rgb(59, 193, 255); */
 	border-radius: 50px;
 }
 .pLink{
@@ -374,7 +378,6 @@ body {
 }
 .page-btn .pLink.active{
 	border-bottom: 2px solid rgb(59, 193, 255);
-/* 	border-radius: 50px; */
 	color: rgb(59, 193, 255);
 }
 .page-btn a:hover{

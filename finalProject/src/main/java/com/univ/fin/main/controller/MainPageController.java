@@ -126,6 +126,25 @@ public class MainPageController {
 		return mv;
 	}
 	
+	@GetMapping("faqDetail.mp")
+	public ModelAndView faqDetailView(int faqNo, Model mvmodel, ModelAndView mv, HttpServletRequest request) {
+		
+		int result = mainService.increaseFaqCount(faqNo);
+		
+		if(result > 0) {
+			Notice faq = mainService.selectFaq(faqNo);
+			mv.addObject("f", faq);
+			mv.setViewName("main/faqDetailView");
+		}else {
+			mv.addObject("alertMsg", "해당 게시물을 조회할 수 없습니다.");
+			mv.addObject("url", "notice.mp");
+			mv.setViewName("main/alert");
+		}
+		
+		return mv;
+	}
+	
+	
 	@GetMapping("search.mp")
 	public String searchBoardList(String keyword) {
 		
