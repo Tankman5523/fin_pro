@@ -184,9 +184,7 @@ public class ProfessorController {
 		// A: 30%, A+B: 70% 이내
 		if(map.get("gradeLevel")=="A" || map.get("gradeLevel")=="B") {
 			int check = memberService.checkGradeNos(map); // 수강인원*비율에 따른 가능 인원 수
-			System.out.println(map.get("gradeLevel") + "는 " + check + "명 가능");
 			int count = memberService.countGradeNos(map); // 실제 몇명이 해당되는지
-			System.out.println("현재 " + map.get("gradeLevel") + "는 " + count + "명");
 			if(count < check) {
 				int result = memberService.gradeInsert(g);
 				return (result>0)? "Y": "N";
@@ -212,9 +210,7 @@ public class ProfessorController {
 		// A: 30%, A+B: 70% 이내
 		if(map.get("gradeLevel").contains("A") || map.get("gradeLevel").contains("B")) {
 			int check = memberService.checkGradeNos(map); // 수강인원*비율에 따른 가능 인원 수
-			System.out.println(map.get("gradeLevel") + "는 " + check + "명 가능");
 			int count = memberService.countGradeNos(map); // 실제 몇명이 해당되는지
-			System.out.println("현재 " + map.get("gradeLevel") + "는 " + count + "명");
 			if(count < check) { // 성적 입력 가능
 				int result = memberService.gradeUpdate(g);
 				return (result>0)? "Y": "N";

@@ -661,6 +661,7 @@ public class StudentController {
 		String studentNo = st.getStudentNo();
 		
 		ArrayList<String> classTerm = memberService.selectClassTerm();
+		System.out.println("******************************************"+classTerm);
 		ArrayList<HashMap<String, String>> gList = new ArrayList<>();
 		for(int i=0;i<classTerm.size();i++) {
 			HashMap<String, String> map = new HashMap<>();
@@ -668,8 +669,13 @@ public class StudentController {
 			map.put("term", classTerm.get(i).substring(5,classTerm.get(i).length()));
 			map.put("studentNo", studentNo);
 			
-			gList.addAll(memberService.calculatedGrade(map)); // 학기별 성적
+			HashMap<String, String> termGrade = memberService.calculatedGrade(map);
+			String termRank = memberService.calculatedTermRank(map); // 학기별석차
+			termGrade.put("termRank", termRank);
+			String totalRank = memberService.calculatedTotalRank(map); // 전체석차
+			termGrade.put("totalRank", totalRank);
 			
+			gList.add(termGrade);
 		}
 		HashMap<String, String> scoreAB = memberService.selectScoreAB(studentNo); // 증명신청학점, 증명취득학점
 		double scoreC = memberService.selectScoreC(studentNo); // 증명평점평균
