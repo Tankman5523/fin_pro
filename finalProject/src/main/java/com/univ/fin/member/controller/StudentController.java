@@ -32,6 +32,8 @@ import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
 
+
+
 @Controller
 public class StudentController {
 
@@ -294,7 +296,7 @@ public class StudentController {
 		
 		return new Gson().toJson(list);
 	}
-	
+
 	// 수강신청 - 강의시간표
 	@RequestMapping("classListView.st")
 	public ModelAndView classListView(ModelAndView mv) {
@@ -656,10 +658,27 @@ public class StudentController {
 	
 	// 수업관리 - 학기별 성적 조회
 	@RequestMapping("classManagement.st")
-	public ModelAndView student_classManagement(ModelAndView mv) {
-		ArrayList<String> classTerm = memberService.selectClassTerm();
+	public ModelAndView student_classManagement(ModelAndView mv, HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
 		
-		mv.addObject("classTerm", classTerm).setViewName("member/student/gradeListView");
+		ArrayList<String> classTerm = memberService.selectClassTerm();
+		ArrayList<HashMap<String, String>> gList = new ArrayList<>();
+		for(int i=0;i<classTerm.size();i++) {
+			HashMap<String, String> map = new HashMap<>();
+			map.put("year", classTerm.get(i).substring(0, 4));
+			map.put("term", classTerm.get(i).substring(5,classTerm.get(i).length()));
+			map.put("studentNo", studentNo);
+			
+			gList.addAll(memberService.calculatedGrade(map)); // 학기별 성적
+			
+		}
+		HashMap<String, String> scoreAB = memberService.selectScoreAB(studentNo); // 증명신청학점, 증명취득학점
+		double scoreC = memberService.selectScoreC(studentNo); // 증명평점평균
+		double scoreD = memberService.selectScoreD(studentNo); // 증명산술평균
+		
+		mv.addObject("classTerm", classTerm).addObject("gList", gList).addObject("scoreAB", scoreAB)
+		.addObject("scoreC", scoreC).addObject("scoreD", scoreD).setViewName("member/student/gradeListView");
 		return mv;
 	}
 	

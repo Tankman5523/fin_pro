@@ -142,6 +142,16 @@
 		<result column="SCORE" property="score"/>
 		<result column="GRADE_LEVEL" property="gradeLevel"/>
 	</resultMap>
+	
+	<resultMap type="hashmap" id="termGradeHashMap">
+		<result column="CLASS_YEAR" property="classYear"/> <!-- 학년도 -->
+		<result column="CLASS_TERM" property="classTerm"/> <!-- 학기 -->
+		<result column="SIGN_UP" property="signUp"/> <!-- 신청학점 -->
+		<result column="OBTAIN" property="obtain"/> <!-- 취득학점 -->
+		<result column="GRADE" property="grade"/> <!-- 평점계 -->
+		<result column="TERM_RANK" property="termRank"/> <!-- 학기별석차 -->
+		<result column="TOTAL_RANK" property="totalRank"/> <!-- 전체석자 -->
+	</resultMap>
   	
   	<resultMap type="graduation" id="graduationResultMap">
   		<result column="STUDENT_NO" property="studentNo"/>
@@ -877,6 +887,40 @@
 		ORDER BY DEPARTMENT_NAME, STUDENT_NO
   	</select>
   	
+  	<!-- 성적관리 -> 수강인원*비율에 따른 가능 인원 수 -->
+  	<select id="checkGradeNos" parameterType="hashmap" resultType="_int">
+  		<choose>
+  			<when test="gradeLevel == 'A'.toString()">
+  				SELECT FLOOR(CLASS_NOS*0.3)
+  			</when>
+  			<otherwise>
+  				SELECT FLOOR(CLASS_NOS*0.7)
+  			</otherwise>
+  		</choose>
+		FROM CLASS
+		WHERE CLASS_NO = #{classNo}
+  	</select>
+  	
+  	<!-- 성적관리 -> 실제 몇명이 해당되는지 -->
+  	<select id="countGradeNos" parameterType="hashmap" resultType="_int">
+  		SELECT SUM(COUNT)
+		FROM (SELECT SUBSTR(GRADE_LEVEL,1,1) AS GRADE, COUNT(*) AS COUNT
+		        FROM (SELECT A.STUDENT_NO, NVL(SCORE, 0) AS SCORE, NVL(GRADE_LEVEL,' ') AS GRADE_LEVEL, CLASS_NOS
+		                FROM (SELECT CLASS_NO, STUDENT_NO
+		                      FROM SCHEDULE
+		                      GROUP BY CLASS_NO, STUDENT_NO) A
+		                LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
+		                JOIN CLASS C ON(G.CLASS_NO = C.CLASS_NO)
+		                WHERE A.CLASS_NO = #{classNo}) AA
+		        GROUP BY SUBSTR(GRADE_LEVEL,1,1))
+		<if test="gradeLevel == 'A'.toString()">
+			WHERE GRADE IN ('A')
+		</if>
+		<if test="gradeLevel == 'B'.toString()">
+			WHERE GRADE IN ('A', 'B')
+		</if>
+  	</select>
+  	
   	<!-- 성적관리 -> 성적 입력 -->
   	<insert id="gradeInsert" parameterType="grade">
   		INSERT INTO GRADE VALUES(SEQ_GNO.NEXTVAL, #{studentNo}, #{classNo}
@@ -926,6 +970,45 @@
   	INSERT INTO STUDENT (STUDENT_NO, DEPARTMENT_NO, COLLEGE_NO, ENTRANCE_DATE, STUDENT_NAME, STUDENT_PWD, PHONE, EMAIL, POST, ADDRESS,CLASS_LEVEL)
 	VALUES (SEQ_SNO.NEXTVAL,(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
   	</insert>
+  	
+  	<!--  -->
+<!--   	<select id="calculatedGrade" parameterType="hashmap" resultMap="termGradeHashMap"> -->
+  		
+<!--   	</select> -->
+  	
+  	<!-- 학기별 성적 조회 -> 증명신청학점, 증명취득학점 -->
+  	<select id="selectScoreAB" parameterType="string" resultMap="termGradeHashMap">
+  		SELECT SUM(CREDIT) AS SIGN_UP, SUM(CASE WHEN GRADE_LEVEL NOT IN ('F', ' ') THEN CREDIT ELSE 0 END) AS OBTAIN
+		FROM (SELECT CLASS_NO, STUDENT_NO
+		        FROM SCHEDULE
+		        GROUP BY CLASS_NO, STUDENT_NO) A
+		JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
+		LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
+		WHERE A.STUDENT_NO = #{studentNo}
+  	</select>
+
+  	<!-- 학기별 성적 조회 -> 증명평점평균 -->
+  	<select id="selectScoreC" parameterType="string" resultType="_double">
+  		SELECT SUM(GRADE)/SUM(CREDIT)
+		FROM (SELECT DECODE(GRADE_LEVEL, 'A+', 4.5, 'A0', 4.3, 'A-', 4.0, 'B+', 3.5, 'B0', 3.3, 'B-', 3.0, 'C+', 2.5, 'C0', 2.3, 'C-', 2.0, 'D+', 1.5, 'D0', 1.3, 'D-', 1.0, 'F', 0)*CREDIT AS GRADE, CREDIT
+		        FROM (SELECT CLASS_NO, STUDENT_NO
+		                FROM SCHEDULE
+		                GROUP BY CLASS_NO, STUDENT_NO) A
+		        JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
+		        LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
+		        WHERE A.STUDENT_NO = #{studentNo} AND GRADE_LEVEL IS NOT NULL) AA
+  	</select>
+  	
+  	<!-- 학기별 성적 조회 -> 증명산술평균 -->
+  	<select id="selectScoreD" parameterType="string" resultType="_double">
+  		SELECT SUM(SCORE*CREDIT)/SUM(CREDIT)
+		FROM (SELECT CLASS_NO, STUDENT_NO
+		        FROM SCHEDULE
+		        GROUP BY CLASS_NO, STUDENT_NO) A
+		JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
+		LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
+		WHERE A.STUDENT_NO = #{studentNo} AND GRADE_LEVEL IS NOT NULL
+  	</select>
   	
   </mapper>
 

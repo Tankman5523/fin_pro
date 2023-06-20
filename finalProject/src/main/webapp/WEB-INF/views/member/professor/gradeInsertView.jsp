@@ -259,8 +259,11 @@
 	               					$("#myModal").modal("hide");
 	               					selectStudentGradeList();
 	               				}
-	               				else {
+	               				else if(result=='N') {
 	               					alert("성적 입력 실패");
+	               				}
+	               				else { // 성적 비율 초과
+	               					alert(result);
 	               				}
 	               			},
 	               			error: function() {
@@ -285,8 +288,11 @@
 	               					$("#myModal").modal("hide");
 	               					selectStudentGradeList();
 	               				}
-	               				else {
+	               				else if(result=='N') {
 	               					alert("성적 수정 실패");
+	               				}
+	               				else { // 성적 비율 초과
+	               					alert("성적 입력이 가능한 비율을 초과하였습니다.");
 	               				}
 	               			},
 	               			error: function() {
