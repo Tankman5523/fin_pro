@@ -124,7 +124,6 @@ public class StudentController {
 										 .professorName(rc.getProfessorName()) //교수명
 										 .className(rc.getClassName()) //과목명
 										 .studentNo(rc.getStudentNo()) //학번 
-										 .studentLevel(rc.getStudentLevel()) //학생 학년
 										 .build();
 		
 		ArrayList<RegisterClass> list = memberService.preRegClass(rc2);
@@ -185,7 +184,6 @@ public class StudentController {
 										 .professorName(rc.getProfessorName()) //교수명
 										 .className(rc.getClassName()) //과목명
 										 .studentNo(rc.getStudentNo()) //학번 
-										 .studentLevel(rc.getStudentLevel()) //학생 학년
 										 .build();
 		
 		ArrayList<RegisterClass> list = memberService.postRegClass(rc2);
@@ -670,8 +668,13 @@ public class StudentController {
 			map.put("term", classTerm.get(i).substring(5,classTerm.get(i).length()));
 			map.put("studentNo", studentNo);
 			
-			gList.addAll(memberService.calculatedGrade(map)); // 학기별 성적
+			HashMap<String, String> termGrade = memberService.calculatedGrade(map);
+			String termRank = memberService.calculatedTermRank(map); // 학기별석차
+			termGrade.put("termRank", termRank);
+			String totalRank = memberService.calculatedTotalRank(map); // 전체석차
+			termGrade.put("totalRank", totalRank);
 			
+			gList.add(termGrade);
 		}
 		HashMap<String, String> scoreAB = memberService.selectScoreAB(studentNo); // 증명신청학점, 증명취득학점
 		double scoreC = memberService.selectScoreC(studentNo); // 증명평점평균

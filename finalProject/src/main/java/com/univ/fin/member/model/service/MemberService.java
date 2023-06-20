@@ -213,11 +213,18 @@ public interface MemberService {
 	ArrayList<HashMap<String, String>> selectClassList(HashMap<String, String> map);
 	
 	// 학기별 성적 조회 -> 학기별 성적 계산
-	ArrayList<HashMap<String, String>> calculatedGrade(HashMap<String, String> map);
+	HashMap<String, String> calculatedGrade(HashMap<String, String> map);
+	
+	// 학기별 성적 조회 -> 학기별석차
+	String calculatedTermRank(HashMap<String, String> map);
+	
+	// 학기별 성적 조회 -> 전체석자
+	String calculatedTotalRank(HashMap<String, String> map);
 
 	// 학기별 성적 조회 -> 증명@@ 성적 계산
 	HashMap<String, String> selectScoreAB(String studentNo);
 	double selectScoreC(String studentNo);
 	double selectScoreD(String studentNo);
+
 
 }

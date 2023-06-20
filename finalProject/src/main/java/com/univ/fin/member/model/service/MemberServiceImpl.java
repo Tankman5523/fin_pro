@@ -21,7 +21,7 @@ import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
 
 @Service
-public  class MemberServiceImpl implements MemberService{
+public class MemberServiceImpl implements MemberService{
 
 	@Autowired
 	private MemberDao memberDao;
@@ -567,6 +567,27 @@ public  class MemberServiceImpl implements MemberService{
 		int result = memberDao.updateClassReject(sqlSession,c);
 		return result;
 	}
+	
+	// 학기별 성적 조회 -> 학기별 성적 계산
+	@Override
+	public HashMap<String, String> calculatedGrade(HashMap<String, String> map) {
+		HashMap<String, String> gList = memberDao.calculatedGrade(sqlSession, map);
+		return gList;
+	}
+	
+	// 학기별 성적 조회 -> 학기별석차
+	@Override
+	public String calculatedTermRank(HashMap<String, String> map) {
+		String rank = memberDao.calculatedTermRank(sqlSession, map);
+		return rank;
+	}
+	
+	// 학기별 성적 조회 -> 전체석차
+	@Override
+	public String calculatedTotalRank(HashMap<String, String> map) {
+		String rank = memberDao.calculatedTotalRank(sqlSession, map);
+		return rank;
+	}
 
 	// 학기별 성적 조회 -> 증명신청학점, 증명취득학점
 	@Override
@@ -580,13 +601,6 @@ public  class MemberServiceImpl implements MemberService{
 	public double selectScoreC(String studentNo) {
 		double scoreC = memberDao.selectScoreC(sqlSession, studentNo);
 		return scoreC;
-	}
-	
-	// 학기별 성적 조회 -> 학기별 성적 계산
-	@Override
-	public ArrayList<HashMap<String, String>> calculatedGrade(HashMap<String, String> map) {
-		ArrayList<HashMap<String, String>> gList = memberDao.calculatedGrade(sqlSession, map);
-		return gList;
 	}
 
 	// 학기별 성적 조회 -> 증명산술평균
