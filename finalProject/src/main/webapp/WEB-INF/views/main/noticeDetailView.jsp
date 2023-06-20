@@ -13,7 +13,7 @@
 		 
 		<div id="content">
 			<div id="content-area">
-				<h1 style="margin: 0; margin-left: 20px;">${n.categoryName }&nbsp;&nbsp;공지사항</h1>
+				<h1 style="margin: 0; margin-left: 20px;">[${n.categoryName }]&nbsp;&nbsp;공지사항</h1>
 			 	
 			 	<div id="btn-area">
 			 		<button id="back-btn" onclick="back();"><i class="fa-solid fa-bars"></i>목록</button>

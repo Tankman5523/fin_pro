@@ -1,6 +1,8 @@
 package com.univ.fin.main.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -124,6 +126,45 @@ public class MainServiceImpl implements MainService{
 		
 		return faq;
 	}
+
+	//검색결과 개수 조회
+	@Override
+	public int searchListCount(HashMap<String, String> searchMap) {
+		
+		int listCount = mainDao.searchListCount(sqlSession, searchMap);
+		
+		return listCount;
+	}
+	
+	//공지게시판 검색
+	@Override
+	public ArrayList<Notice> searchNotice(HashMap<String, String> searchMap, PageInfo pi) {
+		
+		ArrayList<Notice> list = mainDao.searchNotice(sqlSession, searchMap, pi);
+		
+		return list;
+	}
+
+	//종합정보시스템 공지사항
+	@Override
+	public ArrayList<Notice> infoNoticeList() {
+		
+		ArrayList<Notice> list = mainDao.infoNoticeList(sqlSession);
+		
+		return list;
+	}
+
+	//종합정보시스템 FAQ
+	@Override
+	public ArrayList<Notice> infoFaqList() {
+		
+		ArrayList<Notice> faq = mainDao.infoFaqList(sqlSession);
+		
+		return faq;
+	}
+
+
+	
 	
 	
 
