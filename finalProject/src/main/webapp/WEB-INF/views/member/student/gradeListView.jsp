@@ -133,10 +133,10 @@
                 
                 <div class="transcript">
                 	<br><br>
-                    <span>증명신청학점:</span> <input type="text" id="" value="130" readonly>
-                    <span>증명취득학점:</span> <input type="text" id="" value="130" readonly> 
-                    <span>증명평점계:</span> <input type="text" id="" value="3.8" readonly>
-                    <span>증명평점평균:</span> <input type="text" id="" value="92" readonly>
+                    <span>증명신청학점:</span> <input type="text" id="" value="${scoreAB.signUp }" readonly>
+                    <span>증명취득학점:</span> <input type="text" id="" value="${scoreAB.obtain }" readonly> 
+                    <span>증명평점평균:</span> <input type="text" id="" value="${scoreC }" readonly>
+                    <span>증명산술평균:</span> <input type="text" id="" value="${scoreD }" readonly>
                     <br><br>
                 </div>
                 <div class="b_line"></div>
@@ -162,10 +162,10 @@
                     <table class="termGrade-table">
                         <thead>
                             <tr height="40">
-                                <th width="15%" style="border-left: 1px solid #76D2FF;">이수학년도</th>
-                                <th width="13%">이수학기</th>
+                                <th width="14%" style="border-left: 1px solid #76D2FF;">이수학년도</th>
+                                <th width="12%">이수학기</th>
                                 <th width="12%">과목번호</th>
-                                <th width="18%">과목명</th>
+                                <th width="20%">과목명</th>
                                 <th width="12%">담당교수</th>
                                 <th width="10%">과목학점</th>
                                 <th width="10%">성적</th>
@@ -266,8 +266,8 @@
 	                			if(cList != "") {
 	                				for(var i=0;i<cList.length;i++) {
 										str += "<tr>"
-											 + "<td style='border: 0;'>" + cList[i].classYear + "</td>"
-											 + "<td>" + cList[i].classTerm + "</td>"
+											 + "<td style='border: 0;'>" + cList[i].classYear + "년</td>"
+											 + "<td>" + cList[i].classTerm + "학기</td>"
 											 + "<td>" + cList[i].classNo + "</td>"
 											 + "<td>" + cList[i].className + "</td>"
 											 + "<td>" + cList[i].professorName + "</td>"
