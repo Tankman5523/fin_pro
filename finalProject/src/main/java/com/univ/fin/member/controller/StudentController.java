@@ -661,7 +661,6 @@ public class StudentController {
 		String studentNo = st.getStudentNo();
 		
 		ArrayList<String> classTerm = memberService.selectClassTerm();
-		System.out.println("******************************************"+classTerm);
 		ArrayList<HashMap<String, String>> gList = new ArrayList<>();
 		for(int i=0;i<classTerm.size();i++) {
 			HashMap<String, String> map = new HashMap<>();
