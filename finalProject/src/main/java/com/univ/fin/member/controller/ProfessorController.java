@@ -225,6 +225,12 @@ public class ProfessorController {
 		}
 	}
 	
+	@RequestMapping("counselHistory.pr")
+	public String counselHistory() {
+		
+		return "member/professor/counselHistory";
+	}
+	
 	// 학사관리 - 강의시간표
 	@RequestMapping("classListView.pr")
 	public ModelAndView classListView(ModelAndView mv) {

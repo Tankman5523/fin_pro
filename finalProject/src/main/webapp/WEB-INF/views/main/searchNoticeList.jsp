@@ -19,7 +19,7 @@
 		<div class="notice_area">
 			<div style="height: 150px; margin-top: 50px;">
 				<p style="margin-top: 0px;">검색결과</p>
-				<p style="margin-top: 30px; font-size: 15px;">''로 검색된 게시물은 총 ${searchPi.listCount } 개 입니다.<p>
+				<p style="margin-top: 30px; font-size: 15px;">'${keyword }'로 검색된 게시물은 총 ${searchPi.listCount } 개 입니다.<p>
 			</div>
 			
 			<div class="notice_board">
