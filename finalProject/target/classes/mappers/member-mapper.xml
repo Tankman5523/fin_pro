@@ -322,9 +322,15 @@
 		AND CLASS_NO NOT IN (SELECT CLASS_NO
 	              		 	 FROM BUCKET
 	               			 WHERE STUDENT_NO = #{studentNo})
-		AND CLASS_LEVEL IN (0,#{studentLevel})
 		AND CLASS_YEAR = #{classYear}
 		AND CLASS_TERM = #{classTerm}
+        AND C.CLASS_NO NOT IN (SELECT CLASS_NO
+                               FROM CLASS 
+                               WHERE CLASS_NAME IN (SELECT CLASS_NAME
+                                                    FROM CLASS C
+                                                    JOIN GRADE G USING (CLASS_NO)
+                                                    WHERE STUDENT_NO = #{studentNo}
+                                                    AND G.GRADE_LEVEL != 'F'))
 		<choose>
 			<when test="professorName != ''">
 				AND PROFESSOR_NAME LIKE '%'||#{professorName}||'%'
@@ -336,11 +342,12 @@
 				AND DEPARTMENT_NAME = #{departmentName}
 			</otherwise>
 		</choose>
-		GROUP BY COLLEGE_NAME, CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DEPARTMENT_NAME,CLASS_NOS,
+		GROUP BY COLLEGE_NAME, CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DEPARTMENT_NAME,CLASS_NOS,CLASS_LEVEL,
 		CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT), (DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
 		DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
 						  2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) ||' '|| CLASSROOM),
 						  DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년')
+		ORDER BY C.CLASS_LEVEL ASC, C.CLASS_NO ASC
   	</select>
   	
   	<!-- 예비수강신청 - 장바구니 수강삭제 -->
@@ -372,9 +379,15 @@
 		AND CLASS_NO NOT IN (SELECT CLASS_NO
                              FROM SCHEDULE
                              WHERE STUDENT_NO = #{studentNo})
-		AND CLASS_LEVEL IN (0,#{studentLevel})
 		AND CLASS_YEAR = #{classYear}
 		AND CLASS_TERM = #{classTerm}
+        AND C.CLASS_NO NOT IN (SELECT CLASS_NO
+                               FROM CLASS 
+                               WHERE CLASS_NAME IN (SELECT CLASS_NAME
+                                                    FROM CLASS C
+                                                    JOIN GRADE G USING (CLASS_NO)
+                                                    WHERE STUDENT_NO = #{studentNo}
+                                                    AND G.GRADE_LEVEL != 'F'))
 		<choose>
 			<when test="professorName != ''">
 				AND PROFESSOR_NAME LIKE '%'||#{professorName}||'%'
@@ -386,7 +399,7 @@
 				AND DEPARTMENT_NAME = #{departmentName}
 			</otherwise>
 		</choose>
-		ORDER BY C.CLASS_NO ASC
+		ORDER BY C.CLASS_LEVEL ASC,C.CLASS_NO ASC
   	</select>
   	
   	<!-- 수강신청 - 수강신청 (장바구니) -->

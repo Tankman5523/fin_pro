@@ -124,7 +124,6 @@ public class StudentController {
 										 .professorName(rc.getProfessorName()) //교수명
 										 .className(rc.getClassName()) //과목명
 										 .studentNo(rc.getStudentNo()) //학번 
-										 .studentLevel(rc.getStudentLevel()) //학생 학년
 										 .build();
 		
 		ArrayList<RegisterClass> list = memberService.preRegClass(rc2);
@@ -185,7 +184,6 @@ public class StudentController {
 										 .professorName(rc.getProfessorName()) //교수명
 										 .className(rc.getClassName()) //과목명
 										 .studentNo(rc.getStudentNo()) //학번 
-										 .studentLevel(rc.getStudentLevel()) //학생 학년
 										 .build();
 		
 		ArrayList<RegisterClass> list = memberService.postRegClass(rc2);
@@ -663,7 +661,6 @@ public class StudentController {
 		String studentNo = st.getStudentNo();
 		
 		ArrayList<String> classTerm = memberService.selectClassTerm();
-		System.out.println("******************************************"+classTerm);
 		ArrayList<HashMap<String, String>> gList = new ArrayList<>();
 		for(int i=0;i<classTerm.size();i++) {
 			HashMap<String, String> map = new HashMap<>();
