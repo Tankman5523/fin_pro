@@ -142,6 +142,14 @@
 		<result column="SCORE" property="score"/>
 		<result column="GRADE_LEVEL" property="gradeLevel"/>
 	</resultMap>
+	
+	<resultMap type="hashmap" id="termGradeHashMap">
+		<result column="CLASS_YEAR" property="classYear"/> <!-- 학년도 -->
+		<result column="CLASS_TERM" property="classTerm"/> <!-- 학기 -->
+		<result column="SIGN_UP" property="signUp"/> <!-- 신청학점 -->
+		<result column="OBTAIN" property="obtain"/> <!-- 취득학점 -->
+		<result column="TERM_GRADE" property="termGrade"/> <!-- 평점계 -->
+	</resultMap>
   	
   	<resultMap type="graduation" id="graduationResultMap">
   		<result column="STUDENT_NO" property="studentNo"/>
@@ -314,9 +322,15 @@
 		AND CLASS_NO NOT IN (SELECT CLASS_NO
 	              		 	 FROM BUCKET
 	               			 WHERE STUDENT_NO = #{studentNo})
-		AND CLASS_LEVEL IN (0,#{studentLevel})
 		AND CLASS_YEAR = #{classYear}
 		AND CLASS_TERM = #{classTerm}
+        AND C.CLASS_NO NOT IN (SELECT CLASS_NO
+                               FROM CLASS 
+                               WHERE CLASS_NAME IN (SELECT CLASS_NAME
+                                                    FROM CLASS C
+                                                    JOIN GRADE G USING (CLASS_NO)
+                                                    WHERE STUDENT_NO = #{studentNo}
+                                                    AND G.GRADE_LEVEL != 'F'))
 		<choose>
 			<when test="professorName != ''">
 				AND PROFESSOR_NAME LIKE '%'||#{professorName}||'%'
@@ -328,11 +342,12 @@
 				AND DEPARTMENT_NAME = #{departmentName}
 			</otherwise>
 		</choose>
-		GROUP BY COLLEGE_NAME, CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DEPARTMENT_NAME,CLASS_NOS,
+		GROUP BY COLLEGE_NAME, CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DEPARTMENT_NAME,CLASS_NOS,CLASS_LEVEL,
 		CONCAT(CONCAT(CLASS_HOUR,'/'),CREDIT), (DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금')||' '||
 		DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'09:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00'),
 						  2,DECODE(PERIOD,1,'09:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) ||' '|| CLASSROOM),
 						  DECODE(CLASS_LEVEL,0,'전체학년',1,'1학년',2,'2학년',3,'3학년',4,'4학년')
+		ORDER BY C.CLASS_LEVEL ASC, C.CLASS_NO ASC
   	</select>
   	
   	<!-- 예비수강신청 - 장바구니 수강삭제 -->
@@ -364,9 +379,15 @@
 		AND CLASS_NO NOT IN (SELECT CLASS_NO
                              FROM SCHEDULE
                              WHERE STUDENT_NO = #{studentNo})
-		AND CLASS_LEVEL IN (0,#{studentLevel})
 		AND CLASS_YEAR = #{classYear}
 		AND CLASS_TERM = #{classTerm}
+        AND C.CLASS_NO NOT IN (SELECT CLASS_NO
+                               FROM CLASS 
+                               WHERE CLASS_NAME IN (SELECT CLASS_NAME
+                                                    FROM CLASS C
+                                                    JOIN GRADE G USING (CLASS_NO)
+                                                    WHERE STUDENT_NO = #{studentNo}
+                                                    AND G.GRADE_LEVEL != 'F'))
 		<choose>
 			<when test="professorName != ''">
 				AND PROFESSOR_NAME LIKE '%'||#{professorName}||'%'
@@ -378,7 +399,7 @@
 				AND DEPARTMENT_NAME = #{departmentName}
 			</otherwise>
 		</choose>
-		ORDER BY C.CLASS_NO ASC
+		ORDER BY C.CLASS_LEVEL ASC,C.CLASS_NO ASC
   	</select>
   	
   	<!-- 수강신청 - 수강신청 (장바구니) -->
@@ -877,6 +898,40 @@
 		ORDER BY DEPARTMENT_NAME, STUDENT_NO
   	</select>
   	
+  	<!-- 성적관리 -> 수강인원*비율에 따른 가능 인원 수 -->
+  	<select id="checkGradeNos" parameterType="hashmap" resultType="_int">
+  		<choose>
+  			<when test="gradeLevel == 'A'.toString()">
+  				SELECT FLOOR(CLASS_NOS*0.3)
+  			</when>
+  			<otherwise>
+  				SELECT FLOOR(CLASS_NOS*0.7)
+  			</otherwise>
+  		</choose>
+		FROM CLASS
+		WHERE CLASS_NO = #{classNo}
+  	</select>
+  	
+  	<!-- 성적관리 -> 실제 몇명이 해당되는지 -->
+  	<select id="countGradeNos" parameterType="hashmap" resultType="_int">
+  		SELECT SUM(COUNT)
+		FROM (SELECT SUBSTR(GRADE_LEVEL,1,1) AS GRADE, COUNT(*) AS COUNT
+		        FROM (SELECT A.STUDENT_NO, NVL(SCORE, 0) AS SCORE, NVL(GRADE_LEVEL,' ') AS GRADE_LEVEL, CLASS_NOS
+		                FROM (SELECT CLASS_NO, STUDENT_NO
+		                      FROM SCHEDULE
+		                      GROUP BY CLASS_NO, STUDENT_NO) A
+		                LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
+		                JOIN CLASS C ON(G.CLASS_NO = C.CLASS_NO)
+		                WHERE A.CLASS_NO = #{classNo}) AA
+		        GROUP BY SUBSTR(GRADE_LEVEL,1,1))
+		<if test="gradeLevel == 'A'.toString()">
+			WHERE GRADE IN ('A')
+		</if>
+		<if test="gradeLevel == 'B'.toString()">
+			WHERE GRADE IN ('A', 'B')
+		</if>
+  	</select>
+  	
   	<!-- 성적관리 -> 성적 입력 -->
   	<insert id="gradeInsert" parameterType="grade">
   		INSERT INTO GRADE VALUES(SEQ_GNO.NEXTVAL, #{studentNo}, #{classNo}
@@ -900,7 +955,7 @@
 		        FROM SCHEDULE
 		        GROUP BY CLASS_NO, STUDENT_NO) A
 		JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
-		LEFT JOIN GRADE G ON(A.CLASS_NO = G.CLASS_NO)
+		LEFT JOIN GRADE G ON(A.CLASS_NO = G.CLASS_NO AND A.STUDENT_NO = G.STUDENT_NO)
 		JOIN PROFESSOR P USING(PROFESSOR_NO)
 		WHERE C.CLASS_YEAR = #{year} AND C.CLASS_TERM = #{term} AND A.STUDENT_NO = #{studentNo}
 		ORDER BY CLASS_NAME
@@ -927,7 +982,92 @@
 	VALUES (SEQ_SNO.NEXTVAL,(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
   	</insert>
   	
-  	<resultMap type="classRating" id="classRatingResultMap">
+  	<!-- 학기별 성적 조회 -> 학기별 성적 계산 -->
+  	<select id="calculatedGrade" parameterType="hashmap" resultMap="termGradeHashMap">
+  		SELECT CLASS_YEAR, CLASS_TERM, NVL(SUM(CREDIT), 0) AS SIGN_UP, NVL(SUM(CASE WHEN GRADE_LEVEL NOT IN ('F', ' ') THEN CREDIT ELSE 0 END), 0) AS OBTAIN
+		        , ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) AS TERM_GRADE
+		FROM (SELECT A.CLASS_NO, PROFESSOR_NO, CLASS_NAME, C.CLASS_YEAR, C.CLASS_TERM, CREDIT, SCORE, GRADE_LEVEL
+		        , DECODE(GRADE_LEVEL, 'A+', 4.5, 'A0', 4.3, 'A-', 4.0, 'B+', 3.5, 'B0', 3.3, 'B-', 3.0, 'C+', 2.5, 'C0', 2.3, 'C-', 2.0, 'D+', 1.5, 'D0', 1.3, 'D-', 1.0, 'F', 0)*CREDIT AS GRADE
+		        FROM (SELECT CLASS_NO, STUDENT_NO
+		                FROM SCHEDULE
+		                GROUP BY CLASS_NO, STUDENT_NO) A
+		        JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
+		        LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
+		        WHERE A.STUDENT_NO = #{studentNo} AND C.CLASS_YEAR = #{year} AND C.CLASS_TERM = #{term})
+		GROUP BY CLASS_YEAR, CLASS_TERM
+  	</select>
+  	
+  	<!-- 학기별 성적 조회 -> 학기별석차 -->
+  	<select id="calculatedTermRank" parameterType="hashmap" resultType="string">
+  		SELECT RANK||'/'||TOTAL_STUDENTS
+		FROM (SELECT AA.*, COUNT(*) OVER () AS TOTAL_STUDENTS
+		    FROM (SELECT CLASS_YEAR, CLASS_TERM, STUDENT_NO, ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) AS TERM_GRADE, RANK() OVER (ORDER BY ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) DESC) AS RANK
+		            FROM (SELECT A.STUDENT_NO, C.CLASS_YEAR, C.CLASS_TERM, CREDIT, SCORE, GRADE_LEVEL
+		                    , DECODE(GRADE_LEVEL, 'A+', 4.5, 'A0', 4.3, 'A-', 4.0, 'B+', 3.5, 'B0', 3.3, 'B-', 3.0, 'C+', 2.5, 'C0', 2.3, 'C-', 2.0, 'D+', 1.5, 'D0', 1.3, 'D-', 1.0, 'F', 0)*CREDIT AS GRADE
+		                    FROM (SELECT CLASS_NO, STUDENT_NO
+		                            FROM SCHEDULE
+		                            GROUP BY CLASS_NO, STUDENT_NO) A
+		                    JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
+		                    LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
+			                WHERE C.CLASS_YEAR = #{year} AND C.CLASS_TERM = #{term})
+		            GROUP BY CLASS_YEAR, CLASS_TERM, STUDENT_NO
+		            ORDER BY TERM_GRADE DESC) AA)
+		WHERE STUDENT_NO = #{studentNo}
+  	</select>
+  	
+  	<!-- 학기별 성적 조회 -> 전체석차 -->
+  	<select id="calculatedTotalRank" parameterType="hashmap" resultType="string">
+  		SELECT RANK||'/'||TOTAL_STUDENTS
+		FROM (SELECT AA.*, COUNT(*) OVER () AS TOTAL_STUDENTS
+		        FROM (SELECT CLASS_YEAR, CLASS_TERM, STUDENT_NO, ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) AS TERM_GRADE, RANK() OVER (ORDER BY ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) DESC) AS RANK
+		                FROM (SELECT A.STUDENT_NO, C.CLASS_YEAR, C.CLASS_TERM, CREDIT, SCORE, GRADE_LEVEL
+		                        , DECODE(GRADE_LEVEL, 'A+', 4.5, 'A0', 4.3, 'A-', 4.0, 'B+', 3.5, 'B0', 3.3, 'B-', 3.0, 'C+', 2.5, 'C0', 2.3, 'C-', 2.0, 'D+', 1.5, 'D0', 1.3, 'D-', 1.0, 'F', 0)*CREDIT AS GRADE
+		                        FROM (SELECT CLASS_NO, STUDENT_NO
+		                                FROM SCHEDULE
+		                                GROUP BY CLASS_NO, STUDENT_NO) A
+		                        JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
+		                        LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO))
+		                GROUP BY CLASS_YEAR, CLASS_TERM, STUDENT_NO
+		                <![CDATA[HAVING CLASS_YEAR <= #{year} AND CLASS_TERM <= #{term}]]>
+		                ORDER BY TERM_GRADE DESC) AA)
+		WHERE STUDENT_NO = #{studentNo}
+  	</select>
+  	
+  	<!-- 학기별 성적 조회 -> 증명신청학점, 증명취득학점 -->
+  	<select id="selectScoreAB" parameterType="string" resultMap="termGradeHashMap">
+  		SELECT NVL(SUM(CREDIT), 0) AS SIGN_UP, NVL(SUM(CASE WHEN GRADE_LEVEL NOT IN ('F', ' ') THEN CREDIT ELSE 0 END), 0) AS OBTAIN
+		FROM (SELECT CLASS_NO, STUDENT_NO
+		        FROM SCHEDULE
+		        GROUP BY CLASS_NO, STUDENT_NO) A
+		JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
+		LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
+		WHERE A.STUDENT_NO = #{studentNo}
+  	</select>
+
+  	<!-- 학기별 성적 조회 -> 증명평점평균 -->
+  	<select id="selectScoreC" parameterType="string" resultType="_double">
+  		SELECT ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2)
+		FROM (SELECT DECODE(GRADE_LEVEL, 'A+', 4.5, 'A0', 4.3, 'A-', 4.0, 'B+', 3.5, 'B0', 3.3, 'B-', 3.0, 'C+', 2.5, 'C0', 2.3, 'C-', 2.0, 'D+', 1.5, 'D0', 1.3, 'D-', 1.0)*CREDIT AS GRADE, CREDIT
+		        FROM (SELECT CLASS_NO, STUDENT_NO
+		                FROM SCHEDULE
+		                GROUP BY CLASS_NO, STUDENT_NO) A
+		        JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
+		        LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
+		        WHERE A.STUDENT_NO = #{studentNo} AND GRADE_LEVEL NOT IN ('F', ' ')) AA
+  	</select>
+  	
+  	<!-- 학기별 성적 조회 -> 증명산술평균 -->
+  	<select id="selectScoreD" parameterType="string" resultType="_double">
+  		SELECT ROUND(NVL(SUM(SCORE*CREDIT)/SUM(CREDIT), 0), 2)
+		FROM (SELECT CLASS_NO, STUDENT_NO
+		        FROM SCHEDULE
+		        GROUP BY CLASS_NO, STUDENT_NO) A
+		JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
+		LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
+		WHERE A.STUDENT_NO = #{studentNo} AND GRADE_LEVEL NOT IN ('F', ' ')
+  	</select>
+  	
+	<resultMap type="classRating" id="classRatingResultMap">
   		<result column="CLASS_NO" property="classNo"/>
   		<result column="CLASS_NAME" property="className"/>
   		<result column="PROFESSOR_NAME" property="professorName"/>

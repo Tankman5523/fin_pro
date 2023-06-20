@@ -1,6 +1,7 @@
 package com.univ.fin.main.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -146,15 +147,40 @@ public class MainPageController {
 	
 	
 	@GetMapping("search.mp")
-	public String searchBoardList(String keyword) {
+	public String searchBoardList(@RequestParam(value="currentPage", defaultValue="1") int currentPage
+								, @RequestParam(value = "selectBox", required = false) String selectBox
+								, @RequestParam(value = "keyword", required = false) String keyword
+								, Model model) {
 		
-		System.out.println(keyword);
+		HashMap<String, String> searchMap = new HashMap<String, String>();
+		searchMap.put("selectBox", selectBox);
+		searchMap.put("keyword", keyword);
 		
-		return null;
+		//게시글 목록 조회
+		int listCount = mainService.searchListCount(searchMap);
+		int pageLimit = 10;
+		int boardLimit = 15;
+
+		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		
+		ArrayList<Notice> list = mainService.searchNotice(searchMap, pi);
+		
+		model.addAttribute("slist", list);
+		model.addAttribute("searchPi", pi);
+		model.addAttribute("keyword", keyword);
+		
+		return "main/searchNoticeList";
 	}
 	
 	@GetMapping("infoSystem.mp")
-	public String infoSystemMain() {
+	public String infoSystemMain(Model model) {
+		
+		ArrayList<Notice> list = mainService.infoNoticeList();
+		ArrayList<Notice> faq = mainService.infoFaqList();
+		
+		model.addAttribute("infoList", list);
+		model.addAttribute("infoFaq", faq);
+		
 		return "main/infoSystemMain";
 	}
 }

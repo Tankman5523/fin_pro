@@ -126,9 +126,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="no-hover" style="border: 0;">
-                    			<td colspan="7" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
-                    		</tr>
+                        	<c:choose>
+                        		<c:when test="${!empty gList }">
+                        			<c:forEach var="g" items="${gList}">
+                        				<tr>
+                        					<td style="border: 0;">${g.classYear }</td>
+	                        				<td>${g.classTerm }</td>
+	                        				<td>${g.signUp }</td>
+	                        				<td>${g.obtain }</td>
+	                        				<td>${g.termGrade }</td>
+	                        				<td>${g.termRank }</td>
+	                        				<td>${g.totalRank }</td>
+                        				</tr>
+                        			</c:forEach>
+                        		</c:when>
+                        		<c:otherwise>
+		                            <tr class="no-hover" style="border: 0;">
+		                    			<td colspan="7" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
+		                    		</tr>
+                        		</c:otherwise>
+                        	</c:choose>
                         </tbody>
                     </table>
                 </div>
@@ -136,10 +153,10 @@
                 
                 <div class="transcript">
                 	<br><br>
-                    <span>증명신청학점:</span> <input type="text" id="" value="130" readonly>
-                    <span>증명취득학점:</span> <input type="text" id="" value="130" readonly> 
-                    <span>증명평점계:</span> <input type="text" id="" value="3.8" readonly>
-                    <span>증명평점평균:</span> <input type="text" id="" value="92" readonly>
+                    <span>증명신청학점:</span> <input type="text" id="" value="${scoreAB.signUp }" readonly>
+                    <span>증명취득학점:</span> <input type="text" id="" value="${scoreAB.obtain }" readonly> 
+                    <span>증명평점평균:</span> <input type="text" id="" value="${scoreC }" readonly>
+                    <span>증명산술평균:</span> <input type="text" id="" value="${scoreD }" readonly>
                     <br><br>
                 </div>
                 <div class="b_line"></div>
@@ -165,10 +182,10 @@
                     <table class="termGrade-table">
                         <thead>
                             <tr height="40">
-                                <th width="15%" style="border-left: 1px solid #76D2FF;">이수학년도</th>
-                                <th width="13%">이수학기</th>
+                                <th width="14%" style="border-left: 1px solid #76D2FF;">이수학년도</th>
+                                <th width="12%">이수학기</th>
                                 <th width="12%">과목번호</th>
-                                <th width="18%">과목명</th>
+                                <th width="20%">과목명</th>
                                 <th width="12%">담당교수</th>
                                 <th width="10%">과목학점</th>
                                 <th width="10%">성적</th>
@@ -176,9 +193,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                             <tr class="no-hover" style="border: 0;">
-                    			<td colspan="8" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
-                    		</tr>
+                        	<tr class="no-hover" style="border: 0;">
+		                    			<td colspan="8" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
+		                    </tr>
                         </tbody>
                     </table>
                 </div>
@@ -197,24 +214,23 @@
 	                
 	                function changeYear(e) {
 	                	var $year = e.value;
-	                	var count=0;
 	                	var str = "";
 	                	
 	                	for(var i=0;i<arr.length;i++) {
 	                		var tmp = arr[i].toString().substr(0,4);
 	                		if(tmp.includes($year)) {
-	                			count++;
+	                			var tmp2 = arr[i].toString().substr(5,);
+		                		if(tmp2 == "1") {
+		                			str += "<option value='1'>1학기</option>";
+		                		}
+		                		if(tmp2 == "2") {
+		                			str += "<option value='2'>2학기</option>";
+		                		}
 	                		}
-	                	}
-	                	
-	                	str += "<option value='1'>1학기</option>";
-	                	if(count==2) {
-	                		str += "<option value='2'>2학기</option>";
 	                	}
 	                	
 	                	$("#term").empty();
 	                	$("#term").append(str);
-// 	                	clearPage();
 	                }
 	                
 	                function prevTerm() { // 마지막 학기일 경우 alert, 2학기->1학기, 1학기 -> 이전 년도 2학기
@@ -256,7 +272,6 @@
 	                }
 	                
 	                function selectClassList() {
-// 	                	clearPage();
 						var str = "";
 	                	
 	                	$.ajax({
@@ -269,8 +284,8 @@
 	                			if(cList != "") {
 	                				for(var i=0;i<cList.length;i++) {
 										str += "<tr>"
-											 + "<td style='border: 0;'>" + cList[i].classYear + "</td>"
-											 + "<td>" + cList[i].classTerm + "</td>"
+											 + "<td style='border: 0;'>" + cList[i].classYear + "년</td>"
+											 + "<td>" + cList[i].classTerm + "학기</td>"
 											 + "<td>" + cList[i].classNo + "</td>"
 											 + "<td>" + cList[i].className + "</td>"
 											 + "<td>" + cList[i].professorName + "</td>"
@@ -291,10 +306,6 @@
 	                			console.log("통신 오류");
 	                		}
 	                	})
-	                }
-	                
-	                function clearPage() {
-// 	                	$("div[class*=stClass_class]").remove();
 	                }
                 </script>
             </div>

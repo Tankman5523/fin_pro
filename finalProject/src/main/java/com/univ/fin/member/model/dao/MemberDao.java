@@ -307,6 +307,16 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectStudentGradeList", classNo);
 	}
 
+	// 성적관리 -> 수강인원*비율에 따른 가능 인원 수
+	public int checkGradeNos(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return sqlSession.selectOne("memberMapper.checkGradeNos", map);
+	}
+
+	// 성적관리 -> 실제 몇명이 해당되는지
+	public int countGradeNos(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return sqlSession.selectOne("memberMapper.countGradeNos", map);
+	}
+
 	// 성적관리 -> 성적 입력
 	public int gradeInsert(SqlSessionTemplate sqlSession, Grade g) {
 		return sqlSession.insert("memberMapper.gradeInsert", g);
@@ -373,6 +383,42 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.updateClassReject",c);
 	}
 	
+	// 학기별 성적 조회 -> 학기별 성적 계산
+	public HashMap<String, String> calculatedGrade(SqlSessionTemplate sqlSession,
+			HashMap<String, String> map) {
+		return sqlSession.selectOne("memberMapper.calculatedGrade", map);
+	}
+	
+	// 학기별 성적 조회 -> 학기별석차
+	public String calculatedTermRank(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return sqlSession.selectOne("memberMapper.calculatedTermRank", map);
+	}
+	
+	// 학기별 성적 조회 -> 전체석차
+	public String calculatedTotalRank(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return sqlSession.selectOne("memberMapper.calculatedTotalRank", map);
+	}
+
+	// 학기별 성적 조회 -> 증명신청학점
+	public HashMap<String, String> selectScoreAB(SqlSessionTemplate sqlSession, String studentNo) {
+		return sqlSession.selectOne("memberMapper.selectScoreAB", studentNo);
+	}
+
+	// 학기별 성적 조회 -> 증명취득학점
+	public int selectScoreB(SqlSessionTemplate sqlSession, String studentNo) {
+		return sqlSession.selectOne("memberMapper.selectScoreB", studentNo);
+	}
+
+	// 학기별 성적 조회 -> 증명평점평균
+	public double selectScoreC(SqlSessionTemplate sqlSession, String studentNo) {
+		return sqlSession.selectOne("memberMapper.selectScoreC", studentNo);
+	}
+
+	// 학기별 성적 조회 -> 증명산술평균
+	public double selectScoreD(SqlSessionTemplate sqlSession, String studentNo) {
+		return sqlSession.selectOne("memberMapper.selectScoreD", studentNo);
+	}
+	
 	// (학생)수강한 강의정보 조회
 	public ArrayList<RegisterClass> classInfoForRating(SqlSessionTemplate sqlSession, ClassRating cr) {
 		return (ArrayList)sqlSession.selectList("memberMapper.classInfoForRating", cr);
@@ -397,6 +443,4 @@ public class MemberDao {
 	public ClassRating classRatingAverage(SqlSessionTemplate sqlSession, ClassRating cr) {
 		return sqlSession.selectOne("memberMapper.classRatingAverage", cr);
 	}
-
-
 }
