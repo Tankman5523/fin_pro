@@ -162,6 +162,7 @@
 	                	
 	                	$("#term").empty();
 	                	$("#term").append(str);
+	                	$("#term").children().first().prop("selected", true).change();
 	                	$("div[class*=stClass_class]").remove();
 	                }
 	                

@@ -224,5 +224,14 @@ public class ProfessorController {
 			return (result>0)? "Y": "N";
 		}
 	}
+	
+	// 학사관리 - 강의시간표
+	@RequestMapping("classListView.pr")
+	public ModelAndView classListView(ModelAndView mv) {
+		ArrayList<String> classTerm = memberService.selectClassTerm();
+		
+		mv.addObject("classTerm", classTerm).setViewName("member/professor/classListView");
+		return mv;
+	}
 
 }
