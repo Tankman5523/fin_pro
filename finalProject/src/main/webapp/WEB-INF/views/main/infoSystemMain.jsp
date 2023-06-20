@@ -64,5 +64,8 @@
 	        </div>
 	    </div>
 	</div>
+	<div>
+	    <%@include file="../common/weather.jsp" %>
+    </div>
 </body>
 </html>
