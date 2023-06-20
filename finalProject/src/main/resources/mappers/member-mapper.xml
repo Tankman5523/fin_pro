@@ -972,9 +972,9 @@
   	</insert>
   	
   	<!--  -->
-  	<select id="calculatedGrade" parameterType="hashmap" resultMap="termGradeHashMap">
+<!--   	<select id="calculatedGrade" parameterType="hashmap" resultMap="termGradeHashMap"> -->
   		
-  	</select>
+<!--   	</select> -->
   	
   	<!-- 학기별 성적 조회 -> 증명신청학점, 증명취득학점 -->
   	<select id="selectScoreAB" parameterType="string" resultMap="termGradeHashMap">

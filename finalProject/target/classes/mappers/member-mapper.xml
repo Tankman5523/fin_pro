@@ -971,11 +971,10 @@
 	VALUES (SEQ_SNO.NEXTVAL,(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
   	</insert>
   	
-<<<<<<< HEAD
   	<!--  -->
-  	<select id="calculatedGrade" parameterType="hashmap" resultMap="termGradeHashMap">
+<!--   	<select id="calculatedGrade" parameterType="hashmap" resultMap="termGradeHashMap"> -->
   		
-  	</select>
+<!--   	</select> -->
   	
   	<!-- 학기별 성적 조회 -> 증명신청학점, 증명취득학점 -->
   	<select id="selectScoreAB" parameterType="string" resultMap="termGradeHashMap">
@@ -1011,7 +1010,5 @@
 		WHERE A.STUDENT_NO = #{studentNo} AND GRADE_LEVEL IS NOT NULL
   	</select>
   	
-=======
->>>>>>> refs/remotes/origin/main
   </mapper>
 
