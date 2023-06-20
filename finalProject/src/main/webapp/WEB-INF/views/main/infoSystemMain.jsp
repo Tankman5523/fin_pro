@@ -6,7 +6,8 @@
 <head>
 <meta charset="UTF-8">
 <title>종합정보시스템 : Feasible University</title>
-    <link rel="stylesheet" href="/fin/resources/css/infoSystemMain.css">
+<link rel="stylesheet" href="/fin/resources/css/infoSystemMain.css">
+<script src="https://kit.fontawesome.com/7f4a340891.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -27,6 +28,7 @@
 	                <img src="resources/icon/blue_logo_text.png">
 	            </div>
 	            <div id="login_area">
+	            	<button type="button" id="mainPage_btn" onclick="location.href='mainPage.mp'">학교 홈페이지</button> <br>
 	                <button type="button" id="login_btn" onclick="location.href='login.me'">로그인</button> <br>
 	            	<button type="button" class="forgot_btn" onclick="location.href='searchIdForm.me?num=1'">아이디 찾기</button> /
 	            	<button type="button" class="forgot_btn" onclick="location.href='resetPwdForm.me?num=1'">비밀번호 초기화</button>
@@ -46,23 +48,84 @@
 	
 	            <div id="board_area">
 	                <section id="notice_section">
-	                    <table>
-	                        <tr>
-	                            <td>공지사항입니다.</td>
-	                        </tr>
-	                    </table>
+	                	<button onclick="location.href='notice.mp'">전체보기>></button>
+	                    <table class="notice_table">
+							<thead>
+								<tr>
+									<th style="width: 10%;">분류</th>
+									<th style="width: 60%;">제목</th>
+									<th style="width: 10%;">첨부파일</th>
+									<th style="width: 20%;">게시일</th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:forEach var="n" items="${infoList }">
+									<tr>
+										<td>
+											<input type="hidden" class="nno" value="${n.noticeNo }">
+											${n.categoryName }
+										</td>
+										<td>${n.noticeTitle }</td>
+										<td>
+											<c:if test="${not empty n.originName }">
+												<i class="fa-solid fa-paperclip"></i>
+											</c:if>
+										</td>
+										<td>${n.createDate }</td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
 	                </section>
 	                
 	                <section id="faq_section">
-	                    <table>
-	                        <tr>
-	                            <td>FAQ입니다.</td>
-	                        </tr>
-	                    </table>
+	                    <button onclick="location.href='notice.mp'">전체보기>></button>
+	                    <table class="notice_table">
+							<thead>
+								<tr>
+									<th style="width: 20%;">분류</th>
+									<th style="width: 60%;">제목</th>
+									<th style="width: 20%;">게시일</th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:forEach var="f" items="${infoFaq }">
+									<tr>
+										<td>
+											<input type="hidden" class="nno" value="${f.noticeNo }">
+											${f.categoryName }
+										</td>
+										<td>${f.noticeTitle }</td>
+										<td>${f.createDate }</td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
 	                </section>
 	            </div>
 	        </div>
 	    </div>
 	</div>
+	
+	<script>
+				
+		const notice = document.querySelectorAll('#notice_section > table > tbody > tr')
+		const faq = document.querySelectorAll('#faq_section > table > tbody > tr')
+		
+		notice.forEach(function(tr, index){
+			tr.addEventListener('click', function(){
+				var noticeNo = tr.children[0].children[0].value;
+				location.href = "detail.mp?noticeNo="+noticeNo;
+			})							
+		})
+		
+		faq.forEach(function(tr, index){
+			tr.addEventListener('click', function(){
+				var noticeNo = tr.children[0].children[0].value;
+				location.href = "faqDetail.mp?faqNo="+noticeNo;
+			})							
+		})
+		
+	</script>
 </body>
 </html>

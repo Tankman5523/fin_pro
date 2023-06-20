@@ -65,7 +65,7 @@
 				
 				<form id="searchForm" action="search.mp" method="get" align="center">
 					<div id="btn-area">
-						<select>
+						<select name="selectBox">
 							<option value="both">제목+내용</option>
 							<option value="title">제목</option>
 							<option value="content">내용</option>
@@ -143,11 +143,9 @@
 		</div>
 	</div>
 	
-	
-	
-	
 	<%@include file="../common/mainPageFooter.jsp" %>
 </div>
+
 	<script>
 	
 		const tabBtn = document.querySelectorAll('.tab_btn')
