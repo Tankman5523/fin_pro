@@ -224,5 +224,13 @@ public class ProfessorController {
 			return (result>0)? "Y": "N";
 		}
 	}
+	
+	@RequestMapping("counselHistory.pr")
+	public String counselHistory() {
+		
+		return "member/professor/counselHistory";
+	}
+	
+	
 
 }
