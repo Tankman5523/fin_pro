@@ -512,6 +512,20 @@ public  class MemberServiceImpl implements MemberService{
 		ArrayList<HashMap<String, String>> sList = memberDao.selectStudentGradeList(sqlSession, classNo);
 		return sList;
 	}
+	
+	// 성적관리 -> 수강인원*비율에 따른 가능 인원 수
+	@Override
+	public int checkGradeNos(HashMap<String, String> map) {
+		int check = memberDao.checkGradeNos(sqlSession, map);
+		return check;
+	}
+
+	// 성적관리 -> 실제 몇명이 해당되는지
+	@Override
+	public int countGradeNos(HashMap<String, String> map) {
+		int count = memberDao.countGradeNos(sqlSession, map);
+		return count;
+	}
 
 	// 성적관리 -> 성적 입력
 	@Override
@@ -524,9 +538,7 @@ public  class MemberServiceImpl implements MemberService{
 	@Override
 	public int gradeUpdate(Grade g) {
 		int result = memberDao.gradeUpdate(sqlSession, g);
-		
 		return result;
-
 	}
 	
 	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
@@ -555,6 +567,34 @@ public  class MemberServiceImpl implements MemberService{
 	public int updateClassReject(Classes c) {
 		int result = memberDao.updateClassReject(sqlSession,c);
 		return result;
+	}
+
+	// 학기별 성적 조회 -> 증명신청학점, 증명취득학점
+	@Override
+	public HashMap<String, String> selectScoreAB(String studentNo) {
+		HashMap<String, String> scoreAB = memberDao.selectScoreAB(sqlSession, studentNo);
+		return scoreAB;
+	}
+
+	// 학기별 성적 조회 -> 증명평점평균
+	@Override
+	public double selectScoreC(String studentNo) {
+		double scoreC = memberDao.selectScoreC(sqlSession, studentNo);
+		return scoreC;
+	}
+	
+	// 학기별 성적 조회 -> 학기별 성적 계산
+	@Override
+	public ArrayList<HashMap<String, String>> calculatedGrade(HashMap<String, String> map) {
+		ArrayList<HashMap<String, String>> gList = memberDao.calculatedGrade(sqlSession, map);
+		return gList;
+	}
+
+	// 학기별 성적 조회 -> 증명산술평균
+	@Override
+	public double selectScoreD(String studentNo) {
+		double scoreD = memberDao.selectScoreD(sqlSession, studentNo);
+		return scoreD;
 	}
 	
 }

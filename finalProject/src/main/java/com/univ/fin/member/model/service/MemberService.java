@@ -188,6 +188,12 @@ public interface MemberService {
 
 	// 성적관리 -> 수강중인 학생 조회
 	ArrayList<HashMap<String, String>> selectStudentGradeList(int classNo);
+	
+	// 성적관리 -> 수강인원*비율에 따른 가능 인원 수
+	int checkGradeNos(HashMap<String, String> map);
+	
+	// 성적관리 -> 실제 몇명이 해당되는지
+	int countGradeNos(HashMap<String, String> map);
 
 	// 성적관리 -> 성적 입력
 	int gradeInsert(Grade g);
@@ -206,4 +212,13 @@ public interface MemberService {
 
 	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
 	ArrayList<HashMap<String, String>> selectClassList(HashMap<String, String> map);
+	
+	// 학기별 성적 조회 -> 학기별 성적 계산
+	ArrayList<HashMap<String, String>> calculatedGrade(HashMap<String, String> map);
+
+	// 학기별 성적 조회 -> 증명@@ 성적 계산
+	HashMap<String, String> selectScoreAB(String studentNo);
+	double selectScoreC(String studentNo);
+	double selectScoreD(String studentNo);
+
 }
