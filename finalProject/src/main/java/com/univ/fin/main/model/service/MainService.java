@@ -1,6 +1,7 @@
 package com.univ.fin.main.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.univ.fin.common.model.vo.PageInfo;
 import com.univ.fin.main.model.vo.Notice;
@@ -42,6 +43,19 @@ public interface MainService {
 
 	//FAQ 상세 조회
 	Notice selectFaq(int faqNo);
+
+	//검색결과 개수 조회
+	int searchListCount(HashMap<String, String> searchMap);
+	
+	//공지게시판 검색
+	ArrayList<Notice> searchNotice(HashMap<String, String> searchMap, PageInfo pi);
+
+	//종합정보시스템 공지사항
+	ArrayList<Notice> infoNoticeList();
+
+	//종합정보시스템 FAQ
+	ArrayList<Notice> infoFaqList();
+
 	
 
 }

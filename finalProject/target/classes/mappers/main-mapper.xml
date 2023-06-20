@@ -127,4 +127,72 @@
 		WHERE N.STATUS = 'Y'
 		AND NOTICE_NO = #{faqNo}
 	</select>
+	
+	<!-- 검색결과 조회 -->
+	<select id="searchListCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM (SELECT NOTICE_NO, FIELD, CATEGORY_NAME, NOTICE_TITLE, ORIGIN_NAME, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE"
+				FROM NOTICE N
+				LEFT JOIN NOTICE_ATTACHMENT NA USING(NOTICE_NO)
+				JOIN NOTICE_CATEGORY NC ON(CATEGORY_NO = NOTICE_CATEGORY)
+				<if test="selectBox.equals('both')">
+				WHERE (NOTICE_TITLE LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+				OR NOTICE_CONTENT LIKE CONCAT('%', CONCAT(#{keyword} , '%')))
+				</if>
+				<if test="selectBox.equals('title')">
+				WHERE NOTICE_TITLE LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+				</if>
+				<if test="selectBox.equals('content')">
+				WHERE NOTICE_CONTENT LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+				</if>
+				AND N.STATUS='Y'
+				AND FIELD = 0
+				ORDER BY CREATE_DATE DESC)
+	</select>
+	
+	<!-- 공지게시판 검색 -->
+	<select id="searchNotice" parameterType="hashMap" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, FIELD, CATEGORY_NAME, NOTICE_TITLE, ORIGIN_NAME, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE"
+		FROM NOTICE N
+		LEFT JOIN NOTICE_ATTACHMENT NA USING(NOTICE_NO)
+		JOIN NOTICE_CATEGORY NC ON(CATEGORY_NO = NOTICE_CATEGORY)
+		<if test="selectBox.equals('both')">
+		WHERE (NOTICE_TITLE LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+		OR NOTICE_CONTENT LIKE CONCAT('%', CONCAT(#{keyword} , '%')))
+		</if>
+		<if test="selectBox.equals('title')">
+		WHERE NOTICE_TITLE LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+		</if>
+		<if test="selectBox.equals('content')">
+		WHERE NOTICE_CONTENT LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+		</if>
+		AND N.STATUS='Y'
+		AND FIELD = 0
+		ORDER BY CREATE_DATE DESC
+	</select>
+	
+	<!-- 종합정보시스템 공지사항 -->
+	<select id="infoNoticeList" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, CATEGORY_NAME, NOTICE_TITLE, ORIGIN_NAME, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE"
+		FROM NOTICE N
+		LEFT JOIN NOTICE_ATTACHMENT NA USING(NOTICE_NO)
+		JOIN NOTICE_CATEGORY NC ON(CATEGORY_NO = NOTICE_CATEGORY)
+		WHERE N.STATUS='Y'
+		AND FIELD = 0
+		AND ROWNUM BETWEEN 1 AND 10
+		ORDER BY CREATE_DATE DESC
+	</select>
+	
+	<!-- 종합정보시스템 FAQ-->
+	<select id="infoFaqList" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, CATEGORY_NAME, NOTICE_TITLE, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE"
+		FROM NOTICE N
+		LEFT JOIN NOTICE_ATTACHMENT NA USING(NOTICE_NO)
+		JOIN NOTICE_CATEGORY NC ON(CATEGORY_NO = NOTICE_CATEGORY)
+		WHERE N.STATUS='Y'
+		AND FIELD = 1
+		AND ROWNUM BETWEEN 1 AND 10
+		ORDER BY CREATE_DATE DESC
+	</select>
+	
   </mapper>
