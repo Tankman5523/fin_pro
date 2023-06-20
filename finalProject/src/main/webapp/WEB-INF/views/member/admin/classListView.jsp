@@ -9,26 +9,17 @@
 </head>
 <body>
 	<div class="wrap">
-		<%@include file="../../common/student_menubar.jsp" %>
+		<%@include file="../../common/admin_menubar.jsp" %>
 		<div id="content">
             <div id="category">
                 <div id="cate_title">
-                    <span style="margin: 0 auto;">수강신청</span>
+                    <span style="margin: 0 auto;">강의관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="classListView.st" style="color:#00aeff; font-weight: 550;">강의시간표</a>
+                    <a href="classListView.ad">강의시간표</a>
                 </div>
                 <div class="child_title">
-                    <a href="registerClassForm.st">수강신청</a>
-                </div>
-                <div class="child_title">
-                    <a href="cancelRegClassForm.st">수강취소</a>
-                </div>
-                <div class="child_title">
-                    <a href="searchRegClassForm.st">수강신청 내역조회</a>
-                </div>
-                <div class="child_title">
-                    <a href="preRegisterClassForm.st">예비수강신청</a>
+                    <a href="classManagePage.ad">강의개설관리</a>
                 </div>
             </div>
             <div id="content_1">
@@ -186,7 +177,7 @@
                 
 	                $(function() {
 	                    $(".content_major").css("display", "block");
-	                    $("select[name=year]").children().first().prop("selected", true).change();
+	                    selectCategory();
 	                    
 	                	$(".selectTerm").on("change", "#term", function() {
 	                		selectCategory();
@@ -264,7 +255,6 @@
 	                        $(".content_major").css("display", "block");
 	                    }
 	                    else if($('#elective').is(':checked')) {
-	                    	console.log("교양");
 	                        $(".content_elective").css("display", "block");
 	                        
 	                        $.ajax({
