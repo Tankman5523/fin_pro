@@ -449,7 +449,7 @@
         						   +"<td colspan='2'></td>"
         						   +"<td><b>" + sumResultCredit + "</b></td>";
         				}else{
-        					result += "<tr><th colspan='5'>해당 과목을 이수한 내역이 없습니다.</th></tr>";
+        					result += "<tr style='text-align:center';><th colspan='5'>해당 과목을 이수한 내역이 없습니다.</th></tr>";
         				}
         				$("#comBodyTable>tbody").html(result);
         			},
@@ -501,7 +501,7 @@
         						   +"<td colspan='2'></td>"
         						   +"<td><b>" + sumResultCredit + "</b></td>";
         				}else{
-        					result += "<tr><th colspan='5'>해당 과목을 이수한 내역이 없습니다.</th></tr>";
+        					result += "<tr style='text-align:center';><th colspan='5'>해당 과목을 이수한 내역이 없습니다.</th></tr>";
         				}
         				$("#nomBodyTable>tbody").html(result);
         			},
@@ -553,7 +553,7 @@
         						   +"<td colspan='2'></td>"
         						   +"<td><b>" + sumResultCredit + "</b></td>";
         				}else{
-        					result += "<tr><th colspan='5'>해당 과목을 이수한 내역이 없습니다.</th></tr>";
+        					result += "<tr style='text-align:center';><th colspan='5'>해당 과목을 이수한 내역이 없습니다.</th></tr>";
         				}
         				$("#majorBodyTable>tbody").html(result);
         			},

@@ -57,6 +57,11 @@
       <mvc:mapping path="/preRegList.st"/> 			<!-- 예비수강신청 - 장바구니 조회 -->
       <mvc:mapping path="/delPreRegList.st"/>		<!-- 예비수강신청 - 장바구니 수강취소 -->
       <mvc:mapping path="/searchRegList.st"/>		<!-- 해당 학생의 선택년도,학기 수강신청 내역 조회 -->
+      <mvc:mapping path="/graduationInfoForm.st"/> 	<!-- 학사관리 - 졸업사정표 -->
+      <mvc:mapping path="/selectGraStatus.st"/>		<!-- 학사관리 - 졸업사정표(전체 이수현황 조회) -->
+      <mvc:mapping path="/detailCommonGra.st"/>		<!-- 학사관리 - 졸업사정표(교양공통 세부조회) -->
+      <mvc:mapping path="/detailNomalGra.st"/>		<!-- 학사관리 - 졸업사정표(교양일반 세부조회) -->
+      <mvc:mapping path="/detailmajorGra.st"/>		<!-- 학사관리 - 졸업사정표(전공심화 세부조회) -->
       <beans:bean class="com.univ.fin.common.interceptor.StudentNoInterceptor" id="studentNoInterceptor"/>
     </mvc:interceptor>
     

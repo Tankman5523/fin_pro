@@ -971,6 +971,7 @@
 	VALUES (SEQ_SNO.NEXTVAL,(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
   	</insert>
   	
+<<<<<<< HEAD
   	<!--  -->
   	<select id="calculatedGrade" parameterType="hashmap" resultMap="termGradeHashMap">
   		
@@ -1010,5 +1011,7 @@
 		WHERE A.STUDENT_NO = #{studentNo} AND GRADE_LEVEL IS NOT NULL
   	</select>
   	
+=======
+>>>>>>> refs/remotes/origin/main
   </mapper>
 

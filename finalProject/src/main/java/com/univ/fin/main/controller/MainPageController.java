@@ -2,6 +2,9 @@ package com.univ.fin.main.controller;
 
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.PageInfo;
@@ -101,6 +105,45 @@ public class MainPageController {
 		
 		return new Gson().toJson(faq);
 	}
+
+	@GetMapping("detail.mp")
+	public ModelAndView boardDetailView(int noticeNo, Model mvmodel, ModelAndView mv, HttpServletRequest request) {
+		
+		int result = mainService.increaseCount(noticeNo);		
+		
+		if(result > 0) {
+			Notice n = mainService.selectNotice(noticeNo);
+			ArrayList<Notice> files = mainService.selectFiles(noticeNo);
+			mv.addObject("n", n);
+			mv.addObject("files", files);
+			mv.setViewName("main/noticeDetailView");
+		}else {
+			mv.addObject("alertMsg", "해당 게시물을 조회할 수 없습니다.");
+			mv.addObject("url", "notice.mp");
+			mv.setViewName("main/alert");
+		}
+		
+		return mv;
+	}
+	
+	@GetMapping("faqDetail.mp")
+	public ModelAndView faqDetailView(int faqNo, Model mvmodel, ModelAndView mv, HttpServletRequest request) {
+		
+		int result = mainService.increaseFaqCount(faqNo);
+		
+		if(result > 0) {
+			Notice faq = mainService.selectFaq(faqNo);
+			mv.addObject("f", faq);
+			mv.setViewName("main/faqDetailView");
+		}else {
+			mv.addObject("alertMsg", "해당 게시물을 조회할 수 없습니다.");
+			mv.addObject("url", "notice.mp");
+			mv.setViewName("main/alert");
+		}
+		
+		return mv;
+	}
+	
 	
 	@GetMapping("search.mp")
 	public String searchBoardList(String keyword) {

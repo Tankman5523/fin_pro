@@ -35,7 +35,8 @@
 	top: 0;
 }
 .img-container.slideShow{
-	transition: 3s ease-out;	
+	transition: 3s ease-in-out;
+	transition-delay: 0.8s;
 }
 .main-img{
 	width: 100vw;
