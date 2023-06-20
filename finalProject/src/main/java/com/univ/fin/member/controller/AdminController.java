@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -103,6 +104,15 @@ public class AdminController {
 		int result = memberService.updateClassReject(c);
 			
 		return "redirect:classManagePage.ad";
+	}
+	
+	// 강의관리 - 강의시간표
+	@RequestMapping("classListView.ad")
+	public ModelAndView classListView(ModelAndView mv) {
+		ArrayList<String> classTerm = memberService.selectClassTerm();
+		
+		mv.addObject("classTerm", classTerm).setViewName("member/admin/classListView");
+		return mv;
 	}
 
 }
