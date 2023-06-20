@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.WeatherVo;
 
 
@@ -44,7 +45,7 @@ public class Weather {
 		url += "&numOfRows=100";
 		url += "&base_date=" + new SimpleDateFormat("yyyyMMdd").format(new Date());
 //		url += "&base_time=" + new SimpleDateFormat("HHmm").format(new Date());
-		url += "&base_time=1530";
+		url += "&base_time=1730";
 		url += "&dataType=JSON";
 		url += "&nx=58";
 		url += "&ny=126";
@@ -88,7 +89,8 @@ public class Weather {
 		}
 		System.out.println(list.toString());
 		System.out.println(list.get(0).getCategory());
-		return responseText;
+		
+		return new Gson().toJson(list);
 	}
 
 }

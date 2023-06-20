@@ -331,7 +331,7 @@
                                WHERE CLASS_NAME IN (SELECT CLASS_NAME
                                                     FROM CLASS C
                                                     JOIN GRADE G USING (CLASS_NO)
-                                                    WHERE STUDENT_NO = 'S20230001'
+                                                    WHERE STUDENT_NO = #{studentNo}
                                                     AND G.GRADE_LEVEL != 'F'))
 		<choose>
 			<when test="professorName != ''">
@@ -388,7 +388,7 @@
                                WHERE CLASS_NAME IN (SELECT CLASS_NAME
                                                     FROM CLASS C
                                                     JOIN GRADE G USING (CLASS_NO)
-                                                    WHERE STUDENT_NO = 'S20230001'
+                                                    WHERE STUDENT_NO = #{studentNo}
                                                     AND G.GRADE_LEVEL != 'F'))
 		<choose>
 			<when test="professorName != ''">
