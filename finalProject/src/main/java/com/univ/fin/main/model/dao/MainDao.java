@@ -63,15 +63,28 @@ public class MainDao {
 		return sqlSession.update("mainMapper.increaseCount", noticeNo);
 	}
 
-	//게시글 상세 조회ㅏ
+	//게시글 상세 조회
 	public Notice selectNotice(SqlSessionTemplate sqlSession, int noticeNo) {
 		
 		return sqlSession.selectOne("mainMapper.selectNotice", noticeNo);
 	}
 
+	//공지사항 상세 조회 첨부파일
 	public ArrayList<Notice> selectFiles(SqlSessionTemplate sqlSession, int noticeNo) {
 		
 		return (ArrayList)sqlSession.selectList("mainMapper.selectFiles", noticeNo);
+	}
+
+	//FAQ 조회수 증가
+	public int increaseFaqCount(SqlSessionTemplate sqlSession, int faqNo) {
+		
+		return sqlSession.update("mainMapper.increaseFaqCount", faqNo);
+	}
+
+	//FAQ 상세 조회
+	public Notice selectFaq(SqlSessionTemplate sqlSession, int faqNo) {
+		
+		return sqlSession.selectOne("mainMapper.selectFaq", faqNo);
 	}
 
 	
