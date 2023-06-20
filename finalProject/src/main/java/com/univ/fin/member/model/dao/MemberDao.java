@@ -383,9 +383,19 @@ public class MemberDao {
 	}
 	
 	// 학기별 성적 조회 -> 학기별 성적 계산
-	public ArrayList<HashMap<String, String>> calculatedGrade(SqlSessionTemplate sqlSession,
+	public HashMap<String, String> calculatedGrade(SqlSessionTemplate sqlSession,
 			HashMap<String, String> map) {
-		return (ArrayList)sqlSession.selectList("memberMapper.calculatedGrade", map);
+		return sqlSession.selectOne("memberMapper.calculatedGrade", map);
+	}
+	
+	// 학기별 성적 조회 -> 학기별석차
+	public String calculatedTermRank(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return sqlSession.selectOne("memberMapper.calculatedTermRank", map);
+	}
+	
+	// 학기별 성적 조회 -> 전체석차
+	public String calculatedTotalRank(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return sqlSession.selectOne("memberMapper.calculatedTotalRank", map);
 	}
 
 	// 학기별 성적 조회 -> 증명신청학점

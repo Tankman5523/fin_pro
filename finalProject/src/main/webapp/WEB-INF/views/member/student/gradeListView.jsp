@@ -123,9 +123,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="no-hover" style="border: 0;">
-                    			<td colspan="7" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
-                    		</tr>
+                        	<c:choose>
+                        		<c:when test="${!empty gList }">
+                        			<c:forEach var="g" items="${gList}">
+                        				<tr>
+                        					<td style="border: 0;">${g.classYear }</td>
+	                        				<td>${g.classTerm }</td>
+	                        				<td>${g.signUp }</td>
+	                        				<td>${g.obtain }</td>
+	                        				<td>${g.termGrade }</td>
+	                        				<td>${g.termRank }</td>
+	                        				<td>${g.totalRank }</td>
+                        				</tr>
+                        			</c:forEach>
+                        		</c:when>
+                        		<c:otherwise>
+		                            <tr class="no-hover" style="border: 0;">
+		                    			<td colspan="7" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
+		                    		</tr>
+                        		</c:otherwise>
+                        	</c:choose>
                         </tbody>
                     </table>
                 </div>
@@ -173,9 +190,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                             <tr class="no-hover" style="border: 0;">
-                    			<td colspan="8" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
-                    		</tr>
+                        	<tr class="no-hover" style="border: 0;">
+		                    			<td colspan="8" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
+		                    </tr>
                         </tbody>
                     </table>
                 </div>
@@ -194,24 +211,23 @@
 	                
 	                function changeYear(e) {
 	                	var $year = e.value;
-	                	var count=0;
 	                	var str = "";
 	                	
 	                	for(var i=0;i<arr.length;i++) {
 	                		var tmp = arr[i].toString().substr(0,4);
 	                		if(tmp.includes($year)) {
-	                			count++;
+	                			var tmp2 = arr[i].toString().substr(5,);
+		                		if(tmp2 == "1") {
+		                			str += "<option value='1'>1학기</option>";
+		                		}
+		                		if(tmp2 == "2") {
+		                			str += "<option value='2'>2학기</option>";
+		                		}
 	                		}
-	                	}
-	                	
-	                	str += "<option value='1'>1학기</option>";
-	                	if(count==2) {
-	                		str += "<option value='2'>2학기</option>";
 	                	}
 	                	
 	                	$("#term").empty();
 	                	$("#term").append(str);
-// 	                	clearPage();
 	                }
 	                
 	                function prevTerm() { // 마지막 학기일 경우 alert, 2학기->1학기, 1학기 -> 이전 년도 2학기
@@ -253,7 +269,6 @@
 	                }
 	                
 	                function selectClassList() {
-// 	                	clearPage();
 						var str = "";
 	                	
 	                	$.ajax({
@@ -288,10 +303,6 @@
 	                			console.log("통신 오류");
 	                		}
 	                	})
-	                }
-	                
-	                function clearPage() {
-// 	                	$("div[class*=stClass_class]").remove();
 	                }
                 </script>
             </div>
