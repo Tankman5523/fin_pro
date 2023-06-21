@@ -676,7 +676,6 @@ public class StudentController {
 			termGrade.put("termRank", termRank);
 			String totalRank = memberService.calculatedTotalRank(map); // 전체석차
 			termGrade.put("totalRank", totalRank);
-			
 			gList.add(termGrade);
 		}
 		HashMap<String, String> scoreAB = memberService.selectScoreAB(studentNo); // 증명신청학점, 증명취득학점
