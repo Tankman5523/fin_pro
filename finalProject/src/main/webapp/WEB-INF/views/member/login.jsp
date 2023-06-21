@@ -60,6 +60,10 @@
                 <div id="save_userNo_area">
                     <input type="checkbox" name="saveId" id="save_userNo">
                     <label for="save_userNo">아이디 저장</label>
+                    <div id="auto_login_area">
+						<input type="checkbox" name="autoLogin" id="autoLogin">
+	                    <label for="autoLogin">자동 로그인</label>
+                    </div>
                 </div>
 
                 <div id="login_area">

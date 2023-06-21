@@ -44,5 +44,6 @@
 	        <li><a href="classManagement.st">수업관리</a></li>
 	    </ul>
 	</div>
+	<%@include file="chatBot.jsp" %>
 </body>
 </html>
