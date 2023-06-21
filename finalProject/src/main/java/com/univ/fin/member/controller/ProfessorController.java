@@ -225,6 +225,7 @@ public class ProfessorController {
 		}
 	}
 	
+	//상담관리 페이지 이동
 	@RequestMapping("counselHistory.pr")
 	public String counselHistory() {
 		
@@ -238,6 +239,15 @@ public class ProfessorController {
 		
 		mv.addObject("classTerm", classTerm).setViewName("member/professor/classListView");
 		return mv;
+	}
+	
+	//상담관리 조건 검색
+	@PostMapping("selectCounsel.pr")
+	public String selectCounselList(Model model) {
+		
+		
+		
+		return null;
 	}
 
 }
