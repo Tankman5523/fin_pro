@@ -56,6 +56,25 @@ h2{
     margin-right: 10px;
 }
 
+#auto_login_area{
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+#auto_login_area>input[type=checkbox]{
+    width: 20px;
+    height: 18px;
+    margin-right: 10px;
+}
+
+#auto_login_area>label{
+    position: relative;
+    height: 24px;
+    top: 1px;
+}
+
 #login_area>button{
     background-color: rgb(52, 152, 219);
     margin-top: 15px;
