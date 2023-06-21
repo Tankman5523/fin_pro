@@ -30,7 +30,7 @@
             </div>
             <!--컨텐츠 영역 -->
             <div id="content_1">
-				<div style="width: 90%;height: 90%;margin: 5%;">
+				<div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
                     <div class="info">
                         <h4>장학금 수혜관련 문의</h4>
                         <ul>
@@ -118,7 +118,7 @@
                     </div>
                     <script>
                     	function yearChange(){
-                    		
+                    		//onChnage로 연도 바뀔때마다 장학금 리스트 갱신
                     		var stuNo = "${loginUser.studentNo}";
                     		
                     		$.ajax({
@@ -130,7 +130,7 @@
                     			success: function(list){
                     				console.log(list);
                     				var str = "";
-                    				if(!list.isEmpty){
+                    				if(list[0]!=null){
                     					for(var i in list){
                     						str +="<tr>"
                     							 +"<td>"+list[i].classYear+"</td>"

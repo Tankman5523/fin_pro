@@ -1069,5 +1069,88 @@
 		WHERE A.STUDENT_NO = #{studentNo} AND GRADE_LEVEL NOT IN ('F', ' ')
   	</select>
   	
+	<resultMap type="classRating" id="classRatingResultMap">
+  		<result column="CLASS_NO" property="classNo"/>
+  		<result column="CLASS_NAME" property="className"/>
+  		<result column="PROFESSOR_NAME" property="professorName"/>
+  		<result column="CLASS_YEAR" property="classYear"/>
+  		<result column="CLASS_TERM" property="classTerm"/>
+  		<result column="STATUS" property="status"/>
+  		<result column="RATING_NO" property="ratingNo"/>
+  		<result column="ETC" property="etc"/>
+  		
+  		<result column="Q1" property="q1"/>
+  		<result column="Q2" property="q2"/>
+  		<result column="Q3" property="q3"/>
+  		<result column="Q4" property="q4"/>
+  		<result column="Q5" property="q5"/>
+  		<result column="Q6" property="q6"/>
+  		<result column="Q7" property="q7"/>
+  		<result column="Q8" property="q8"/>
+  		
+  		<result column="CREDIT" property="credit"/>
+  		<result column="CLASS_NOS" property="classNos"/>
+  		<result column="AVERAGE_RATING" property="averageRating"/>
+  	</resultMap>
+  	<!-- (학생) 강의평가를 위한 강의정보 조회 -->
+  	<select id="classInfoForRating" resultMap="classRatingResultMap">
+  		SELECT CLASS_NO,C.CLASS_NAME,P.PROFESSOR_NAME,C.CLASS_YEAR,C.CLASS_TERM,CR.STATUS
+		FROM SCHEDULE S
+		JOIN CLASS C USING(CLASS_NO)
+		JOIN PROFESSOR P USING(PROFESSOR_NO)
+		RIGHT JOIN CLASS_RATING CR USING(CLASS_NO) <!-- 값이 없고 있을때를 판별 -->
+		WHERE S.STUDENT_NO = #{studentNo}
+		AND CLASS_YEAR = #{classYear}
+		AND CLASS_TERM = #{classTerm}
+  	</select>
+  	<!-- (학생) 강의 평가 입력  -->
+  	<insert id="insertClassRating">
+  		INSERT INTO CLASS_RATING
+  		VALUES (SEQ_CRNO.NEXTVAL
+  				,#{classNo}
+  				,#{studentNo}
+  				,#{q1}
+  				,#{q2}
+  				,#{q3}
+  				,#{q4}
+  				,#{q5}
+  				,#{q6}
+  				,#{q7}
+  				,#{q8}
+  				,#{etc},'Y')
+  	</insert>
+  	<!-- (관리자) 강의평가 조회 -->
+  	<select id="classRatingList" resultMap="classRatingResultMap">
+  		SELECT CLASS_NO,C.CLASS_NAME,PROFESSOR_NAME,CREDIT,CLASS_NOS,AVERAGE_RATING
+  		FROM (SELECT CLASS_NO,AVG((Q1+Q2+Q3+Q4+Q5+Q6+Q7+Q8)/8)"AVERAGE_RATING"
+                FROM CLASS_RATING
+                GROUP BY CLASS_NO)"CR"
+  		JOIN CLASS C USING(CLASS_NO)
+  		JOIN PROFESSOR P USING(PROFESSOR_NO)
+  		WHERE C.CLASS_YEAR = #{classYear}
+  		AND C.CLASS_TERM = #{classTerm}
+  		AND C.CLASS_NAME LIKE '%'||#{className}||'%'
+  	</select>
+  	<!-- (관리자)강의평가 기타건의사항 조회 -->
+  	<select id="classRatingEtcList" resultMap="classRatingResultMap">
+		SELECT CLASS_NO , CLASS_NAME , PROFESSOR_NAME , ETC  
+		FROM CLASS_RATING
+		JOIN CLASS USING(CLASS_NO)
+		JOIN PROFESSOR USING(PROFESSOR_NO)
+		WHERE CLASS_NO = #{classNo}
+		AND CLASS_YEAR = #{classYear}
+		AND CLASS_TERM = #{classTerm}
+  	</select>
+  	<!-- (관리자) 강의평가 문항별 평균 점수 조회 -->
+  	<select id="classRatingAverage" resultMap="classRatingResultMap">
+  		SELECT ROUND(AVG(Q1),1) "Q1",ROUND(AVG(Q2),1) "Q2",ROUND(AVG(Q3),1) "Q3",ROUND(AVG(Q4),1) "Q4",ROUND(AVG(Q5),1) "Q5",ROUND(AVG(Q6),1) "Q6",ROUND(AVG(Q7),1) "Q7",ROUND(AVG(Q8),1) "Q8" 
+		FROM CLASS_RATING
+		JOIN CLASS USING(CLASS_NO)
+		WHERE CLASS_NO = #{classNo}
+		AND CLASS_YEAR = #{classYear}
+		AND CLASS_TERM = #{classTerm}
+  		GROUP BY CLASS_NO
+  		
+  	</select>
   </mapper>
 

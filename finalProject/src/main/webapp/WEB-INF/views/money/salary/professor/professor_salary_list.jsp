@@ -24,7 +24,7 @@
             </div>
             <!--내용 시작-->
             <div id="content_1">
-                <div style="width: 90%;height: 90%;margin: 5%;">
+                <div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
                     <div>
                         <table border="1" style="width: 100%;">
                             <!--로그인유저 자동입력-->
@@ -52,12 +52,16 @@
                         
                         <script>
                         /*현재 시간 추출*/
-                        $(function(){
+                        $("document").ready(function(){
+                        	
                         	var today = new Date();
-                       		$("#endDate").val(today);
+                        	var year = today.getFullYear();
+                        	var month = ('0' + (today.getMonth() + 1)).slice(-2);
+                        	var day = ('0' + today.getDate()).slice(-2);
+                        	
+                        	var endDate = year+"-"+month+"-"+day;
+                       		$("#endDate").val(endDate);
                         });
-							
-                        
                         </script>
                         
                     </div>
@@ -80,9 +84,11 @@
                         </table>
                         
                         <script>
-                        	function searchSalary(){
+                        	function searchSalary(){ 
+                        		//본인 급여 조회
+                        		//현재 날짜보다 월급일이 나중이라 새로 추가한거 조회 안되는거 정상임~ 날짜바꾸면조회됩니다
                         		
-                        		var profNo = ${loginUser.professorNo};
+                        		var profNo = "${loginUser.professorNo}";
                         		
                         		$.ajax({
                         			
@@ -93,11 +99,12 @@
                         				startDate : $("#startDate").val(),
                         				endDate	: $("#endDate").val()
                         			},
+                        			method: "POST",
                         			success : function(list){
                         				console.log(list);
                         				var str = "";
                         				var status = "";
-                        				if(!list.isEmpty){
+                        				if(list[0]!=null){
                         					for(var i in list){
                         						if(list[i].status=='Y'){
                         							status = "지급완료";

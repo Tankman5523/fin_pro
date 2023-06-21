@@ -30,7 +30,7 @@
             </div>
             <!--컨텐츠 영역-->
             <div id="content_1">
-				<div style="width: 90%;height: 90%;margin: 5%;">
+				<div style="width: 90%;height: 90%;margin: 5%; overflow-y: auto;">
                     <div>
                     <button onclick="location.href='allList.rg'">등록금 납부 현황</button> <button onclick="location.href='nonPaidList.rg'">미납금 조회</button>
                     <button onclick="location.href='insert.rg'">등록금 입력</button>
@@ -52,7 +52,7 @@
                     <button id="sendAll">일괄발송</button>
                     <table id="nonPaidList" border="1" style="width:100%;text-align: center;">
                         <thead>
-                            <tr>
+                            <tr style='background-color: #4fc7ff;'>
                                 <th><input type="checkbox" name="checkAll" id="checkAll"></th>
                                 <th>학번</th>
                                 <th>학생명</th>
@@ -110,7 +110,7 @@
     </div>
     
     <script>
-    	$(function(){
+    	$(function(){ //일괄 체크
     		$("#checkAll").click(function(){
         		var allcheck = $("#checkAll").is(":checked");
         		
@@ -121,7 +121,7 @@
         		}
         	});
         	
-    		$(".sendDunningBtn").click(function(){
+    		$(".sendDunningBtn").click(function(){ //독촉메시지 보내기 개별
         		var control = confirm("선택된 학생에게 메시지를 보내겠습니까?");
         		
         		if(control){
@@ -129,9 +129,6 @@
        				var nonPaidAmount = $(this).parent().siblings().eq(3).text();
        				var phone = $(this).parent().siblings().eq(7).text();
        				var email = $(this).parent().siblings().eq(6).text();
-       				
-       				console.log(studentName);	
-       				//아무튼 ajax처리
        				 
        				$.ajax({
        					url : "dunning.rg",
@@ -158,7 +155,7 @@
         	});
     		
     		
-        	$("#sendAll").click(function(){
+        	$("#sendAll").click(function(){ //독촉메시지 일괄 보내기
         		var control = confirm("선택된 학생에 모두 메시지를 보내겠습니까?");
         		
         		if(control){

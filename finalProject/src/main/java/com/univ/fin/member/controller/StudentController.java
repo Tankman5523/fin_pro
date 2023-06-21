@@ -1,5 +1,7 @@
 package com.univ.fin.member.controller;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -20,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Graduation;
@@ -673,7 +676,6 @@ public class StudentController {
 			termGrade.put("termRank", termRank);
 			String totalRank = memberService.calculatedTotalRank(map); // 전체석차
 			termGrade.put("totalRank", totalRank);
-			
 			gList.add(termGrade);
 		}
 		HashMap<String, String> scoreAB = memberService.selectScoreAB(studentNo); // 증명신청학점, 증명취득학점
@@ -695,5 +697,46 @@ public class StudentController {
 		
 		ArrayList<HashMap<String, String>> cList = memberService.selectClassList(map);
 		return new Gson().toJson(cList);
+	}
+	
+	//강의평가에 필요한 본인이 수강한 강의정보 셀렉트
+	@GetMapping("classRatingInfo.st")
+	public ModelAndView classInfoForRating(ModelAndView mv,HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		
+		//현재 날짜정보로 현재학기 , 년도 찾기
+		LocalDate now = LocalDate.now();
+		String classYear = Integer.toString(now.getYear());
+		int month = now.getMonthValue();
+		String classTerm = "";
+		
+		
+		if(month<2 && month>8) {
+			classTerm = "2";
+		}else{
+			classTerm = "1";
+		}
+		
+		ClassRating cr = ClassRating.builder()
+									.studentNo(st.getStudentNo())
+									.classTerm(classTerm)
+									.classYear(classYear)
+									.build();
+		
+		ArrayList<RegisterClass> list = memberService.classInfoForRating(cr);
+		mv.addObject("list", list).setViewName("member/student/classRating");
+		return mv;
+	}
+	
+	//강의별 강의평가 인서트 
+	@ResponseBody
+	@PostMapping(value="insertRating.st")
+	public String insertClassRating(ClassRating cr) {
+		int result = memberService.insertClassRating(cr);
+		if(result>0) {
+			return "Y";
+		}else {
+			return "N";
+		}
 	}
 }
