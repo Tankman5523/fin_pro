@@ -1011,7 +1011,7 @@
 		                            GROUP BY CLASS_NO, STUDENT_NO) A
 		                    JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
 		                    LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
-			                WHERE C.CLASS_YEAR = #{year} AND C.CLASS_TERM = #{term})
+			                WHERE C.CLASS_YEAR = #{year} AND C.CLASS_TERM = #{term} AND SCORE IS NOT NULL)
 		            GROUP BY CLASS_YEAR, CLASS_TERM, STUDENT_NO
 		            ORDER BY TERM_GRADE DESC) AA)
 		WHERE STUDENT_NO = #{studentNo}
@@ -1028,7 +1028,8 @@
 		                                FROM SCHEDULE
 		                                GROUP BY CLASS_NO, STUDENT_NO) A
 		                        JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
-		                        LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO))
+		                        LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
+		                        WHERE SCORE IS NOT NULL)
 		                GROUP BY CLASS_YEAR, CLASS_TERM, STUDENT_NO
 		                <![CDATA[HAVING CLASS_YEAR <= #{year} AND CLASS_TERM <= #{term}]]>
 		                ORDER BY TERM_GRADE DESC) AA)
