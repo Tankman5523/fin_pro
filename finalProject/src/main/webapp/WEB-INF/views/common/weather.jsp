@@ -14,13 +14,14 @@
 			
 	</div>
 	<script>
+	/* 날씨정보 */
 		$(function(){
 			$.ajax({
 				
 				url : "weather.api",
 				
 				success : function(result){
-					var items = result.response.body.items;
+					console.log(result);
 				}
 			});
 		});
