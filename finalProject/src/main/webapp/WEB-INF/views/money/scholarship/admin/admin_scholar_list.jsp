@@ -31,7 +31,7 @@
             <div id="content_1">
 				<div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
                     <div style="height:20%;">
-                        <button onclick="location.href='allList.sc'">장학금수혜내역</button> <button onclick="location.href='insert.sc'">장학금 수여</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.sc'">장학금수혜내역</button> <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.sc'">장학금 수여</button>
                         <hr>
                         <h3>장학금 수혜내역 조회</h3>
                     </div>
@@ -45,8 +45,9 @@
                             <option value="studentName">학생이름</option>
                         </select>
                         <input type="text" id="keyword" name="keyword">
-                        <button onclick="selectList();">조회</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="selectList();">조회</button>
                        	   조회결과 : <span id="countSearch"></span>
+                       	 <br><br>
                         <table border="1" style="width:100%;text-align:center;width: 100%;" id="schList">
                             <thead  style='background-color: #4fc7ff;'>
                                 <tr>

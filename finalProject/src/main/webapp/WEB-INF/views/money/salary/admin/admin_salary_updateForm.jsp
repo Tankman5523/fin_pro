@@ -36,7 +36,7 @@
             <div id="content_1">
 				<div style="width: 90%;height: 90%;margin: 5%;">
                     <div>
-                        <button onclick="location.href='allList.sl'">급여내역조회</button> <button onclick="location.href='insert.sl'">급여 입력</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.sl'">급여내역조회</button> <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.sl'">급여 입력</button>
                         <hr>
                         <h2>급여 입력</h2>
                     </div>
@@ -47,7 +47,7 @@
                                 <td><label for="professorName">교수명</label></td>
                                 <td><input type="text" name="professorName" id="professorName"></td>
                                 <td><label for="professorNo">직번</label></td>
-                                <td><input type="text" name="professorNo" id="professorNo"> <button onclick="search();">조회</button></td>
+                                <td><input type="text" name="professorNo" id="professorNo"> <button class="btn btn-outline-primary btn-sm" onclick="search();">조회</button></td>
                             </tr>
                             <tr>
                                 <td><label for="position">직책</label></td>
@@ -113,7 +113,7 @@
 	                    		</tr>
 	                    	</table>
 	                    	<br>
-	                    	<button type="submit">입력</button>
+	                    	<button class="btn btn-outline-primary btn-sm" type="submit">입력</button>
 	                    	</form>
 	                    </div>	
 	                    

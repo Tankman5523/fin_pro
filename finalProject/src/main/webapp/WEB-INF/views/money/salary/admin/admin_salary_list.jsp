@@ -87,14 +87,15 @@
             <div id="content_1">
 				<div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
 					<div>
-                        <button onclick="location.href='allList.sl'">급여내역조회</button> <button onclick="location.href='insert.sl'">급여 입력</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.sl'">급여내역조회</button> <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.sl'">급여 입력</button>
                         <hr>
                         <h2>급여 관리</h2>
                     </div>
 			        <div id="listHead">
 			            <div id="PayAllBtn" style="float:left">
-			                <button id="payAll">일괄지급</button> <button id="deleteAll">일괄삭제</button>
+			                <button id="payAll" class="btn btn-outline-primary btn-sm">일괄지급</button> <button class="btn btn-outline-primary btn-sm" id="deleteAll">일괄삭제</button>
 			            </div>
+			            <br>
 			            <div id="search" style="float:right">
 				            <form>
 				                <label for="keyword">이름검색</label> <input type="text" name="keyword" id="keyword">
@@ -104,7 +105,7 @@
 				                    <option value="E">지급오류</option>
 				                    <option value="Y">지급완료</option>
 				                </select>
-				                <input type="button" value="조회" onclick="search();"> <input type="reset" value="초기화">
+				                <input class="btn btn-outline-primary btn-sm" type="button" value="조회" onclick="search();"> <input class="btn btn-outline-warning btn-sm" type="reset" value="초기화">
 				            </form>
 			            </div>
 			            <br>
@@ -141,10 +142,10 @@
 	                    	</table>
 	                    	<br>
 	                    	<div id="modalBtns" style="float:right;width:100%;">
-		                    	<button class="hiddenInput" onclick="calPay();">변경값계산</button>
-		                    	<button class="hiddenInput" onclick="updateSubmit();">적용</button>
-		                    	<button class="showVal" onclick="updateMode();">수정</button>
-		                    	<button id="sendSalaryBtn" onclick="sendSalary();">송금</button>
+		                    	<button class="hiddenInput" class="btn btn-outline-primary btn-sm" onclick="calPay();">변경값계산</button>
+		                    	<button class="hiddenInput" class="btn btn-outline-primary btn-sm" onclick="updateSubmit();">적용</button>
+		                    	<button class="showVal" class="btn btn-outline-warning btn-sm" onclick="updateMode();">수정</button>
+		                    	<button id="sendSalaryBtn" class="btn btn-outline-primary btn-sm" onclick="sendSalary();">송금</button>
 	                    	</div>
 			        	</div>
 			        </div>
@@ -153,7 +154,7 @@
                 <script>
 	              	//해당 영역에 이벤트 안걸리게하기
 	                $(function(){
-	                	$(".noEvent").on("click",function(){
+	                	$(".noEvent").click(function(){
 	                		event.cancelBubble = true;
 	                	});
 	                });
@@ -194,13 +195,13 @@
 	                						 +"<td>"+status+"</td>"
 	                						 +"<td class='noEvent'>"+"<input type='hidden' name='payNo' value="+list[i].payNo+">";
                 						 if(status!='지급완료'){
-                						 	str +="<button class='updateBtn'>수정</button>"
+                						 	str +="<button class='updateBtn btn btn-outline-primary btn-sm' >수정</button>"
                 						 }
                 						 str+="</td>"
                 						 	 +"</tr>";
                 					}
                 				}else{
-                					str +="<tr><td colspan='8'>데이터가 없습니다.</td></tr>"
+                					str +="<tr><td colspan='11'>데이터가 없습니다.</td></tr>"
                 				}
                 				$("#salaryList>tbody").html(str);
                 			},
@@ -378,8 +379,8 @@
 			                    	if(status!='지급완료'){ //이미 지급완료된 건에 대해서는 수정/송금 불가 
 		                    		str2+="<button class='hiddenInput' onclick='calPay();'>변경값계산</button>"
 			                    		 +"<button class='hiddenInput' onclick='updateSubmit();'>적용</button>"
-			                    		 +"<button class='showVal' onclick='updateMode();'>수정</button>"
-			                    		 +"<button class='showVal' onclick='sendSalary();'>송금</button>";
+			                    		 +"<button class='showVal' btn btn-outline-warning btn-sm onclick='updateMode();'>수정</button>"
+			                    		 +"<button class='showVal' btn btn-outline-primary btn-sm onclick='sendSalary();'>송금</button>";
 			                    	}
 		                    		$("#modalBtns").html(str2);
                     			},

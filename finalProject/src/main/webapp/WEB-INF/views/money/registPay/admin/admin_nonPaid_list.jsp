@@ -32,8 +32,8 @@
             <div id="content_1">
 				<div style="width: 90%;height: 90%;margin: 5%; overflow-y: auto;">
                     <div>
-                    <button onclick="location.href='allList.rg'">등록금 납부 현황</button> <button onclick="location.href='nonPaidList.rg'">미납금 조회</button>
-                    <button onclick="location.href='insert.rg'">등록금 입력</button>
+                    <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.rg'">등록금 납부 현황</button> <button class="btn btn-outline-primary btn-sm" onclick="location.href='nonPaidList.rg'">미납금 조회</button>
+                    <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.rg'">등록금 입력</button>
                     </div>
             
                     <hr>
@@ -49,7 +49,8 @@
                         -->
                     </div>
                     <hr>
-                    <button id="sendAll">일괄발송</button>
+                    <button id="sendAll" class="btn btn-outline-primary btn-sm">일괄발송</button>
+                    <br>
                     <table id="nonPaidList" border="1" style="width:100%;text-align: center;">
                         <thead>
                             <tr style='background-color: #4fc7ff;'>
@@ -92,7 +93,7 @@
 				                                <td>${r.regAccountNo}</td>
 				                                <td class="email" >${r.studentEmail}</td>
 				                                <td class="phone">${r.studentPhone}</td>
-				                                <td><button class="sendDunningBtn">발송</button> <button class="cancelRegistBtn">등록취소</button></td>
+				                                <td><button class="btn btn-outline-primary btn-sm" class="sendDunningBtn">발송</button> <button class="btn btn-outline-warning btn-sm" class="cancelRegistBtn">등록취소</button></td>
 			                            	</tr>
 		                                </c:forEach>
 	                            </c:when>
