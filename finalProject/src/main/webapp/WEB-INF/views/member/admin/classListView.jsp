@@ -77,7 +77,7 @@
 	                    <table id="class-table">
 	                    	<thead>
 	                    		<tr>
-	                    			<th width="3%" style="border-left: 1px solid #76D2FF;"></th> <!-- 강의계획서 첨부파일 -->
+	                    			<th width="3%" style="border-left: 1px solid #88C1E3;"></th> <!-- 강의계획서 첨부파일 -->
 	                    			<th width="6%">강의번호</th>
 	                    			<th width="20%">강의명</th>
 	                    			<th width="7%">교수명</th>
@@ -100,7 +100,7 @@
 	                    <table id="class-table2">
 	                    	<thead>
 	                    		<tr>
-	                    			<th width="3%" style="border-left: 1px solid #76D2FF;"></th> <!-- 강의계획서 첨부파일 -->
+	                    			<th width="3%" style="border-left: 1px solid #88C1E3;"></th> <!-- 강의계획서 첨부파일 -->
 	                    			<th width="6%">강의번호</th>
 	                    			<th width="20%">강의명</th>
 	                    			<th width="7%">교수명</th>
@@ -129,7 +129,7 @@
 	                    <table id="class-table3">
 	                    	<thead>
 	                    		<tr>
-	                    			<th width="3%" style="border-left: 1px solid #76D2FF;"></th> <!-- 강의계획서 첨부파일 -->
+	                    			<th width="3%" style="border-left: 1px solid #88C1E3;"></th> <!-- 강의계획서 첨부파일 -->
 	                    			<th width="6%">강의번호</th>
 	                    			<th width="20%">강의명</th>
 	                    			<th width="7%">교수명</th>
@@ -158,7 +158,7 @@
 	                    <table id="class-table4">
 	                    	<thead>
 	                    		<tr>
-	                    			<th width="3%" style="border-left: 1px solid #76D2FF;"></th> <!-- 강의계획서 첨부파일 -->
+	                    			<th width="3%" style="border-left: 1px solid #88C1E3;"></th> <!-- 강의계획서 첨부파일 -->
 	                    			<th width="6%">강의번호</th>
 	                    			<th width="20%">강의명</th>
 	                    			<th width="7%">교수명</th>
@@ -379,7 +379,7 @@
             						str += "<td style='border-left: 0;'></td>";
             					}
             					else { // 클릭하면 강의계획서 볼 수 있게
-            						str += "<td style='border-left: 0;'><a href='" + cList[i].fileNo + "';><i class='fa-solid fa-file-pdf fa-sm fileDown' style='color: #7cd7fe;'></i></a></td>";
+            						str += "<td style='border-left: 0;'><a href='" + cList[i].fileNo + "' target='_blank'><i class='fa-solid fa-file-pdf fa-sm fileDown' style='color: #7cd7fe;'></i></a></td>";
             					}
         						 str += "<td>" + cList[i].classNo + "</td>"
         						 + "<td>" + cList[i].className + "</td>"
