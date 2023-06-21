@@ -153,11 +153,11 @@
                 
                 <script>
 	              	//해당 영역에 이벤트 안걸리게하기
-	                $(function(){
-	                	$(".noEvent").click(function(){
-	                		event.cancelBubble = true;
-	                	});
-	                });
+	              	
+	              	
+	              	function stopEvent(){
+	              		event.cancelBubble = true;
+	              	}
                 
                 	function search(){//검색기능
                 		var keyword = $("#keyword").val();
@@ -183,7 +183,7 @@
                 							status = "미지급";
                 						}
 	                					str +="<tr>"
-	                						 +"<td class='noEvent'><input type='checkbox' name='check'></td>"
+	                						 +"<td onclick='stopEvent();'><input type='checkbox' name='check'></td>"
 	                						 +"<td>"+list[i].professorNo+"</td>"
 	                						 +"<td>"+list[i].position+"</td>"
 	                						 +"<td>"+list[i].professorName+"</td>"
@@ -193,7 +193,7 @@
 	                						 +"<td>"+list[i].accountNo+"</td>"
 	                						 +"<td>"+list[i].paymentDate+"</td>"
 	                						 +"<td>"+status+"</td>"
-	                						 +"<td class='noEvent'>"+"<input type='hidden' name='payNo' value="+list[i].payNo+">";
+	                						 +"<td onclick='stopEvent();'>"+"<input type='hidden' name='payNo' value="+list[i].payNo+">";
                 						 if(status!='지급완료'){
                 						 	str +="<button class='updateBtn btn btn-outline-primary btn-sm' >수정</button>"
                 						 }
