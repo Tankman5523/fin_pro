@@ -169,7 +169,10 @@ public class ProfessorController {
 	@RequestMapping(value = "selectStudentGradeList.pr", produces = "application/json; charset=UTF-8;")
 	public String selectStudentGradeList(String cn) {
 		int classNo = Integer.parseInt(cn);
-		ArrayList<HashMap<String, String>> sList = memberService.selectStudentGradeList(classNo);
+		ArrayList<HashMap<String, String>> sList = new ArrayList<>();
+		sList.add(memberService.countStudentGrade(classNo)); // 학점별로 몇명이 해당되는지
+		sList.addAll(memberService.selectStudentGradeList(classNo));
+		
 		return new Gson().toJson(sList);
 	}
 	
@@ -182,7 +185,7 @@ public class ProfessorController {
 		map.put("gradeLevel", g.getGradeLevel().substring(0, 1));
 		
 		// A: 30%, A+B: 70% 이내
-		if(map.get("gradeLevel")=="A" || map.get("gradeLevel")=="B") {
+		if(map.get("gradeLevel").equals("A") || map.get("gradeLevel").equals("B")) {
 			int check = memberService.checkGradeNos(map); // 수강인원*비율에 따른 가능 인원 수
 			int count = memberService.countGradeNos(map); // 실제 몇명이 해당되는지
 			if(count < check) {
@@ -208,7 +211,7 @@ public class ProfessorController {
 		map.put("gradeLevel", g.getGradeLevel().substring(0, 1));
 		
 		// A: 30%, A+B: 70% 이내
-		if(map.get("gradeLevel").contains("A") || map.get("gradeLevel").contains("B")) {
+		if(map.get("gradeLevel").equals("A") || map.get("gradeLevel").equals("B")) {
 			int check = memberService.checkGradeNos(map); // 수강인원*비율에 따른 가능 인원 수
 			int count = memberService.countGradeNos(map); // 실제 몇명이 해당되는지
 			if(count < check) { // 성적 입력 가능
@@ -225,6 +228,7 @@ public class ProfessorController {
 		}
 	}
 	
+	//상담관리 페이지 이동
 	@RequestMapping("counselHistory.pr")
 	public String counselHistory() {
 		
@@ -238,6 +242,15 @@ public class ProfessorController {
 		
 		mv.addObject("classTerm", classTerm).setViewName("member/professor/classListView");
 		return mv;
+	}
+	
+	//상담관리 조건 검색
+	@PostMapping("selectCounsel.pr")
+	public String selectCounselList(Model model) {
+		
+		
+		
+		return null;
 	}
 
 }

@@ -19,7 +19,7 @@
                     <a href="#">성적 이의신청 조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="#" style="color:#00aeff;">성적 관리</a>
+                    <a href="gradeInsert.pr" style="color:#00aeff; font-weight: 550;">성적 관리</a>
                 </div>
             </div>
             <div id="content_1">
@@ -37,21 +37,24 @@
                     <span>학기: </span> <select name="term" id="term"></select>
                     <span>교과목명: </span> <select name="classList" id="classList"></select>
                     <button type="button" class="btn btn-outline-primary btn-sm" id="selectList" onclick="selectStudentGradeList();">조회</button>
-                    <button type="button" class="btn btn-warning" id="possible" onclick="possibleInsert();" style="margin-left: 35%; display:none;">성적 입력</button>
-                    <button type="button" class="btn btn-danger" id="impossible" onclick="impossibleInsert();" style="margin-left: 35%; display:none;">입력 완료</button>
+                    <button type="button" class="btn btn-warning" id="possible" onclick="possibleInsert();" style="display:none;">성적 입력</button>
+                    <button type="button" class="btn btn-danger" id="impossible" onclick="impossibleInsert();" style="display:none;">입력 완료</button>
                 </div>
                 <div class="b_line"></div>
 
-                <div class="student-area">
+                <div class="student-count" align="right" style="">
+                	<span style="margin: 10px; font-weight: 600; padding: 5px 5px 0 5px;"></span>
+                </div>
+                <div class="student-area" style="height: 710px;">
                     <table class="student-table">
                         <thead>
                             <tr height="40">
-                                <th width="25%" style="border-left: 1px solid #76D2FF;">학과</th>
-                                <th width="25%">학번</th>
-                                <th width="15%">학년</th>
-                                <th width="15%">이름</th>
-                                <th width="10%">성적</th>
-                                <th width="10%">등급</th>
+                                <th width="25%" style="border-left: 1px solid #88C1E3;">학과</th>
+                                <th width="21%">학번</th>
+                                <th width="12%">학년</th>
+                                <th width="18%">이름</th>
+                                <th width="12%">성적</th>
+                                <th width="12%">등급</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -72,6 +75,8 @@
 	                	});
 	                	
 	                	$(".selectTerm").on("change", "#classList", function() {
+	                		$(".student-count>span").css("border", "0");
+	                		$(".student-count>span").html("");
 	                		$(".student-table>tbody").html("");
 	                		$("button[id*=possible]").css("display", "none");
 	                	});
@@ -97,6 +102,7 @@
 	                	
 	                	$("#term").empty();
 	                	$("#term").append(str);
+	                	$("#term").children().first().prop("selected", true).change();
 	                	selectClassList();
 	                }
 	                
@@ -126,15 +132,22 @@
 	               }
 	               
 	               function selectStudentGradeList() {
-	            	   var str = "";
+	            	   var str1 = "";
+	            	   var str2 = "";
 	            	   
 	            	   $.ajax({
 	            		   url: "selectStudentGradeList.pr",
 	            		   data: { cn: $("#classList").val() },
 	            		   success: function(sList) {
-	            			   if(sList != "") {
-		            			   for(var i=0;i<sList.length;i++) {
-		            				   str += "<tr>"
+	            			   if(sList.length != 1) {
+		            			   str1 += "정원: " + sList[0].allCount + "명 "
+		            			   		 + "A: " + sList[0].aCount + "명  "
+		            			   		 + "B: " + sList[0].bCount + "명  "
+		            			   		 + "C: " + sList[0].cCount + "명  "
+		            			   		 + "D: " + sList[0].dCount + "명  "
+		            			   		 + "F: " + sList[0].fCount + "명  ";
+		            			   for(var i=1;i<sList.length;i++) {
+		            				   str2 += "<tr>"
 		            				   		+ "<td style='border: 0;'>" + sList[i].departmentName + "</td>"
 		            				   		+ "<td>" + sList[i].studentNo + "</td>"
 		            				   		+ "<td>" + sList[i].classLevel + "</td>"
@@ -147,12 +160,17 @@
 		            			   if($("#possible").css("display") == "none" && $("#impossible").css("display") == "none") {
 		            				   $("#possible").css("display", "block");
 		            			   }
+		            			   
+		            			   $(".student-count>span").css("border", "1px solid black");
+		            			   $(".student-count>span").css("border-bottom", "0");
 	            			   }
 	            			   else {
-	            				   str += "<tr class='no_hover' style='border: 0; pointer-events: none;'><td colspan='6' style='border: 0;'>해당 테이블에 데이터가 없습니다</td></tr>";
+		            			   $(".student-count>span").css("border", "0");
+	            				   str2 += "<tr class='no_hover' style='border: 0; pointer-events: none;'><td colspan='6' style='border: 0;'>해당 테이블에 데이터가 없습니다</td></tr>";
 	            			   }
 	            			   
-	            			   $(".student-table>tbody").html(str);
+	            			   $(".student-count>span").html(str1);
+	            			   $(".student-table>tbody").html(str2);
 	            		   },
 	            		   error: function() {
 	            			   console.log("통신 오류");
@@ -263,7 +281,7 @@
 	               					alert("성적 입력 실패");
 	               				}
 	               				else { // 성적 비율 초과
-	               					alert(result);
+	               					alert("성적 입력이 가능한 비율을 초과하였습니다.");
 	               				}
 	               			},
 	               			error: function() {

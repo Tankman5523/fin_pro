@@ -659,11 +659,11 @@ public class StudentController {
 	
 	// 수업관리 - 학기별 성적 조회
 	@RequestMapping("classManagement.st")
-	public ModelAndView student_classManagement(ModelAndView mv, HttpSession session) {
+	public ModelAndView classManagement(ModelAndView mv, HttpSession session) {
 		Student st = (Student)session.getAttribute("loginUser");
 		String studentNo = st.getStudentNo();
 		
-		ArrayList<String> classTerm = memberService.selectClassTerm();
+		ArrayList<String> classTerm = memberService.selectStudentClassTerm(studentNo);
 		ArrayList<HashMap<String, String>> gList = new ArrayList<>();
 		for(int i=0;i<classTerm.size();i++) {
 			HashMap<String, String> map = new HashMap<>();
@@ -676,6 +676,7 @@ public class StudentController {
 			termGrade.put("termRank", termRank);
 			String totalRank = memberService.calculatedTotalRank(map); // 전체석차
 			termGrade.put("totalRank", totalRank);
+			
 			gList.add(termGrade);
 		}
 		HashMap<String, String> scoreAB = memberService.selectScoreAB(studentNo); // 증명신청학점, 증명취득학점

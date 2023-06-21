@@ -127,6 +127,15 @@
   		<result column="UPLOAD_DATE" property="uploadDate"/>
   		<result column="STATUS" property="status"/>
   	</resultMap>
+  	
+  	<resultMap type="hashmap" id="gradeCountHashMap">
+  		<result column="ALL_COUNT" property="allCount"/>
+  		<result column="A_COUNT" property="aCount"/>
+  		<result column="B_COUNT" property="bCount"/>
+  		<result column="C_COUNT" property="cCount"/>
+  		<result column="D_COUNT" property="dCount"/>
+  		<result column="F_COUNT" property="fCount"/>
+  	</resultMap>
 	
 	<resultMap type="hashmap" id="gradeHashMap">
 		<result column="CLASS_NO" property="classNo"/>
@@ -537,7 +546,7 @@
 		                        FROM DEPARTMENT
 		                        WHERE DEPARTMENT_NAME = #{department})
 		      AND CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND C.STATUS = 'Y'
-		ORDER BY CLASS_LEVEL
+		ORDER BY CLASS_LEVEL, CLASS_NAME
   	</select>
   	
   	<!-- 강의시간표 -> 학년도,학기 조회 -->
@@ -791,7 +800,7 @@
 			AND CLASS_NAME
 		</if>
 		LIKE '%'||#{keyword}||'%'
-		ORDER BY CLASS_LEVEL
+		ORDER BY CLASS_LEVEL, CLASS_NAME
   	</select>
   	
   	<update id="updateStudent">
@@ -887,6 +896,21 @@
 		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND PROFESSOR_NO = #{professorNo}
   	</select>
   	
+  	<!-- 성적관리 -> 학점별로 몇명이 해당되는지 -->
+  	<select id="countStudentGrade" parameterType="_int" resultMap="gradeCountHashMap">
+  		SELECT SUM(CLASS_NOS)/COUNT(*) AS ALL_COUNT, SUM(COUNT), NVL(SUM(CASE WHEN GRADE='A' THEN COUNT END),0) AS A_COUNT, NVL(SUM(CASE WHEN GRADE='B' THEN COUNT END),0) AS B_COUNT
+		    , NVL(SUM(CASE WHEN GRADE='C' THEN COUNT END),0) AS C_COUNT, NVL(SUM(CASE WHEN GRADE='D' THEN COUNT END),0) AS D_COUNT, NVL(SUM(CASE WHEN GRADE='F' THEN COUNT END),0) AS F_COUNT
+		FROM (SELECT SUBSTR(GRADE_LEVEL,1,1) AS GRADE, COUNT(*) AS COUNT, CLASS_NOS
+		        FROM (SELECT A.STUDENT_NO, NVL(SCORE, 0) AS SCORE, NVL(GRADE_LEVEL,' ') AS GRADE_LEVEL, CLASS_NOS
+		                FROM (SELECT CLASS_NO, STUDENT_NO
+		                      FROM SCHEDULE
+		                      GROUP BY CLASS_NO, STUDENT_NO) A
+		                JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
+		                LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND C.CLASS_NO = G.CLASS_NO)
+		                WHERE A.CLASS_NO = #{classNo}) AA
+		        GROUP BY SUBSTR(GRADE_LEVEL,1,1), CLASS_NOS)
+  	</select>
+  	
   	<!-- 성적관리 -> 수강중인 학생 조회 -->
   	<select id="selectStudentGradeList" parameterType="_int" resultMap="gradeHashMap">
   		SELECT DEPARTMENT_NAME, A.STUDENT_NO, CLASS_LEVEL, STUDENT_NAME, NVL(SCORE, 0) AS SCORE, NVL(GRADE_LEVEL,' ') AS GRADE_LEVEL
@@ -897,7 +921,7 @@
 		LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
 		JOIN DEPARTMENT D USING(DEPARTMENT_NO)
 		WHERE A.CLASS_NO = #{classNo}
-		ORDER BY DEPARTMENT_NAME, STUDENT_NO
+		ORDER BY STUDENT_NAME
   	</select>
   	
   	<!-- 성적관리 -> 수강인원*비율에 따른 가능 인원 수 -->
@@ -916,14 +940,14 @@
   	
   	<!-- 성적관리 -> 실제 몇명이 해당되는지 -->
   	<select id="countGradeNos" parameterType="hashmap" resultType="_int">
-  		SELECT SUM(COUNT)
+  		SELECT NVL(SUM(COUNT), 0)
 		FROM (SELECT SUBSTR(GRADE_LEVEL,1,1) AS GRADE, COUNT(*) AS COUNT
 		        FROM (SELECT A.STUDENT_NO, NVL(SCORE, 0) AS SCORE, NVL(GRADE_LEVEL,' ') AS GRADE_LEVEL, CLASS_NOS
 		                FROM (SELECT CLASS_NO, STUDENT_NO
 		                      FROM SCHEDULE
 		                      GROUP BY CLASS_NO, STUDENT_NO) A
-		                LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
-		                JOIN CLASS C ON(G.CLASS_NO = C.CLASS_NO)
+		                JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
+		                LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND C.CLASS_NO = G.CLASS_NO)
 		                WHERE A.CLASS_NO = #{classNo}) AA
 		        GROUP BY SUBSTR(GRADE_LEVEL,1,1))
 		<if test="gradeLevel == 'A'.toString()">
@@ -1011,7 +1035,7 @@
 		                            GROUP BY CLASS_NO, STUDENT_NO) A
 		                    JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
 		                    LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
-			                WHERE C.CLASS_YEAR = #{year} AND C.CLASS_TERM = #{term})
+			                WHERE C.CLASS_YEAR = #{year} AND C.CLASS_TERM = #{term} AND SCORE IS NOT NULL)
 		            GROUP BY CLASS_YEAR, CLASS_TERM, STUDENT_NO
 		            ORDER BY TERM_GRADE DESC) AA)
 		WHERE STUDENT_NO = #{studentNo}
@@ -1028,7 +1052,8 @@
 		                                FROM SCHEDULE
 		                                GROUP BY CLASS_NO, STUDENT_NO) A
 		                        JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
-		                        LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO))
+		                        LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
+		                        WHERE SCORE IS NOT NULL)
 		                GROUP BY CLASS_YEAR, CLASS_TERM, STUDENT_NO
 		                <![CDATA[HAVING CLASS_YEAR <= #{year} AND CLASS_TERM <= #{term}]]>
 		                ORDER BY TERM_GRADE DESC) AA)

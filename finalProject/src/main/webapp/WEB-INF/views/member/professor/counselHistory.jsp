@@ -16,54 +16,63 @@
                     <span style="margin: 0 auto;">상담관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="counselHistory.pr" class="childBtn">●&nbsp;&nbsp;&nbsp;상담이력조회</a>
+                    <a href="counselHistory.pr" class="childBtn">상담이력조회</a>
                 </div>
             </div>
             <div id="content_1">
 					
-				<form action="">
+				<form action="selectCounsel.pr" method="post">
 					<div id="select-area">
 						<table id="select-table">
 							<tr>
 								<th>학년도</th>
 								<td>
-									<select>
-										<option>2023</option>
+									<select name="coll-year" id="coll-year">
+										<option>=== 전체 ===</option>
 									</select>
 								</td>
 								<th>학기</th>
 								<td>
-									<select>
+									<select name="coll-term">
+										<option>=== 전체 ===</option>
 										<option>1학기</option>
+										<option>2학기</option>
 									</select>
 								</td>
 								<th>학년</th>
 								<td>
-									<select>
+									<select name="coll-grade">
+										<option>=== 전체 ===</option>
 										<option>1학년</option>
+										<option>2학년</option>
+										<option>3학년</option>
+										<option>4학년</option>
 									</select>
 								</td>
 							</tr>
 							<tr>
 								<th>상담종류</th>
 								<td>
-									<select>
-										<option>1학년</option>
+									<select name="counsel-type">
+										<option>=== 전체 ===</option>
+										<option>진로(취업)</option>
+										<option>학사(출결)</option>
+										<option>학사(휴학)</option>
+										<option>학사(제적)</option>
+										<option>학사행정</option>
+										<option>심리정서</option>
+										<option>학교생활</option>
+										<option>기타</option>
 									</select>
 								</td>
 								<th>상담일</th>
 								<td>
-									<select>
-										<option>1학년</option>
-									</select>
-								</td>
+									<input type="date" name="startDate" min="2019-01-01" max="2060-12-31" placeholder="날짜 선택" required="required">								</td>
 								<th>
 									~
 								</th>
 								<td>
-									<select>
-										<option>1학년</option>
-									</select>
+									<input type="date" name="endDate" min="2019-01-01" max="2060-12-31" placeholder="날짜 선택" required="required">
 								</td>
 							</tr>
 						</table>
@@ -76,7 +85,7 @@
 				</form>
 				
 				<div id="record-area">
-					<table id="record-table" border="1">
+					<table id="record-table">
 						<thead>
 							<tr>
 								<th>학년도</th>
@@ -98,6 +107,15 @@
 								<td>진로(취업)</td>
 								<td>Y</td>
 							</tr>
+							<tr>
+								<td>2023년</td>
+								<td>4</td>
+								<td>1</td>
+								<td>홍길동</td>
+								<td>2023-04-07</td>
+								<td>진로(취업)</td>
+								<td>Y</td>
+							</tr>
 						</tbody>
 					</table>
 				</div>
@@ -108,6 +126,23 @@
 	
 	<script type="text/javascript">
 		
+		const now = new Date();
+		const year = [ ];
+	
+	    for(var i=0; i<4; i++){
+	        year[i] = now.getFullYear() - i;
+	    }
+	
+	    year.forEach(function(year, inx){
+	    	const select = document.getElementById('coll-year');
+	    	const option = document.createElement("option");
+	    	
+	    	option.className = 'year';
+	        option.innerHTML = year;
+			
+	        select.appendChild(option);
+	    })
+	
 		const childTitle = document.querySelectorAll(".child_title")
 		const firstBtn = document.querySelectorAll(".childBtn")
 		
@@ -115,6 +150,15 @@
 			firstBtn[0].style.color = "#13abec"
 			firstBtn[0].style.fontWeight = "bold"
 		}
+		
+		const row = document.querySelectorAll('#record-table > tbody > tr')
+		
+		row.forEach(function(row, index){
+			row.addEventListener('click', function(){
+// 				location.href = "detail.mp?noticeNo="+noticeNo;
+			})
+		})
+		
 	</script>
 </body>
 </html>

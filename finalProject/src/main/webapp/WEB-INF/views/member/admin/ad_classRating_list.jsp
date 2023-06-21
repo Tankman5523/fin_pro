@@ -54,11 +54,14 @@
                 <div id="cate_title">
                     <span style="margin: 0 auto;">강의관리</span>
                 </div>
+                <div class="child_title">
+                    <a href="classListView.ad">강의시간표</a>
+                </div>
                  <div class="child_title">
                     <a href="classManagePage.ad">강의개설관리</a>
                 </div>
-                <div class="child_title" style="font-weight:bold;">
-                    <a href="classRatingPage.ad">강의평가 관리</a>
+                <div class="child_title">
+                    <a href="classRatingPage.ad" style="color:#00aeff; font-weight: 550;">강의평가 관리</a>
                 </div>
             </div>
             <div id="content_1">

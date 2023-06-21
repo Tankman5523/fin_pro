@@ -29,7 +29,7 @@
 					${loginUser.studentName}님 환영합니다.
 	            </td>
 	            <td style="padding-left: 50px;">
-	                <button type="button" class="btn btn-primary" onclick="location.href='logout.me'">로그아웃</button>
+	                <button type="button" class="btn btn-primary" onclick="location.href='logout.me'" style="border-radius: 10px;">로그아웃</button>
 	            </td>
 	        </tr>
 		</table>

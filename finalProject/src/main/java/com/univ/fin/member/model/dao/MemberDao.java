@@ -301,6 +301,11 @@ public class MemberDao {
 	public ArrayList<Classes> selectProfessorTimetable(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectProfessorTimetable", map);
 	}
+	
+	// 성적관리 -> 학점별로 몇명이 해당되는지
+	public HashMap<String, String> countStudentGrade(SqlSessionTemplate sqlSession, int classNo) {
+		return sqlSession.selectOne("memberMapper.countStudentGrade", classNo);
+	}
 
 	// 성적관리 -> 수강중인 학생 조회
 	public ArrayList<HashMap<String, String>> selectStudentGradeList(SqlSessionTemplate sqlSession, int classNo) {
@@ -443,4 +448,5 @@ public class MemberDao {
 	public ClassRating classRatingAverage(SqlSessionTemplate sqlSession, ClassRating cr) {
 		return sqlSession.selectOne("memberMapper.classRatingAverage", cr);
 	}
+
 }

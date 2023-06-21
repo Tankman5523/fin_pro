@@ -505,6 +505,13 @@ public class MemberServiceImpl implements MemberService{
 		ArrayList<Classes> cList = memberDao.selectProfessorTimetable(sqlSession, map);
 		return cList;
 	}
+	
+	// 성적관리 -> 학점별로 몇명이 해당되는지
+	@Override
+	public HashMap<String, String> countStudentGrade(int classNo) {
+		HashMap<String, String> list = memberDao.countStudentGrade(sqlSession, classNo);
+		return list;
+	}
 
 	// 성적관리 -> 수강중인 학생 조회
 	@Override

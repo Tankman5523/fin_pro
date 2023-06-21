@@ -186,6 +186,9 @@ public interface MemberService {
 	// 교수 개인시간표 -> 학기 선택 후 시간표 조회
 	ArrayList<Classes> selectProfessorTimetable(HashMap<String, String> map);
 
+	// 성적관리 -> 학점별로 몇명이 해당되는지
+	HashMap<String, String> countStudentGrade(int classNo);
+
 	// 성적관리 -> 수강중인 학생 조회
 	ArrayList<HashMap<String, String>> selectStudentGradeList(int classNo);
 	
