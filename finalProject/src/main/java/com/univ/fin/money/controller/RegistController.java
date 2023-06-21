@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.template.Sms;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.service.RegistService;
@@ -77,19 +78,25 @@ public class RegistController {
 		LocalDate now = LocalDate.now();
 		int classYear = now.getYear();
 		int month = now.getMonthValue();
-		int classTerm = 0;
+		String classTerm = "";//int classTerm = 0;
 		
 		if(month>1 && month<8) {
-			classTerm = 2;
+			classTerm = "2";//2
 		}else{
 			classYear +=1;
-			classTerm = 1;
+			classTerm = "1";//1
 		}
 		
-		st.setClassLevel(classYear);
-		st.setFileNo(classTerm);
+		String classYear2 = Integer.toString(classYear);
 		
-		RegistPay r = registService.selectNewRegistInfo(st);
+		
+		ClassRating cr = ClassRating.builder()
+									.studentNo(st.getStudentNo())
+									.classTerm(classTerm)
+									.classYear(classYear2)
+									.build();
+		
+		RegistPay r = registService.selectNewRegistInfo(cr);
 		mv.addObject("RegistPay", r).setViewName("money/registPay/student/student_registPay_nowList");
 		return mv;
 	}
@@ -217,7 +224,7 @@ public class RegistController {
 	
 	//@GetMapping("activate.rg") //나중에 스케줄러 고장나면 버튼으로 처리
 	//@Scheduled(cron = "0 0 10 * * *")//매일 아침 10시마다 실행
-	@Scheduled(cron = "9/60 * * * * *")//테스트용. 10초마다 실행
+	//@Scheduled(cron = "9/60 * * * * *")//테스트용. 10초마다 실행
 	@Async
 	public void activateRegistPay() { //스케쥴러에 의해 등록금 활성화 개시 
 		int result = 0;
@@ -232,7 +239,7 @@ public class RegistController {
 	}
 	
 	//@GetMapping("deactivate.rg") //나중에 스케줄러 고장나면 버튼으로 처리
-	@Scheduled(cron = "10/60 * * * * *")//매일 새벽 1시마다 실행
+	//@Scheduled(cron = "10/60 * * * * *")//매일 새벽 1시마다 실행
 	@Async
 	public void deactivateRegistPay() {//스케쥴러에 의해 등록금 비활성화 개시 
 		int result = 0;

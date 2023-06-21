@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div id="content_1">
-				<div style="width: 90%;height: 90%;margin: 5%;">
+				<div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
 					<h4>등록금 납입 이력</h4>
 					<br>
                     <!--이름/학번 로그인 세션에서 가져오기-->
@@ -78,7 +78,7 @@
             </div>
             
             <script>
-            $('document').ready(function(){
+            $('document').ready(function(){//현재 시간 기준 학년도 , 학기 등록
         		
         		/*학기 , 학년도 등록*/
         		var today = new Date();
@@ -99,7 +99,7 @@
         	});	
             
             
-           	function searchMyRegist(){
+           	function searchMyRegist(){ //해당 학생 등록금 기록 조회
            		
            		var studentNo = $("#studentNo").val();
            		var studentName = $("#studentName").val();
@@ -125,15 +125,15 @@
 						var payAccountNo = "";
 						var payStatus = "";
 						
-           				if(!list.isEmpty){
+           				if(list[0]!=null){
            					for(var i in list){
-           						if(list[i].payDate!=null){
+           						if(list[i].payDate!=null){ //null일때 비워주기
            							payDate = list[i].payDate;
            						}
-           						if(list[i].payTime!=null) {
+           						if(list[i].payTime!=null) { //null일때 비워주기
            							payTime = list[i].payTime;
            						}
-           						if(list[i].payAccountNo!=null){
+           						if(list[i].payAccountNo!=null){ //null일때 비워주기
            							payAccountNo = list[i].payAccountNo;
            						}
            						inputPay = list[i].inputPay;

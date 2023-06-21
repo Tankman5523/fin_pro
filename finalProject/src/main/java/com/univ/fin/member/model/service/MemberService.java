@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Grade;
@@ -226,5 +227,19 @@ public interface MemberService {
 	double selectScoreC(String studentNo);
 	double selectScoreD(String studentNo);
 
+	// (학생)수강한 강의정보 조회
+	ArrayList<RegisterClass> classInfoForRating(ClassRating cr);
+	
+	// (학생)강의평가 입력
+	int insertClassRating(ClassRating cr);
+	
+	// (관리자) 강의평가 조회
+	ArrayList<ClassRating> classRatingList(ClassRating cr);
+	
+	// (관리자) 강의평가 기타건의 조회
+	ArrayList<ClassRating> classRatingEtcList(ClassRating cr);
+	
+	// (관리자) 강의평가 문항별 평균 점수 조회
+	ClassRating classRatingAverage(ClassRating cr);
 
 }

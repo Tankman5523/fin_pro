@@ -88,6 +88,9 @@
                 <div class="child_title">
                     <a href="studentGradeReport">성적 이의신청</a>
                 </div>
+                <div class="child_title">
+                    <a href="classRatingInfo.st">강의평가</a>
+                </div>
             </div>
             <div id="content_1">
 					<div id="basic_info">

@@ -38,6 +38,9 @@
                 <div class="child_title">
                     <a href="classManagePage.ad">강의개설관리</a>
                 </div>
+                 <div class="child_title">
+                    <a href="classRatingPage.ad">강의평가 관리</a>
+                </div>
             </div>
             <div id="content_1">
 				<div id="class_type">
@@ -67,7 +70,7 @@
                 </div>
                 
                 <div>
-
+	
                     <table id="board_list" border="1" style="width:100%; text-align: center; margin-top:5%">
                         <thead>
                             
