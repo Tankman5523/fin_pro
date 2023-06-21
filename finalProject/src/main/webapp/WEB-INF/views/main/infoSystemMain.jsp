@@ -105,8 +105,12 @@
 	            </div>
 	        </div>
 	    </div>
+		<div>
+			<%@include file="../common/weather.jsp"%>
+		</div>
 	</div>
-	
+
+
 	<script>
 				
 		const notice = document.querySelectorAll('#notice_section > table > tbody > tr')
