@@ -187,9 +187,7 @@ public class ProfessorController {
 		// A: 30%, A+B: 70% 이내
 		if(map.get("gradeLevel").equals("A") || map.get("gradeLevel").equals("B")) {
 			int check = memberService.checkGradeNos(map); // 수강인원*비율에 따른 가능 인원 수
-			System.out.println("**********************" + check);
 			int count = memberService.countGradeNos(map); // 실제 몇명이 해당되는지
-			System.out.println("**********************" + count);
 			if(count < check) {
 				int result = memberService.gradeInsert(g);
 				return (result>0)? "Y": "N";
