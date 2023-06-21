@@ -167,6 +167,7 @@ public class MainPageController {
 		
 		model.addAttribute("slist", list);
 		model.addAttribute("searchPi", pi);
+		model.addAttribute("selectBox", selectBox);
 		model.addAttribute("keyword", keyword);
 		
 		return "main/searchNoticeList";
