@@ -78,7 +78,8 @@ public class ProfessorController {
 		c.setDepartmentNo(p.getDepartmentNo()); //학과명 담기
 		
 		if(!upfile.getOriginalFilename().equals("")) {//첨부파일이 있다면
-			String changeName = new SaveFile().saveFile(upfile, session); //파일 이름 바꾸고, 저장하고 옴
+			String subPath = "classes/"; //강의관련 세부경로
+			String changeName = new SaveFile().saveFile(upfile, session, subPath); //파일 이름 바꾸고, 저장하고 옴
 			String filePath = "resources/uploadFiles/"; 
 			a = new Attachment();
 			
@@ -130,12 +131,11 @@ public class ProfessorController {
 			,@RequestParam(value="reUpfile",required = false)MultipartFile reUpfile,HttpSession session) {
 		
 		Attachment a = null;
-		System.out.println(c);
-		System.out.println(originFileName);
+		
 		if(!reUpfile.getOriginalFilename().equals("")) {//새로운 첨부파일이 있다면
-			System.out.println("새로운 첨부파일 있다.");
-			String changeName = new SaveFile().saveFile(reUpfile, session); //파일 이름 바꾸고, 저장하고 옴
-			String filePath = "resources/uploadFiles/"; //저장경로
+			String subPath = "classes/"; //강의관련 세부경로
+			String changeName = new SaveFile().saveFile(reUpfile, session, subPath); //파일 이름 바꾸고, 저장하고 옴
+			String filePath = "resources/uploadFiles/"+subPath; //저장경로
 			
 			a = new Attachment();
 			
@@ -146,20 +146,14 @@ public class ProfessorController {
 			
 			
 			if(c.getFileNo()!=null) {//기존 첨부파일이 있다면
-				System.out.println("기존 첨부파일 있다.");
 				a.setFileNo(Integer.parseInt(c.getFileNo()));//첨부파일에 기존 파일번호 담고
 				
 				new File(filePath+originFileName).delete(); //기존 첨부파일 삭제
 			}else {//기존 첨부파일이 없다면
-				System.out.println("기존 첨부파일 없다.");
 				//사실 강의계획서는 필수라 이런 경우는 없지만 혹시 모르니까
 			}
 		}
-		System.out.println(a);
-		System.out.println("업데이트 시작");
 		int result = memberService.updateClassCreate(c,a);
-		System.out.println("업데이트 끝.");
-		
 		
 		return "redirect:classCreateSelect.pr";
 	}

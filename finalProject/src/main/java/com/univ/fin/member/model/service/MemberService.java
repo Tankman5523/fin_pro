@@ -213,7 +213,6 @@ public interface MemberService {
 	// (관리자)강의개설 반려 업데이트
 	int updateClassReject(Classes c);
 
-
 	//교수이름으로 교수번호 가져오기
 	String selectProfessorNo(String keyword);
 

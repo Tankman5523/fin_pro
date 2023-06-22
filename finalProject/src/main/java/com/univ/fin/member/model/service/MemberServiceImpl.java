@@ -619,6 +619,7 @@ public class MemberServiceImpl implements MemberService{
 		}
 		return result;
 	}
+	
 	// 학기별 성적 조회 -> 학기별 성적 계산
 	@Override
 	public HashMap<String, String> calculatedGrade(HashMap<String, String> map) {
