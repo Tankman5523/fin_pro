@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.Calendar;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -244,5 +245,11 @@ public interface MemberService {
 	
 	// (관리자) 강의평가 문항별 평균 점수 조회
 	ClassRating classRatingAverage(ClassRating cr);
+
+	// 학사일정 관리 -> 학사일정 조회
+	ArrayList<HashMap<String, String>> calendarList();
+
+	// 학사일정 관리 -> 학사일정 추가
+	int insertCalendar(Calendar c);
 
 }

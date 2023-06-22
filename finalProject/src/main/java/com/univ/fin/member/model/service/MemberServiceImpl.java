@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.Calendar;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -646,6 +647,18 @@ public class MemberServiceImpl implements MemberService{
 	public ClassRating classRatingAverage(ClassRating cr) {
 		return memberDao.classRatingAverage(sqlSession,cr);	
 		
+	}
+
+	// 학사일정 관리 -> 학사일정 조회
+	@Override
+	public ArrayList<HashMap<String, String>> calendarList() {
+		return memberDao.calendarList(sqlSession);
+	}
+
+	// 학사일정 관리 -> 학사일정 추가
+	@Override
+	public int insertCalendar(Calendar c) {
+		return memberDao.insertCalendar(sqlSession, c);
 	}
 	
 }
