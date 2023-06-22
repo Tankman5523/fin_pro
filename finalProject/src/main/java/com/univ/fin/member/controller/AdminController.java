@@ -73,21 +73,30 @@ public class AdminController {
 		return "member/admin/enrollProfessor";
 	}
 	
-	//교수 관리자 등록 
 	@RequestMapping(value="insertProfessor.ad", method=RequestMethod.POST)
 	public String insertProfessor(Professor pr,
-								Model model,
-								HttpSession session) {
-	
-		int result = memberService.insertProfessor(pr);
+	                              Model model,
+	                              HttpSession session) {
 		
-		if(result>0) {
-			model.addAttribute("msg","직원 생성 완료");
-		}else {
-			model.addAttribute("msg","직원 생성 실패");
-		}
-		return "member/admin/enrollProfessor";
-	}
-		
+	    if (pr.getDepartmentNo().equals("-선택-")) {
+	        if (pr.getPosition().equals("관리자")) {
+	            pr.setDepartmentNo("");
+	            pr.setCollegeNo("");
+	        } else {
+	            if (pr.getCollegeNo().equals("-선택-") || pr.getCollegeNo() == null) {
+	                // 관리자가 아니면서 부서 선택을 하지 않은 경우
+	            	model.addAttribute("msg","빈 입력란이 있습니다.");
+	            }
+	        }
+	    }	        
 
+	    int result = memberService.insertProfessor(pr);
+
+	    if (result > 0) {
+	        model.addAttribute("msg", "직원 생성 완료");
+	    } else {
+	        model.addAttribute("msg", "직원 생성 실패");
+	    }
+	    return "member/admin/enrollProfessor";
+	}
 }

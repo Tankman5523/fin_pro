@@ -5,12 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<!-- jQuery library -->
-<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
-<!-- Popper JS -->
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<!-- Latest compiled JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <!-- 주소API 다음(카카오) -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
@@ -199,6 +194,10 @@
 		float: right;
 		font-weight: bold;
  	}
+ 	/*!important 다무시하고 먼저실행*/
+	table {
+	border-collapse: separate !important;
+	}
  	
 
 
@@ -229,7 +228,7 @@
 		 validArr.push($("#entranceDate"));
 		 validArr.push($("#collegeNo"));
 		 validArr.push($("#departmentNo"));
-		 validArr.push($("#studentNo"));
+		 /* validArr.push($("#studentNo")); */
 		 validArr.push($("#studentPwd"));
 		 validArr.push($("#studentName"));
 		 validArr.push($("#classLevel"));
@@ -297,69 +296,94 @@
  	  }
  	 
 	
-	window.onload = function(){
-	    document.getElementById("address").addEventListener("click", function(){ //주소입력칸을 클릭하면
-	        //카카오 지도 발생
-	        new daum.Postcode({
-	            oncomplete: function(data) { //선택시 입력값 세팅
-	            	// 각 주소의 노출 규칙에 따라 주소를 조합한다.
-	                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
-	                var addr = ''; // 주소 변수
-	                var extraAddr = ''; // 참고항목 변수
+ 	 window.onload = function(){
+ 	    document.getElementById("address").addEventListener("click", function(){ //주소입력칸을 클릭하면
+ 	        //카카오 지도 발생
+ 	        new daum.Postcode({
+ 	            oncomplete: function(data) { //선택시 입력값 세팅
+ 	            	// 각 주소의 노출 규칙에 따라 주소를 조합한다.
+ 	                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+ 	                var addr = ''; // 주소 변수
+ 	                var extraAddr = ''; // 참고항목 변수
 
-	                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
-	                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
-	                    addr = data.roadAddress;
-	                } else { // 사용자가 지번 주소를 선택했을 경우(J)
-	                    addr = data.jibunAddress;
-	                }
+ 	                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+ 	                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+ 	                    addr = data.roadAddress;
+ 	                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+ 	                    addr = data.jibunAddress;
+ 	                }
 
-	                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
-	                if(data.userSelectedType === 'R'){
-	                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
-	                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-	                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
-	                        extraAddr += data.bname;
-	                    }
-	                    // 건물명이 있고, 공동주택일 경우 추가한다.
-	                    if(data.buildingName !== '' && data.apartment === 'Y'){
-	                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-	                    }
-	                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-	                    if(extraAddr !== ''){
-	                        extraAddr = ' (' + extraAddr + ')';
-	                    }
-	                    // 조합된 참고항목을 해당 필드에 넣는다.
-	                    document.getElementById("address").value = extraAddr;
-	                
-	                } else {
-	                    document.getElementById("post").value = '';
-	                }
-	                 document.getElementById("address").value = data.address; // 주소 넣기
-	                document.getElementById("post").value= data.zonecode; // 우편번호 넣기 
-	                console.log(data.post);
-	            }
-	        }).open();
-	    });
-	}
+ 	                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+ 	                if(data.userSelectedType === 'R'){
+ 	                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+ 	                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+ 	                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+ 	                        extraAddr += data.bname;
+ 	                    }
+ 	                    // 건물명이 있고, 공동주택일 경우 추가한다.
+ 	                    if(data.buildingName !== '' && data.apartment === 'Y'){
+ 	                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+ 	                    }
+ 	                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+ 	                    if(extraAddr !== ''){
+ 	                        extraAddr = ' (' + extraAddr + ')';
+ 	                    }
+ 	                    // 조합된 참고항목을 해당 필드에 넣는다.
+ 	                    document.getElementById("address").value = extraAddr;
+ 	                
+ 	                } else {
+ 	                    document.getElementById("post").value = '';
+ 	                }
+ 	                 document.getElementById("address").value = data.address; // 주소 넣기
+ 	                document.getElementById("post").value= data.zonecode; // 우편번호 넣기 
+ 	                console.log(data.post);
+ 	            }
+ 	        }).open();
+ 	    });
+ 	}
+ 	
+ 	
+ 	// 특수문자 한글 입력 막기
+ 	function characterCheck(obj) {
+ 	    var regExp = /[^\w\d\s]/g;
+ 	    if (regExp.test(obj.value)) {
+ 	        alert("특수문자와 한글은 입력하실 수 없습니다.");
+ 	        obj.value = obj.value.replace(regExp, ''); // 특수문자와 한글을 제거
+ 	    }
+ 	}
+ 	
+ 	 //영어, 특수문자, 한글 입력 막기
+ 	function characterCheck2(obj) {
+     var regExp = /[^0-9]/g;
+     if (regExp.test(obj.value)) {
+         alert("영어, 특수문자, 한글은 입력하실 수 없습니다.");
+         obj.value = obj.value.replace(regExp, ''); // 숫자 이외의 문자를 제거
+     } 
+ }
+ 	function characterCheck3(obj) {
+ 	    var regExp = /[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\s]/g;
+ 	    if (regExp.test(obj.value)) {
+ 	        alert("특수문자는 입력하실 수 없습니다.");
+ 	        obj.value = obj.value.replace(regExp, ''); // 특수문자를 제거
+ 	    }    
+ }
+ 	
+ 	function characterCheck4(obj) {
+ 	    var regExp = /[^a-zA-Z0-9\s\^\-_.!@#$%&*()+=]/g;
+ 	    if (regExp.test(obj.value)) {
+ 	        alert("한글은 입력하실 수 없습니다.");
+ 	        obj.value = obj.value.replace(regExp, ''); // 한글을 제거
+ 	    }    
+ 	}
+ 	
+ 	function characterCheck5(obj) {
+ 	    var regExp = /[^0-9\s\^\-_.!@#$%&*()+=]/g;
+ 	    if (regExp.test(obj.value)) {
+ 	        alert("한글과 영어는 입력하실 수 없습니다.");
+ 	        obj.value = obj.value.replace(regExp, ''); // 한글과 영어를 제거
+ 	    }    
+ 	}
 	
-	// 특수문자 한글 입력 막기
-	function characterCheck(obj) {
-	    var regExp = /[^\w\d\s]/g;
-	    if (regExp.test(obj.value)) {
-	        alert("특수문자와 한글은 입력하실 수 없습니다.");
-	        obj.value = obj.value.replace(regExp, ''); // 특수문자와 한글을 제거
-	    }
-	}
-	
-	// 영어, 특수문자, 한글 입력 막기
-	/* function characterCheck2(obj) {
-    var regExp = /[^]/g;
-    if (regExp.test(obj.value)) {
-        alert("영어, 특수문자, 한글은 입력하실 수 없습니다.");
-        obj.value = obj.value.replace(regExp, ''); // 모든 문자를 제거
-    } 
-}*/
 	
 	function randomPasswordBtn() {
 	    var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@";
@@ -384,40 +408,20 @@
 </head>
 <body>
     <div class="wrap">
-		<div id="header">
-			<div id="header_1">
-				<table id="user_log">
-					 <tr>
-						 <td>
-							${loginUser.professorName }님 환영합니다.
-						 </td>
-						 <td style="padding-left: 50px;">
-							 <button id="logout-btn" onclick="">로그아웃</button>
-						 </td>
-					 </tr>
-				 </table>
-			</div>
-		</div>
-		<div id="menubar">
-			<ul id="nav">
-				<li><a href="#">홈</a></li>
-				<li><a href="#">금전관리</a></li>
-				<li><a href="#">학사관리</a></li>
-				<li><a href="#">강의관리</a></li>
-			</ul>
-		</div>
-		
-
+		<%@include file="../../common/admin_menubar.jsp" %>
         <div id="content">
             <div id="category">
                 <div id="cate_title">
                     <h3>학사관리</h3>
                 </div>
                 <div class="child_title">
-                    <a href="#">학생관리</a>
+                    <a href="#" style="color:#00aeff; font-weight: 550;">학생 관리</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">임직원관리</a>
+                    <a href="#">임직원 관리</a>
+                </div>
+                <div class="child_title">
+                    <a href="#">학사일정 관리</a>
                 </div>
             </div>
             <div id="content_1">
@@ -468,7 +472,7 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">학번 : </th>
-									<th><input type="text" class="user_info3" name="studentNo" id="studentNo" maxlength="9" onkeyup="characterCheck(this)" onkeydown="characterCheck(this)" data-name="학번"></th>
+									<th><input type="text" class="user_info3" name="studentNo" id="studentNo" maxlength="9" onkeyup="characterCheck(this)" onkeydown="characterCheck(this)" data-name="학번" readonly placeholder="자동으로 생성"></th>
 									<th width="100px" height="30px">비밀번호 : </th>
 									<th><input type="text" class="user_info3" id="studentPwd" name="studentPwd" data-name="비밀번호"><th>
 									<!-- <th width="212px" height="30px">랜덤 비밀번호:</th>
@@ -481,7 +485,7 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">이름 : </th>
-									<th><input type="text" class="user_info3" id="studentName" name="studentName" maxlength="4" onkeyup="characterCheck2(this)" onkeydown="characterCheck2(this)" data-name="이름"></th>
+									<th><input type="text" class="user_info3" id="studentName" name="studentName" maxlength="4" onkeyup="characterCheck3(this)" onkeydown="characterCheck3(this)" data-name="이름"></th>
 									<th width="100px" height="30px">학년 : </th>
 									<th><input type="text" id="classLevel" name="classLevel" class="user_info3" maxlength="1" onkeyup="characterCheck2(this)" onkeydown="characterCheck2(this)" data-name="학년"></th>
 									
@@ -495,7 +499,7 @@
 									<th width="100px" height="30px">전화번호 : </th>
 									<th><input type="text"  class="user_info3" id="phone" name="phone" placeholder="숫자만 입력하세요." maxlength="11" onkeyup="characterCheck2(this)" onkeydown="characterCheck2(this)" data-name="전화번호"/></th>
 									<th width="100px" height="30px">E-MAIL : </th>
-									<th><input type="text" id="email" name="email" class="user_info3" placeholder="example@example.com" required="이메일을 입력해주세요" data-name="E-MAIL"></th>
+									<th><input type="text" id="email" name="email" class="user_info3" placeholder="example@example.com" required="이메일을 입력해주세요" onkeyup="characterCheck4(this)" onkeydown="characterCheck4(this)" data-name="E-MAIL"></th>
 								</tr>
 							</thead>
 						</table>

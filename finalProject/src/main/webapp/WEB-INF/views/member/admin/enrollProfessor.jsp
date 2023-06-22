@@ -201,6 +201,11 @@
 		font-weight: bold;
  	}
  	
+ 	/*!important 다무시하고 먼저실행*/
+	table {
+	border-collapse: separate !important;
+	}
+ 	
 
 
 </style>
@@ -228,9 +233,9 @@
 	
 		 validArr.push($("#entranceDate"));
 		 validArr.push($("#professorName"));
-		 validArr.push($("#collegeNo"));
-		 validArr.push($("#departmentNo"));
-		 validArr.push($("#professorNo"));
+		 /* validArr.push($("#collegeNo"));
+		 validArr.push($("#departmentNo")); */
+		 /* validArr.push($("#professorNo")); */
 		 validArr.push($("#professorPwd"));
 		 validArr.push($("#admin"));
 		 validArr.push($("#position"));
@@ -265,7 +270,7 @@
 	 
  	 
  	  function collegeChange(e){
- 		  var depart0 = ["임직원"]
+ 		  var depart0 = ["교양"]
  		  var depart1 = ["국어영문학과","영어영문학과","일어일문학과","사학과"];
  		  var depart2 = ["경제경영학과","회계학과","법학과","행정학과"];
  		  var depart3 = ["초등교육과","유아교육과"];
@@ -306,9 +311,9 @@
 		 
 		 var admin = parseInt(e.value, 10);
 		  
-		  if(e.value=="a") var a = admin1;
-		  else if(e.value=="b") var a =admin2;
-		  else if(e.value=="c") var a =admin3;
+		  if(e.value=="0") var a = admin1;
+		  else if(e.value=="1") var a =admin2;
+		  else if(e.value=="2") var a =admin3;
 		
 		 target.options.length = 0;
 		  
@@ -434,40 +439,20 @@
 </head>
 <body>
     <div class="wrap">
-		<div id="header">
-			<div id="header_1">
-				<table id="user_log">
-					 <tr>
-						 <td>
-							${loginUser.professorName }님 환영합니다.
-						 </td>
-						 <td style="padding-left: 50px;">
-							 <button id="logout-btn" onclick="">로그아웃</button>
-						 </td>
-					 </tr>
-				 </table>
-			</div>
-		</div>
-		<div id="menubar">
-			<ul id="nav">
-				<li><a href="#">홈</a></li>
-				<li><a href="#">금전관리</a></li>
-				<li><a href="#">학사관리</a></li>
-				<li><a href="#">강의관리</a></li>
-			</ul>
-		</div>
-		
-
+		<%@include file="../../common/professor_menubar.jsp" %>
         <div id="content">
             <div id="category">
                 <div id="cate_title">
                     <h3>학사관리</h3>
                 </div>
                 <div class="child_title">
-                    <a href="#">학생관리</a>
+                    <a href="#">학생 관리</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">임직원관리</a>
+                    <a href="#" style="color:#00aeff; font-weight: 550;">임직원 관리</a>
+                </div>
+                <div class="child_title">
+                    <a href="#">학사일정 관리</a>
                 </div>
             </div>
             <div id="content_1">
@@ -504,7 +489,7 @@
 									<th>
 										<select id="collegeNo" name="collegeNo" class="user_info3" onChange="collegeChange(this)" data-name="대학(원)">
                                             <option>-선택-</option>
-                                            <option value="0">임직원</option>
+                                            <option value="0">교양</option>
                                             <option value="1">인문대학</option>
                                             <option value="2">사회과학대학</option>
                                             <option value="3">교육대학</option>
@@ -528,7 +513,7 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">교번 : </th>
-									<th><input type="text" class="user_info3" name="professorNo" id="professorNo" maxlength="9" onkeyup="characterCheck(this)" onkeydown="characterCheck(this)" data-name="교번"></th>
+									<th><input type="text" class="user_info3" name="professorNo" id="professorNo" onkeyup="characterCheck(this)" onkeydown="characterCheck(this)" data-name="교번" readonly placeholder="자동으로 생성"></th>
 									<th width="105px" height="30px">비밀번호 : </th>
 									<th><input type="text" class="user_info3" id="professorPwd" name="professorPwd" data-name="비밀번호"><th>
 								</tr>
@@ -542,9 +527,9 @@
 									<th>
 									<select id="admin" name="admin" class="user_info3" onChange="adminChange(this)" data-name="부서">
                                             <option>-선택-</option>
-                                            <option value="a">관리자</option>
-                                            <option value="b">교수</option>
-                                            <option value="c">행정직원</option>
+                                            <option value="0">관리자</option>
+                                            <option value="1">교수</option>
+                                            <option value="2">행정직원</option>
                                     </select>
                                     </th>
 									<th width="120px" height="30px">직책 : </th>
