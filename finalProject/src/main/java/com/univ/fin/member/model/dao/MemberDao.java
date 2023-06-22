@@ -516,6 +516,13 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.classRatingAverage", cr);
 	}
 
+
+	// (교수) 상담조회
+	public ArrayList<Counseling> professorSelectCounseling(SqlSessionTemplate sqlSession, HashMap<String, String> counselMap) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.professorSelectCounseling", counselMap);
+	}
+	
 	// 학사일정 관리 -> 학사일정 조회
 	public ArrayList<HashMap<String, String>> calendarList(SqlSessionTemplate sqlSession) {
 		return (ArrayList)sqlSession.selectList("memberMapper.calendarList");

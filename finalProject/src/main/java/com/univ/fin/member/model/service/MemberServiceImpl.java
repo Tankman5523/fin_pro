@@ -711,6 +711,12 @@ public class MemberServiceImpl implements MemberService{
 		
 	}
 
+	// (교수) 상담조회
+	@Override
+	public ArrayList<Counseling> professorSelectCounseling(HashMap<String, String> counselMap) {
+		return memberDao.professorSelectCounseling(sqlSession, counselMap);
+	}
+	
 	// 학사일정 관리 -> 학사일정 조회
 	@Override
 	public ArrayList<HashMap<String, String>> calendarList() {

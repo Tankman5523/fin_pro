@@ -97,6 +97,9 @@
   		<result column="COUNSEL_RESULT" property="counselResult"/>
   		<result column="STATUS" property="status"/>
   		<result column="PROFESSOR_NAME" property="professorName"/>
+  		<result column="STUDENT_NAME" property="studentName"/>
+  		<result column="DEAPRTMENT_NAME" property="departmentName"/>
+  		<result column="CLASS_LEVEL" property="classLevel"/>
   	</resultMap>
   	
   	<resultMap type="studentRest" id="studentRestResultMap">
@@ -1005,17 +1008,7 @@
   	<update id="updateClassPermitAll">
   		UPDATE CLASS
   		SET STATUS = 'Y'
-  		WHERE CLASS_NO IN 
-  		<foreach collection="array" item="arr" open="(" close=")" separator=",">
- 			#{arr}
-		</foreach>
-  	</update>
-  	
-  	<!-- 강의개설 개별승인(관리자) -->
-  	<update id="updateClassPermit">
-  		UPDATE CLASS
-  		SET STATUS = 'Y'
-  		WHERE CLASS_NO = #{cno}
+  		WHERE CLASS_NO IN (#{cno})
   	</update>
   	
   	<!-- 강의개설 반려 (관리자) -->
@@ -1300,6 +1293,59 @@
 		AND CLASS_TERM = #{classTerm}
   		GROUP BY CLASS_NO
   		
+  	</select>
+
+	<!-- (교수) 상담조회  -->
+  	<select id="professorSelectCounseling" parameterType="hashMap" resultMap="counselingResultMap">
+  		SELECT COUNSEL_NO, STUDENT_NO, STUDENT_NAME, DEPARTMENT_NAME, CLASS_LEVEL, APPLICATION_DATE, REQUEST_DATE, COUNSEL_AREA, C.STATUS
+		FROM COUNSELING C
+		JOIN STUDENT S USING(STUDENT_NO)
+		JOIN DEPARTMENT C ON(S.DEPARTMENT_NO = C.DEPARTMENT_NO)
+		<if test="counselType.equals('allType')">
+			WHERE PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="counselType.equals('jinro')">
+			WHERE COUNSEL_AREA = '진로(취업)'
+			AND PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="counselType.equals('attendance')">
+			WHERE COUNSEL_AREA = '학사(출결)'
+			AND PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="counselType.equals('rest')">
+			WHERE COUNSEL_AREA = '학사(휴학)'
+			AND PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="counselType.equals('drop')">
+			WHERE COUNSEL_AREA = '학사(제적)'
+			AND PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="counselType.equals('admin')">
+			WHERE COUNSEL_AREA = '학사행정'
+			AND PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="counselType.equals('affect')">
+			WHERE COUNSEL_AREA = '심리정서'
+			AND PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="counselType.equals('collLife')">
+			WHERE COUNSEL_AREA = '학교생활'
+			AND PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="counselType.equals('etc')">
+			WHERE COUNSEL_AREA = '기타'
+			AND PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		ORDER BY COUNSEL_NO DESC
   	</select>
   	
   	<!-- 학사일정 관리 -> 학사일정 조회 -->

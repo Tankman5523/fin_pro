@@ -22,4 +22,7 @@ public class Counseling {
 	private String counselResult;//COUNSEL_RESULT	VARCHAR2(500 BYTE)
 	private String status;//STATUS	VARCHAR2(2 BYTE)
 	private String professorName;
+	private String studentName;
+	private String departmentName;
+	private int classLevel;
 }
