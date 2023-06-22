@@ -1,6 +1,5 @@
 package com.univ.fin.member.controller;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +24,7 @@ import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
@@ -420,11 +420,13 @@ public class StudentController {
 				
 			}
 			
-			//학생 강의 의의신청 
+			//학생 강의 의의신청 페이지
 			@RequestMapping("studentGradeReport.st")
-			public String studentGradeReport(String studentNo) {		
-				
-				return "member/student/studentGradeReport";
+			public String studentGradeReport(String studentNo, Model model) {
+			    ArrayList<Dissent> list = memberService.studentGradeReport(studentNo);
+			    model.addAttribute("list", list);
+			    return "member/student/studentGradeReport";
+			    
 			}
 			
 			
@@ -451,6 +453,7 @@ public class StudentController {
 		map.put("endDate",endDate);
 			
 		ArrayList<Counseling> list = memberService.selectSearchCounseling(map);
+		System.out.println(list);
 		
 		return new Gson().toJson(list);
 		
@@ -657,6 +660,7 @@ public class StudentController {
 		return "redirect:studentRestList.st";
 	}
 	
+
 	// 수업관리 - 학기별 성적 조회
 	@RequestMapping("classManagement.st")
 	public ModelAndView classManagement(ModelAndView mv, HttpSession session) {
@@ -687,7 +691,8 @@ public class StudentController {
 		.addObject("scoreC", scoreC).addObject("scoreD", scoreD).setViewName("member/student/gradeListView");
 		return mv;
 	}
-	
+
+
 	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
 	@ResponseBody
 	@RequestMapping(value="selectClassList.st",produces = "application/json; charset=UTF-8")

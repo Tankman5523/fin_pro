@@ -1,5 +1,6 @@
 @charset "UTF-8";
 
+
 #content_1{
 	margin: auto;
 	padding: 50px 0;
@@ -17,7 +18,7 @@
 
 #select-table{
 	margin: auto;
-	height: 150px;
+	height: 50px;
 }
 #select-table tr{
 	height: 50px;
@@ -36,6 +37,7 @@
 	height: 33px;
 	border-radius: 10px;
 	text-align: center;
+	cursor: pointer;
 }
 
 #select-btn{
@@ -51,7 +53,7 @@
 	border: 1px solid black;
 	border-radius: 10px;
 }
-#select-btn button[type=submit]:hover{
+#submit:hover{
 	color: white;
 	border: 1px solid #0080ff;
 	background-color: #0080ff;
@@ -66,7 +68,7 @@
 
 #record-area{
 	width: 95%;
-	height: 490px;
+	height: 580px;
 	margin: auto;
 	border: 3px solid #ddd;
 	overflow: scroll;

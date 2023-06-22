@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.Calendar;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
@@ -555,10 +557,27 @@ public class MemberServiceImpl implements MemberService{
 		return cList;
 	}
 
+
+	@Override
+	public ArrayList<Dissent> studentGradeReport(String studentNo) {
+		ArrayList<Dissent> list = memberDao.studentGradeReport(sqlSession,studentNo);
+		
+		return list;
+	}
+
+	@Override
+	public int insertProfessor(Professor pr) {
+		
+		int result = memberDao.insertProfessor(sqlSession,pr);
+		
+		return result;
+	}
+
+
 	// (관리자)강의개설 일괄 승인
 	@Override
-	public int updateClassPermitAll(String cno) {
-		int result = memberDao.updateClassPermitAll(sqlSession,cno);
+	public int updateClassPermitAll(int[] cArr) {
+		int result = memberDao.updateClassPermitAll(sqlSession,cArr);
 		return result;
 	}
 
@@ -576,6 +595,50 @@ public class MemberServiceImpl implements MemberService{
 		return result;
 	}
 
+	// 교수이름으로 교수직번 가져오기
+	@Override
+	public String selectProfessorNo(String keyword) {
+		String professorNo = memberDao.selectProfessorNo(sqlSession,keyword);
+		return professorNo;
+	}
+
+	//(관리자) 강의 관리 검색
+	@Override
+	public ArrayList<Classes> selectClassListSearch(Classes c) {
+		ArrayList<Classes> list = memberDao.selectClassListSearch(sqlSession,c);
+		return list;
+	}
+
+	//(교수)반려당한 강의 수정 페이지 이동
+	@Override
+	public Classes selectRejectedClass(int classNo) {
+		Classes c = memberDao.selectRejectedClass(sqlSession,classNo);
+		return c;
+	}
+
+	//(교수)반려당한 강의 첨부파일(강의계획서) 조회
+	@Override
+	public Attachment selectRejectedClassAtt(String fileNo) {
+		Attachment a = memberDao.selectRejectedClassAtt(sqlSession,fileNo);
+		return a;
+	}
+
+	//(교수)반려된 강의 수정
+	@Override
+	public int updateClassCreate(Classes c, Attachment a) {
+		int result =0;
+		if(a==null) {//새로운 첨부파일이 없는경우
+			result = memberDao.updateClassCreateNoAtt(sqlSession,c);
+		}else {//새로운 첨부파일이 있는 경우
+			if(a.getFileNo()!=0) {//기존 첨부파일이 있는 경우(기존 파일번호로 첨부파일 업데이트)
+				result = memberDao.updateClassCreate(sqlSession,c,a);
+			}else {//기존 첨부파일이 없는 경우(첨부파일 새로 인서트
+				result = memberDao.updateClassCreateNew(sqlSession,c,a);
+			}
+		}
+		return result;
+	}
+	
 	// 학기별 성적 조회 -> 학기별 성적 계산
 	@Override
 	public HashMap<String, String> calculatedGrade(HashMap<String, String> map) {
@@ -647,5 +710,29 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.classRatingAverage(sqlSession,cr);	
 		
 	}
+
+	// (교수) 상담조회
+	@Override
+	public ArrayList<Counseling> professorSelectCounseling(HashMap<String, String> counselMap) {
+		return memberDao.professorSelectCounseling(sqlSession, counselMap);
+	}
 	
+	// 학사일정 관리 -> 학사일정 조회
+	@Override
+	public ArrayList<HashMap<String, String>> calendarList() {
+		return memberDao.calendarList(sqlSession);
+	}
+
+	// 학사일정 관리 -> 학사일정 추가
+	@Override
+	public int insertCalendar(Calendar c) {
+		return memberDao.insertCalendar(sqlSession, c);
+	}
+
+	// 학사일정 관리 -> 학사일정 수정
+	@Override
+	public int updateCalendar(Calendar c) {
+		return memberDao.updateCalendar(sqlSession, c);
+	}
+
 }

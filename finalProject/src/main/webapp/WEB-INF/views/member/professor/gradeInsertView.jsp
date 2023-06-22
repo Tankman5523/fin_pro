@@ -321,7 +321,7 @@
                 </script>
             </div>
             
-             <!-- The Modal -->
+            <!-- The Modal -->
 		    <div class="modal" id="myModal">
 		        <div class="modal-dialog modal-dialog-centered">
 		            <div class="modal-content">
