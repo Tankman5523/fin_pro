@@ -79,7 +79,7 @@ public class Weather {
 		String url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
 		url += "?serviceKey=LV1haHMzhSQa4G%2Fy3Z9xbZ9hC9LKdHt3g2Z4M5SQwQVcGxx6M7HRJqVs30pL9H4MdL7POcjH78%2FBspjr%2FNV1sw%3D%3D";
 		url += "&pageNo=1";
-		url += "&numOfRows=266";
+		url += "&numOfRows=290";
 		url += "&base_date=" + yesterday;
 		url += "&base_time=2300";
 		url += "&dataType=JSON";
@@ -132,16 +132,31 @@ public class Weather {
 		
 		HashMap<String, String> h = new HashMap<>();
 		
+		int setTmp = 0;
+		int setMin = 0;
+		int setMax = 0;
+		
+		String min = "";
+		String max = "";
+		
 		for(int i=0; i<list.size(); i++) {
 			
-			/* 일 최저 온도 */
-			if(list.get(i).getCategory().equals("TMN")) {
-				h.put("TMN", list.get(i).getFcstValue());
-			}
-			
-			/* 일 최고 온도 */
-			if(list.get(i).getCategory().equals("TMX")) {
-				h.put("TMX", list.get(i).getFcstValue());
+			/* 일 최저,최고기온 추출 */
+			if(list.get(i).getCategory().equals("TMP")) {
+				
+				setTmp = Integer.parseInt(list.get(i).getFcstValue());
+				
+				if(i != 0) {
+					if(setMin > setTmp) { //최저기온
+						min = list.get(i).getFcstValue();
+						setMin = setTmp;
+					}else if(setMax < setTmp){ //최고기온
+						max = list.get(i).getFcstValue();
+						setMax = setTmp;
+					}
+				}else {
+					setMin = setTmp;
+				}
 			}
 			
 			/* 하늘 상태 */
@@ -149,6 +164,9 @@ public class Weather {
 				h.put("SKY", list.get(i).getFcstValue());
 			}
 		}
+		
+		h.put("TMN", min);
+		h.put("TMX", max);
 		
 		return h; 
 	}
@@ -163,13 +181,18 @@ public class Weather {
 		String time = "";
 		String day = new SimpleDateFormat("yyyyMMdd").format(new Date());
 		
-		if(Integer.parseInt(d) < 1000 && Integer.parseInt(d2)<30) { //10:00 이전(즉 0?:00), ?시 30분전 처리
+		if(Integer.parseInt(d) < 1000) { //10:00 이전(즉 0?:00), ?시 30분전 처리
 			if(Integer.parseInt(f) == 0) { //00시일 경우 어제일자로 변경
 				day = yesterday();
 				time = "2330";
+			}else {
+				if(Integer.parseInt(d2) < 30) {
+					time = Integer.parseInt(f)-1 + "30";
+					time = "0" + time;
+				}else {
+					time = f + "00";
+				}
 			}
-			time = Integer.parseInt(f)-1 + "30";
-			time = "0" + time;
 		}else { //10:00 이후
 			if(Integer.parseInt(d2) < 30) { //??시 30분전 처리
 				int a = Integer.parseInt(f)-1;
@@ -281,10 +304,12 @@ public class Weather {
 					resultSky = "비";
 					img = "<img src='resources/icon/rain.png'>";
 				break;
+			case 6 : 
 			case 2 : 
 					resultSky = "비/눈";
 					img = "<img src='resources/icon/snowRain.png'>";
 				break;
+			case 7 : 
 			case 3 :
 					resultSky = "눈";
 					img = "<img src='resources/icon/snow.png'>";
