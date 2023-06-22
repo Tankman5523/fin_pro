@@ -10,6 +10,7 @@ import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
+import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.vo.Professor;
@@ -259,5 +260,12 @@ public interface MemberService {
 	
 	// (관리자) 강의평가 문항별 평균 점수 조회
 	ClassRating classRatingAverage(ClassRating cr);
+
+	//(교수) 안식,퇴직 신청 목록 가져오기
+	ArrayList<ProfessorRest> selectRestListPro(String professorNo);
+
+	//(교수) 안식,퇴직 신청 등록
+	int insertProRest(ProfessorRest pr);
+
 
 }

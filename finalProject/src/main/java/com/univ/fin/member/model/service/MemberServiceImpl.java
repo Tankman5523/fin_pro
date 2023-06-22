@@ -14,6 +14,7 @@ import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
+import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.dao.MemberDao;
@@ -690,6 +691,21 @@ public class MemberServiceImpl implements MemberService{
 	public ClassRating classRatingAverage(ClassRating cr) {
 		return memberDao.classRatingAverage(sqlSession,cr);	
 		
+	}
+
+	//(교수) 안식,퇴직 신청 등록
+	@Override
+	public int insertProRest(ProfessorRest pr) {
+		int result = memberDao.insertProRest(sqlSession,pr);
+		return result;
+	}
+
+	//(교수) 안식,퇴직 신청 목록 가져오기
+	@Override
+	public ArrayList<ProfessorRest> selectRestListPro(String professorNo) {
+		ArrayList<ProfessorRest> list = memberDao.selectRestListPro(sqlSession,professorNo);
+		
+		return list;
 	}
 	
 }

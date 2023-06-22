@@ -109,7 +109,6 @@ public class AdminController {
 	@RequestMapping(value="classSearchList.ad",produces="application/json; charset = UTF-8")
 	public String selectSearchClassList(Classes c,String category,String keyword) {
 		
-		
 		if(!keyword.equals("")) {
 			switch(category) {//검색 카테고리에 따라 키워드 담기
 			case "professor": c.setProfessorNo(keyword);

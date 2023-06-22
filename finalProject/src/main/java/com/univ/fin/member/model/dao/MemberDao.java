@@ -15,6 +15,7 @@ import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Department;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
+import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.vo.Professor;
@@ -499,6 +500,18 @@ public class MemberDao {
 	// (관리자) 강의평가 문항별 평균 점수 조회
 	public ClassRating classRatingAverage(SqlSessionTemplate sqlSession, ClassRating cr) {
 		return sqlSession.selectOne("memberMapper.classRatingAverage", cr);
+	}
+
+	//(교수) 안식,퇴직 신청 등록
+	public int insertProRest(SqlSessionTemplate sqlSession, ProfessorRest pr) {
+		
+		return sqlSession.insert("memberMapper.insertProRest",pr);
+	}
+
+	//(교수) 안식,퇴직 신청 목록 가져오기
+	public ArrayList<ProfessorRest> selectRestListPro(SqlSessionTemplate sqlSession, String professorNo) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.selectRestListPro",professorNo);
 	}
 
 }
