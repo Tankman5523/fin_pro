@@ -1102,7 +1102,7 @@
   	
   	<insert id="insertStudent">
   	INSERT INTO STUDENT (STUDENT_NO, DEPARTMENT_NO, COLLEGE_NO, ENTRANCE_DATE, STUDENT_NAME, STUDENT_PWD, PHONE, EMAIL, POST, ADDRESS,CLASS_LEVEL)
-	VALUES (('P'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_SNO.NEXTVAL,4,0)),(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
+	VALUES (('S'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_SNO.NEXTVAL,4,0)),(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
   	</insert>
   	
   	<select id="studentGradeReport" resultType="Dissent"> 
