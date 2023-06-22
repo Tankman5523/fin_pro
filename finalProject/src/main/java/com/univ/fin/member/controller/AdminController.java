@@ -1,18 +1,18 @@
-package com.univ.fin.member.controller;
+	package com.univ.fin.member.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.univ.fin.common.model.vo.Attachment;
+import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Student;
@@ -58,10 +58,10 @@ public class AdminController {
 		
 		ArrayList<Classes> list = memberService.selectClassList();
 		
-		ArrayList<Attachment> alist = memberService.selectClassAttachment();
+		//ArrayList<Attachment> alist = memberService.selectClassAttachment();
 		
 		model.addAttribute("list",list);
-		model.addAttribute("alist",alist);
+		//model.addAttribute("alist",alist);
 		
 		return "member/admin/ad_class_list";
 	}
@@ -70,12 +70,7 @@ public class AdminController {
 	@RequestMapping("permitAllClassCreate.ad")
 	public String updateClassPermitAll(int cArr[]) {
 			
-			
-		String cnoArr = Arrays.toString(cArr);//강의 번호 배열 스트링으로 바꿈
-			
-		String cno = cnoArr.replaceAll("\\[", "").replaceAll("\\]", "");// 중괄호 뺌
-			
-		int result = memberService.updateClassPermitAll(cno);
+		int result = memberService.updateClassPermitAll(cArr);
 			
 		if(result>0) {//업데이트(개설승인) 성공
 				
@@ -103,6 +98,33 @@ public class AdminController {
 		int result = memberService.updateClassReject(c);
 			
 		return "redirect:classManagePage.ad";
+	}
+	
+	//강의 관리 검색
+	@ResponseBody
+	@RequestMapping(value="classSearchList.ad",produces="application/json; charset = UTF-8")
+	public String selectSearchClassList(Classes c,String category,String keyword) {
+		
+		System.out.println("검색정보"+c);
+		System.out.println("카테고리"+category);
+		System.out.println("검색키워드"+keyword);
+		
+		if(!keyword.equals("")) {
+			System.out.println("들어옴");
+			switch(category) {//검색 카테고리에 따라 키워드 담기
+			case "professor": c.setProfessorNo(keyword);
+			break;
+			case "class": c.setClassName(keyword);
+			break;
+			case "department": c.setDepartmentNo(keyword);
+			break;
+			}
+		}
+		
+		ArrayList<Classes> list = memberService.selectClassListSearch(c);
+		
+		
+		return new Gson().toJson(list);
 	}
 
 }

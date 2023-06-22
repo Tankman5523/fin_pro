@@ -77,9 +77,6 @@ public class ProfessorController {
 		
 		c.setProfessorNo(p.getProfessorNo()); //교수 직번 담기
 		c.setDepartmentNo(p.getDepartmentNo()); //학과명 담기
-		System.out.println(c);
-		System.out.println(upfile);
-		
 		
 		if(!upfile.getOriginalFilename().equals("")) {//첨부파일이 있다면
 			String changeName = new SaveFile().saveFile(upfile, session); //파일 이름 바꾸고, 저장하고 옴
@@ -90,7 +87,7 @@ public class ProfessorController {
 			a.setOriginName(upfile.getOriginalFilename()); //파일 원래 이름
 			a.setChangeName(changeName); //파일 변경명
 			a.setFilePath(filePath); //파일 저장 경로
-			System.out.println(a);
+			
 			int result = memberService.insertClassCreate(c,a);
 			
 			if(result>0) {//작성 성공
@@ -107,6 +104,65 @@ public class ProfessorController {
 		}
 		
 		return  mv;
+	}
+	
+	//강의 개설 반려일때 수정 페이지 이동
+	@RequestMapping("updateClassCreate.pr")
+	public String selectRejectedClass(int classNo,Model model) {
+		
+		//수정할 강의 정보 가져오기
+		Classes c = memberService.selectRejectedClass(classNo);
+		Attachment a= null;
+		if(c.getFileNo()!=null) {//강의계획서가 없는게 아니면
+			//수정할 강의 첨부파일 가져오기
+			a = memberService.selectRejectedClassAtt(c.getFileNo());
+			
+		}
+		//모델에 담아 보내기
+		model.addAttribute("c",c);
+		model.addAttribute("a",a);
+		
+		return "member/professor/pro_class_update";
+	}
+	
+	//강의 개설 수정 업데이트
+	@RequestMapping(value="classCreateUpdate.pr")
+	public String classCreateUpdate(Classes c,String originFileName
+			,@RequestParam(value="reUpfile",required = false)MultipartFile reUpfile,HttpSession session) {
+		
+		Attachment a = null;
+		System.out.println(c);
+		System.out.println(originFileName);
+		if(!reUpfile.getOriginalFilename().equals("")) {//새로운 첨부파일이 있다면
+			System.out.println("새로운 첨부파일 있다.");
+			String changeName = new SaveFile().saveFile(reUpfile, session); //파일 이름 바꾸고, 저장하고 옴
+			String filePath = "resources/uploadFiles/"; //저장경로
+			
+			a = new Attachment();
+			
+			//첨부파일에 담기
+			a.setOriginName(reUpfile.getOriginalFilename()); //파일 원래 이름
+			a.setChangeName(changeName); //파일 변경명
+			a.setFilePath(filePath); //파일 저장 경로
+			
+			
+			if(c.getFileNo()!=null) {//기존 첨부파일이 있다면
+				System.out.println("기존 첨부파일 있다.");
+				a.setFileNo(Integer.parseInt(c.getFileNo()));//첨부파일에 기존 파일번호 담고
+				
+				new File(filePath+originFileName).delete(); //기존 첨부파일 삭제
+			}else {//기존 첨부파일이 없다면
+				System.out.println("기존 첨부파일 없다.");
+				//사실 강의계획서는 필수라 이런 경우는 없지만 혹시 모르니까
+			}
+		}
+		System.out.println(a);
+		System.out.println("업데이트 시작");
+		int result = memberService.updateClassCreate(c,a);
+		System.out.println("업데이트 끝.");
+		
+		
+		return "redirect:classCreateSelect.pr";
 	}
 	
 

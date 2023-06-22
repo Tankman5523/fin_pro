@@ -70,7 +70,7 @@
                                             	String year = ADate.substring(0,ADate.indexOf("-")); //상담신청날짜에서 년도만 가져오기
                                             		
                                             	if(!set.contains(year)){//년도가 중복된 년도가 아니라면
-                                            		set.add(year); //중복제거를 위해 set에 담고
+                                            		set.add(year); //중복제거를 위해 set에 담고 밑에 옵션 만듬
                                            %>
                                             	
                                             	<option value="<%=year%>"><%=year%></option>                                        
@@ -205,7 +205,7 @@
 						result = "<tr>"+"<td colspan='6'>상담내역이 없습니다.</td>"+"</tr>"
 					}else{					
 						for(var i=0; i<list.length; i++){
-							console.log(i);
+							console.log(list);
 							result += "<tr>"
 									+"<td style='display:none'>"+list[i].counselNo+"</td>"
 									+"<td>"+list[i].applicationDate+"</td>"

@@ -214,7 +214,7 @@ public class RegistController {
 		
 	}
 	
-	
+	/*
 	//@GetMapping("activate.rg") //나중에 스케줄러 고장나면 버튼으로 처리
 	//@Scheduled(cron = "0 0 10 * * *")//매일 아침 10시마다 실행
 	@Scheduled(cron = "9/60 * * * * *")//테스트용. 10초마다 실행
@@ -245,7 +245,7 @@ public class RegistController {
 			log.info("등록금 비활성화 실패 / 테스트중입니다.");
 		}
 	}
-	
+	*/
 	@GetMapping("allList.rg")
 	public String selectRegistPayAllPage() { //등록금 전부조회 페이지로
 		return "money/registPay/admin/admin_registPay_allList";

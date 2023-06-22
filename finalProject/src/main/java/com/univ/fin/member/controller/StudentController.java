@@ -435,6 +435,7 @@ public class StudentController {
 		map.put("endDate",endDate);
 			
 		ArrayList<Counseling> list = memberService.selectSearchCounseling(map);
+		System.out.println(list);
 		
 		return new Gson().toJson(list);
 		
