@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>반려 강의 수정</title>
 <style>
 	#class_enroll{
         width: 90%;
@@ -40,16 +40,16 @@
             <div id="content_1">
 				<h3>강의개설 신청</h3>
                 <div style="border-top:1px solid black">
-                    <form action="classCreateInsert.pr" method="POST" enctype="multipart/form-data">
-                        
+                    <form action="classCreateUpdate.pr" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="classNo" value="${c.classNo}">
                         <table id="class_enroll">
                             <tr>
                                 <td>개설학과 </td>
-                                <td><input type="text" value="${loginUser.departmentNo }" disabled></td>
+                                <td><input type="text" value="${c.departmentNo }" disabled></td>
                                 <td>교수명</td>
-                                <td><input type="text" value="${loginUser.professorName }" disabled></td>
+                                <td><input type="text" value="${c.professorNo }" disabled></td>
                                 <td>*강의명</td>
-                                <td><input type="text"  name="className" placeholder="최대 16글자" required></td>
+                                <td><input type="text"  name="className" value="${c.className }" placeholder="최대 16글자"></td>
                             </tr>
                             <tr>
                                 <td>전공여부</td>
@@ -66,15 +66,15 @@
                                     </select>
                                 </td>
                                 <td>*수강인원</td>
-                                <td><input type="text" name="classNos"  maxlength="2" placeholder="ex)20 숫자만 입력" required></td>
+                                <td><input type="text" name="classNos"  maxlength="2" placeholder="ex)20" value="${c.classNos}"></td>
                             </tr>
                             <tr>
                                 <td>학년도</td>
-                                <td><select name="classYear"  id="classYear"></select></td>
+                                <td><input type="text" name="classYear" value="${c.classYear}" readonly></td>
                                 <td>학기</td>
-                                <td><select name="classTerm"  id="classTerm"></select></td>
+                                <td><input type="text" name="classTerm" value="${c.classTerm}" readonly></td>
                                 <td>*강의실</td>
-                                <td><input type="text" name="classroom"  placeholder="ex)태양관 101호" required></td>
+                                <td><input type="text" name="classroom" value="${c.classroom}"  placeholder="ex)태양관 101호"></td>
                             </tr>
                             <tr>
                                 <td>요일</td>
@@ -89,7 +89,7 @@
                                 </td>
                                 <td>교시</td>
                                 <td>
-                                    <select name="period"  onchange="changePeriod(this)">
+                                    <select name="period" id="period"  onchange="changePeriod(this)">
                                         <option value="1">1교시</option>
                                         <option value="2">2교시</option>
                                         <option value="3">3교시</option>
@@ -113,7 +113,7 @@
                             <tr>
                                 <td>수강대상</td>
                                 <td>
-                                    <select name="classLevel" >
+                                    <select name="classLevel" id="classLevel">
                                         <option value="0">전학년</option>
                                         <option value="1">1학년</option>
                                         <option value="2">2학년</option>
@@ -122,10 +122,23 @@
                                     </select>
                                 </td>
                                 <td>첨부파일</td>
-                                <td colspan="2"><input type="file" name="upfile" required></td>
-                                
+                                <td colspan="2">
+                                	<c:if test="${not empty a}">
+                        				<a href="${a.filePath}${a.changeName}" download="${a.changeName}">${a.originName}</a>
+                        				<input type="hidden" name="fileNo" value="${a.fileNo}">
+                        				<input type="hidden" name="originFileName" value="${a.changeName}">
+                        			</c:if>
+                                	<input type="file" name="reUpfile">
+                                </td>
+                            </tr>
+                            <tr>
+                            	<td>반려사유</td>
+                            	<td colspan="5">
+                            		<textarea rows="2" cols="115" style="resize:none;" readonly>${c.explain }</textarea>
+                            	</td>
                             </tr>
                         </table>
+                        
                         <div style="text-align:center">
                         	<button type="submit" class="btn btn-primary">신청</button>
                         </div>
@@ -136,22 +149,27 @@
     </div>
     <script>
         $(document).ready(function(){//신청날짜에 따라 자동으로 학년도,학기 입력
-            var today = new Date(); //오늘 날짜 가져옴
-            var now = new Date(today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate()); //오늘기준 월-일
-            var year = today.getFullYear();//학년도에 붙일 연도 가져옴
-            //var one = new Date("1-1");  
-            var two = new Date(today.getFullYear()+"-"+"6-30"); //2학기 신청기준, 학사일정 생기면 대체 가능
-            var select = document.querySelector("#classTerm");//학기 가져옴
-            var classYear = document.querySelector("#classYear");//학년도 가져옴
-        
-            if(now.getTime()>two.getTime()){ //2학기 신청기준이 넘었으면(getTime은 시간끼리 >비교하게 해줌)
-                select.options[select.options.length]=new Option("1학기",1);
-                classYear.options[classYear.options.length]=new Option((year+1+"년"),year+1);
-            }else{
-                select.options[select.options.length]=new Option("2학기",2);
-                classYear.options[classYear.options.length]=new Option((year+"년"),year);
-            };
-            $("#division").val(0).trigger("change");//기본으로 전공 골라져있으니 전공옵션띄우기
+            var division = ${c.division}; //전공(0),교양(1)
+            var credit = ${c.credit}; //이수학점 전공이면 3학점, 교양은 2 or 1학점
+            var day = "${c.day}"; //수업 요일
+            var period = "${c.period}"; //수업 교시
+            var classHour = ${c.classHour}; //수업 시간 1 or 2 시간
+            var classLevel = ${c.classLevel}; //수업대상 학년 0이면 전학년
+            
+            console.log("교시"+period);
+            console.log("수업대상"+classLevel);
+            
+            $("#division").val(division).trigger("change");//전공 or 교양 선택
+            if(division == 1){//만약 교양이면 1학점 or 2학점 선택해야함
+            	$("#credit").val(credit).prop("selected",true);
+            }
+            $("#day").val(day).prop("selected",true);
+            $("#period").val(period).prop("selected",true);
+            $("#classHour").val(classHour).prop("selected",true);
+            $("#classLevel").val(classLevel).prop("selected",true);
+            
+            //$("#division").val(division).prop("selected",true);
+        	
         })
         
         function changeDivision(target){ //전공or교양 고른거에 따라 학점 옵션 바꿔주기
