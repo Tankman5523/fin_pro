@@ -647,5 +647,11 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.classRatingAverage(sqlSession,cr);	
 		
 	}
+
+	// (교수) 상담조회
+	@Override
+	public ArrayList<Counseling> professorSelectCounseling(HashMap<String, String> counselMap) {
+		return memberDao.professorSelectCounseling(sqlSession, counselMap);
+	}
 	
 }

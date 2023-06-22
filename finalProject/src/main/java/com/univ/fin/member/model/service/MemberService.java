@@ -244,5 +244,8 @@ public interface MemberService {
 	
 	// (관리자) 강의평가 문항별 평균 점수 조회
 	ClassRating classRatingAverage(ClassRating cr);
+	
+	// (교수) 상담조회교수 상담조회
+	ArrayList<Counseling> professorSelectCounseling(HashMap<String, String> counselMap);
 
 }
