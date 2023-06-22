@@ -175,6 +175,7 @@
   		<result column="MAJOR_CLASS" property="majorClass"/>
   	</resultMap>
   	
+<<<<<<< HEAD
   	<!-- 안식,퇴직 테이블 -->
   	<resultMap type="professorRest" id="professorRestResultSet">
   		<result column="REST_NO" property="restNo"/>
@@ -185,6 +186,20 @@
   		<result column="END_DATE" property="endDate"/>
   		<result column="REASON" property="reason"/>
   		<result column="STATUS" property="status"/>
+=======
+  	<resultMap type="calendar" id="calendarResultMap">
+  		<result column="CALENDAR_NO" property="calendarNo"/>
+  		<result column="CONTENT" property="content"/>
+  		<result column="START_DATE" property="startDate"/>
+  		<result column="END_DATE" property="endDate"/>
+  	</resultMap>
+  	
+  	<resultMap type="hashmap" id="calendarList">
+  		<result column="CALENDAR_NO" property="calendarNo"/>
+  		<result column="CONTENT" property="title"/>
+  		<result column="START_DATE" property="start"/>
+  		<result column="END_DATE" property="end"/>
+>>>>>>> 4dab4fcbe5d7501e8feb38cc532bf4d306cf320b
   	</resultMap>
   	
   	<!-- 학생 로그인 -->
@@ -1003,6 +1018,7 @@
   	<update id="updateClassPermitAll">
   		UPDATE CLASS
   		SET STATUS = 'Y'
+<<<<<<< HEAD
   		WHERE CLASS_NO IN 
   		<foreach collection="array" item="arr" open="(" close=")" separator=",">
  			#{arr}
@@ -1015,6 +1031,9 @@
   		UPDATE CLASS
   		SET STATUS = 'Y'
   		WHERE CLASS_NO = #{cno}
+=======
+  		WHERE CLASS_NO IN (#{cno})
+>>>>>>> 4dab4fcbe5d7501e8feb38cc532bf4d306cf320b
   	</update>
   	
   	<!-- 강의개설 반려 (관리자) -->
@@ -1115,8 +1134,21 @@
   	
   	<insert id="insertStudent">
   	INSERT INTO STUDENT (STUDENT_NO, DEPARTMENT_NO, COLLEGE_NO, ENTRANCE_DATE, STUDENT_NAME, STUDENT_PWD, PHONE, EMAIL, POST, ADDRESS,CLASS_LEVEL)
-	VALUES (SEQ_SNO.NEXTVAL,(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
+	VALUES (('S'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_SNO.NEXTVAL,4,0)),(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
   	</insert>
+  	
+  	<select id="studentGradeReport" resultType="Dissent"> 
+  	SELECT C.CLASS_NAME, C.CLASS_NO, P.PROFESSOR_NAME, C.CREDIT, D.REASON
+	FROM DISSENT D
+	JOIN CLASS C ON D.CLASS_NO = C.CLASS_NO
+	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
+	WHERE D.STUDENT_NO = #{student_no}
+  	</select>
+  	
+  	<insert id="insertProfessor">
+  	INSERT INTO PROFESSOR(PROFESSOR_NO, DEPARTMENT_NO, COLLEGE_NO, PROFESSOR_NAME, PROFESSOR_PWD, POSITION, ENTRANCE_DATE, PHONE, EMAIL, POST, ADDRESS, ACCOUNT_NO, ADMIN)
+  	VALUES (('P'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_PNO.NEXTVAL,4,0)), (SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{professorName}, #{professorPwd}, #{position}, #{entranceDate}, #{phone}, #{email}, #{post}, #{address}, #{accountNo}, #{admin})
+	</insert>
   	
   	<!-- 학기별 성적 조회 -> 학기별 성적 계산 -->
   	<select id="calculatedGrade" parameterType="hashmap" resultMap="termGradeHashMap">
@@ -1299,6 +1331,18 @@
   	<insert id="insertProRest">
   		INSERT INTO PROFESSOR_REST (REST_NO,PROFESSOR_NO,CATEGORY,START_DATE,END_DATE,REASON)
   		VALUES(SEQ_PRNO.NEXTVAL,#{professorNo},#{category},#{startDate},#{endDate},#{reason})
+  		
+  	<!-- 학사일정 관리 -> 학사일정 조회 -->
+  	<select id="calendarList" resultMap="calendarList">
+  		SELECT CALENDAR_NO, CONTENT, TO_CHAR(START_DATE, 'YYYY-MM-DD') AS START_DATE, TO_CHAR(END_DATE+1, 'YYYY-MM-DD') AS END_DATE
+  		FROM CALENDAR
+  	</select>
+  	
+  	<!-- 학사일정 관리 -> 학사일정 추가 -->
+  	<insert id="insertCalendar">
+  		INSERT INTO CALENDAR VALUES(SEQ_CALNO.NEXTVAL, #{content}
+  				, TO_DATE(SUBSTR(#{startDate}, 0, 10)||SUBSTR(#{startDate}, 12), 'YYYY-MM-DD HH24:MI')
+  				, TO_DATE(SUBSTR(#{endDate}, 0, 10)||SUBSTR(#{endDate}, 12), 'YYYY-MM-DD HH24:MI'))
   	</insert>
   </mapper>
 

@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.Calendar;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.ProfessorRest;
@@ -556,6 +558,23 @@ public class MemberServiceImpl implements MemberService{
 		return cList;
 	}
 
+
+	@Override
+	public ArrayList<Dissent> studentGradeReport(String studentNo) {
+		ArrayList<Dissent> list = memberDao.studentGradeReport(sqlSession,studentNo);
+		
+		return list;
+	}
+
+	@Override
+	public int insertProfessor(Professor pr) {
+		
+		int result = memberDao.insertProfessor(sqlSession,pr);
+		
+		return result;
+	}
+
+
 	// (관리자)강의개설 일괄 승인
 	@Override
 	public int updateClassPermitAll(int[] cArr) {
@@ -708,4 +727,16 @@ public class MemberServiceImpl implements MemberService{
 		return list;
 	}
 	
+	// 학사일정 관리 -> 학사일정 조회
+	@Override
+	public ArrayList<HashMap<String, String>> calendarList() {
+		return memberDao.calendarList(sqlSession);
+	}
+
+	// 학사일정 관리 -> 학사일정 추가
+	@Override
+	public int insertCalendar(Calendar c) {
+		return memberDao.insertCalendar(sqlSession, c);
+	}
+
 }

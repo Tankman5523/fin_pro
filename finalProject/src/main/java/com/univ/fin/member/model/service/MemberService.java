@@ -5,9 +5,11 @@ import java.util.HashMap;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.Calendar;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.ProfessorRest;
@@ -205,6 +207,13 @@ public interface MemberService {
 	// 성적관리 -> 성적 수정
 	int gradeUpdate(Grade g);
 
+
+	// 강의 이의제기 -> 학생 신청
+	ArrayList<Dissent> studentGradeReport(String studentNo);
+
+	// 직원 생성하기
+	int insertProfessor(Professor pr);
+
 	// (관리자)강의개설 일괄 승인
 	int updateClassPermitAll(int[] cArr);
 
@@ -267,5 +276,11 @@ public interface MemberService {
 	//(교수) 안식,퇴직 신청 등록
 	int insertProRest(ProfessorRest pr);
 
+
+	// 학사일정 관리 -> 학사일정 조회
+	ArrayList<HashMap<String, String>> calendarList();
+
+	// 학사일정 관리 -> 학사일정 추가
+	int insertCalendar(Calendar c);
 
 }

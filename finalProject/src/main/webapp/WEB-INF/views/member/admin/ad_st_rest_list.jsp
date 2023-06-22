@@ -4,9 +4,63 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>학생 휴/복학 신청 승인 페이지</title>
 </head>
 <body>
+	<div class="wrap">
+    	<%@include file="../../common/admin_menubar.jsp" %> <%--알아서 수정해서 쓰기 --%> 
+        <div id="content">
+            <div id="category">
+                <div id="cate_title">
+                    <span style="margin: 0 auto;">큰제목</span>
+                </div>
+                <div class="child_title">
+                    <a href="#">소제목</a>
+                </div>
+            </div>
+            <div id="content_1">
+				<h4>휴복학 신청 조회</h4>
+                <div style="border-top:1px solid;" align="center">
 
+                    <table border="1" style="width:90%; text-align: center; margin-top:5%;">
+                        <thead>
+                            <tr>
+                            	<th>신청일</th>
+                                <th>학번</th>
+                                <th>신청 목적</th>
+                                <th>사유</th>
+                                <th>시작일</th>
+                                <th>복학예정일</th>
+                                <th>처리여부</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        	<c:choose>
+                        		<c:when test="${not empty list }">
+		                        	<c:forEach var="c" items="${list }">
+			                        	<tr>
+			                        		<td>${c.requestDate }</td>                            
+			                                <td>${c.studentNo }</td>
+			                                <td>${c.category }</td>
+			                                <td>${c.reason }</td>
+			                                <td>${c.startDate }</td>
+			                                <td>${c.endDate }</td>
+			                                <td>${c.status }</td>
+			                            </tr>
+		                        	</c:forEach>
+                        		</c:when>
+                        		<c:otherwise>
+                        			<tr>
+                        				<td colspan="7">신청 내역이 없습니다.</td>
+                        			</tr>
+                        		</c:otherwise>
+                        	</c:choose>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

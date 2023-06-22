@@ -9,10 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.Calendar;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Department;
+import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.ProfessorRest;
@@ -371,6 +373,19 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectClassAttList");
 	}
 
+
+	//강의 이의제기 - 학생
+	public ArrayList<Dissent> studentGradeReport(SqlSessionTemplate sqlSession, String studentNo) {
+
+		return (ArrayList)sqlSession.selectList("memberMapper.studentGradeReport");
+		
+	}
+	
+	//임직원 생성
+	public int insertProfessor(SqlSessionTemplate sqlSession, Professor pr) {
+		
+	return sqlSession.insert("memberMapper.insertProfessor",pr);
+	}
 	// (관리자)강의개설 일괄 승인
 	public int updateClassPermitAll(SqlSessionTemplate sqlSession, int[] cArr) {
 		
@@ -502,6 +517,7 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.classRatingAverage", cr);
 	}
 
+<<<<<<< HEAD
 	//(교수) 안식,퇴직 신청 등록
 	public int insertProRest(SqlSessionTemplate sqlSession, ProfessorRest pr) {
 		
@@ -512,6 +528,16 @@ public class MemberDao {
 	public ArrayList<ProfessorRest> selectRestListPro(SqlSessionTemplate sqlSession, String professorNo) {
 		
 		return (ArrayList)sqlSession.selectList("memberMapper.selectRestListPro",professorNo);
+=======
+	// 학사일정 관리 -> 학사일정 조회
+	public ArrayList<HashMap<String, String>> calendarList(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.calendarList");
+	}
+
+	// 학사일정 관리 -> 학사일정 추가
+	public int insertCalendar(SqlSessionTemplate sqlSession, Calendar c) {
+		return sqlSession.insert("memberMapper.insertCalendar", c);
+>>>>>>> 4dab4fcbe5d7501e8feb38cc532bf4d306cf320b
 	}
 
 }
