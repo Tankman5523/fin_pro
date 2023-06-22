@@ -1005,17 +1005,7 @@
   	<update id="updateClassPermitAll">
   		UPDATE CLASS
   		SET STATUS = 'Y'
-  		WHERE CLASS_NO IN 
-  		<foreach collection="array" item="arr" open="(" close=")" separator=",">
- 			#{arr}
-		</foreach>
-  	</update>
-  	
-  	<!-- 강의개설 개별승인(관리자) -->
-  	<update id="updateClassPermit">
-  		UPDATE CLASS
-  		SET STATUS = 'Y'
-  		WHERE CLASS_NO = #{cno}
+  		WHERE CLASS_NO IN (#{cno})
   	</update>
   	
   	<!-- 강의개설 반려 (관리자) -->
@@ -1314,5 +1304,14 @@
   				, TO_DATE(SUBSTR(#{startDate}, 0, 10)||SUBSTR(#{startDate}, 12), 'YYYY-MM-DD HH24:MI')
   				, TO_DATE(SUBSTR(#{endDate}, 0, 10)||SUBSTR(#{endDate}, 12), 'YYYY-MM-DD HH24:MI'))
   	</insert>
+  	
+  	<!-- 학사일정 관리 -> 학사일정 수정 -->
+  	<update id="updateCalendar">
+  		UPDATE CALENDAR
+  		SET CONTENT = #{content}
+  		  , START_DATE = TO_DATE(SUBSTR(#{startDate}, 0, 10)||SUBSTR(#{startDate}, 12), 'YYYY-MM-DD HH24:MI')
+  		  , END_DATE = TO_DATE(SUBSTR(#{endDate}, 0, 10)||SUBSTR(#{endDate}, 12), 'YYYY-MM-DD HH24:MI')
+  		WHERE CALENDAR_NO = #{calendarNo}
+  	</update>
   </mapper>
 

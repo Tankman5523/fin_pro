@@ -232,7 +232,22 @@ public class AdminController {
 			session.setAttribute("alertMsg", "학사일정이 추가되었습니다.");
 		}
 		else {
-			session.setAttribute("alertMsg", "학사일정이 추가에 실패하셨습니다.");
+			session.setAttribute("alertMsg", "학사일정 추가에 실패하셨습니다.");
+		}
+		
+		return "redirect:calendarView.ad";
+	}
+	
+	// 학사일정 관리 -> 학사일정 수정
+	@PostMapping("updateCalendar.ad")
+	public String updateCalendat(Calendar c, HttpSession session) {
+		int result = memberService.updateCalendar(c);
+		
+		if(result > 0) {
+			session.setAttribute("alertMsg", "학사일정이 수정되었습니다.");
+		}
+		else {
+			session.setAttribute("alertMsg", "학사일정 수정에 실패하셨습니다.");
 		}
 		
 		return "redirect:calendarView.ad";

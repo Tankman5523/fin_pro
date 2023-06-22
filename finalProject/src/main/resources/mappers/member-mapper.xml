@@ -1304,5 +1304,14 @@
   				, TO_DATE(SUBSTR(#{startDate}, 0, 10)||SUBSTR(#{startDate}, 12), 'YYYY-MM-DD HH24:MI')
   				, TO_DATE(SUBSTR(#{endDate}, 0, 10)||SUBSTR(#{endDate}, 12), 'YYYY-MM-DD HH24:MI'))
   	</insert>
+  	
+  	<!-- 학사일정 관리 -> 학사일정 수정 -->
+  	<update id="updateCalendar">
+  		UPDATE CALENDAR
+  		SET CONTENT = #{content}
+  		  , START_DATE = TO_DATE(SUBSTR(#{startDate}, 0, 10)||SUBSTR(#{startDate}, 12), 'YYYY-MM-DD HH24:MI')
+  		  , END_DATE = TO_DATE(SUBSTR(#{endDate}, 0, 10)||SUBSTR(#{endDate}, 12), 'YYYY-MM-DD HH24:MI')
+  		WHERE CALENDAR_NO = #{calendarNo}
+  	</update>
   </mapper>
 
