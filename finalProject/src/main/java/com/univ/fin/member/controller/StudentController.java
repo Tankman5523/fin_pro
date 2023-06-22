@@ -1,5 +1,7 @@
 package com.univ.fin.member.controller;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -8,7 +10,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,11 +22,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
+import com.univ.fin.common.template.ChatBot;
 import com.univ.fin.common.template.DepartmentCategory;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
@@ -39,6 +42,27 @@ public class StudentController {
 
 	@Autowired
 	private MemberService memberService;
+	
+	//챗봇
+	@ResponseBody
+	@RequestMapping(value = "chatBot.cb", produces = "application/json; charset=UTF-8")
+	public String chatBot(String question,@RequestParam(value = "num", defaultValue = "0") int num) {
+		String result = "";
+		
+		ChatBot c = new ChatBot();
+		if(num == 0) {
+			if(question != "") {
+				result = c.answer(question);
+			}else {
+				result = "<div>뭐가 문제야 쎄이 썸띵?</div><br>";
+				result += c.select();
+			}
+		}else {
+			result += c.detailSelect(num);
+		}
+		
+		return new Gson().toJson(result);
+	}
 	
 	//수강신청 폼
 	@RequestMapping("registerClassForm.st")
@@ -103,7 +127,6 @@ public class StudentController {
 										 .professorName(rc.getProfessorName()) //교수명
 										 .className(rc.getClassName()) //과목명
 										 .studentNo(rc.getStudentNo()) //학번 
-										 .studentLevel(rc.getStudentLevel()) //학생 학년
 										 .build();
 		
 		ArrayList<RegisterClass> list = memberService.preRegClass(rc2);
@@ -164,7 +187,6 @@ public class StudentController {
 										 .professorName(rc.getProfessorName()) //교수명
 										 .className(rc.getClassName()) //과목명
 										 .studentNo(rc.getStudentNo()) //학번 
-										 .studentLevel(rc.getStudentLevel()) //학생 학년
 										 .build();
 		
 		ArrayList<RegisterClass> list = memberService.postRegClass(rc2);
@@ -275,13 +297,7 @@ public class StudentController {
 		
 		return new Gson().toJson(list);
 	}
-	
-	// 수강신청 - 학기별 성적 조회
-	@RequestMapping("classManagement.st")
-	public String student_classManagement() {
-		return "member/student/gradeListView";
-	}
-	
+
 	// 수강신청 - 강의시간표
 	@RequestMapping("classListView.st")
 	public ModelAndView classListView(ModelAndView mv) {
@@ -642,6 +658,87 @@ public class StudentController {
 		return "redirect:studentRestList.st";
 	}
 	
-
+	// 수업관리 - 학기별 성적 조회
+	@RequestMapping("classManagement.st")
+	public ModelAndView classManagement(ModelAndView mv, HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
+		
+		ArrayList<String> classTerm = memberService.selectStudentClassTerm(studentNo);
+		ArrayList<HashMap<String, String>> gList = new ArrayList<>();
+		for(int i=0;i<classTerm.size();i++) {
+			HashMap<String, String> map = new HashMap<>();
+			map.put("year", classTerm.get(i).substring(0, 4));
+			map.put("term", classTerm.get(i).substring(5,classTerm.get(i).length()));
+			map.put("studentNo", studentNo);
+			
+			HashMap<String, String> termGrade = memberService.calculatedGrade(map);
+			String termRank = memberService.calculatedTermRank(map); // 학기별석차
+			termGrade.put("termRank", termRank);
+			String totalRank = memberService.calculatedTotalRank(map); // 전체석차
+			termGrade.put("totalRank", totalRank);
+			
+			gList.add(termGrade);
+		}
+		HashMap<String, String> scoreAB = memberService.selectScoreAB(studentNo); // 증명신청학점, 증명취득학점
+		double scoreC = memberService.selectScoreC(studentNo); // 증명평점평균
+		double scoreD = memberService.selectScoreD(studentNo); // 증명산술평균
+		
+		mv.addObject("classTerm", classTerm).addObject("gList", gList).addObject("scoreAB", scoreAB)
+		.addObject("scoreC", scoreC).addObject("scoreD", scoreD).setViewName("member/student/gradeListView");
+		return mv;
+	}
 	
+	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
+	@ResponseBody
+	@RequestMapping(value="selectClassList.st",produces = "application/json; charset=UTF-8")
+	public String selectClassList(@RequestParam HashMap<String,String> map, HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
+		map.put("studentNo", studentNo);
+		
+		ArrayList<HashMap<String, String>> cList = memberService.selectClassList(map);
+		return new Gson().toJson(cList);
+	}
+	
+	//강의평가에 필요한 본인이 수강한 강의정보 셀렉트
+	@GetMapping("classRatingInfo.st")
+	public ModelAndView classInfoForRating(ModelAndView mv,HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		
+		//현재 날짜정보로 현재학기 , 년도 찾기
+		LocalDate now = LocalDate.now();
+		String classYear = Integer.toString(now.getYear());
+		int month = now.getMonthValue();
+		String classTerm = "";
+		
+		
+		if(month<2 && month>8) {
+			classTerm = "2";
+		}else{
+			classTerm = "1";
+		}
+		
+		ClassRating cr = ClassRating.builder()
+									.studentNo(st.getStudentNo())
+									.classTerm(classTerm)
+									.classYear(classYear)
+									.build();
+		
+		ArrayList<RegisterClass> list = memberService.classInfoForRating(cr);
+		mv.addObject("list", list).setViewName("member/student/classRating");
+		return mv;
+	}
+	
+	//강의별 강의평가 인서트 
+	@ResponseBody
+	@PostMapping(value="insertRating.st")
+	public String insertClassRating(ClassRating cr) {
+		int result = memberService.insertClassRating(cr);
+		if(result>0) {
+			return "Y";
+		}else {
+			return "N";
+		}
+	}
 }

@@ -93,10 +93,10 @@
 							slideBox.classList.remove('slideShow')
 							slideBox.style.left = '0px'
 							currentImg = 0
-						}, 3000)
+						}, 5000)
 						setTimeout(function(){
 							slideBox.classList.add('slideShow')
-						}, 3100)
+						}, 5100)
 						
 					}
 				}
@@ -107,7 +107,7 @@
 					if(timer == undefined){
 						timer = setInterval(function(){
 							moveSlide(currentImg + 1)
-						}, 3000)
+						}, 5000)
 					}
 				}
 				

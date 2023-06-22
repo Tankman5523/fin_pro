@@ -29,8 +29,8 @@
                 </div>
             </div>
             <div id="content_1">
-				<div style="width: 90%;height: 90%;margin: 5%;">
-                    <div>
+				<div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
+                    <div style="height:15%;">
                         <button onclick="location.href='allList.rg'">등록금 납부 현황</button> <button onclick="location.href='nonPaidList.rg'">미납금 조회</button>
                         <button onclick="location.href='insert.rg'">등록금 입력</button>
                         <hr>
@@ -38,8 +38,8 @@
                     </div>
                     
                     <br>
-                    <div>
-                        <table align="center" style="background-color: lightcoral;">
+                    <div style="height:85%;">
+                        <table align="center">
                             <tr>
                                 <td><label for="classYear">학년도</label></td>
                                 <td><input type="text" name="classYear" id="classYear" value="현재년도" readonly></td>
@@ -49,7 +49,7 @@
                             </tr>
                         </table>
                         <br>
-                        <table id="periodSetter" align="center" style="width:50%;">
+                        <table id="periodSetter" align="center" style="width:50%;overflow-y: auto;">
                         	 <tr>
                                 <td><label for="startDate">등록시작일</label></td>
                                 <td><input type="date" name="startDate" id="startDate" value=""></td>
@@ -62,11 +62,11 @@
                         <br>
                         <hr>
                         <div>
-                            <button id="insertAll">일괄생성</button> 조회결과 : <span id="countSearch"></span>
+                            <button id="insertAll">일괄생성</button> 조회결과  [ <span id="countSearch">0</span>건 ]
                             <br>
                             <br>
                             <table border="1"  id="studentList" style="text-align: center;width: 100%;">
-                                <thead style="background-color: antiquewhite;">
+                                <thead style='background-color: #4fc7ff;'>
                                 	<tr>
 	                                    <th><input type="checkbox" id="checkAll" name="checkAll"></th>
 	                                    <th>학번</th>
@@ -101,7 +101,7 @@
         			$("input:checkbox").prop("checked",false);
         		}
         	});
-    		
+    		//등록금 정보 일괄 생성
     		$("#insertAll").click(function(){
     			var control = confirm("체크한 등록금정보를 모두 생성하시겠습니까?");
    				var succ = 0;
@@ -174,7 +174,7 @@
     		$("#startDate").val(startDate);
     		$("#endDate").val(endDate);
     	});
-    	
+    	//등록금 생성 정보 일괄 조회 (이번학기 등록금 정보 없을시 생성가능)
     	function search(){
     		
     		var thisYear = $("#classYear").val();
@@ -189,11 +189,10 @@
     			},
     			success : function(list){
     				var count = list.length;
-    				$("#countSearch").html(count+" 건");
+    				$("#countSearch").text(count).css("color","blue");
     				var str = "";
-    				if(!list.isEmpty){
+    				if(list[0]!=null){
 	    				for(var i in list){
-	    					
 	    					var collegeRegAmount = list[i].classLevel; 
 	        				var schAmount = 0;
 	        				if(list[i].post!=null){
@@ -224,7 +223,7 @@
     		
     		});
     	}
-    	
+    	//등록금 정보 개별 생성
     	$(function(){
     		$("#studentList>tbody").on("click","button",function(){
     			var studentNo = $(this).parent().siblings().eq(1).text();

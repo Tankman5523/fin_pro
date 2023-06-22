@@ -29,7 +29,7 @@
 					${loginUser.professorName}님 환영합니다.
 		        </td>
 		        <td style="padding-left: 50px;">
-		            <button type="button" class="btn btn-primary" onclick="location.href='logout.me'">로그아웃</button>
+		            <button type="button" class="btn btn-primary" onclick="location.href='logout.me'" style="border-radius: 10px;">로그아웃</button>
 		        </td>
 		    </tr>
 		</table>
@@ -39,7 +39,7 @@
             <li><a href="#">홈</a></li>
             <li><a href="mylist.sl">급여관리</a></li>
             <li><a href="infoProfessor.pr">학사관리</a></li>
-            <li><a href="#">상담관리</a></li>
+            <li><a href="counselHistory.pr">상담관리</a></li>
             <li><a href="classCreateSelect.pr">강의관리</a></li>
             <li><a href="#">수업관리</a></li>
         </ul>

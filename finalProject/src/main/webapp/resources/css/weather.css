@@ -1,0 +1,76 @@
+#weather_area{
+    border: 1px solid rgb(59, 193, 255);
+    border-radius: 30px;
+    position: absolute;
+    width: 300px;
+    /* height: 172px; */
+    height: 200px;
+    top: 620px;
+    left: 285px;
+    padding: 10px;
+    display: flex;
+}
+
+#weather_icon{
+    position: relative;
+    width: 128px;
+    height: 128px;
+    left: 10px;
+}
+
+#weather_temp{
+    position: relative;
+    width: 120px;
+    height: 60px;
+    top: 25px;
+    margin-left: 15px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 45px;
+    color: black;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.508);
+}
+
+#weather_sky{
+    position: absolute;
+    width: 120px;
+    height: 30px;
+    left: 145px;
+    top: 95px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: black;
+    text-shadow: 0px 0px 1px black;
+}
+
+#weather_minMax{
+    position: absolute;
+    width: 275px;
+    height: 40px;
+    top: 125px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.3);
+}
+
+#weather_minMax span{
+    padding: 0px 5px 0px 5px;
+}
+
+#dustInfo{
+    position: absolute;
+    width: 275px;
+    height: 40px;
+    top: 154px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.3);
+}

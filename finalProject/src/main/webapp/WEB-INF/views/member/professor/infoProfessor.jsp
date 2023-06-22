@@ -146,10 +146,10 @@
                     <span style="margin: 0 auto;">학사관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="infoProfessor.pr">교수 정보 관리</a>
+                    <a href="infoProfessor.pr" style="color:#00aeff; font-weight: 550;">교수 정보 관리</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">강의 시간표</a>
+                    <a href="classListView.pr">강의 시간표</a>
                 </div>
 				<div class="child_title">
                     <a href="personalTimetable.pr">개인 시간표</a>

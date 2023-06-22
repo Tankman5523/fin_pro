@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div id="content_1">
-				<div style="width: 90%;height: 90%;margin: 5%;">
+				<div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
                     <div>
                         <button onclick="location.href='allList.rg'">등록금 납부 현황</button> <button onclick="location.href='nonPaidList.rg'">미납금 조회</button>
                         <button onclick="location.href='insert.rg'">등록금 입력</button>
@@ -58,7 +58,7 @@
                         <div class="listBody">
                         <table border="1" style="width: 100%;text-align: center;" id="registPayList">
                             <thead>
-                            	<tr>
+                            	<tr style='background-color: #4fc7ff;'>
 	                                <th><input type="checkbox" name="checkAll" id="checkAll"></th>
 	                                <th>납부일</th>
 	                                <th>학번</th>
@@ -78,7 +78,7 @@
                         </div>
                 
                         <script>
-                           	function selectRegistPay(){
+                           	function selectRegistPay(){ //등록금 납부정보 조회/검색
                            		$.ajax({
                            			url : "allList.rg",
                            			data : {
@@ -88,7 +88,7 @@
                            			method : "POST",
                            			success : function(list){
                            				var str = "";
-                           				if(!list.isEmpty){
+                           				if(list[0]!=null){
                            					for(var i in list){
                            						str +="<tr>"
                            							 +"<td><input type='checkbox' name='check' class='check'></td>"
@@ -96,11 +96,18 @@
                            							 +"<td>"+list[i].studentNo+"</td>"
                            							 +"<td>"+list[i].studentName+"</td>"
                            							 +"<td>"+list[i].inputPay+"</td>"
-                           							 +"<td>"+list[i].mustPay+"</td>"
-                           							 +"<td>"+list[i].payStatus+"</td>"
-                           							 +"<td>"+list[i].payAccountNo+"</td>"
-                           							 +"<td><button class='refundBtn'>환급</button><input type='hidden' name='regNo' id='regNo'></td>"
-                           							 +"</tr>"
+                           							 +"<td>"+list[i].mustPay+"</td>";
+                           							 
+                      							 if(list[i].payStatus=='O'){
+                       								 str+="<td>"+"금액초과"+"</td>"
+                       									+"<td>"+list[i].payAccountNo+"</td>"
+                       									+"<td><button class='refundBtn'>환급</button><input type='hidden' name='regNo' id='regNo'></td>";
+                       							 }else{
+                       								str+="<td>"+"입금완료"+"</td>"
+                   									+"<td>"+list[i].payAccountNo+"</td>"
+                   									+"<td><input type='hidden' name='regNo' id='regNo'></td>";
+                       							 }
+                           							str+="</tr>";
                            					}
                            				}else{
                            					str +="<tr><td colspan='9'>데이터가 없습니다.</td></tr>"
@@ -113,7 +120,7 @@
                            				
                            		});
                            	}
-                			
+                          	//일괄체크
                            	$(function(){
                            		$("#checkAll").click(function(){
                             		var allcheck = $("#checkAll").is(":checked");
@@ -124,19 +131,31 @@
                             			$("input:checkbox").prop("checked",false);
                             		}
                             	});
-                           		
+                           		//초과금 환급
                            		$(".refundBtn").on("click","button",function(){
-                           			var overValue = 0;
+                           			var inputPay = $(this).parent().siblings().eq(4).text();
+                           			var mustPay = $(this).parent().siblings().eq(5).text();
+                           			var overValue = inputPay - mustPay;
+                           			
+                           			var regNo = $(this).siblings().eq(0).val();
+                           			
                            			var control = comfirm("초과금액 "+overValue+"(원) 을 환급하시겠습니까?");
                            			
+                           			console.log(inputPay);
+                           			console.log(mustPay);
+                           			console.log(overvalue);
+                           			
+                           			console.log(regNo);
+                           			
+                           			/*
                            			$.ajax({
                            				url : "refund.rg",
                            				data : {
-                           					/*
+                           					
                            					inputPay : $(this),
                            					mustPay : $(this),
                            					regNo : $(this) 
-                           					*/
+                           				
                            				},
                            				success : function(result){
                            					if(result=='Y'){
@@ -148,7 +167,8 @@
                            				error : function(){
                            					alert("통신 오류");
                            				}
-                           			});
+                           			}); 
+                           			*/
                            		})
                            	});
                            	

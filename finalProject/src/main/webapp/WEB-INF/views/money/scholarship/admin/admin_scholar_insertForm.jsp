@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div id="content_1">
-				<div style="width: 90%;height: 90%;margin: 5%;">
+				<div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
                     <div>
                         <button onclick="location.href='allList.sc'">장학금수혜내역</button> <button onclick="location.href='insert.sc'">장학금 수여</button>
                         <hr>

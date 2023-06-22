@@ -1,8 +1,10 @@
 package com.univ.fin.main.model.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -56,6 +58,66 @@ public class MainDao {
 
 		return (ArrayList)sqlSession.selectList("mainMapper.selectGitaList");
 	}
+
+	//조회수 증가
+	public int increaseCount(SqlSessionTemplate sqlSession, int noticeNo) {
+
+		return sqlSession.update("mainMapper.increaseCount", noticeNo);
+	}
+
+	//게시글 상세 조회
+	public Notice selectNotice(SqlSessionTemplate sqlSession, int noticeNo) {
+		
+		return sqlSession.selectOne("mainMapper.selectNotice", noticeNo);
+	}
+
+	//공지사항 상세 조회 첨부파일
+	public ArrayList<Notice> selectFiles(SqlSessionTemplate sqlSession, int noticeNo) {
+		
+		return (ArrayList)sqlSession.selectList("mainMapper.selectFiles", noticeNo);
+	}
+
+	//FAQ 조회수 증가
+	public int increaseFaqCount(SqlSessionTemplate sqlSession, int faqNo) {
+		
+		return sqlSession.update("mainMapper.increaseFaqCount", faqNo);
+	}
+
+	//FAQ 상세 조회
+	public Notice selectFaq(SqlSessionTemplate sqlSession, int faqNo) {
+		
+		return sqlSession.selectOne("mainMapper.selectFaq", faqNo);
+	}
+
+	//검색 결과 수
+	public int searchListCount(SqlSessionTemplate sqlSession, HashMap<String, String> searchMap) {
+		
+		return sqlSession.selectOne("mainMapper.searchListCount", searchMap);
+	}
+	
+	//공지게시판 검색
+	public ArrayList<Notice> searchNotice(SqlSessionTemplate sqlSession, HashMap<String, String> searchMap, PageInfo pi) {
+	
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage()-1)*(pi.getBoardLimit());
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return (ArrayList)sqlSession.selectList("mainMapper.searchNotice", searchMap, rowBounds);
+	}
+
+	//종합정보시스템 공지사항
+	public ArrayList<Notice> infoNoticeList(SqlSessionTemplate sqlSession) {
+		
+		return (ArrayList)sqlSession.selectList("mainMapper.infoNoticeList");
+	}
+
+	//종합정보시스템 FAQ
+	public ArrayList<Notice> infoFaqList(SqlSessionTemplate sqlSession) {
+		 
+		return (ArrayList)sqlSession.selectList("mainMapper.infoFaqList");
+	}
+
+	
 
 	
 

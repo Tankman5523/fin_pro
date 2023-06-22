@@ -8,11 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.gson.Gson;
+import com.univ.fin.common.model.vo.Attachment;
+import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Student;
@@ -87,7 +91,7 @@ public class AdminController {
 	public int updateClassPermit(int cno) {
 		
 		int result = memberService.updateClassPermit(cno);
-			
+		
 		return result;
 	}
 		
@@ -105,12 +109,8 @@ public class AdminController {
 	@RequestMapping(value="classSearchList.ad",produces="application/json; charset = UTF-8")
 	public String selectSearchClassList(Classes c,String category,String keyword) {
 		
-		System.out.println("검색정보"+c);
-		System.out.println("카테고리"+category);
-		System.out.println("검색키워드"+keyword);
 		
 		if(!keyword.equals("")) {
-			System.out.println("들어옴");
 			switch(category) {//검색 카테고리에 따라 키워드 담기
 			case "professor": c.setProfessorNo(keyword);
 			break;
@@ -127,5 +127,44 @@ public class AdminController {
 		return new Gson().toJson(list);
 	}
 
+	// 강의관리 - 강의시간표
+	@RequestMapping("classListView.ad")
+	public ModelAndView classListView(ModelAndView mv) {
+		ArrayList<String> classTerm = memberService.selectClassTerm();
+		
+		mv.addObject("classTerm", classTerm).setViewName("member/admin/classListView");
+		return mv;
+	}
+	
+	//강의평가조회 페이지
+	@RequestMapping("classRatingPage.ad")
+	public String classRatingPage() {
+		return "member/admin/ad_classRating_list";
+	}
+	
+	//강의평가 조회(검색)
+	@ResponseBody
+	@GetMapping(value="classRatingList.ad",produces = "application/json;charset=utf-8")
+	public String classRatingList(ClassRating cr) {
+		ArrayList<ClassRating> list = memberService.classRatingList(cr);
+		return new Gson().toJson(list);
+	}
+	
+	//강의평가 기타건의사항 조회
+	@ResponseBody
+	@GetMapping(value="classRatingEtc.ad",produces = "application/json;charset=utf-8")
+	public String classRatingEtcList(ClassRating cr) {
+		ArrayList<ClassRating> list = memberService.classRatingEtcList(cr);
+		return new Gson().toJson(list);
+	}
+	
+	//강의평가 문항별 평균 점수
+	@ResponseBody
+	@GetMapping(value="classRatingAverage.ad",produces = "application/json;charset=utf-8")
+	public String classRatingAverage(ClassRating cr) {
+		ClassRating result = memberService.classRatingAverage(cr);
+		System.out.println(result);
+		return new Gson().toJson(result);
+	}
 }
 

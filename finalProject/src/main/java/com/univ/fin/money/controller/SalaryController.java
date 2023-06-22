@@ -6,6 +6,9 @@ import java.util.HashMap;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +20,7 @@ import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.money.model.service.SalaryService;
 import com.univ.fin.money.model.vo.Salary;
 
+@EnableAsync
 @Controller
 public class SalaryController {
 	
@@ -121,5 +125,16 @@ public class SalaryController {
 		return new Gson().toJson(sal);
 	} 
 	
-	
+	//@Scheduled(cron="* * * * * *")
+	@Async
+	public String sendSalaryAuto() { //급여 지급 메소드 (상태만 변경)
+		int result = 0;
+		//result=salaryService.sendSalaryAuto();
+		if(result>0) {
+			return "Y";
+		}else {
+			System.out.println("자동 급여 테스트");
+			return "N";
+		}
+	}
 }

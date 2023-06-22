@@ -75,7 +75,7 @@ div[class*=day], div[class*=period] {
 }
 
 div[class*=day] {
-	font-size: 15px;
+	font-size: 17px;
 	height: 36px;
 	width: 186px;
     line-height: 36px;

@@ -20,6 +20,7 @@
 		<result column="CREATE_DATE" property="createDate"/>
 		<result column="FIELD" property="field"/>
 		<result column="ORIGIN_NAME" property="originName"/>
+		<result column="CHANGE_NAME" property="changeName"/>
 		<result column="CATEGORY_NAME" property="categoryName"/>
 	</resultMap>
 	
@@ -84,4 +85,114 @@
         AND NOTICE_CATEGORY = 5
         AND ROWNUM BETWEEN 1 AND 4
 	</select>
+	
+	<!-- 공지사항 조회수 증가 -->
+	<update id="increaseCount">
+		UPDATE NOTICE
+		SET COUNT = COUNT+1
+		WHERE NOTICE_NO = #{noticeNo}
+		AND STATUS = 'Y'
+	</update>
+	
+	<!-- 게시글 상세 조회 -->
+	<select id="selectNotice" resultMap="noticeResultSet">
+		SELECT CATEGORY_NAME, N.NOTICE_TITLE, NOTICE_CONTENT, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE", COUNT
+		FROM NOTICE N
+		JOIN NOTICE_CATEGORY NC ON (NOTICE_CATEGORY=CATEGORY_NO)
+		WHERE N.STATUS = 'Y'
+		AND NOTICE_NO = #{noticeNo}
+	</select>
+	
+	<!-- 첨부파일 조회 -->
+	<select id="selectFiles" resultMap="noticeResultSet">
+		SELECT ORIGIN_NAME, CHANGE_NAME
+		FROM NOTICE_ATTACHMENT
+		WHERE STATUS = 'Y'
+		AND NOTICE_NO = #{noticeNo}
+	</select>
+	
+	<!-- FAQ 조회수 증가 -->
+	<update id="increaseFaqCount">
+		UPDATE NOTICE
+		SET COUNT = COUNT+1
+		WHERE NOTICE_NO = #{faqNo}
+		AND STATUS = 'Y'
+	</update>
+	
+	<!-- FAQ 상세 조회 -->
+	<select id="selectFaq" resultMap="noticeResultSet">
+		SELECT CATEGORY_NAME, N.NOTICE_TITLE, NOTICE_CONTENT, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE", COUNT
+		FROM NOTICE N
+		JOIN NOTICE_CATEGORY NC ON (NOTICE_CATEGORY=CATEGORY_NO)
+		WHERE N.STATUS = 'Y'
+		AND NOTICE_NO = #{faqNo}
+	</select>
+	
+	<!-- 검색결과 조회 -->
+	<select id="searchListCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM (SELECT NOTICE_NO, FIELD, CATEGORY_NAME, NOTICE_TITLE, ORIGIN_NAME, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE"
+				FROM NOTICE N
+				LEFT JOIN NOTICE_ATTACHMENT NA USING(NOTICE_NO)
+				JOIN NOTICE_CATEGORY NC ON(CATEGORY_NO = NOTICE_CATEGORY)
+				<if test="selectBox.equals('both')">
+				WHERE (NOTICE_TITLE LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+				OR NOTICE_CONTENT LIKE CONCAT('%', CONCAT(#{keyword} , '%')))
+				</if>
+				<if test="selectBox.equals('title')">
+				WHERE NOTICE_TITLE LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+				</if>
+				<if test="selectBox.equals('content')">
+				WHERE NOTICE_CONTENT LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+				</if>
+				AND N.STATUS='Y'
+				AND FIELD = 0
+				ORDER BY CREATE_DATE DESC)
+	</select>
+	
+	<!-- 공지게시판 검색 -->
+	<select id="searchNotice" parameterType="hashMap" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, FIELD, CATEGORY_NAME, NOTICE_TITLE, ORIGIN_NAME, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE"
+		FROM NOTICE N
+		LEFT JOIN NOTICE_ATTACHMENT NA USING(NOTICE_NO)
+		JOIN NOTICE_CATEGORY NC ON(CATEGORY_NO = NOTICE_CATEGORY)
+		<if test="selectBox.equals('both')">
+		WHERE (NOTICE_TITLE LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+		OR NOTICE_CONTENT LIKE CONCAT('%', CONCAT(#{keyword} , '%')))
+		</if>
+		<if test="selectBox.equals('title')">
+		WHERE NOTICE_TITLE LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+		</if>
+		<if test="selectBox.equals('content')">
+		WHERE NOTICE_CONTENT LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+		</if>
+		AND N.STATUS='Y'
+		AND FIELD = 0
+		ORDER BY CREATE_DATE DESC
+	</select>
+	
+	<!-- 종합정보시스템 공지사항 -->
+	<select id="infoNoticeList" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, CATEGORY_NAME, NOTICE_TITLE, ORIGIN_NAME, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE"
+		FROM NOTICE N
+		LEFT JOIN NOTICE_ATTACHMENT NA USING(NOTICE_NO)
+		JOIN NOTICE_CATEGORY NC ON(CATEGORY_NO = NOTICE_CATEGORY)
+		WHERE N.STATUS='Y'
+		AND FIELD = 0
+		AND ROWNUM BETWEEN 1 AND 10
+		ORDER BY CREATE_DATE DESC
+	</select>
+	
+	<!-- 종합정보시스템 FAQ-->
+	<select id="infoFaqList" resultMap="noticeResultSet">
+		SELECT NOTICE_NO, CATEGORY_NAME, NOTICE_TITLE, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE"
+		FROM NOTICE N
+		LEFT JOIN NOTICE_ATTACHMENT NA USING(NOTICE_NO)
+		JOIN NOTICE_CATEGORY NC ON(CATEGORY_NO = NOTICE_CATEGORY)
+		WHERE N.STATUS='Y'
+		AND FIELD = 1
+		AND ROWNUM BETWEEN 1 AND 10
+		ORDER BY CREATE_DATE DESC
+	</select>
+	
   </mapper>

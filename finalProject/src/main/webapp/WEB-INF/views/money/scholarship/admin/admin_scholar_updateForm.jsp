@@ -83,7 +83,7 @@
 	                        </table>
                         </form>
                         <script>
-                        	$('document').ready(function(){
+                        	$('document').ready(function(){ //해당 장학금의 기존 카테고리 정보로 입력
                         		var categoryNo = ${sc.schCategoryNo};
                         		
                         		if(categoryNo==1){

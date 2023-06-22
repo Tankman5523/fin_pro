@@ -31,7 +31,7 @@
             <!--컨텐츠 영역-->
             <div id="content_1">
             	
-				<div style="width: 90%;height: 90%;margin: 5%;">
+				<div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
 					<h4>등록금 납입 이력</h4>
 					<br>
                     <label for="classNo">학번</label><input type="text" name="classNo" id="classNo" value="${loginUser.studentNo}" readonly>
@@ -61,8 +61,8 @@
                                 <td>${RegistPay.studentNo}</td>
                                 <td>${RegistPay.studentName}</td>
                                 <td>${RegistPay.mustPay}</td>
-                                <td>${RegistPay.payAccountNo}</td>
                                 <td>${RegistPay.regAccountNo}</td>
+                                <td>${RegistPay.payAccountNo}</td>
                                 <td>
                                 	<c:choose>
                                 		<c:when test="${RegistPay.payStatus eq 'O'}">

@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
 
@@ -11,7 +12,7 @@ public interface RegistService {
 
 	ArrayList<RegistPay> selectMyRegistList(RegistPay r);
 
-	RegistPay selectNewRegistInfo(Student st);
+	RegistPay selectNewRegistInfo(ClassRating cr);
 
 	int updateInputPay(RegistPay r);
 
