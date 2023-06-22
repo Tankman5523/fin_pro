@@ -1102,8 +1102,21 @@
   	
   	<insert id="insertStudent">
   	INSERT INTO STUDENT (STUDENT_NO, DEPARTMENT_NO, COLLEGE_NO, ENTRANCE_DATE, STUDENT_NAME, STUDENT_PWD, PHONE, EMAIL, POST, ADDRESS,CLASS_LEVEL)
-	VALUES (SEQ_SNO.NEXTVAL,(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
+	VALUES (('P'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_SNO.NEXTVAL,4,0)),(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
   	</insert>
+  	
+  	<select id="studentGradeReport" resultType="Dissent"> 
+  	SELECT C.CLASS_NAME, C.CLASS_NO, P.PROFESSOR_NAME, C.CREDIT, D.REASON
+	FROM DISSENT D
+	JOIN CLASS C ON D.CLASS_NO = C.CLASS_NO
+	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
+	WHERE D.STUDENT_NO = #{student_no}
+  	</select>
+  	
+  	<insert id="insertProfessor">
+  	INSERT INTO PROFESSOR(PROFESSOR_NO, DEPARTMENT_NO, COLLEGE_NO, PROFESSOR_NAME, PROFESSOR_PWD, POSITION, ENTRANCE_DATE, PHONE, EMAIL, POST, ADDRESS, ACCOUNT_NO, ADMIN)
+  	VALUES (('P'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_PNO.NEXTVAL,4,0)), (SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{professorName}, #{professorPwd}, #{position}, #{entranceDate}, #{phone}, #{email}, #{post}, #{address}, #{accountNo}, #{admin})
+	</insert>
   	
   	<!-- 학기별 성적 조회 -> 학기별 성적 계산 -->
   	<select id="calculatedGrade" parameterType="hashmap" resultMap="termGradeHashMap">

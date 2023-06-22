@@ -12,6 +12,7 @@ import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
@@ -555,6 +556,23 @@ public class MemberServiceImpl implements MemberService{
 		return cList;
 	}
 
+
+	@Override
+	public ArrayList<Dissent> studentGradeReport(String studentNo) {
+		ArrayList<Dissent> list = memberDao.studentGradeReport(sqlSession,studentNo);
+		
+		return list;
+	}
+
+	@Override
+	public int insertProfessor(Professor pr) {
+		
+		int result = memberDao.insertProfessor(sqlSession,pr);
+		
+		return result;
+	}
+
+
 	// (관리자)강의개설 일괄 승인
 	@Override
 	public int updateClassPermitAll(int[] cArr) {
@@ -691,5 +709,5 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.classRatingAverage(sqlSession,cr);	
 		
 	}
-	
+
 }

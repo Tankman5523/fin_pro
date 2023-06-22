@@ -13,6 +13,7 @@ import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Department;
+import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
@@ -370,6 +371,19 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectClassAttList");
 	}
 
+
+	//강의 이의제기 - 학생
+	public ArrayList<Dissent> studentGradeReport(SqlSessionTemplate sqlSession, String studentNo) {
+
+		return (ArrayList)sqlSession.selectList("memberMapper.studentGradeReport");
+		
+	}
+	
+	//임직원 생성
+	public int insertProfessor(SqlSessionTemplate sqlSession, Professor pr) {
+		
+	return sqlSession.insert("memberMapper.insertProfessor",pr);
+	}
 	// (관리자)강의개설 일괄 승인
 	public int updateClassPermitAll(SqlSessionTemplate sqlSession, int[] cArr) {
 		
