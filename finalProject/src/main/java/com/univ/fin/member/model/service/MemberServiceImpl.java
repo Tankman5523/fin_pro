@@ -729,4 +729,10 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.insertCalendar(sqlSession, c);
 	}
 
+	// 학사일정 관리 -> 학사일정 수정
+	@Override
+	public int updateCalendar(Calendar c) {
+		return memberDao.updateCalendar(sqlSession, c);
+	}
+
 }

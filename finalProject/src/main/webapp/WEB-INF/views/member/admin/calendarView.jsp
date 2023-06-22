@@ -65,7 +65,7 @@
 		color: white;
 	}
 	
-	#insert {
+	#insert, #update {
 		margin: 0 auto !important;
 	}
 </style>
@@ -101,21 +101,21 @@
             		<div id="calendar"></div>
             	</div>
             	<div class="btn-area">
-            		<button id="btn" onclick="$('#myModal').modal('show');">일정 추가</button>
+            		<button id="btn" onclick="$('#insertModal').modal('show');">일정 추가</button>
             	</div>
             	
             	<script>
             		var $color = ['#BE5EC2', '#F862A7', '#FF7B87', '#FFA26A', '#FFCE5E', '#F9F871', '#9BDE7E', '#4BBC8E', '#04aba6', '#4da5e3', '#8e84f5'];
             	
             		$(function() {
-            			$("#modalContent").val("");
-            			$("#startDate").val("");
-            			$("#endDate").val("");
+            			$("textarea[id*=content]").val("");
+            			$("input[id*=startDate]").val("");
+            			$("input[id*=endDate]").val("");
             			
-            			$("#myModal").on("hidden.bs.modal", function (e) {
-            				$("#modalContent").val("");
-                			$("#startDate").val("");
-                			$("#endDate").val("");
+            			$("div[class=modal]").on("hidden.bs.modal", function (e) {
+            				$("textarea[id*=content]").val("");
+                			$("input[id*=startDate]").val("");
+                			$("input[id*=endDate]").val("");
             			});
             			
             			var calendarEl = $("#calendar")[0];
@@ -126,6 +126,9 @@
             		          left: 'prev,next today',
             		          center: 'title',
             		          right: 'dayGridMonth,listWeek'
+            		        },
+            		        eventClick: function(arg) {
+            		        	openUpdate(arg);
             		        },
             				initialView: 'dayGridMonth',
             				locale: 'ko', // 한국어
@@ -143,6 +146,7 @@
 //                    								check=0;
 //                    							};
                     						calendar.addEvent({
+                    							groupId: calList[i].calendarNo,
                     							title: calList[i].title,
                     							start: calList[i].start,
                     							end: calList[i].end,
@@ -161,24 +165,28 @@
             			});
             			calendar.render();
             		});
-					
-            		window.onpageshow = function(event) {
-		    		    if ( event.persisted || (window.performance && window.performance.navigation.type == 2)) {
-		    		        // Back Forward Cache로 브라우저가 로딩될 경우 혹은 브라우저 뒤로가기 했을 경우
-		    		        location.reload();
-		    		    }
-		    		};
+
+            		function openUpdate(arg) {
+            			var $start = JSON.stringify(arg.event.start);
+            			var $end = JSON.stringify(arg.event.end);
+            			
+            			$("#updateModal").modal("show");
+            			$("#calendarNo").val(arg.event.groupId);
+            			$("#content2").val(arg.event.title);
+            			$("#startDate2").val($start.substring(1, $start.length-2));
+            			$("#endDate2").val($end.substring(1, $end.length-2));
+            		}
             	</script>
             	
             	<!-- The Modal -->
-			    <div class="modal" id="myModal">
+			    <div class="modal" id="insertModal">
 			        <div class="modal-dialog modal-dialog-centered">
 			            <div class="modal-content">
 			        
 			                <!-- Modal Header -->
 			                <div class="modal-header">
-			                <h4 class="modal-title">학사일정 추가</h4>
-			                	<button type="button" class="close" onclick="$('#myModal').modal('hide');">&times;</button>
+			                <h4 class="modal-title">학사일정 입력</h4>
+			                	<button type="button" class="close" onclick="$('#insertModal').modal('hide');">&times;</button>
 			                </div>
 			        
 			                <!-- Modal body -->
@@ -186,9 +194,9 @@
 			                	<form action="insertCalendar.ad" method="post">
 			                		<fieldset>
 								                   일정 <br>
-								        <textarea id="modalContent" name="content" style="resize:none; width: 400px;" placeholder="일정을 입력하세요."></textarea> <br><br>
-								                   시작일: <input type="datetime-local" id="startDate" name="startDate" style="width: 200px;"> <br><br>
-								                   종료일: <input type="datetime-local" id="endDate" name="endDate" style="width: 200px;"> <br><br>
+								        <textarea id="content" name="content" style="resize:none; width: 400px;" placeholder="일정을 입력하세요."></textarea> <br><br>
+								                   시작일: <input type="datetime-local" id="startDate1" name="startDate" style="width: 200px;"> <br><br>
+								                   종료일: <input type="datetime-local" id="endDate1" name="endDate" style="width: 200px;"> <br><br>
 			                		</fieldset>
 					                <br><br>
 					                
@@ -197,7 +205,37 @@
 			                </div>
 			            </div>
 			        </div>
-			    </div>           
+			    </div>
+			    
+			    <!-- The Modal -->
+			    <div class="modal" id="updateModal">
+			        <div class="modal-dialog modal-dialog-centered">
+			            <div class="modal-content">
+			        
+			                <!-- Modal Header -->
+			                <div class="modal-header">
+			                <h4 class="modal-title">학사일정 수정</h4>
+			                	<button type="button" class="close" onclick="$('#updateModal').modal('hide');">&times;</button>
+			                </div>
+			        
+			                <!-- Modal body -->
+			                <div class="modal-body">
+			                	<form action="updateCalendar.ad" method="post">
+			                		<input type="hidden" id="calendarNo" name="calendarNo">
+			                		<fieldset>
+								                   일정 <br>
+								        <textarea id="content2" name="content" style="resize:none; width: 400px;" placeholder="일정을 입력하세요."></textarea> <br><br>
+								                   시작일: <input type="datetime-local" id="startDate2" name="startDate" style="width: 200px;"> <br><br>
+								                   종료일: <input type="datetime-local" id="endDate2" name="endDate" style="width: 200px;"> <br><br>
+			                		</fieldset>
+					                <br><br>
+					                
+					            	<button type="submit" class="btn btn-warning" id="update">수정</button>
+			                	</form>
+			                </div>
+			            </div>
+			        </div>
+			    </div>
             </div>
 		</div>
 	</div>

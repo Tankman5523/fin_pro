@@ -279,4 +279,7 @@ public interface MemberService {
 	// 학사일정 관리 -> 학사일정 추가
 	int insertCalendar(Calendar c);
 
+	// 학사일정 관리 -> 학사일정 수정
+	int updateCalendar(Calendar c);
+
 }
