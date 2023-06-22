@@ -31,7 +31,7 @@ public class Weather {
 	/* 날씨 정보 가공처리 */
 	@ResponseBody
 	@RequestMapping(value="weather.api",produces="application/json; charset=UTF-8")
-	public String weather(HttpServletRequest response) throws Exception{
+	public String weather() throws Exception{
 		
 		//최저온도, 최고온도, 하늘상태
 		HashMap<String, String> h = shortTerm();
