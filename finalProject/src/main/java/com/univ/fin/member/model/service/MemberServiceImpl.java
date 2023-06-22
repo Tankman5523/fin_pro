@@ -12,6 +12,7 @@ import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
@@ -500,6 +501,21 @@ public  class MemberServiceImpl implements MemberService{
 		
 		return result;
 
+	}
+
+	@Override
+	public ArrayList<Dissent> studentGradeReport(String studentNo) {
+		ArrayList<Dissent> list = memberDao.studentGradeReport(sqlSession,studentNo);
+		
+		return list;
+	}
+
+	@Override
+	public int insertProfessor(Professor pr) {
+		
+		int result = memberDao.insertProfessor(sqlSession,pr);
+		
+		return result;
 	}
 
 }

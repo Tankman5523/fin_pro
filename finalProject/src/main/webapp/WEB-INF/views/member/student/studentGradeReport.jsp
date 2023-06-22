@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -130,14 +131,16 @@
 							</tr>
 						</thead>
 						<tbody>
+							 <c:forEach var="g" items="${list}">
 							<tr>
-								<td>자바학개론</td>
-								<td>346796112</td>
-								<td>윤정우</td>
-								<td>3</td>
-								<td>기각</td>
+								<td>${g.className }</td>
+								<td>${g.classNo }</td>
+								<td>${g.professorNo }</td>
+								<td>${g.explain }</td>
+								<td>${g.division }</td>
 								<td><button id ="request_report" onclick="" value="">이의신청</button></td>
 							</tr>
+							</c:forEach>
 						</tbody>
 					</table>
 					<br>

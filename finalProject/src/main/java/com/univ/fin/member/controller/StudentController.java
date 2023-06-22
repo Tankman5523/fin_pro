@@ -24,6 +24,7 @@ import com.google.gson.JsonParser;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
@@ -403,11 +404,14 @@ public class StudentController {
 				
 			}
 			
-			//학생 강의 의의신청 
+			//학생 강의 의의신청 페이지
 			@RequestMapping("studentGradeReport.st")
-			public String studentGradeReport(String studentNo) {		
-				
-				return "member/student/studentGradeReport";
+			public String studentGradeReport(String studentNo, Model model) {
+			    ArrayList<Dissent> list = memberService.studentGradeReport(studentNo);
+			    model.addAttribute("list", list);
+			    return "member/student/studentGradeReport";
+			    
+			    
 			}
 			
 			
@@ -596,12 +600,5 @@ public class StudentController {
 		return "redirect:studentRestList.st";
 	}
 	
-
 	
 }
-
-
-
-
-
-

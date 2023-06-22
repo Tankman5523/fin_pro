@@ -189,5 +189,6 @@ public class ProfessorController {
 		int result = memberService.gradeUpdate(g);
 		return (result>0)? "Y": "N";
 	}
+	
 
 }

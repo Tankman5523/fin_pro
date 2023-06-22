@@ -152,6 +152,17 @@
   		<result column="MAJOR_CLASS" property="majorClass"/>
   	</resultMap>
   	
+  	<resultMap type="dissent" id="dissentResultMap">
+	  	<result column="DISSENT_NO" property="dissentNo"/>
+	  	<result column="GRADE_NO" property="gradeNo"/>
+	  	<result column="FILE_NO" property="fileNo"/>
+	  	<result column="STUDENT_NO" property="studentNo"/>
+	  	<result column="CLASS_NO" property="classNo"/>
+	  	<result column="REASON" property="reason"/>
+	  	<result column="OPTION" property="option"/>
+	  	<result column="STATUS" property="status"/>
+  	</resultMap>
+	  	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
   		SELECT STUDENT_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,FILE_NO,STUDENT_NAME,STUDENT_PWD,
@@ -837,8 +848,24 @@
   		  , GRADE_LEVEL = #{gradeLevel}
   		WHERE STUDENT_NO = #{studentNo} AND CLASS_NO = #{classNo}
   	</update>
+  	
   	<insert id="insertStudent">
   	INSERT INTO STUDENT (STUDENT_NO, DEPARTMENT_NO, COLLEGE_NO, ENTRANCE_DATE, STUDENT_NAME, STUDENT_PWD, PHONE, EMAIL, POST, ADDRESS,CLASS_LEVEL)
 	VALUES (SEQ_SNO.NEXTVAL,(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
   	</insert>
+  	
+  	<select id="studentGradeReport" resultType="Dissent"> 
+  	SELECT C.CLASS_NAME, C.CLASS_NO, P.PROFESSOR_NAME, C.CREDIT, D.REASON
+	FROM DISSENT D
+	JOIN CLASS C ON D.CLASS_NO = C.CLASS_NO
+	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
+	WHERE D.STUDENT_NO = #{student_no}
+  	</select>
+  	
+  	<insert id="insertProfessor">
+  	INSERT INTO PROFESSOR(PROFESSOR_NO,DEPARTMENT_NO,COLLEGE_NO,PROFESSOR_NAME,PROFESSOR_PWD,POSITION,ENTRANCE_DATE,PHONE,EMAIL,POST,ADDRESS,ACCOUNT_NO,ADMIN)
+	VALUES(SEQ_PNO.NEXTVAL,(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}),#{collegeNo}, #{entranceDate}, #{professorName}, #{professorPwd}, #{phone}, #{email}, #{post}, #{address}, #{position} #{accountNo},#{admin})
+  	</insert>
+  	
+  	
   </mapper>

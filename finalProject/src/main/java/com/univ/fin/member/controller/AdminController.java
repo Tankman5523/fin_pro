@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.member.model.service.MemberService;
+import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 
 @Controller
@@ -64,5 +65,29 @@ public class AdminController {
 		
 		return "member/admin/ad_class_list";
 	}
+	
+	//교수 관리자 등록 페이지 이동
+	@RequestMapping("enrollProfessor.ad")
+	public String enrollProfessor() {
+		
+		return "member/admin/enrollProfessor";
+	}
+	
+	//교수 관리자 등록 
+	@RequestMapping(value="insertProfessor.ad", method=RequestMethod.POST)
+	public String insertProfessor(Professor pr,
+								Model model,
+								HttpSession session) {
+	
+		int result = memberService.insertProfessor(pr);
+		
+		if(result>0) {
+			model.addAttribute("msg","직원 생성 완료");
+		}else {
+			model.addAttribute("msg","직원 생성 실패");
+		}
+		return "member/admin/enrollProfessor";
+	}
+		
 
 }
