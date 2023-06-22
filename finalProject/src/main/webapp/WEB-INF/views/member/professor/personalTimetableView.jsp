@@ -19,10 +19,10 @@
                     <a href="infoProfessor.pr">교수 정보 관리</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">강의 시간표</a>
+                    <a href="classListView.pr">강의 시간표</a>
                 </div>
 				<div class="child_title">
-                    <a href="personalTimetable.pr">개인 시간표</a>
+                    <a href="personalTimetable.pr" style="color:#00aeff; font-weight: 550;">개인 시간표</a>
                 </div>
 				<div class="child_title">
                     <a href="#">안식/퇴직 신청 조회</a>
@@ -159,7 +159,8 @@
 	                	
 	                	$("#term").empty();
 	                	$("#term").append(str);
-	                	clearPage();
+	                	$("#term").children().first().prop("selected", true).change();
+	                	$("div[class*=stClass_class]").remove();
 	                }
 	                
 	                function prevTerm() { // 마지막 학기일 경우 alert, 무조건 강의한 이전학기로
@@ -201,7 +202,7 @@
 	                }
 	                
 	                function selectTimetable() {
-	                	clearPage();
+	                	$("div[class*=stClass_class]").remove();
 	                	
 	                	$.ajax({
 	                		url: "selectProfessorTimetable.pr",
@@ -229,10 +230,6 @@
 	                			console.log("통신 오류");
 	                		}
 	                	})
-	                }
-	                
-	                function clearPage() {
-	                	$("div[class*=stClass_class]").remove();
 	                }
 				</script>
             </div>

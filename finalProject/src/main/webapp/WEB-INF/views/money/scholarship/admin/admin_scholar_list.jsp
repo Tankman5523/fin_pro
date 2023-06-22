@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>교수</title>
+    <title>관리자_장학금수여내역 조회</title>
 </head>
 <body>
     <div class="wrap">
@@ -19,35 +19,36 @@
                     <span style="margin: 0 auto;">금전관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="#">등록금 관리</a>
+                    <a href="allList.rg">등록금 관리</a>
+                </div>
+                <div class="child_title" style="font-weight:bold;">
+                    <a href="allList.sc">장학금 관리</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">장학금 관리</a>
-                </div>
-                <div class="child_title">
-                    <a href="#">급여 관리</a>
+                    <a href="allList.sl">급여 관리</a>
                 </div>
             </div>
             <div id="content_1">
-				<div style="width: 90%;height: 90%;margin: 5%;">
-                    <div>
-                        <button onclick="">장학금수혜내역</button> <button onclick="">장학금 수여</button>
+				<div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
+                    <div style="height:20%;">
+                        <button onclick="location.href='allList.sc'">장학금수혜내역</button> <button onclick="location.href='insert.sc'">장학금 수여</button>
                         <hr>
                         <h3>장학금 수혜내역 조회</h3>
                     </div>
                     
-                    <div class="list">
+                    <div class="list" style="height:80%;">
                         <!--filer / 변경시 ajax로 비동기처리-->
                         <select id="filter" name="filter">
-                            <option value="0">==전체==</option>
+                            <option value="all">==전체==</option>
+                            <option value="classYear">학년도</option>
                             <option value="studentNo">학번</option>
                             <option value="studentName">학생이름</option>
-                            <option value="classYear">학년도</option>
                         </select>
                         <input type="text" id="keyword" name="keyword">
                         <button onclick="selectList();">조회</button>
-                        <table border="1" style="width: 100%;" id="schList">
-                            <thead>
+                       	   조회결과 : <span id="countSearch"></span>
+                        <table border="1" style="width:100%;text-align:center;width: 100%;" id="schList">
+                            <thead  style='background-color: #4fc7ff;'>
                                 <tr>
                                     <th>학번</th>
                                     <th>학생명</th>
@@ -58,31 +59,11 @@
                                     <th>처리상태</th>
                                     <th>처리일자</th>
                                     <th>비고</th>
+                                    <th>처리</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            	<c:choose>
-                            		<c:when test="${not empty list}">
-                            			<c:forEach var="s" items="list">
-			                                <tr>
-			                                    <td>${s.studentNo}</td>
-			                                    <td>${s.stduentName}</td>
-			                                    <td>${s.classYear}</td>
-			                                    <td>${s.classTerm}</td>
-			                                    <td>${s.schCategoryNo}</td>
-			                                    <td>${s.schAmount}</td>
-			                                    <td>${s.status}</td>
-			                                    <td>${s.proDate}</td>
-			                                    <td>${s.etc}</td>
-			                                </tr>
-                                		</c:forEach>
-                            		</c:when>
-                           			<c:otherwise>
-                            			<tr>
-                            				<td colspan="7">데이터가 없습니다.</td>
-                            			</tr>
-                            		</c:otherwise>
-                           		</c:choose>
+                            	<!-- ajax 처리 -->
                             </tbody>
                         </table>
                     </div>
@@ -96,26 +77,63 @@
     		$.ajax({
     			
     			url: "allList.sc",
-    			
+    			type : "POST",
     			data: {
-    				classYear : $(".classYear").val(),
+    				filter : $("#filter").val(),
     				keyword : $("#keyword").val()
     			},
-    			
+    			//dataType : "json",
     			success : function(list){
+    				var countSearch = list.length;
+    				$("#countSearch").html(countSearch+" 건")
     				var str = "";
-    				if(list !=null){
-    					for(var i=0;i<list.length;i++){
+    				if(list[0]!=null){
+    					for(var i in list){
     						str+="<tr>"
+    							+"<td>"+list[i].studentNo+"</td>"
+    							+"<td>"+list[i].studentName+"</td>"
+    							+"<td>"+list[i].classYear+"</td>"
+    							+"<td>"+list[i].classTerm+"</td>";
     							
-    							//+"<td>"+${list[i].studentNo}+"</td>"
-    							//+"<td>"+${list[i].stduentName}+"</td>"
-    							//+"<td>"+${list[i].classYear}+"</td>"
-    							//+"<td>"+${list[i].classTerm}+"</td>"
-    							//+"<td>"+${list[i].schCategoryNo}+"</td>"
-    							//+"<td>"+${list[i].schAmount}+"</td>"
+    							if(list[i].schCategoryNo==1){
+	    							str+="<td>국가장학금</td>";
+    							}else if(list[i].schCategoryNo==2){
+    								str+="<td>근로장학금</td>";
+    							}else if(list[i].schCategoryNo==3){
+    								str+="<td>성적장학금</td>";
+    							}else if(list[i].schCategoryNo==4){
+    								str+="<td>우수장학금</td>";
+    							}
     							
-    							+"</tr>"
+    							str+="<td>"+list[i].schAmount.toLocaleString()+" 원 </td>";
+    							
+    							if(list[i].status=='W'){
+    								str+="<td>처리대기</td>";
+    							}else if(list[i].status=='N'){
+    								str+="<td>취소</td>";	
+    							}else{
+    								str+="<td>처리완료</td>";
+    							}
+    							
+    							str+="<td>"+list[i].proDate+"</td>";
+    							
+    							if(list[i].etc==null){
+    								str+="<td></td>";
+    							}else{
+    								str+="<td>"+list[i].etc+"</td>";
+    							} 
+    							if(list[i].status=='W'){
+    								var upLocation = "location.href='update.sc?schNo="+list[i].schNo+"';";
+    								
+    								str+="<td><input type='hidden' value="+list[i].schNo+">"
+    								    +"<button onclick="+upLocation+">수정</button><button class='delBtn' onclick='del("+list[i].schNo+");'>삭제</button></td>";
+    								
+    							}else{ 
+    								str+="<td></td>";
+    							}
+    							
+    							str+="</tr>";
+    							
     					}
     				}else{
     					str+="<tr><td colspan='9'>데이터가 없습니다.</td></tr>"
@@ -128,7 +146,32 @@
     			}
     		});
     	}
+    	
+    	function del(num){
+    		var schNo = num;
+    		$.ajax({
+    			url : "delete.sc",
+    			data : {
+    				schNo : schNo
+    			},
+    			success : function(result){
+    				console.log(result);
+    				if(result=='Y'){
+    					alert("등록금 정보 삭제 성공");
+    					selectList();
+    				}else{
+    					alert("등록금 정보 삭제 실패");
+    				}
+    			},
+    			error : function(){
+    				alert("통신 오류");
+    			}
+    		});
+    	}
+    		
     </script>
+    
+    
     
 </body>
 </html>

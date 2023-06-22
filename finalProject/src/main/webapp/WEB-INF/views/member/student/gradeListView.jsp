@@ -5,90 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>학기별 성적 조회</title>
-<style>
-    .b_line {
-        border: 0.5px solid lightgray;
-        margin: 20px 0px;
-    }
-
-    .page_title {
-        margin-top: 5px;
-        margin-left: 5px;
-        margin-bottom: 0px;
-        font-weight: bold;
-    }
-
-    .wholeGrade-area {
-        width: 100%;
-        height: 25%;
-        overflow: auto;
-    }
-    
-    .wholeGrade-table {
-        width: 100%;
-        height: 100%;
-        text-align: center;
-    }
-    
-    .wholeGrade-table>thead {
-        background-color: rgb(250, 250, 133);
-        position: sticky;
-        top: 0;
-    }
-    
-    .transcript {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    
-    .transcript * {
-        margin: 0 5px;
-    }
-
-    .transcript>input {
-        width: 150px;
-    }
-
-    .selectTerm {
-        display: flex;
-        align-items: center;
-    }
-
-    .selectTerm * {
-        margin-left: 10px;
-    }
-
-    button[class*=btn] {
-        border-radius: 10px;
-    }
-
-    .prev-btn {
-        margin-left: 30px;
-    }
-
-    .next-btn {
-        margin-left: 10px;
-    }
-
-    .termGrade-area {
-        width: 100%;
-        height: 25%;
-        overflow: auto;
-    }
-
-    .termGrade-table {
-        width: 100%;
-        height: 100%;
-        text-align: center;
-    }
-
-    .termGrade-table>thead {
-        background-color: rgb(250, 250, 133);
-        position: sticky;
-        top: 0;
-    }
-</style>
+<link rel="stylesheet" href="resources/css/gradeListView.css">
 </head>
 <body>
 	<div class="wrap">
@@ -99,10 +16,13 @@
                     <span style="margin: 0 auto;">수업관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="student_classManagement.bo" style="color:#00aeff; font-weight: 550;">학기별 성적 조회</a>
+                    <a href="classManagement.st" style="color:#00aeff; font-weight: 550;">학기별 성적 조회</a>
                 </div>
                 <div class="child_title">
                     <a href="#">성적 이의신청</a>
+                </div>
+                <div class="child_title">
+                    <a href="classRatingInfo.st">강의평가</a>
                 </div>
             </div>
             <div id="content_1">
@@ -113,197 +33,198 @@
                 <div class="wholeGrade-area">
                     <table class="wholeGrade-table">
                         <thead>
-                            <tr>
-                                <th>학년도</th>
-                                <th>학기</th>
-                                <th>신청학점</th>
-                                <th>취득학점</th>
-                                <th>평점계</th>
-                                <th>학기별석차</th>
-                                <th>전체석차</th>
+                            <tr height="40">
+                                <th width="15%" style="border-left: 1px solid #76D2FF;">학년도</th>
+                                <th width="15%">학기</th>
+                                <th width="10%">신청학점</th>
+                                <th width="10%">취득학점</th>
+                                <th width="12%">평점계</th>
+                                <th width="14%">학기별석차</th>
+                                <th width="14%">전체석차</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>2022</td>
-                                <td>2학기</td>
-                                <td>18</td>
-                                <td>18</td>
-                                <td>3.81</td>
-                                <td>6/32</td>
-                                <td>28/120</td>
-                            </tr>
-                            <tr>
-                                <td>2022</td>
-                                <td>1학기</td>
-                                <td>18</td>
-                                <td>18</td>
-                                <td>3.81</td>
-                                <td>6/32</td>
-                                <td>28/120</td>
-                            </tr>
-                            <tr>
-                                <td>2021</td>
-                                <td>2학기</td>
-                                <td>18</td>
-                                <td>18</td>
-                                <td>3.81</td>
-                                <td>6/32</td>
-                                <td>28/120</td>
-                            </tr>
-                            <tr>
-                                <td>2021</td>
-                                <td>1학기</td>
-                                <td>18</td>
-                                <td>18</td>
-                                <td>3.81</td>
-                                <td>6/32</td>
-                                <td>28/120</td>
-                            </tr>
-                            <tr>
-                                <td>2020</td>
-                                <td>2학기</td>
-                                <td>18</td>
-                                <td>18</td>
-                                <td>3.81</td>
-                                <td>6/32</td>
-                                <td>28/120</td>
-                            </tr>
-                            <tr>
-                                <td>2020</td>
-                                <td>1학기</td>
-                                <td>18</td>
-                                <td>18</td>
-                                <td>3.81</td>
-                                <td>6/32</td>
-                                <td>28/120</td>
-                            </tr>
-                            <tr>
-                                <td>2020</td>
-                                <td>1학기</td>
-                                <td>18</td>
-                                <td>18</td>
-                                <td>3.81</td>
-                                <td>6/32</td>
-                                <td>28/120</td>
-                            </tr>
-                            <tr>
-                                <td>2020</td>
-                                <td>1학기</td>
-                                <td>18</td>
-                                <td>18</td>
-                                <td>3.81</td>
-                                <td>6/32</td>
-                                <td>28/120</td>
-                            </tr>
+                        	<c:choose>
+                        		<c:when test="${!empty gList }">
+                        			<c:forEach var="g" items="${gList}">
+                        				<tr>
+                        					<td style="border: 0;">${g.classYear }</td>
+	                        				<td>${g.classTerm }</td>
+	                        				<td>${g.signUp }</td>
+	                        				<td>${g.obtain }</td>
+	                        				<td>${g.termGrade }</td>
+	                        				<td>${g.termRank }</td>
+	                        				<td>${g.totalRank }</td>
+                        				</tr>
+                        			</c:forEach>
+                        		</c:when>
+                        		<c:otherwise>
+		                            <tr class="no-hover" style="border: 0;">
+		                    			<td colspan="7" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
+		                    		</tr>
+                        		</c:otherwise>
+                        	</c:choose>
                         </tbody>
                     </table>
                 </div>
                 <div class="b_line"></div>
                 
                 <div class="transcript">
-                    <span>증명신청학점:</span> <input type="text" id="" value="130" readonly>
-                    <span>증명취득학점:</span> <input type="text" id="" value="130" readonly> 
-                    <span>증명평점계:</span> <input type="text" id="" value="3.8"eadonly>
-                    <span>증명평점평균:</span> <input type="text" id="" value="92" readonly>
+                	<br><br>
+                    <span>증명신청학점:</span> <input type="text" id="" value="${scoreAB.signUp }" readonly>
+                    <span>증명취득학점:</span> <input type="text" id="" value="${scoreAB.obtain }" readonly> 
+                    <span>증명평점평균:</span> <input type="text" id="" value="${scoreC }" readonly>
+                    <span>증명산술평균:</span> <input type="text" id="" value="${scoreD }" readonly>
+                    <br><br>
                 </div>
                 <div class="b_line"></div>
 
                 <div class="selectTerm">
-                    <span>학년도: </span> <select name="year" id="year" onchange="changeYear();">
-                                            <option value="2022">2022학년도</option>
-                                            <option value="2021">2021학년도</option>
-                                            <option value="2020">2020년도</option>
+                    <span>학년도: </span> <select name="year" id="year" onchange="changeYear(this);">
+												<c:set var="previous" value="0"/>
+												<c:forEach var="y" items="${classTerm}">
+														<c:if test="${fn:substring(y, 0, 4) ne previous }">
+															<option value="${fn:substring(y, 0, 4) }">${fn:substring(y, 0, 4) }년도</option>
+														</c:if>
+														<c:set var="previous" value="${fn:substring(y, 0, 4) }"/>
+												</c:forEach>
                                         </select>
                     <span>학기: </span> <select name="term" id="term">
-                                            <option value="1">1학기</option>
-                                            <option value="2">2학기</option>
                                        </select>
-                    <button type="button" class="btn btn-primary btn-sm prev-btn">&lt; 이전학기</button>
-                    <button type="button" class="btn btn-primary btn-sm next-btn">다음학기 &gt;</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm" id="selectList" style="margin-left:2%;" onclick="prevTerm();">이전 학기</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm" id="selectList" style="margin-left:0;" onclick="nextTerm();">다음 학기</button>
                 </div>
                 <br>
 
                 <div class="termGrade-area">
-                    <table class="termGrade-table"> <!--셀렉트박스에 해당되는 성적들 ajax로 가져오기-->
+                    <table class="termGrade-table">
                         <thead>
-                            <tr>
-                                <th>이수학년도</th>
-                                <th>이수학기</th>
-                                <th>과목번호</th>
-                                <th>과목명</th>
-                                <th>과목학점</th>
-                                <th>성적</th>
-                                <th>등급</th>
+                            <tr height="40">
+                                <th width="14%" style="border-left: 1px solid #76D2FF;">이수학년도</th>
+                                <th width="12%">이수학기</th>
+                                <th width="12%">과목번호</th>
+                                <th width="20%">과목명</th>
+                                <th width="12%">담당교수</th>
+                                <th width="10%">과목학점</th>
+                                <th width="10%">성적</th>
+                                <th width="10%">등급</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>2022년도</td>
-                                <td>2학기</td>
-                                <td>12345678</td>
-                                <td>프로그래밍언어</td>
-                                <td>3.0</td>
-                                <td>78</td>
-                                <td>C0</td>
-                            </tr>
-                            <tr>
-                                <td>2022년도</td>
-                                <td>2학기</td>
-                                <td>12345678</td>
-                                <td>프로그래밍언어</td>
-                                <td>3.0</td>
-                                <td>78</td>
-                                <td>C0</td>
-                            </tr>
-                            <tr>
-                                <td>2022년도</td>
-                                <td>2학기</td>
-                                <td>12345678</td>
-                                <td>프로그래밍언어</td>
-                                <td>3.0</td>
-                                <td>78</td>
-                                <td>C0</td>
-                            </tr>
-                            <tr>
-                                <td>2022년도</td>
-                                <td>2학기</td>
-                                <td>12345678</td>
-                                <td>프로그래밍언어</td>
-                                <td>3.0</td>
-                                <td>78</td>
-                                <td>C0</td>
-                            </tr>
-                            <tr>
-                                <td>2022년도</td>
-                                <td>2학기</td>
-                                <td>12345678</td>
-                                <td>프로그래밍언어</td>
-                                <td>3.0</td>
-                                <td>78</td>
-                                <td>C0</td>
-                            </tr>
-                            <tr>
-                                <td>2022년도</td>
-                                <td>2학기</td>
-                                <td>12345678</td>
-                                <td>프로그래밍언어</td>
-                                <td>3.0</td>
-                                <td>78</td>
-                                <td>C0</td>
-                            </tr>
+                        	<tr class="no-hover" style="border: 0;">
+		                    			<td colspan="8" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
+		                    </tr>
                         </tbody>
                     </table>
                 </div>
 
                 <script>
-                    $(function() {
-                        
-                    })
-
-                    function changeYear() { // 해당 년도에 맞는 학기만 띄워줘야함
-                        // $("<option value='3'>3학기</option>").appendTo("#term");
-                    }
+	                var arr = ${classTerm};
+	                
+	                $(function() {
+	                    $("select[name=year]").children().first().prop("selected", true).change();
+	                    selectClassList();
+	                    
+	                	$(".selectTerm").on("change", "#term", function() {
+	                		selectClassList();
+	                	});
+	                })
+	                
+	                function changeYear(e) {
+	                	var $year = e.value;
+	                	var str = "";
+	                	
+	                	for(var i=0;i<arr.length;i++) {
+	                		var tmp = arr[i].toString().substr(0,4);
+	                		if(tmp.includes($year)) {
+	                			var tmp2 = arr[i].toString().substr(5,);
+		                		if(tmp2 == "1") {
+		                			str += "<option value='1'>1학기</option>";
+		                		}
+		                		if(tmp2 == "2") {
+		                			str += "<option value='2'>2학기</option>";
+		                		}
+	                		}
+	                	}
+	                	
+	                	$("#term").empty();
+	                	$("#term").append(str);
+	                }
+	                
+	                function prevTerm() { // 마지막 학기일 경우 alert, 2학기->1학기, 1학기 -> 이전 년도 2학기
+	                	var $thisYear = $("select[name=year]");
+	                	var $term = $("select[name=term]");
+	                
+	                	if(($thisYear.children().last().val() == $thisYear.val()) && ($term.children().first().val() == $term.val())) { // 마지막 학기
+	                		alert("조회 내용이 없습니다.");
+	                	}
+	                	else {
+	                		if($term.children().first().val() == $term.val()) { // 이전 년도 2학기로 바꿔야함
+				                var $index = $thisYear.children("option:selected").index();
+		                		$thisYear.children().eq($index+1).prop("selected", true).change();
+	                			$term.children().last().prop("selected", true).change();
+		                	}
+		                	else { // 같은 년도 1학기로 바꿔야함
+		                		$term.children().first().prop("selected", true).change();
+		                	}
+	                	}
+	                }
+	                
+	                function nextTerm() { // 마지막 학기일 경우 alert, 1학기 -> 2학기, 2학기 -> 다음 년도 1학기
+	                	var $thisYear = $("select[name=year]");
+	                	var $term = $("select[name=term]");
+	                	
+	                	if(($thisYear.children().first().val() == $thisYear.val()) && ($term.children().last().val() == $term.val())) { // 마지막 학기
+	                		alert("조회 내용이 없습니다.");
+	                	}
+	                	else {
+		                	if($term.children().last().val() == $term.val()) { // 다음 년도 1학기로 바꿔야함
+		                		var $index = $thisYear.children("option:selected").index();
+	                			$thisYear.children().eq($index-1).prop("selected", true).change();
+	                			$term.children().first().prop("selected", true).change();
+	                		}
+	                		else { // 같은 년도 2학기로 바꿔야함
+		                		$term.children().last().prop("selected", true).change();
+		                	}
+	                	}
+	                }
+	                
+	                function selectClassList() {
+						var str = "";
+	                	
+	                	$.ajax({
+	                		url: "selectClassList.st",
+	                		data: {
+	                			year: $("#year").val(),
+                				term: $("#term").val()
+	                		},
+	                		success: function(cList) {
+	                			if(cList != "") {
+	                				for(var i=0;i<cList.length;i++) {
+										str += "<tr>"
+											 + "<td style='border: 0;'>" + cList[i].classYear + "년</td>"
+											 + "<td>" + cList[i].classTerm + "학기</td>"
+											 + "<td>" + cList[i].classNo + "</td>"
+											 + "<td>" + cList[i].className + "</td>"
+											 + "<td>" + cList[i].professorName + "</td>"
+											 + "<td>" + cList[i].credit + "</td>"
+											 + "<td>" + cList[i].score + "</td>"
+											 + "<td>" + cList[i].gradeLevel + "</td>"
+											 + "</tr>";
+									}
+	                			}
+	                			else {
+	                				str += "<tr class='no-hover' style='border: 0;'><td colspan='8' style='border: 0;''>해당 테이블에 데이터가 없습니다.</td></tr>";
+	                			}
+								
+								$(".termGrade-table>tbody").empty();
+								$(".termGrade-table>tbody").append(str);
+	                		},
+	                		error: function() {
+	                			console.log("통신 오류");
+	                		}
+	                	})
+	                }
                 </script>
             </div>
         </div>

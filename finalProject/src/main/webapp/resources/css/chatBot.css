@@ -1,0 +1,115 @@
+#chatWrap{
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    right: 80px;
+    bottom: 50px;
+    z-index: 1000;
+}
+
+#chatHead{
+    width: 100%;
+    height: 100%;
+}
+
+#startBtn{
+    border: 0px;
+    width: 64px;
+    height: 64px;
+    background-color: transparent;
+    padding: 0px;
+}
+
+#bodyBtn{
+    border: 0px;
+    border-radius: 15px;
+    padding: 0px;
+    width: 50px;
+    height: 50px;
+    background-color: transparent;
+}
+
+#chatBody{
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 15px;
+    position: fixed;
+    right: 80px;
+    bottom: 50px;
+    width: 300px;
+    height: 500px;
+    display: none;
+    box-shadow: 1px 1px 1px 2px #00000064;
+}
+
+#resultDiv{
+    padding: 10px;
+    width: 100%;
+    height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#resultDiv button{
+    background-color: rgb(52, 152, 219);
+    border-radius: 5px;
+    color: white;
+    padding: 5px;
+    font-size: 15px;
+    margin: 0px 5px 5px 0px;
+}
+
+#resultDiv button:hover{
+    box-shadow: 1px 1px 1px #000000;
+}
+
+#resultDiv div{
+    background-color: rgb(52, 152, 219);
+    border-radius: 5px;
+    color: white;
+    width: auto;
+    min-height: 30px;
+    height: auto;
+    padding: 3px;
+    box-shadow: 1px 1px 1px 2px #000000;
+    text-indent: 5px;
+    display: flex;
+    vertical-align: middle;
+}
+
+#startDiv{
+    text-align: center;
+    padding: 10px;
+}
+
+#startChatBtn{
+    background-color: rgb(52, 152, 219);
+    border-radius: 5px;
+    color: white;
+    width: 100%;
+    height: 30px;
+}
+
+#questionDiv{
+    text-align: center;
+    padding: 10px;
+    display: none;
+}
+
+#question{
+    border-radius: 5px;
+    text-indent: 5px;
+    padding: 0px;
+}
+
+#questionBtn{
+    background-color: rgb(52, 152, 219);
+    border-radius: 5px;
+    color: white;
+    width: 60px;
+    height: 30px;
+}
+
+#questionBtn:hover{
+    box-shadow: 1px 1px 1px #000000;
+}

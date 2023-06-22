@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Department;
@@ -235,6 +236,21 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.selectGraStatus", h);
 	}
 	
+	//학사관리 - 졸업사정표 (교양공통 세부조회)
+	public ArrayList<HashMap<String, String>> detailCommonGra(SqlSessionTemplate sqlSession,HashMap<String, String> h) {
+		return (ArrayList)sqlSession.selectList("memberMapper.detailCommonGra", h);
+	}
+	
+	//학사관리 - 졸업사정표 (교양일반 세부조회)
+	public ArrayList<HashMap<String, String>> detailNomalGra(SqlSessionTemplate sqlSession, HashMap<String, String> h) {
+		return (ArrayList)sqlSession.selectList("memberMapper.detailNomalGra", h);
+	}
+	
+	//학사관리 - 졸업사정표 (전공심화 세부조회)
+	public ArrayList<HashMap<String, String>> detailmajorGra(SqlSessionTemplate sqlSession, HashMap<String, String> h) {
+		return (ArrayList)sqlSession.selectList("memberMapper.detailmajorGra", h);
+	}
+	
 	//(학생)휴,복학 신청 리스트 조회
 	public ArrayList<StudentRest> selectStuRestList(SqlSessionTemplate sqlSession, String studentNo) {
 		
@@ -286,10 +302,25 @@ public class MemberDao {
 	public ArrayList<Classes> selectProfessorTimetable(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectProfessorTimetable", map);
 	}
+	
+	// 성적관리 -> 학점별로 몇명이 해당되는지
+	public HashMap<String, String> countStudentGrade(SqlSessionTemplate sqlSession, int classNo) {
+		return sqlSession.selectOne("memberMapper.countStudentGrade", classNo);
+	}
 
 	// 성적관리 -> 수강중인 학생 조회
-	public ArrayList<Student> selectStudentGradeList(SqlSessionTemplate sqlSession, int classNo) {
+	public ArrayList<HashMap<String, String>> selectStudentGradeList(SqlSessionTemplate sqlSession, int classNo) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectStudentGradeList", classNo);
+	}
+
+	// 성적관리 -> 수강인원*비율에 따른 가능 인원 수
+	public int checkGradeNos(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return sqlSession.selectOne("memberMapper.checkGradeNos", map);
+	}
+
+	// 성적관리 -> 실제 몇명이 해당되는지
+	public int countGradeNos(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return sqlSession.selectOne("memberMapper.countGradeNos", map);
 	}
 
 	// 성적관리 -> 성적 입력
@@ -301,7 +332,12 @@ public class MemberDao {
 	public int gradeUpdate(SqlSessionTemplate sqlSession, Grade g) {
 		return sqlSession.update("memberMapper.gradeUpdate", g);
 	}
-	
+
+	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
+	public ArrayList<HashMap<String, String>> selectClassList(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectClassList", map);
+	}
+
 	//(교수)강의개설 신청 리스트 조회
 		public ArrayList<Classes> selectClassCreateList(SqlSessionTemplate sqlSession, String professorNo) {
 			
@@ -335,6 +371,7 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectClassAttList");
 	}
 
+
 	//강의 이의제기 - 학생
 	public ArrayList<Dissent> studentGradeReport(SqlSessionTemplate sqlSession, String studentNo) {
 
@@ -345,7 +382,137 @@ public class MemberDao {
 	//임직원 생성
 	public int insertProfessor(SqlSessionTemplate sqlSession, Professor pr) {
 		
-		return sqlSession.insert("memberMapper.insertProfessor",pr);
+	return sqlSession.insert("memberMapper.insertProfessor",pr);
+	}
+	// (관리자)강의개설 일괄 승인
+	public int updateClassPermitAll(SqlSessionTemplate sqlSession, int[] cArr) {
+		
+		return sqlSession.update("memberMapper.updateClassPermitAll",cArr);
+	}
+
+	// (관리자)강의개설 개별 승인
+	public int updateclassPermit(SqlSessionTemplate sqlSession, int cno) {
+		
+		return sqlSession.update("memberMapper.updateClassPermit",cno);
+	}
+
+	// (관리자)강의개설 반려 업데이트
+	public int updateClassReject(SqlSessionTemplate sqlSession, Classes c) {
+		
+		return sqlSession.update("memberMapper.updateClassReject",c);
+	}
+	
+	// 학기별 성적 조회 -> 학기별 성적 계산
+	public HashMap<String, String> calculatedGrade(SqlSessionTemplate sqlSession,
+			HashMap<String, String> map) {
+		return sqlSession.selectOne("memberMapper.calculatedGrade", map);
+	}
+	
+	// 학기별 성적 조회 -> 학기별석차
+	public String calculatedTermRank(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return sqlSession.selectOne("memberMapper.calculatedTermRank", map);
+	}
+	
+	// 학기별 성적 조회 -> 전체석차
+	public String calculatedTotalRank(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return sqlSession.selectOne("memberMapper.calculatedTotalRank", map);
+	}
+
+	// 교수이름으로 교수 직번 가져오기
+	public String selectProfessorNo(SqlSessionTemplate sqlSession, String keyword) {
+		
+		return sqlSession.selectOne("memberMapper.selectProfessorNo",keyword);
+	}
+
+	// (관리자) 강의 관리 검색
+	public ArrayList<Classes> selectClassListSearch(SqlSessionTemplate sqlSession, Classes c) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.selectSearchClassList",c);
+	}
+
+	//(교수)반려당한 강의 수정 페이지 이동
+	public Classes selectRejectedClass(SqlSessionTemplate sqlSession, int classNo) {
+		
+		return sqlSession.selectOne("memberMapper.selectRejectedClass",classNo);
+	}
+
+	//(교수)반려당한 강의 첨부파일(강의계획서) 조회
+	public Attachment selectRejectedClassAtt(SqlSessionTemplate sqlSession, String fileNo) {
+		
+		return sqlSession.selectOne("memberMapper.selectRejectedClassAtt",fileNo);
+	}
+
+	//(교수)반려 강의 수정(새로운 첨부파일이 없는 경우)
+	public int updateClassCreateNoAtt(SqlSessionTemplate sqlSession, Classes c) {
+		
+		return sqlSession.update("memberMapper.updateClassCreateNoAtt",c);
+	}
+
+	//(교수)반려 강의 수정(새로운 첨부파일이 있고 기존 첨부파일이 있는 경우)
+	@Transactional
+	public int updateClassCreate(SqlSessionTemplate sqlSession, Classes c, Attachment a) {
+		int result = sqlSession.update("memberMapper.updateClassAttachment",a);
+		
+		if(result>0) {
+			result =sqlSession.update("memberMapper.updateClassCreateNoAtt",c);
+		}
+		return result;
+	}
+	
+	//(교수)반려 강의 수정(새로운 첨부파일이 있고 기존 첨부파일이 없는 경우)
+	@Transactional
+	public int updateClassCreateNew(SqlSessionTemplate sqlSession, Classes c, Attachment a) {
+		int	result = sqlSession.insert("memberMapper.insertClassAttachment",a);
+		
+		if(result>0) {
+			result = sqlSession.insert("memberMapper.UpdateClassNewAttNoOrigin",c);
+		}
+		return result;
+	}
+
+	// 학기별 성적 조회 -> 증명신청학점
+	public HashMap<String, String> selectScoreAB(SqlSessionTemplate sqlSession, String studentNo) {
+		return sqlSession.selectOne("memberMapper.selectScoreAB", studentNo);
+	}
+
+	// 학기별 성적 조회 -> 증명취득학점
+	public int selectScoreB(SqlSessionTemplate sqlSession, String studentNo) {
+		return sqlSession.selectOne("memberMapper.selectScoreB", studentNo);
+	}
+
+	// 학기별 성적 조회 -> 증명평점평균
+	public double selectScoreC(SqlSessionTemplate sqlSession, String studentNo) {
+		return sqlSession.selectOne("memberMapper.selectScoreC", studentNo);
+	}
+
+	// 학기별 성적 조회 -> 증명산술평균
+	public double selectScoreD(SqlSessionTemplate sqlSession, String studentNo) {
+		return sqlSession.selectOne("memberMapper.selectScoreD", studentNo);
+	}
+	
+	// (학생)수강한 강의정보 조회
+	public ArrayList<RegisterClass> classInfoForRating(SqlSessionTemplate sqlSession, ClassRating cr) {
+		return (ArrayList)sqlSession.selectList("memberMapper.classInfoForRating", cr);
+	}
+	
+	// (학생)강의평가 입력
+	public int insertClassRating(SqlSessionTemplate sqlSession, ClassRating cr) {
+		return sqlSession.insert("memberMapper.insertClassRating", cr);
+	}
+	
+	// (관리자) 강의평가 조회
+	public ArrayList<ClassRating> classRatingList(SqlSessionTemplate sqlSession, ClassRating cr) {
+		return (ArrayList)sqlSession.selectList("memberMapper.classRatingList", cr);
+	}
+
+	// (관리자) 강의평가 기타건의사항 조회
+	public ArrayList<ClassRating> classRatingEtcList(SqlSessionTemplate sqlSession, ClassRating cr) {
+		return (ArrayList)sqlSession.selectList("memberMapper.classRatingEtcList",cr);
+	}
+	
+	// (관리자) 강의평가 문항별 평균 점수 조회
+	public ClassRating classRatingAverage(SqlSessionTemplate sqlSession, ClassRating cr) {
+		return sqlSession.selectOne("memberMapper.classRatingAverage", cr);
 	}
 
 }

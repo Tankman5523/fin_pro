@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Scholarship { //장학금
 	private int schNo;
-	private int studentNo;
+	private String studentNo;
 	private int schCategoryNo;
 	private int schAmount;
 	private String classYear;
@@ -22,7 +22,6 @@ public class Scholarship { //장학금
 	private String status;
 	private String etc;
 	
-	//학생 이름
-	private String stduentName;
+	private String studentName;
 	
 }

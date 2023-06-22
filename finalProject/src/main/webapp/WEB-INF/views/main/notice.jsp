@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -48,7 +47,7 @@
 					
 				</div>
 				<div class="tab_content">
-					
+				
 				</div>
 				<div class="tab_content">
 					
@@ -58,122 +57,6 @@
 				</div>
 			</div>
 			
-			<script type="text/javascript">
-			
-				const tabBtn = document.querySelectorAll('.tab_btn')
-				const tabCont = document.querySelectorAll('.tab_content')
-				
-				
-				$('document').ready(function(){
-					
-					const active = tabBtn[0].children[0].innerHTML
-					
-					$.ajax({
-		                url: "loadFaq.mp",
-		                data: {
-		                	active : active
-		                },
-		                success: function (result) {
-		                	var str = "";
-		                	
-		                	for(var i in result){
-			                	str +="<div class='faq_content'>"
-		                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
-			                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
-			 		                +"</div>"
-		                	}
-		                	
-		                	$(".tab_contents").children().eq(0).html(str);
-		                },
-		                error : function(){
-		                	console.log("통신 오류")
-		                }
-					})
-				});
-			
-				var btnText = ""
-					
-				tabBtn.forEach(function(tab, index){
-										
-					tab.addEventListener('click', function(){
-											
-						tabCont.forEach(function(cont){
-							cont.classList.remove('active')
-						})
-						
-						tabBtn.forEach(function(btn){
-							btn.classList.remove('active')
-						})
-						
-						tabCont[index].classList.add('active')
-						tabBtn[index].classList.add('active')
-						
-						$.ajax({
-			                url: "clickFaq.mp",
-			                data: {
-			                	active : tab.children[0].innerHTML
-			                },
-			                success: function (result) {
-			                	
-			                	var str = "";
-			                	
-			                	switch (result[0].noticeCategory) {
-								case 1:
-				                	for(var i in result){
-					                	str +="<div class='faq_content'>"
-				                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
-					                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
-					 		                +"</div>"
-				                	}
-				                	$(".tab_contents").children().eq(0).html(str);
-									break;
-								case 2:
-				                	for(var i in result){
-					                	str +="<div class='faq_content'>"
-				                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
-					                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
-					 		                +"</div>"
-				                	}
-				                	$(".tab_contents").children().eq(1).html(str);
-									break;
-								case 3:
-				                	for(var i in result){
-					                	str +="<div class='faq_content'>"
-				                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
-					                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
-					 		                +"</div>"
-				                	}
-				                	$(".tab_contents").children().eq(2).html(str);
-									break;
-								case 4:
-				                	for(var i in result){
-					                	str +="<div class='faq_content'>"
-				                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
-					                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
-					 		                +"</div>"
-				                	}
-				                	$(".tab_contents").children().eq(3).html(str);
-									break;
-								case 5:
-				                	for(var i in result){
-					                	str +="<div class='faq_content'>"
-				                	   		+"<span class='thumb_title'>"+result[i].noticeTitle+"</span>"
-					                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
-					 		                +"</div>"
-				                	}
-				                	$(".tab_contents").children().eq(4).html(str);
-									break;								
-								}
-			                },
-							error : function(){
-			                	console.log("통신 오류")
-			                }
-						})
-						
-						
-					})
-				})
-			</script>
 		</div>
 		
 		<div class="notice_area">
@@ -181,15 +64,15 @@
 				<p>공지사항</p>
 				
 				<form id="searchForm" action="search.mp" method="get" align="center">
-					<select>
-						<option value="both">제목+내용</option>
-						<option value="title">제목</option>
-						<option value="content">내용</option>
-					</select>				
-					<label>
+					<div id="btn-area">
+						<select name="selectBox">
+							<option value="both">제목+내용</option>
+							<option value="title">제목</option>
+							<option value="content">내용</option>
+						</select>
 						<input type="text" name="keyword" placeholder="검색어를 입력해주세요.">
 						<button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-					</label>
+					</div>				
 				</form>
 				
 				<table class="notice_table">
@@ -202,9 +85,12 @@
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach var="n" items="${list }">
+						<c:forEach var="n" items="${list}">
 							<tr>
-								<td>${n.categoryName }</td>
+								<td>
+									<input type="hidden" class="nno" value="${n.noticeNo }">
+									${n.categoryName }
+								</td>
 								<td>${n.noticeTitle }</td>
 								<td>
 									<c:if test="${not empty n.originName }">
@@ -252,11 +138,166 @@
 						</c:choose>
 					</ul>
 				</div>
+				
 			</div>
 		</div>
 	</div>
 	
 	<%@include file="../common/mainPageFooter.jsp" %>
 </div>
+
+	<script>
+	
+		const tabBtn = document.querySelectorAll('.tab_btn')
+		const tabCont = document.querySelectorAll('.tab_content')
+		
+		var nno = '';
+		
+		$('document').ready(function(){
+			
+			const active = tabBtn[0].children[0].innerHTML
+			
+			$.ajax({
+                url: "loadFaq.mp",
+                data: {
+                	active : active
+                },
+                success: function (result) {
+                	var str = "";
+                	
+                	for(var i=0; i<result.length; i++){
+	                	str += "<div class='faq_content'>"
+	                		+"<form action='faqDetail.mp' method='get'>"
+                	   		+"<span class='thumb_title'>"+result[i].noticeTitle
+                	   		+"<button type='submit'>"+"전체보기>>"+"</button>"
+                	   		+"</span>"
+	                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+	                   		+"<input type='hidden' name='faqNo' value='"+result[i].noticeNo+"'>"
+	 		                +"</form></div>"
+                	}
+                	$(".tab_contents").children().eq(0).html(str);
+                },
+                error : function(){
+                	console.log("통신 오류")
+                }
+			})
+		});
+				
+		var btnText = ""
+			
+		tabBtn.forEach(function(tab, index){
+								
+			tab.addEventListener('click', function(){
+									
+				tabCont.forEach(function(cont){
+					cont.classList.remove('active')
+				})
+				
+				tabBtn.forEach(function(btn){
+					btn.classList.remove('active')
+				})
+				
+				tabCont[index].classList.add('active')
+				tabBtn[index].classList.add('active')
+				
+				$.ajax({
+	                url: "clickFaq.mp",
+	                data: {
+	                	active : tab.children[0].innerHTML
+	                },
+	                success: function (result) {
+	                	
+	                	var str = "";
+	                	
+	                	switch (result[0].noticeCategory) {
+						case 1:
+							for(var i=0; i<result.length; i++){
+			                	str += "<div class='faq_content'>"
+			                		+"<form action='faqDetail.mp' method='get'>"
+		                	   		+"<span class='thumb_title'>"+result[i].noticeTitle
+		                	   		+"<button type='submit'>"+"전체보기>>"+"</button>"
+		                	   		+"</span>"
+			                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+			                   		+"<input type='hidden' name='faqNo' value='"+result[i].noticeNo+"'>"
+			 		                +"</form></div>"
+		                	}
+		                	$(".tab_contents").children().eq(0).html(str);
+							break;
+						case 2:
+							for(var i=0; i<result.length; i++){
+			                	str += "<div class='faq_content'>"
+			                		+"<form action='faqDetail.mp' method='get'>"
+		                	   		+"<span class='thumb_title'>"+result[i].noticeTitle
+		                	   		+"<button type='submit'>"+"전체보기>>"+"</button>"
+		                	   		+"</span>"
+			                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+			                   		+"<input type='hidden' name='faqNo' value='"+result[i].noticeNo+"'>"
+			 		                +"</form></div>"
+		                	}
+		                	$(".tab_contents").children().eq(1).html(str);
+							break;
+						case 3:
+							for(var i=0; i<result.length; i++){
+			                	str += "<div class='faq_content'>"
+			                		+"<form action='faqDetail.mp' method='get'>"
+		                	   		+"<span class='thumb_title'>"+result[i].noticeTitle
+		                	   		+"<button type='submit'>"+"전체보기>>"+"</button>"
+		                	   		+"</span>"
+			                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+			                   		+"<input type='hidden' name='faqNo' value='"+result[i].noticeNo+"'>"
+			 		                +"</form></div>"
+		                	}
+		                	$(".tab_contents").children().eq(2).html(str);
+							break;
+						case 4:
+							for(var i=0; i<result.length; i++){
+			                	str += "<div class='faq_content'>"
+			                		+"<form action='faqDetail.mp' method='get'>"
+		                	   		+"<span class='thumb_title'>"+result[i].noticeTitle
+		                	   		+"<button type='submit'>"+"전체보기>>"+"</button>"
+		                	   		+"</span>"
+			                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+			                   		+"<input type='hidden' name='faqNo' value='"+result[i].noticeNo+"'>"
+			 		                +"</form></div>"
+		                	}
+		                	$(".tab_contents").children().eq(3).html(str);
+							break;
+						case 5:
+							for(var i=0; i<result.length; i++){
+			                	str += "<div class='faq_content'>"
+			                		+"<form action='faqDetail.mp' method='get'>"
+		                	   		+"<span class='thumb_title'>"+result[i].noticeTitle
+		                	   		+"<button type='submit'>"+"전체보기>>"+"</button>"
+		                	   		+"</span>"
+			                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
+			                   		+"<input type='hidden' name='faqNo' value='"+result[i].noticeNo+"'>"
+			 		                +"</form></div>"
+		                	}
+		                	$(".tab_contents").children().eq(4).html(str);
+							break;								
+						}
+	                },
+					error : function(){
+	                	console.log("통신 오류")
+	                }
+				})
+				
+				
+			})
+		})
+	</script>
+	
+	<script>
+				
+		const tr = document.querySelectorAll('tbody > tr')
+		
+		tr.forEach(function(tr, index){
+			tr.addEventListener('click', function(){
+				var noticeNo = tr.children[0].children[0].value;
+				location.href = "detail.mp?noticeNo="+noticeNo;
+			})							
+		})
+		
+	</script>
 </body>
 </html>

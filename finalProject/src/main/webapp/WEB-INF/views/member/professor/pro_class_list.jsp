@@ -63,38 +63,27 @@
 	                        				${c.period }<br>
 	                        				${c.day }
 	                        			</td>
-	                        			<td>${c.classLevel }학년</td>
+	                        			<td>${c.classLevel eq 0?'전':c.classLevel }학년</td>
 	                        			<td>${c.classNos }</td>
 	                        			<td>${c.credit }</td>
-	                        			<td>${c.status }</td>
+	                        			<c:choose>
+	                        			<c:when test="${c.status eq 'C'}">
+	                        				<td><button type="button" onclick="location.href='updateClassCreate.pr?classNo=${c.classNo}'" class="btn btn-warning">반려(수정)</button></td>
+	                        			</c:when>
+	                        			<c:otherwise>
+	                        				<td>${c.status eq 'Y'?'개설완료': c.status eq 'B'?'승인대기중':'학기종료'}</td>
+	                        			</c:otherwise>
+	                        			</c:choose>
 	                        		</tr>
 	                        	</c:forEach>
                         	</c:otherwise>
                         	</c:choose>
-                        	<!-- 
-                            <tr>
-                                <td>50</td>
-                                <td>전공</td>
-                                <td>세무회계과</td>
-                                <td>회계원리</td>
-                                <td>2023</td>
-                                <td>2학기</td>
-                                <td>태양관502호</td>
-                                <td>
-                                    14:00~16:00<br>
-                                    (월)
-                                </td>
-                                <td>1학년</td>
-                                <td>32</td>
-                                <td>3</td>
-                                <td>개설완료</td>
-                            </tr>
-                        	 -->
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
+    
 </body>
 </html>

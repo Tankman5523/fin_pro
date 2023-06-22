@@ -1,6 +1,10 @@
 package com.univ.fin.main.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.PageInfo;
@@ -70,7 +75,6 @@ public class MainPageController {
 		
 		if(active.equals("학사")) {
 			 haksa = mainService.selectHaksaList();
-			
 		}
 		
 		return new Gson().toJson(haksa);
@@ -102,19 +106,82 @@ public class MainPageController {
 		
 		return new Gson().toJson(faq);
 	}
+
+	@GetMapping("detail.mp")
+	public ModelAndView boardDetailView(int noticeNo, Model mvmodel, ModelAndView mv, HttpServletRequest request) {
+		
+		int result = mainService.increaseCount(noticeNo);		
+		
+		if(result > 0) {
+			Notice n = mainService.selectNotice(noticeNo);
+			ArrayList<Notice> files = mainService.selectFiles(noticeNo);
+			mv.addObject("n", n);
+			mv.addObject("files", files);
+			mv.setViewName("main/noticeDetailView");
+		}else {
+			mv.addObject("alertMsg", "해당 게시물을 조회할 수 없습니다.");
+			mv.addObject("url", "notice.mp");
+			mv.setViewName("main/alert");
+		}
+		
+		return mv;
+	}
+	
+	@GetMapping("faqDetail.mp")
+	public ModelAndView faqDetailView(int faqNo, Model mvmodel, ModelAndView mv, HttpServletRequest request) {
+		
+		int result = mainService.increaseFaqCount(faqNo);
+		
+		if(result > 0) {
+			Notice faq = mainService.selectFaq(faqNo);
+			mv.addObject("f", faq);
+			mv.setViewName("main/faqDetailView");
+		}else {
+			mv.addObject("alertMsg", "해당 게시물을 조회할 수 없습니다.");
+			mv.addObject("url", "notice.mp");
+			mv.setViewName("main/alert");
+		}
+		
+		return mv;
+	}
+	
 	
 	@GetMapping("search.mp")
-	public String searchBoardList(String keyword) {
+	public String searchBoardList(@RequestParam(value="currentPage", defaultValue="1") int currentPage
+								, @RequestParam(value = "selectBox", required = false) String selectBox
+								, @RequestParam(value = "keyword", required = false) String keyword
+								, Model model) {
 		
-		System.out.println(keyword);
+		HashMap<String, String> searchMap = new HashMap<String, String>();
+		searchMap.put("selectBox", selectBox);
+		searchMap.put("keyword", keyword);
 		
+		//게시글 목록 조회
+		int listCount = mainService.searchListCount(searchMap);
+		int pageLimit = 10;
+		int boardLimit = 15;
+
+		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		
+		ArrayList<Notice> list = mainService.searchNotice(searchMap, pi);
 		
-		return null;
+		model.addAttribute("slist", list);
+		model.addAttribute("searchPi", pi);
+		model.addAttribute("selectBox", selectBox);
+		model.addAttribute("keyword", keyword);
+		
+		return "main/searchNoticeList";
 	}
 	
 	@GetMapping("infoSystem.mp")
-	public String infoSystemMain() {
+	public String infoSystemMain(Model model) {
+		
+		ArrayList<Notice> list = mainService.infoNoticeList();
+		ArrayList<Notice> faq = mainService.infoFaqList();
+		
+		model.addAttribute("infoList", list);
+		model.addAttribute("infoFaq", faq);
+		
 		return "main/infoSystemMain";
 	}
 }

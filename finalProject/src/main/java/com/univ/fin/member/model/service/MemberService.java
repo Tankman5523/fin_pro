@@ -1,11 +1,11 @@
 package com.univ.fin.member.model.service;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Dissent;
@@ -132,12 +132,6 @@ public interface MemberService {
 	
 	//학생추가 (관리자)
 	int insertStudent(Student st);
-
-
-	
-
-
-
 	
 	// 학생 개인시간표 -> 학년도,학기 조회
 	ArrayList<String> selectStudentClassTerm(String studentNo);
@@ -150,6 +144,15 @@ public interface MemberService {
 	
 	//학사관리 - 졸업사정표(전체 이수현황 조회)
 	Graduation selectGraStatus(HashMap<String, String> h);
+	
+	//학사관리 - 졸업사정표 (교양공통 세부조회)
+	ArrayList<HashMap<String, String>> detailCommonGra(HashMap<String, String> h);
+	
+	//학사관리 - 졸업사정표 (교양일반 세부조회)
+	ArrayList<HashMap<String, String>> detailNomalGra(HashMap<String, String> h);
+	
+	//학사관리 - 졸업사정표 (전공심화 세부조회)
+	ArrayList<HashMap<String, String>> detailmajorGra(HashMap<String, String> h);
 	
 	//(학생)휴,복학 신청 리스트 조회
 	ArrayList<StudentRest> selectStuRestList(String studentNo);
@@ -184,8 +187,17 @@ public interface MemberService {
 	// 교수 개인시간표 -> 학기 선택 후 시간표 조회
 	ArrayList<Classes> selectProfessorTimetable(HashMap<String, String> map);
 
+	// 성적관리 -> 학점별로 몇명이 해당되는지
+	HashMap<String, String> countStudentGrade(int classNo);
+
 	// 성적관리 -> 수강중인 학생 조회
-	ArrayList<Student> selectStudentGradeList(int classNo);
+	ArrayList<HashMap<String, String>> selectStudentGradeList(int classNo);
+	
+	// 성적관리 -> 수강인원*비율에 따른 가능 인원 수
+	int checkGradeNos(HashMap<String, String> map);
+	
+	// 성적관리 -> 실제 몇명이 해당되는지
+	int countGradeNos(HashMap<String, String> map);
 
 	// 성적관리 -> 성적 입력
 	int gradeInsert(Grade g);
@@ -193,10 +205,68 @@ public interface MemberService {
 	// 성적관리 -> 성적 수정
 	int gradeUpdate(Grade g);
 
+
 	// 강의 이의제기 -> 학생 신청
 	ArrayList<Dissent> studentGradeReport(String studentNo);
 
 	// 직원 생성하기
 	int insertProfessor(Professor pr);
+
+	// (관리자)강의개설 일괄 승인
+	int updateClassPermitAll(int[] cArr);
+
+	// (관리자)강의개설 개별 승인
+	int updateClassPermit(int cno);
+
+	// (관리자)강의개설 반려 업데이트
+	int updateClassReject(Classes c);
+
+	//교수이름으로 교수번호 가져오기
+	String selectProfessorNo(String keyword);
+
+	//(관리자)강의 검색
+	ArrayList<Classes> selectClassListSearch(Classes c);
+
+	//(교수)반려당한 강의 수정 페이지 이동
+	Classes selectRejectedClass(int classNo);
+
+	//(교수)반려당한 강의 첨부파일(강의계획서) 조회
+	Attachment selectRejectedClassAtt(String fileNo);
+
+	//(교수)반려된 강의 수정
+	int updateClassCreate(Classes c, Attachment a);
+
+	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
+	ArrayList<HashMap<String, String>> selectClassList(HashMap<String, String> map);
+	
+	// 학기별 성적 조회 -> 학기별 성적 계산
+	HashMap<String, String> calculatedGrade(HashMap<String, String> map);
+	
+	// 학기별 성적 조회 -> 학기별석차
+	String calculatedTermRank(HashMap<String, String> map);
+	
+	// 학기별 성적 조회 -> 전체석자
+	String calculatedTotalRank(HashMap<String, String> map);
+
+	// 학기별 성적 조회 -> 증명@@ 성적 계산
+	HashMap<String, String> selectScoreAB(String studentNo);
+	double selectScoreC(String studentNo);
+	double selectScoreD(String studentNo);
+
+	// (학생)수강한 강의정보 조회
+	ArrayList<RegisterClass> classInfoForRating(ClassRating cr);
+	
+	// (학생)강의평가 입력
+	int insertClassRating(ClassRating cr);
+	
+	// (관리자) 강의평가 조회
+	ArrayList<ClassRating> classRatingList(ClassRating cr);
+	
+	// (관리자) 강의평가 기타건의 조회
+	ArrayList<ClassRating> classRatingEtcList(ClassRating cr);
+	
+	// (관리자) 강의평가 문항별 평균 점수 조회
+	ClassRating classRatingAverage(ClassRating cr);
+
 
 }

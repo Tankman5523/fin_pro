@@ -1,0 +1,134 @@
+@charset "UTF-8";
+
+#content_1{
+	margin: auto;
+	padding: 50px 0;
+/* 	background-color: #ffe6bb; */
+}
+
+#select-area{
+	width: 95%;
+	height: auto;
+	margin: auto;
+/* 	border: 1px solid lightcoral; */
+	border-bottom: 3px solid #c0c0c0;
+	padding-bottom: 30px
+}
+
+#select-table{
+	margin: auto;
+	height: 150px;
+}
+#select-table tr{
+	height: 50px;
+}
+#select-table th{
+	width: 120px;
+	text-align: center;
+}
+#select-table td{
+	width: 180px;
+	text-align: center;
+	padding: 10px 0;
+}
+#select-table select{
+	width: 100%;
+	height: 33px;
+	border-radius: 10px;
+	text-align: center;
+}
+
+#select-btn{
+	width: 95%;
+	margin: 20px auto;
+	text-align: center;
+}
+#select-btn button{
+	width: 100px;
+	height: 40px;
+	background-color: white;
+	margin: 0 10px;
+	border: 1px solid black;
+	border-radius: 10px;
+}
+#select-btn button[type=submit]:hover{
+	color: white;
+	border: 1px solid #0080ff;
+	background-color: #0080ff;
+	transition: all 0.2s ease-out;
+}
+#select-btn button[type=reset]:hover{
+	color: white;
+	border: 1px solid #ffb300;
+	background-color: #ffb300;
+	transition: all 0.2s ease-out;
+}
+
+#record-area{
+	width: 95%;
+	height: 490px;
+	margin: auto;
+	border: 3px solid #ddd;
+	overflow: scroll;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+#record-area::-webkit-scrollbar{
+	display: none;
+}
+
+#record-table{
+	width: 100%;
+	text-align: center;
+}
+#record-table th{
+	height: 50px;
+	position: sticky;
+	top: 0;
+	background-color: #88c1e3;
+	color: white;
+/* 	border-bottom: 1px solid #0066cc; */
+}
+#record-table td{
+	height: 40px;
+	border-bottom: 1px solid #c0c0c0;
+}
+#record-table tbody tr:hover {
+	cursor: pointer;
+	color: rgb(0, 102, 204);
+	background-color: rgb(218, 228, 255);
+	transition: all 0.2s ease-out;
+}
+
+input[type="date"]{
+	position: relative;
+}
+input[type="date"]:before {
+	content: attr(placeholder);
+	width: 100%;
+	padding-right: 15px;
+}
+input[type="date"]:focus{
+	outline: none;
+}
+input[type="date"]:focus::before,
+input[type="date"]:valid::before {
+	display: none;
+}
+input[type="date"]::-webkit-calendar-picker-indicator{
+	position: absolute;
+	left: 0;
+	top: 0;
+    width: 100%;
+    height: 80%;
+    cursor: pointer;
+    font-size: 10px;
+    padding: 4px 0 4px 140px;
+}
+input[type="date"]{
+	width: 100%;
+	height: 33px;
+	border: 1px solid black;
+	border-radius: 10px;
+	text-align: center;
+}

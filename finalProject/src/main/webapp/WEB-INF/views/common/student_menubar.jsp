@@ -29,7 +29,7 @@
 					${loginUser.studentName}님 환영합니다.
 	            </td>
 	            <td style="padding-left: 50px;">
-	                <button type="button" class="btn btn-primary" onclick="location.href='logout.me'">로그아웃</button>
+	                <button type="button" class="btn btn-primary" onclick="location.href='logout.me'" style="border-radius: 10px;">로그아웃</button>
 	            </td>
 	        </tr>
 		</table>
@@ -37,12 +37,13 @@
 	<div id="menubar">
 	    <ul id="nav">
 	        <li><a href="#">홈</a></li>
-	        <li><a href="#">등록/장학</a></li>
+	        <li><a href="onelist.rg">등록/장학</a></li>
 	        <li><a href="infoStudent.st">학사관리</a></li>
 	        <li><a href="counselingList.st">상담관리</a></li>
 	        <li><a href="classListView.st">수강신청</a></li>
 	        <li><a href="classManagement.st">수업관리</a></li>
 	    </ul>
 	</div>
+	<%@include file="chatBot.jsp" %>
 </body>
 </html>

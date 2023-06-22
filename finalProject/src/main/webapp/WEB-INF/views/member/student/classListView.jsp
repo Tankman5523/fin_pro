@@ -83,7 +83,7 @@
 	                    <table id="class-table">
 	                    	<thead>
 	                    		<tr>
-	                    			<th width="3%" style="border: 0;"></th> <!-- 강의계획서 첨부파일 -->
+	                    			<th width="3%" style="border-left: 1px solid #88C1E3;"></th> <!-- 강의계획서 첨부파일 -->
 	                    			<th width="6%">강의번호</th>
 	                    			<th width="20%">강의명</th>
 	                    			<th width="7%">교수명</th>
@@ -95,11 +95,7 @@
 	                    			<th width="8%">수강대상</th>
 	                    		</tr>
 	                    	</thead>
-	                    	<tbody id="class-table-tbody">
-	                    		<tr class="no-hover">
-	                    			<td colspan="10" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
-	                    		</tr>
-	                    	</tbody>
+	                    	<tbody id="class-table-tbody"></tbody>
 	                    </table>
                     </div>
                 </div>
@@ -110,7 +106,7 @@
 	                    <table id="class-table2">
 	                    	<thead>
 	                    		<tr>
-	                    			<th width="3%" style="border: 0;"></th> <!-- 강의계획서 첨부파일 -->
+	                    			<th width="3%" style="border-left: 1px solid #88C1E3;"></th> <!-- 강의계획서 첨부파일 -->
 	                    			<th width="6%">강의번호</th>
 	                    			<th width="20%">강의명</th>
 	                    			<th width="7%">교수명</th>
@@ -122,11 +118,7 @@
 	                    			<th width="8%">수강대상</th>
 	                    		</tr>
 	                    	</thead>
-	                    	<tbody id="class-table-tbody2">
-	                    		<tr class="no-hover">
-	                    			<td colspan="10" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
-	                    		</tr>
-	                    	</tbody>
+	                    	<tbody id="class-table-tbody2"></tbody>
 	                    </table>
 	               	</div>
                 </div>
@@ -143,7 +135,7 @@
 	                    <table id="class-table3">
 	                    	<thead>
 	                    		<tr>
-	                    			<th width="3%" style="border: 0;"></th> <!-- 강의계획서 첨부파일 -->
+	                    			<th width="3%" style="border-left: 1px solid #88C1E3;"></th> <!-- 강의계획서 첨부파일 -->
 	                    			<th width="6%">강의번호</th>
 	                    			<th width="20%">강의명</th>
 	                    			<th width="7%">교수명</th>
@@ -155,11 +147,7 @@
 	                    			<th width="8%">수강대상</th>
 	                    		</tr>
 	                    	</thead>
-	                    	<tbody id="class-table-tbody3">
-	                    		<tr class="no-hover">
-	                    			<td colspan="10" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
-	                    		</tr>
-	                    	</tbody>
+	                    	<tbody id="class-table-tbody3"></tbody>
 	                    </table>
 	               	</div>
                 </div>
@@ -176,7 +164,7 @@
 	                    <table id="class-table4">
 	                    	<thead>
 	                    		<tr>
-	                    			<th width="3%" style="border: 0;"></th> <!-- 강의계획서 첨부파일 -->
+	                    			<th width="3%" style="border-left: 1px solid #88C1E3;"></th> <!-- 강의계획서 첨부파일 -->
 	                    			<th width="6%">강의번호</th>
 	                    			<th width="20%">강의명</th>
 	                    			<th width="7%">교수명</th>
@@ -188,11 +176,7 @@
 	                    			<th width="8%">수강대상</th>
 	                    		</tr>
 	                    	</thead>
-	                    	<tbody id="class-table-tbody4">
-	                    		<tr class="no-hover">
-	                    			<td colspan="10" style="border: 0;">해당 테이블에 데이터가 없습니다.</td>
-	                    		</tr>
-	                    	</tbody>
+	                    	<tbody id="class-table-tbody4"></tbody>
 	                    </table>
 	               	</div>
                 </div>
@@ -211,23 +195,24 @@
 	                
 	                function changeYear(e) {
 	                	var $year = e.value;
-	                	var count=0;
 	                	var str = "";
 	                	
 	                	for(var i=0;i<arr.length;i++) {
 	                		var tmp = arr[i].toString().substr(0,4);
 	                		if(tmp.includes($year)) {
-	                			count++;
+	                			var tmp2 = arr[i].toString().substr(5,);
+		                		if(tmp2 == "1") {
+		                			str += "<option value='1'>1학기</option>";
+		                		}
+		                		if(tmp2 == "2") {
+		                			str += "<option value='2'>2학기</option>";
+		                		}
 	                		}
-	                	}
-	                	
-	                	str += "<option value='1'>1학기</option>";
-	                	if(count==2) {
-	                		str += "<option value='2'>2학기</option>";
 	                	}
 	                	
 	                	$("#term").empty();
 	                	$("#term").append(str);
+	                	$("#term").children().first().prop("selected", true).change();
 	                	clearPage();
 	                }
 	                
@@ -279,6 +264,7 @@
 	                        $(".content_major").css("display", "block");
 	                    }
 	                    else if($('#elective').is(':checked')) {
+	                    	console.log("교양");
 	                        $(".content_elective").css("display", "block");
 	                        
 	                        $.ajax({
@@ -400,7 +386,7 @@
             						str += "<td style='border-left: 0;'></td>";
             					}
             					else { // 클릭하면 강의계획서 볼 수 있게
-            						str += "<td style='border-left: 0;'><i class='fa-solid fa-file-pdf fa-sm fileDown' style='color: #7cd7fe;'></i></td>";
+            						str += "<td style='border-left: 0;'><a href='" + cList[i].fileNo + "' target='_blank'><i class='fa-solid fa-file-pdf fa-sm fileDown' style='color: #7cd7fe;'></i></a></td>";
             					}
         						 str += "<td>" + cList[i].classNo + "</td>"
         						 + "<td>" + cList[i].className + "</td>"

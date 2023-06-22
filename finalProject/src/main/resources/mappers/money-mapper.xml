@@ -5,6 +5,7 @@
 <mapper namespace="moneyMapper">
 	
 	<resultMap type="registPay" id="registPayResultSet">
+		<result column="REG_NO" property="regNo"/>
 		<result column="STUDENT_NO" property="studentNo"/>
 		<result column="REG_ACCOUNT_NO" property="regAccountNo"/>
 		<result column="MUST_PAY" property="mustPay"/>
@@ -20,7 +21,10 @@
 		
 		<!-- MUST_PAY - INPUT_PAY -->
 		<result column="NON_PAID_AMOUNT" property="NonPaidAmount"/>
-		
+		<result column="PAYTIME" property="payTime"/>
+		<result column="PHONE" property="studentPhone"/>
+		<result column="EMAIL" property="studentEmail"/> 
+		<result column="STUDENT_NAME" property="studentName"/>
 	</resultMap>
 	
 	<resultMap type="salary" id="salaryResultSet">
@@ -44,6 +48,11 @@
 		<result column="REAL_PAY" property="realPay"/>
 		<result column="STATUS" property="status"/>
 		
+		<result column="PROFESSOR_NAME" property="professorName"/>
+		<result column="POSITION" property="position"/>
+		<result column="ACCOUNT_NO" property="accountNo"/>
+		<result column="PHONE" property="phone"/>
+		
 	</resultMap>
 	
 	<resultMap type="scholarship" id="scholarshipResultSet">
@@ -54,7 +63,7 @@
 		<result column="CLASS_YEAR" property="classYear"/>
 		<result column="CLASS_TERM" property="classTerm"/>
 		<result column="PRO_DATE" property="proDate"/>
-		<result column="SC.STATUS" property="status"/>
+		<result column="STATUS" property="status"/>
 		<result column="ETC" property="etc"/>
 		
 		<result column="STUDENT_NAME" property="studentName"/>
@@ -74,18 +83,20 @@
         FROM SCHOLARSHIP SC
 		JOIN STUDENT USING(STUDENT_NO)
 		WHERE STUDENT_NO = #{studentNo}
-		AND CLASS_YEAR = #{classYear}
+		<if test="classYear!=0">
+			AND CLASS_YEAR = #{classYear}
+		</if>
 		AND SC.STATUS IN ('Y','W')
 	</select>	
 	
 	<insert id="insertScholarship">
 		INSERT INTO SCHOLARSHIP
-		VALUES(SEQ_SCHNO.NEXTVAL,#{studentNo},#{schCategoryNo},#{schAmount},#{classYear},#{classTerm},null,'W',#{etc})
+		VALUES(SEQ_SCHNO.NEXTVAL,#{studentNo},#{schCategoryNo},#{schAmount},#{classYear},#{classTerm},SYSDATE,'W',#{etc})
 	</insert>
 	
 	<delete id="deleteScholarship">
 		DELETE SCHOLARSHIP
-		WHERE STUDENT_NO = #{studentNo}
+		WHERE SCH_NO = #{schNo}
 		AND STATUS IN ('W','N')
 	</delete>
 	
@@ -114,5 +125,444 @@
 		   ,ETC = #{etc}
 		WHERE SCH_NO = #{schNo}
 	</update>
+	
+	<select id="selectScholarshipListAll" resultMap="scholarshipResultSet" parameterType="map">
+		SELECT SCH_NO
+		      ,STUDENT_NO
+		      ,SCH_CATEGORY_NO
+		      ,SCH_AMOUNT
+		      ,CLASS_YEAR
+		      ,CLASS_TERM
+		      ,PRO_DATE
+		      ,SC.STATUS
+		      ,ETC
+		      ,STUDENT_NAME
+		FROM SCHOLARSHIP SC
+		JOIN STUDENT USING(STUDENT_NO)
+		<choose>
+			<when test='filter=="classYear"'>
+				WHERE CLASS_YEAR = #{keyword}
+			</when>
+			<when test='filter=="studentNo"'>
+				WHERE STUDENT_NO LIKE '%'||#{keyword}||'%'
+			</when>
+			<when test='filter=="studentName"'>
+				WHERE STUDENT_NAME LIKE '%'||#{keyword}||'%'
+			</when>
+			<when test='filter=="all"'>
+				WHERE CLASS_YEAR = #{keyword}
+				OR STUDENT_NO LIKE '%'||#{keyword}||'%' 
+				OR STUDENT_NAME LIKE '%'||#{keyword}||'%'
+			</when>
+		</choose>
+		ORDER BY SCH_NO DESC
+	</select>
+	
+	<select id="selectMySalary" resultMap="salaryResultSet">
+		SELECT PAY_NO
+			  ,PROFESSOR_NO
+			  ,PAYMENT_DATE
+			  ,BASE_PAY
+			  ,POSITION_PAY
+			  ,EXTENSION_PAY
+			  ,HOLIDAY_PAY
+			  ,RESEARCH_PAY
+			  ,PAYMENT_TOTAL
+			  ,NATIONAL_TAX
+			  ,HEALTH_TAX
+			  ,EMPLOY_TAX
+			  ,INCOME_TAX
+			  ,DEDUCT_TOTAL
+			  ,REAL_PAY
+			  ,STATUS
+		FROM PAY_STUB
+		WHERE PROFESSOR_NO = #{professorNo}
+		AND PAY_NO = #{payNo}
+		AND STATUS = 'Y'
+	</select>
+	
+	<select id="selectMySalaryList" resultMap="salaryResultSet">
+		SELECT PAY_NO
+			  ,PROFESSOR_NO
+			  ,PAYMENT_DATE
+			  ,BASE_PAY
+			  ,POSITION_PAY
+			  ,EXTENSION_PAY
+			  ,HOLIDAY_PAY
+			  ,RESEARCH_PAY
+			  ,PAYMENT_TOTAL
+			  ,NATIONAL_TAX
+			  ,HEALTH_TAX
+			  ,EMPLOY_TAX
+			  ,INCOME_TAX
+			  ,DEDUCT_TOTAL
+			  ,REAL_PAY
+			  ,STATUS 
+		FROM PAY_STUB
+		WHERE PROFESSOR_NO = #{professorNo}
+		AND PAYMENT_DATE BETWEEN #{startDate} AND #{endDate}	  
+	</select>
+	
+	<insert id="insertSalary">
+		INSERT INTO PAY_STUB
+		VALUES(SEQ_PAYNO.NEXTVAL
+			  ,#{professorNo}
+			  ,#{paymentDate}
+			  ,#{basePay}
+			  ,#{positionPay}
+			  ,#{extensionPay}
+			  ,#{holidayPay}
+			  ,#{researchPay}
+			  ,#{paymentTotal}
+			  ,#{nationalTax}
+			  ,#{healthTax}
+			  ,#{employTax}
+			  ,#{incomeTax}
+			  ,#{deductTotal}
+			  ,#{realPay}
+			  ,'N'
+			  )
+	</insert>
+	
+	<update id="updateSalary">
+		UPDATE PAY_STUB
+		SET BASE_PAY = #{basePay}
+		   ,POSITION_PAY = #{positionPay}
+		   ,EXTENSION_PAY = #{extensionPay}
+		   ,HOLIDAY_PAY = #{holidayPay}
+		   ,RESEARCH_PAY = #{researchPay}
+		   ,PAYMENT_TOTAL = #{paymentTotal}
+		   ,NATIONAL_TAX = #{nationalTax}
+		   ,HEALTH_TAX = #{healthTax}
+		   ,EMPLOY_TAX = #{employTax}
+		   ,INCOME_TAX = #{incomeTax}
+		   ,DEDUCT_TOTAL = #{deductTotal}
+		   ,REAL_PAY = #{realPay}  
+		 WHERE PAY_NO = #{payNo}
+		 AND STATUS IN ('N','E') 
+	</update>
+	
+	<delete id="deleteSalary" parameterType="_int">
+		DELETE PAY_STUB
+		WHERE PAY_NO = #{payNo}
+		AND STATUS IN ('N','E') <!-- 이미 지급된 월급데이터는 삭제불가  -->
+	</delete>
+	
+	<select id="selectAllSalaryList" resultMap="salaryResultSet">
+		SELECT PAY_NO
+			  ,PROFESSOR_NO
+			  ,PAYMENT_DATE
+			  ,RESEARCH_PAY
+			  ,PAYMENT_TOTAL
+			  ,DEDUCT_TOTAL
+			  ,REAL_PAY
+			  ,PS.STATUS
+			  ,PROFESSOR_NAME 
+			  ,POSITION
+			  ,ACCOUNT_NO
+		FROM PAY_STUB "PS"
+		JOIN PROFESSOR "PF" USING (PROFESSOR_NO)
+		WHERE PROFESSOR_NAME like '%'||#{professorName}||'%'
+		<if test='status!="all"'>
+			AND PS.STATUS = #{status}
+		</if>
+	</select>
+	
+	<select id="selectOneSalary" resultMap="salaryResultSet" parameterType="_int"><!--수정,상세조회-->
+		SELECT PAY_NO
+			  ,PROFESSOR_NO
+			  ,PAYMENT_DATE
+			  ,BASE_PAY
+			  ,POSITION_PAY
+			  ,EXTENSION_PAY
+			  ,HOLIDAY_PAY
+			  ,RESEARCH_PAY
+			  ,PAYMENT_TOTAL
+			  ,NATIONAL_TAX
+			  ,HEALTH_TAX
+			  ,EMPLOY_TAX
+			  ,INCOME_TAX
+			  ,DEDUCT_TOTAL
+			  ,REAL_PAY
+			  ,PS.STATUS
+			  ,PROFESSOR_NAME
+			  ,POSITION
+			  ,ACCOUNT_NO
+			  ,PHONE
+		FROM PAY_STUB PS
+		JOIN PROFESSOR USING(PROFESSOR_NO)
+		WHERE PAY_NO = #{payNo}
+	</select>
+	
+	<resultMap type="professor" id="profResultSetForSalary">
+		<result column="PROFESSOR_NO" property="professorNo"/>
+		<result column="PROFESSOR_NAME" property="professorName"/>
+		<result column="POSITION" property="position"/>
+		<result column="PHONE" property="phone"/>
+		<result column="ENTRANCE_DATE" property="entranceDate"/>
+		<result column="EMAIL" property="email"/>
+		<result column="ADDRESS" property="address"/>
+		<result column="ACCOUNT_NO" property="accountNo"/>
+	</resultMap>
+	
+	<select id="professorListToSalary" resultMap="profResultSetForSalary">
+		SELECT PROFESSOR_NO
+			  ,PROFESSOR_NAME
+			  ,POSITION
+			  ,PHONE
+			  ,ENTRANCE_DATE
+			  ,EMAIL
+			  ,ADDRESS
+			  ,ACCOUNT_NO
+		FROM PROFESSOR
+		WHERE PROFESSOR_NO LIKE '%'||#{professorNo}||'%' 
+		AND PROFESSOR_NAME LIKE '%'||#{professorName}||'%'  
+	</select>
+	
+	<update id="sendSalary" parameterType="_int">
+		UPDATE PAY_STUB
+		SET STATUS = 'Y'
+		WHERE PAY_NO = #{payNo}
+		AND STATUS IN ('N','E')
+	</update>
+	
+	<select id="selectMyRegistList" resultMap="registPayResultSet">
+		SELECT REG_NO
+			  ,STUDENT_NO
+			  ,RG.REG_ACCOUNT_NO
+			  ,MUST_PAY
+			  ,INPUT_PAY
+			  ,CLASS_YEAR
+			  ,CLASS_TERM
+			  ,RG.PAY_ACCOUNT_NO
+			  ,PAY_DATE
+			  ,START_DATE
+			  ,END_DATE
+			  ,PAY_STATUS
+			  ,STUDENT_NAME
+			  ,TO_CHAR(PAY_DATE,'HH:mm:ss') "PAYTIME"
+		FROM REG_ACC RG
+		JOIN STUDENT ST USING(STUDENT_NO)
+		WHERE STUDENT_NO = #{studentNo}
+		AND STUDENT_NAME = #{studentName}
+		<if test="classTerm!=0"> 
+		AND CLASS_TERM = #{classTerm}
+		</if>
+		<if test="classYear!=0">
+		AND CLASS_YEAR = #{classYear}
+		</if>
+		<!-- AND START_DATE BETWEEN #{startDate} AND #{endDate}
+		AND END_DATE BETWEEN #{startDate} AND #{endDate} -->
+	</select>
+	
+	<select id="selectNewRegistInfo" resultMap="registPayResultSet">
+		SELECT REG_NO 
+			  ,STUDENT_NO
+			  ,RG.REG_ACCOUNT_NO
+			  ,MUST_PAY
+			  ,INPUT_PAY
+			  ,CLASS_YEAR
+			  ,CLASS_TERM
+			  ,RG.PAY_ACCOUNT_NO
+			  ,PAY_DATE
+			  ,START_DATE
+			  ,END_DATE
+			  ,PAY_STATUS
+			  ,STUDENT_NAME
+			  ,TO_CHAR(PAY_DATE,'HH:mm:ss') "PAYTIME"
+		FROM REG_ACC RG
+		JOIN STUDENT ST USING(STUDENT_NO)
+		WHERE STUDENT_NO = #{studentNo}
+		AND CLASS_YEAR = #{classYear}
+		AND CLASS_TERM = #{classTerm}
+	</select>
+	
+	<update id="updateInputPay">
+		UPDATE REG_ACC
+		SET INPUT_PAY = #{inputPay}
+		   ,PAY_ACCOUNT_NO = #{payAccountNo}
+		   ,PAY_DATE = #{payDate}
+	    <choose>
+	    	<when test="inputPay eq mustPay">
+	    		,PAY_STATUS = 'Y'
+	    	</when>
+	    	<when test="inputPay lt mustPay">
+	    		,PAY_STATUS = 'O'
+	    	</when>
+	    	<when test="inputPay ge mustPay">
+	    		,PAY_STATUS = 'D'
+	    	</when>
+	    </choose>
+		WHERE STATUS = 'Y'
+		AND REG_ACCOUNT_NO = #{regAccountNo}
+	</update>
+	
+	<select id="searchRegistList" resultMap="registPayResultSet">
+		SELECT REG_NO 
+			  ,STUDENT_NO
+			  ,RG.REG_ACCOUNT_NO
+			  ,MUST_PAY
+			  ,INPUT_PAY
+			  ,CLASS_YEAR
+			  ,CLASS_TERM
+			  ,RG.PAY_ACCOUNT_NO
+			  ,PAY_DATE
+			  ,START_DATE
+			  ,END_DATE
+			  ,PAY_STATUS
+			  ,STUDENT_NAME
+		FROM REG_ACC RG
+		JOIN STUDENT ST USING(STUDENT_NO)
+		WHERE STUDENT_NAME LIKE '%'||#{keyword}||'%'
+		<choose><!-- 조건되는지  확인할것 -->
+			<when test='filter==1'>
+				AND PAY_STATUS = 'Y'  
+			</when>
+			<when test='filter==2'>
+				AND PAY_STATUS = 'O'  
+			</when>
+		</choose>
+		AND PAY_STATUS IN ('Y','O')
+	</select>
+	
+	<insert id="insertRegistPay">
+		INSERT INTO REG_ACC
+		VALUES(SEQ_RGNO.NEXTVAL
+			  ,#{studentNo}
+			  ,#{regAccountNo}<!-- 가상계좌... -->
+			  ,#{mustPay}
+			  ,0
+			  ,#{classYear}
+			  ,#{classTerm}
+			  ,null
+			  ,null
+			  ,#{startDate}
+			  ,#{endDate}
+			  ,'N'
+			  ,'N'
+		)
+	</insert>
+	
+	<select id="selectOneRegistPay" resultMap="registPayResultSet">
+		SELECT REG_NO 
+			  ,STUDENT_NO
+			  ,RG.REG_ACCOUNT_NO
+			  ,MUST_PAY
+			  ,INPUT_PAY
+			  ,CLASS_YEAR
+			  ,CLASS_TERM
+			  ,RG.PAY_ACCOUNT_NO
+			  ,PAY_DATE
+			  ,START_DATE
+			  ,END_DATE
+			  ,PAY_STATUS
+			  ,STUDENT_NAME
+			  ,TO_CHAR('HH:mm:ss',PAY_DATE) "PAYTIME"
+		FROM REG_ACC RG
+		JOIN STUDENT ST USING(STUDENT_NO)
+		WHERE REG_NO = #{regNo}
+	</select>
+	
+	<update id="updateRegistPay">
+		UPDATE REG_ACC
+		SET MUST_PAY = #{mustPay}
+		   ,START_DATE = #{startDate}
+		   ,END_DATE = #{endDate}
+		WHERE REG_NO = #{regNo} 
+	</update>
+	
+	<select id="selectRegistNonPaidList" resultMap="registPayResultSet">
+		SELECT REG_NO
+			  ,STUDENT_NO
+			  ,RG.REG_ACCOUNT_NO
+			  ,MUST_PAY
+			  ,INPUT_PAY
+			  ,RG.PAY_ACCOUNT_NO
+			  ,PAY_DATE
+			  ,PAY_STATUS
+			  ,STUDENT_NAME
+			  ,EMAIL
+			  ,PHONE
+			  ,ABS(INPUT_PAY - MUST_PAY) "NON_PAID_AMOUNT"
+		FROM REG_ACC RG
+		JOIN STUDENT ST USING(STUDENT_NO)
+		WHERE PAY_STATUS IN ('N','D')
+	</select>
+	<select id="selectRegistNonPaidListSearch" resultMap="registPayResultSet">
+		SELECT REG_NO
+			  ,STUDENT_NO
+			  ,RG.REG_ACCOUNT_NO
+			  ,MUST_PAY
+			  ,INPUT_PAY
+			  ,RG.PAY_ACCOUNT_NO
+			  ,PAY_DATE
+			  ,PAY_STATUS
+			  ,STUDENT_NAME
+			  ,EMAIL
+			  ,PHONE
+			  ,ABS(INPUT_PAY-MUST_PAY) "NON_PAID_AMOUNT"
+		FROM REG_ACC RG
+		JOIN STUDENT ST USING(STUDENT_NO)
+		WHERE PAY_STATUS IN ('N','D')
+		AND STUDENT_NAME = '%'||#{keyword}||'%'
+	</select>
+	
+	<update id="refundOverPaid">
+		UPDATE REG_ACC
+		SET INPUT_PAY = #{inputPay}
+		<if test="inputPay eq MUST_PAY">
+		   ,PAY_STATUS = 'Y' 		  
+		</if>
+		WHERE REG_NO = #{regNo}   
+	</update>
+	
+	<update id="activateRegistPay" parameterType="date">
+		UPDATE REG_ACC
+		SET STATUS = 'Y'
+		WHERE #{date} BETWEEN START_DATE AND END_DATE
+		AND STATUS = 'N'
+	</update>
+	
+	<update id="deactivateRegistPay" parameterType="date">
+		UPDATE REG_ACC
+		SET STATUS = 'N'
+		WHERE #{date} &gt;= END_DATE
+		AND STATUS = 'Y'
+	</update>
+	
+	<resultMap type="student" id="resultSetForInsertRg">
+		<result column="STUDENT_NO" property="studentNo"/>
+		<result column="STUDENT_NAME" property="studentName"/>
+		<result column="COLLEGE_REG_AMOUNT" property="classLevel"/><!-- 필드 빌려쓰기 -->
+		<result column="SCH_TOTAL" property="post"/><!-- 필드 빌려쓰기 -->
+	</resultMap>
+	
+	<select id="studentListToInsert" resultMap="resultSetForInsertRg" parameterType="map">
+		<!-- 이번학기 등록금 값이 없는 재학중인 학생의 단대별등록금+총 장학금 -->
+		SELECT STUDENT_NO
+      		  ,STUDENT_NAME
+     		  ,COLLEGE_REG_AMOUNT
+     		  ,SCH.SCH_TOTAL
+		FROM (SELECT STUDENT_NO,SCH_TOTAL
+      		  FROM(SELECT STUDENT_NO,SUM(SCH_AMOUNT)"SCH_TOTAL"
+             	   FROM SCHOLARSHIP
+             	   GROUP BY STUDENT_NO))"SCH"
+		RIGHT JOIN STUDENT S USING(STUDENT_NO)
+		JOIN COLLEGE C USING(COLLEGE_NO)
+		WHERE S.STATUS ='재학'
+		AND STUDENT_NO NOT IN (SELECT STUDENT_NO FROM REG_ACC WHERE CLASS_YEAR=#{classYear} AND CLASS_TERM=#{classTerm})
+	</select>
+	
+	<select id="selectAccountNo" resultType="string" parameterType="string">
+		SELECT REG_ACCOUNT_NO
+		FROM REG_ACC
+		WHERE STUDENT_NO = #{studentNo} 
+	</select>
+	
+	<select id="accountCheck" resultType="int" parameterType="string">
+		SELECT COUNT(REG_ACCOUNT_NO)
+		FROM REG_ACC
+		WHERE REG_ACCOUNT_NO = #{regAccountNo}		
+	</select>
 	
 </mapper>

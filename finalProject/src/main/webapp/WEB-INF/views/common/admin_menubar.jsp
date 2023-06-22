@@ -29,7 +29,7 @@
 					${loginUser.professorName}님 환영합니다.
 		        </td>
 		        <td style="padding-left: 50px;">
-		            <button type="button" class="btn btn-primary" onclick="location.href='logout.me'">로그아웃</button>
+		            <button type="button" class="btn btn-primary" onclick="location.href='logout.me'" style="border-radius: 10px;">로그아웃</button>
 		        </td>
 	    	</tr>
 		</table>
@@ -37,9 +37,9 @@
 	<div id="menubar">
 	    <ul id="nav">
             <li><a href="#">홈</a></li>
-            <li><a href="#">금전관리</a></li>
+            <li><a href="allList.rg">금전관리</a></li>
             <li><a href="#">학사관리</a></li>
-            <li><a href="classManagePage.ad">강의관리</a></li>
+            <li><a href="classListView.ad">강의관리</a></li>
         </ul>
 	</div>
 </body>

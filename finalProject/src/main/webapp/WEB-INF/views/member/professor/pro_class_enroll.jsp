@@ -49,7 +49,7 @@
                                 <td>교수명</td>
                                 <td><input type="text" value="${loginUser.professorName }" disabled></td>
                                 <td>*강의명</td>
-                                <td><input type="text"  name="className" placeholder="최대 16글자"></td>
+                                <td><input type="text"  name="className" placeholder="최대 16글자" required></td>
                             </tr>
                             <tr>
                                 <td>전공여부</td>
@@ -66,7 +66,7 @@
                                     </select>
                                 </td>
                                 <td>*수강인원</td>
-                                <td><input type="text" name="classNos"  maxlength="2" placeholder="ex)20"></td>
+                                <td><input type="text" name="classNos"  maxlength="2" placeholder="ex)20 숫자만 입력" required></td>
                             </tr>
                             <tr>
                                 <td>학년도</td>
@@ -74,7 +74,7 @@
                                 <td>학기</td>
                                 <td><select name="classTerm"  id="classTerm"></select></td>
                                 <td>*강의실</td>
-                                <td><input type="text" name="classroom"  placeholder="ex)태양관 101호"></td>
+                                <td><input type="text" name="classroom"  placeholder="ex)태양관 101호" required></td>
                             </tr>
                             <tr>
                                 <td>요일</td>

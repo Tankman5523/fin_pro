@@ -1,6 +1,8 @@
 package com.univ.fin.main.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,6 +81,90 @@ public class MainServiceImpl implements MainService{
 		
 		return gita;
 	}
+
+	//공지사항 조회수 증가
+	@Override
+	public int increaseCount(int noticeNo) {
+
+		int result = mainDao.increaseCount(sqlSession, noticeNo);
+		
+		return result;
+	}
+
+	//게시글 상세 조회
+	@Override
+	public Notice selectNotice(int noticeNo) {
+		
+		Notice n = mainDao.selectNotice(sqlSession, noticeNo);
+		
+		return n;
+	}
+
+	//첨부파일 조회
+	@Override
+	public ArrayList<Notice> selectFiles(int noticeNo) {
+		 
+		ArrayList<Notice> files = mainDao.selectFiles(sqlSession, noticeNo);
+		
+		return files;
+	}
+
+	//FAQ 조회수 증가
+	@Override
+	public int increaseFaqCount(int faqNo) {
+		
+		int result = mainDao.increaseFaqCount(sqlSession, faqNo);
+		
+		return result;
+	}
+
+	//FAQ 상세 조회
+	@Override
+	public Notice selectFaq(int faqNo) {
+		
+		Notice faq = mainDao.selectFaq(sqlSession, faqNo);
+		
+		return faq;
+	}
+
+	//검색결과 개수 조회
+	@Override
+	public int searchListCount(HashMap<String, String> searchMap) {
+		
+		int listCount = mainDao.searchListCount(sqlSession, searchMap);
+		
+		return listCount;
+	}
+	
+	//공지게시판 검색
+	@Override
+	public ArrayList<Notice> searchNotice(HashMap<String, String> searchMap, PageInfo pi) {
+		
+		ArrayList<Notice> list = mainDao.searchNotice(sqlSession, searchMap, pi);
+		
+		return list;
+	}
+
+	//종합정보시스템 공지사항
+	@Override
+	public ArrayList<Notice> infoNoticeList() {
+		
+		ArrayList<Notice> list = mainDao.infoNoticeList(sqlSession);
+		
+		return list;
+	}
+
+	//종합정보시스템 FAQ
+	@Override
+	public ArrayList<Notice> infoFaqList() {
+		
+		ArrayList<Notice> faq = mainDao.infoFaqList(sqlSession);
+		
+		return faq;
+	}
+
+
+	
 	
 	
 

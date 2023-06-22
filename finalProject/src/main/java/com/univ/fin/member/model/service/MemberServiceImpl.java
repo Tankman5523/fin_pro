@@ -1,6 +1,5 @@
 package com.univ.fin.member.model.service;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Dissent;
@@ -23,7 +23,7 @@ import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
 
 @Service
-public  class MemberServiceImpl implements MemberService{
+public class MemberServiceImpl implements MemberService{
 
 	@Autowired
 	private MemberDao memberDao;
@@ -394,6 +394,33 @@ public  class MemberServiceImpl implements MemberService{
 		return g;
 	}
 	
+	//학사관리 - 졸업사정표 (교양공통 세부조회)
+	@Override
+	public ArrayList<HashMap<String, String>> detailCommonGra(HashMap<String, String> h) {
+		
+		ArrayList<HashMap<String, String>> list = memberDao.detailCommonGra(sqlSession,h);
+		
+		return list;
+	}
+
+	//학사관리 - 졸업사정표 (교양일반 세부조회)
+	@Override
+	public ArrayList<HashMap<String, String>> detailNomalGra(HashMap<String, String> h) {
+		
+		ArrayList<HashMap<String,String>> list = memberDao.detailNomalGra(sqlSession,h);
+		
+		return list;
+	}
+	
+	//학사관리 - 졸업사정표 (전공심화 세부조회)
+	@Override
+	public ArrayList<HashMap<String, String>> detailmajorGra(HashMap<String, String> h) {
+		
+		ArrayList<HashMap<String,String>> list = memberDao.detailmajorGra(sqlSession,h);
+		
+		return list;
+	}
+	
 	//(학생)휴,복학 신청 리스트 조회
 	@Override
 	public ArrayList<StudentRest> selectStuRestList(String studentNo) {
@@ -479,12 +506,33 @@ public  class MemberServiceImpl implements MemberService{
 		ArrayList<Classes> cList = memberDao.selectProfessorTimetable(sqlSession, map);
 		return cList;
 	}
+	
+	// 성적관리 -> 학점별로 몇명이 해당되는지
+	@Override
+	public HashMap<String, String> countStudentGrade(int classNo) {
+		HashMap<String, String> list = memberDao.countStudentGrade(sqlSession, classNo);
+		return list;
+	}
 
 	// 성적관리 -> 수강중인 학생 조회
 	@Override
-	public ArrayList<Student> selectStudentGradeList(int classNo) {
-		ArrayList<Student> sList = memberDao.selectStudentGradeList(sqlSession, classNo);
+	public ArrayList<HashMap<String, String>> selectStudentGradeList(int classNo) {
+		ArrayList<HashMap<String, String>> sList = memberDao.selectStudentGradeList(sqlSession, classNo);
 		return sList;
+	}
+	
+	// 성적관리 -> 수강인원*비율에 따른 가능 인원 수
+	@Override
+	public int checkGradeNos(HashMap<String, String> map) {
+		int check = memberDao.checkGradeNos(sqlSession, map);
+		return check;
+	}
+
+	// 성적관리 -> 실제 몇명이 해당되는지
+	@Override
+	public int countGradeNos(HashMap<String, String> map) {
+		int count = memberDao.countGradeNos(sqlSession, map);
+		return count;
 	}
 
 	// 성적관리 -> 성적 입력
@@ -498,10 +546,16 @@ public  class MemberServiceImpl implements MemberService{
 	@Override
 	public int gradeUpdate(Grade g) {
 		int result = memberDao.gradeUpdate(sqlSession, g);
-		
 		return result;
-
 	}
+	
+	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
+	@Override
+	public ArrayList<HashMap<String, String>> selectClassList(HashMap<String, String> map) {
+		ArrayList<HashMap<String, String>> cList = memberDao.selectClassList(sqlSession, map);
+		return cList;
+	}
+
 
 	@Override
 	public ArrayList<Dissent> studentGradeReport(String studentNo) {
@@ -516,6 +570,144 @@ public  class MemberServiceImpl implements MemberService{
 		int result = memberDao.insertProfessor(sqlSession,pr);
 		
 		return result;
+	}
+
+
+	// (관리자)강의개설 일괄 승인
+	@Override
+	public int updateClassPermitAll(int[] cArr) {
+		int result = memberDao.updateClassPermitAll(sqlSession,cArr);
+		return result;
+	}
+
+	// (관리자)강의개설 개별 승인
+	@Override
+	public int updateClassPermit(int cno) {
+		int result = memberDao.updateclassPermit(sqlSession,cno);
+		return result;
+	}
+
+	// (관리자)강의개설 반려 업데이트
+	@Override
+	public int updateClassReject(Classes c) {
+		int result = memberDao.updateClassReject(sqlSession,c);
+		return result;
+	}
+
+	// 교수이름으로 교수직번 가져오기
+	@Override
+	public String selectProfessorNo(String keyword) {
+		String professorNo = memberDao.selectProfessorNo(sqlSession,keyword);
+		return professorNo;
+	}
+
+	//(관리자) 강의 관리 검색
+	@Override
+	public ArrayList<Classes> selectClassListSearch(Classes c) {
+		ArrayList<Classes> list = memberDao.selectClassListSearch(sqlSession,c);
+		return list;
+	}
+
+	//(교수)반려당한 강의 수정 페이지 이동
+	@Override
+	public Classes selectRejectedClass(int classNo) {
+		Classes c = memberDao.selectRejectedClass(sqlSession,classNo);
+		return c;
+	}
+
+	//(교수)반려당한 강의 첨부파일(강의계획서) 조회
+	@Override
+	public Attachment selectRejectedClassAtt(String fileNo) {
+		Attachment a = memberDao.selectRejectedClassAtt(sqlSession,fileNo);
+		return a;
+	}
+
+	//(교수)반려된 강의 수정
+	@Override
+	public int updateClassCreate(Classes c, Attachment a) {
+		int result =0;
+		if(a==null) {//새로운 첨부파일이 없는경우
+			result = memberDao.updateClassCreateNoAtt(sqlSession,c);
+		}else {//새로운 첨부파일이 있는 경우
+			if(a.getFileNo()!=0) {//기존 첨부파일이 있는 경우(기존 파일번호로 첨부파일 업데이트)
+				result = memberDao.updateClassCreate(sqlSession,c,a);
+			}else {//기존 첨부파일이 없는 경우(첨부파일 새로 인서트
+				result = memberDao.updateClassCreateNew(sqlSession,c,a);
+			}
+		}
+		return result;
+	}
+	
+	// 학기별 성적 조회 -> 학기별 성적 계산
+	@Override
+	public HashMap<String, String> calculatedGrade(HashMap<String, String> map) {
+		HashMap<String, String> gList = memberDao.calculatedGrade(sqlSession, map);
+		return gList;
+	}
+	
+	// 학기별 성적 조회 -> 학기별석차
+	@Override
+	public String calculatedTermRank(HashMap<String, String> map) {
+		String rank = memberDao.calculatedTermRank(sqlSession, map);
+		return rank;
+	}
+	
+	// 학기별 성적 조회 -> 전체석차
+	@Override
+	public String calculatedTotalRank(HashMap<String, String> map) {
+		String rank = memberDao.calculatedTotalRank(sqlSession, map);
+		return rank;
+	}
+
+	// 학기별 성적 조회 -> 증명신청학점, 증명취득학점
+	@Override
+	public HashMap<String, String> selectScoreAB(String studentNo) {
+		HashMap<String, String> scoreAB = memberDao.selectScoreAB(sqlSession, studentNo);
+		return scoreAB;
+	}
+
+	// 학기별 성적 조회 -> 증명평점평균
+	@Override
+	public double selectScoreC(String studentNo) {
+		double scoreC = memberDao.selectScoreC(sqlSession, studentNo);
+		return scoreC;
+	}
+
+	// 학기별 성적 조회 -> 증명산술평균
+	@Override
+	public double selectScoreD(String studentNo) {
+		double scoreD = memberDao.selectScoreD(sqlSession, studentNo);
+		return scoreD;
+	}
+	// (학생)수강한 강의정보 조회
+	@Override
+	public ArrayList<RegisterClass> classInfoForRating(ClassRating cr) {
+		return memberDao.classInfoForRating(sqlSession,cr);
+	}
+	
+	// (학생)강의평가 입력
+	@Override
+	public int insertClassRating(ClassRating cr) {
+		return memberDao.insertClassRating(sqlSession,cr);
+	}
+	
+	// (관리자) 강의평가 조회
+	@Override
+	public ArrayList<ClassRating> classRatingList(ClassRating cr) {
+		return memberDao.classRatingList(sqlSession,cr);
+	}
+	
+	// (관리자) 강의평가 기타건의사항 조회
+	@Override
+	public ArrayList<ClassRating> classRatingEtcList(ClassRating cr) {
+		return memberDao.classRatingEtcList(sqlSession,cr);
+	}
+	
+	// (관리자) 강의평가 문항별 평균 점수 조회
+	@Override
+	public ClassRating classRatingAverage(ClassRating cr) {
+		return memberDao.classRatingAverage(sqlSession,cr);	
+		
 	}
 
 }
