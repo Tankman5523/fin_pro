@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Classes;
+import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.template.SaveFile;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
@@ -294,13 +295,20 @@ public class ProfessorController {
 		return mv;
 	}
 	
-	//상담관리 조건 검색
-	@PostMapping("selectCounsel.pr")
-	public String selectCounselList(Model model) {
+	// (교수) 상담조회
+	@ResponseBody
+	@PostMapping(value = "selectCounsel.pr", produces = "application/json; charset=UTF-8;")
+	public String selectCounselList(String counselType, String professorNo, String startDate, String endDate, ModelAndView mv) {
 		
+		HashMap<String, String> counselMap = new HashMap<String, String>();
+		counselMap.put("counselType", counselType);
+		counselMap.put("startDate", startDate);
+		counselMap.put("endDate", endDate);
+		counselMap.put("professorNo", professorNo);
 		
-		
-		return null;
+		ArrayList<Counseling> list = memberService.professorSelectCounseling(counselMap);
+
+		return new Gson().toJson(list);			
 	}
 	
 
