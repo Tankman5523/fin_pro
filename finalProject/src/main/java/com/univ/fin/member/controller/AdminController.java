@@ -1,6 +1,7 @@
 package com.univ.fin.member.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
 
@@ -9,13 +10,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Attachment;
+import com.univ.fin.common.model.vo.Calendar;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.member.model.service.MemberService;
@@ -203,6 +207,35 @@ public class AdminController {
 		ClassRating result = memberService.classRatingAverage(cr);
 		System.out.println(result);
 		return new Gson().toJson(result);
+	}
+	
+	// 학사관리 - 학사일정 관리
+	@GetMapping("calendarView.ad")
+	public String calendarView() {
+		return "member/admin/calendarView";
+	}
+	
+	// 학사일정 관리 -> 학사일정 조회
+	@ResponseBody
+	@PostMapping(value="calendarView.ad",produces = "application/json;charset=utf-8")
+	public String calendarList() {
+		ArrayList<HashMap<String, String>> calList = memberService.calendarList();
+		return new Gson().toJson(calList);
+	}
+	
+	// 학사일정 관리 -> 학사일정 추가
+	@PostMapping("insertCalendar.ad")
+	public String insertCalendar(Calendar c, HttpSession session) {
+		int result = memberService.insertCalendar(c);
+		
+		if(result > 0) {
+			session.setAttribute("alertMsg", "학사일정이 추가되었습니다.");
+		}
+		else {
+			session.setAttribute("alertMsg", "학사일정이 추가에 실패하셨습니다.");
+		}
+		
+		return "redirect:calendarView.ad";
 	}
 }
 

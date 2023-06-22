@@ -175,6 +175,20 @@
   		<result column="MAJOR_CLASS" property="majorClass"/>
   	</resultMap>
   	
+  	<resultMap type="calendar" id="calendarResultMap">
+  		<result column="CALENDAR_NO" property="calendarNo"/>
+  		<result column="CONTENT" property="content"/>
+  		<result column="START_DATE" property="startDate"/>
+  		<result column="END_DATE" property="endDate"/>
+  	</resultMap>
+  	
+  	<resultMap type="hashmap" id="calendarList">
+  		<result column="CALENDAR_NO" property="calendarNo"/>
+  		<result column="CONTENT" property="title"/>
+  		<result column="START_DATE" property="start"/>
+  		<result column="END_DATE" property="end"/>
+  	</resultMap>
+  	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
   		SELECT STUDENT_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,FILE_NO,STUDENT_NAME,STUDENT_PWD,
@@ -1102,7 +1116,7 @@
   	
   	<insert id="insertStudent">
   	INSERT INTO STUDENT (STUDENT_NO, DEPARTMENT_NO, COLLEGE_NO, ENTRANCE_DATE, STUDENT_NAME, STUDENT_PWD, PHONE, EMAIL, POST, ADDRESS,CLASS_LEVEL)
-	VALUES (('P'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_SNO.NEXTVAL,4,0)),(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
+	VALUES (('S'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_SNO.NEXTVAL,4,0)),(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
   	</insert>
   	
   	<select id="studentGradeReport" resultType="Dissent"> 
@@ -1287,5 +1301,18 @@
   		GROUP BY CLASS_NO
   		
   	</select>
+  	
+  	<!-- 학사일정 관리 -> 학사일정 조회 -->
+  	<select id="calendarList" resultMap="calendarList">
+  		SELECT CALENDAR_NO, CONTENT, TO_CHAR(START_DATE, 'YYYY-MM-DD') AS START_DATE, TO_CHAR(END_DATE+1, 'YYYY-MM-DD') AS END_DATE
+  		FROM CALENDAR
+  	</select>
+  	
+  	<!-- 학사일정 관리 -> 학사일정 추가 -->
+  	<insert id="insertCalendar">
+  		INSERT INTO CALENDAR VALUES(SEQ_CALNO.NEXTVAL, #{content}
+  				, TO_DATE(SUBSTR(#{startDate}, 0, 10)||SUBSTR(#{startDate}, 12), 'YYYY-MM-DD HH24:MI')
+  				, TO_DATE(SUBSTR(#{endDate}, 0, 10)||SUBSTR(#{endDate}, 12), 'YYYY-MM-DD HH24:MI'))
+  	</insert>
   </mapper>
 

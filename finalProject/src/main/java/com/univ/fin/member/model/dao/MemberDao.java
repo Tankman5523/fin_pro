@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.Calendar;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -513,6 +514,16 @@ public class MemberDao {
 	// (관리자) 강의평가 문항별 평균 점수 조회
 	public ClassRating classRatingAverage(SqlSessionTemplate sqlSession, ClassRating cr) {
 		return sqlSession.selectOne("memberMapper.classRatingAverage", cr);
+	}
+
+	// 학사일정 관리 -> 학사일정 조회
+	public ArrayList<HashMap<String, String>> calendarList(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.calendarList");
+	}
+
+	// 학사일정 관리 -> 학사일정 추가
+	public int insertCalendar(SqlSessionTemplate sqlSession, Calendar c) {
+		return sqlSession.insert("memberMapper.insertCalendar", c);
 	}
 
 }

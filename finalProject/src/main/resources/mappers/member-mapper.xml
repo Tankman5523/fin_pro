@@ -175,6 +175,20 @@
   		<result column="MAJOR_CLASS" property="majorClass"/>
   	</resultMap>
   	
+  	<resultMap type="calendar" id="calendarResultMap">
+  		<result column="CALENDAR_NO" property="calendarNo"/>
+  		<result column="CONTENT" property="content"/>
+  		<result column="START_DATE" property="startDate"/>
+  		<result column="END_DATE" property="endDate"/>
+  	</resultMap>
+  	
+  	<resultMap type="hashmap" id="calendarList">
+  		<result column="CALENDAR_NO" property="calendarNo"/>
+  		<result column="CONTENT" property="title"/>
+  		<result column="START_DATE" property="start"/>
+  		<result column="END_DATE" property="end"/>
+  	</resultMap>
+  	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
   		SELECT STUDENT_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,FILE_NO,STUDENT_NAME,STUDENT_PWD,
@@ -991,17 +1005,7 @@
   	<update id="updateClassPermitAll">
   		UPDATE CLASS
   		SET STATUS = 'Y'
-  		WHERE CLASS_NO IN 
-  		<foreach collection="array" item="arr" open="(" close=")" separator=",">
- 			#{arr}
-		</foreach>
-  	</update>
-  	
-  	<!-- 강의개설 개별승인(관리자) -->
-  	<update id="updateClassPermit">
-  		UPDATE CLASS
-  		SET STATUS = 'Y'
-  		WHERE CLASS_NO = #{cno}
+  		WHERE CLASS_NO IN (#{cno})
   	</update>
   	
   	<!-- 강의개설 반려 (관리자) -->
@@ -1287,5 +1291,18 @@
   		GROUP BY CLASS_NO
   		
   	</select>
+  	
+  	<!-- 학사일정 관리 -> 학사일정 조회 -->
+  	<select id="calendarList" resultMap="calendarList">
+  		SELECT CALENDAR_NO, CONTENT, TO_CHAR(START_DATE, 'YYYY-MM-DD') AS START_DATE, TO_CHAR(END_DATE+1, 'YYYY-MM-DD') AS END_DATE
+  		FROM CALENDAR
+  	</select>
+  	
+  	<!-- 학사일정 관리 -> 학사일정 추가 -->
+  	<insert id="insertCalendar">
+  		INSERT INTO CALENDAR VALUES(SEQ_CALNO.NEXTVAL, #{content}
+  				, TO_DATE(SUBSTR(#{startDate}, 0, 10)||SUBSTR(#{startDate}, 12), 'YYYY-MM-DD HH24:MI')
+  				, TO_DATE(SUBSTR(#{endDate}, 0, 10)||SUBSTR(#{endDate}, 12), 'YYYY-MM-DD HH24:MI'))
+  	</insert>
   </mapper>
 
