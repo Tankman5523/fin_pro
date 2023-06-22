@@ -536,7 +536,6 @@
             	</div>
             </div>
         </div>
-        <%@include file="../../common/chatBot.jsp" %>
     </div>
 </body>
 </html>
