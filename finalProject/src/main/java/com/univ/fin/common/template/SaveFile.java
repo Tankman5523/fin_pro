@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class SaveFile {
 	
 	//
-	public String saveFile(MultipartFile upfile,HttpSession session) {
+	public String saveFile(MultipartFile upfile,HttpSession session,String subPath) {
 		//1.원본 파일명 뽑기 
 		String originName = upfile.getOriginalFilename(); 
 		
@@ -30,7 +30,7 @@ public class SaveFile {
 		String changeName = currentTime+ranNum+ext;
 		
 		//6.업로드하고자 하는 물리적인 경로 알아내기
-		String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/");
+		String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/"+subPath);
 		
 		//7.경로와 수정파일명을 합쳐 파일 업로드 하기
 		

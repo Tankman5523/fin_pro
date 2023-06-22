@@ -991,7 +991,17 @@
   	<update id="updateClassPermitAll">
   		UPDATE CLASS
   		SET STATUS = 'Y'
-  		WHERE CLASS_NO IN (#{cno})
+  		WHERE CLASS_NO IN 
+  		<foreach collection="array" item="arr" open="(" close=")" separator=",">
+ 			#{arr}
+		</foreach>
+  	</update>
+  	
+  	<!-- 강의개설 개별승인(관리자) -->
+  	<update id="updateClassPermit">
+  		UPDATE CLASS
+  		SET STATUS = 'Y'
+  		WHERE CLASS_NO = #{cno}
   	</update>
   	
   	<!-- 강의개설 반려 (관리자) -->
@@ -1001,6 +1011,93 @@
   		,	EXPLAIN = #{explain}
   		WHERE CLASS_NO = #{classNo}
   		AND STATUS = 'B'
+  	</update>
+  	
+  	<!-- 강의 개설 검색(관리자) -->
+  	<select id="selectSearchClassList" resultMap="classResultMap">
+  		SELECT CLASS_NO,FILE_PATH||CHANGE_NAME AS FILE_NO,DIVISION,DEPARTMENT_NAME,CLASS_NAME,CLASS_YEAR,CLASS_TERM
+        		,PROFESSOR_NAME,CLASSROOM,DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금') AS DAY
+        		,DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'9:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00')
+                                  ,2,DECODE(PERIOD,1,'9:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) AS PERIOD
+		        ,CLASS_LEVEL,CLASS_NOS,CREDIT,EXPLAIN,CL.STATUS
+		FROM CLASS CL
+		JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		JOIN PROFESSOR P USING (PROFESSOR_NO)
+		LEFT JOIN ATTACHMENT A ON (A.FILE_NO=CL.FILE_NO)
+		WHERE P.PROFESSOR_NAME LIKE '%'||#{professorNo}||'%'
+        AND CL.STATUS IN 
+        
+        <choose>
+        	<when test="status=='B,C'">
+        		('B','C')
+        	</when>
+        	<when test="status=='Y,N'">
+        		('Y','N')
+        	</when>
+        	<otherwise>
+        		('B','C','Y','N')
+        	</otherwise>
+        </choose>
+        
+        AND DIVISION LIKE 
+        <choose>
+        	<when test="division==2">
+        		'%'||'%'	
+        	</when>
+        	<otherwise>
+        		'%'||#{division}||'%'
+        	</otherwise>
+        </choose>
+        AND CLASS_NAME LIKE '%'||#{className}||'%'
+        AND DEPARTMENT_NAME LIKE '%'||#{departmentNo}||'%'
+		ORDER BY CLASS_NO DESC
+  	</select>
+  	
+  	<!-- 반려당한 강의 수정위해 조회(교수) -->
+  	<select id="selectRejectedClass" resultMap="classResultMap">
+  		SELECT CLASS_NO, PROFESSOR_NAME, DEPARTMENT_NAME, C.FILE_NO,CLASS_NAME, CLASS_LEVEL, CLASS_YEAR, CLASS_TERM, CLASSROOM, DAY, PERIOD, CLASS_HOUR, CLASS_NOS, CREDIT, DIVISION, EXPLAIN, C.STATUS
+  		FROM CLASS C
+        JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+  		JOIN PROFESSOR P USING (PROFESSOR_NO)
+  		WHERE CLASS_NO = #{classNo}
+        AND C.STATUS = 'C'
+  	</select>
+  	
+  	<!-- 반려당한 강의 첨부파일(강의계획서) 조회(교수) -->
+  	<select id="selectRejectedClassAtt" resultMap="attachmentResultSet">
+  		SELECT *
+  		FROM ATTACHMENT
+  		WHERE FILE_NO = #{fileNo}
+  	</select>
+  	
+  	<!-- 반려된 강의 수정(새로운 첨부파일이 없는경우) -->
+  	<update id="updateClassCreateNoAtt">
+  		UPDATE CLASS
+  		SET FILE_NO=#{fileNo},CLASS_NAME=#{className},DIVISION = #{division}, CREDIT = #{credit}, CLASS_NOS = #{classNos}
+  		,	CLASSROOM = #{classroom}, DAY = #{day}, PERIOD = #{period}
+  		,	CLASS_HOUR = #{classHour},CLASS_LEVEL = #{classLevel},STATUS = 'B'
+  		WHERE CLASS_NO = #{classNo}
+  	</update>
+  	
+  	<!-- 반려된 강의 첨부파일 수정(기존 첨부파일이 있는경우) -->
+  	<update id="updateClassAttachment">
+  		UPDATE ATTACHMENT
+  		SET ORIGIN_NAME = #{originName}
+  		,	CHANGE_NAME = #{changeName}
+  		, FILE_PATH = #{filePath}
+  		,UPLOAD_DATE = SYSDATE
+  		WHERE FILE_NO = #{fileNo}
+  	</update>
+  	
+  	<!-- 반려된 강의 첨부파일 수정(기존 첨부파일이 없는경우) -->
+  	<update id="UpdateClassNewAttNoOrigin">
+  		UPDATE CLASS
+  		SET FILE_NO = SEQ_ANO.CURRVAL,CLASS_NAME=#{className},DIVISION = #{division}, CREDIT = #{credit}
+  		, CLASS_NOS = #{classNos},	CLASSROOM = #{classroom}, DAY = #{day}
+  		, PERIOD = #{period},	CLASS_HOUR = #{classHour}
+  		,CLASS_LEVEL = #{classLevel},STATUS = 'B'
+  		WHERE CLASS_NO = #{classNo}
+  		
   	</update>
   	
   	<insert id="insertStudent">

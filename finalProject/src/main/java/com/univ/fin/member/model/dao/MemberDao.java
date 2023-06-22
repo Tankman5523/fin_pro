@@ -371,15 +371,15 @@ public class MemberDao {
 	}
 
 	// (관리자)강의개설 일괄 승인
-	public int updateClassPermitAll(SqlSessionTemplate sqlSession, String cno) {
+	public int updateClassPermitAll(SqlSessionTemplate sqlSession, int[] cArr) {
 		
-		return sqlSession.update("memberMapper.updateClassPermitAll",cno);
+		return sqlSession.update("memberMapper.updateClassPermitAll",cArr);
 	}
 
 	// (관리자)강의개설 개별 승인
 	public int updateclassPermit(SqlSessionTemplate sqlSession, int cno) {
 		
-		return sqlSession.update("memberMapper.updateClassPermitAll",cno);
+		return sqlSession.update("memberMapper.updateClassPermit",cno);
 	}
 
 	// (관리자)강의개설 반려 업데이트
@@ -402,6 +402,58 @@ public class MemberDao {
 	// 학기별 성적 조회 -> 전체석차
 	public String calculatedTotalRank(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
 		return sqlSession.selectOne("memberMapper.calculatedTotalRank", map);
+	}
+
+	// 교수이름으로 교수 직번 가져오기
+	public String selectProfessorNo(SqlSessionTemplate sqlSession, String keyword) {
+		
+		return sqlSession.selectOne("memberMapper.selectProfessorNo",keyword);
+	}
+
+	// (관리자) 강의 관리 검색
+	public ArrayList<Classes> selectClassListSearch(SqlSessionTemplate sqlSession, Classes c) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.selectSearchClassList",c);
+	}
+
+	//(교수)반려당한 강의 수정 페이지 이동
+	public Classes selectRejectedClass(SqlSessionTemplate sqlSession, int classNo) {
+		
+		return sqlSession.selectOne("memberMapper.selectRejectedClass",classNo);
+	}
+
+	//(교수)반려당한 강의 첨부파일(강의계획서) 조회
+	public Attachment selectRejectedClassAtt(SqlSessionTemplate sqlSession, String fileNo) {
+		
+		return sqlSession.selectOne("memberMapper.selectRejectedClassAtt",fileNo);
+	}
+
+	//(교수)반려 강의 수정(새로운 첨부파일이 없는 경우)
+	public int updateClassCreateNoAtt(SqlSessionTemplate sqlSession, Classes c) {
+		
+		return sqlSession.update("memberMapper.updateClassCreateNoAtt",c);
+	}
+
+	//(교수)반려 강의 수정(새로운 첨부파일이 있고 기존 첨부파일이 있는 경우)
+	@Transactional
+	public int updateClassCreate(SqlSessionTemplate sqlSession, Classes c, Attachment a) {
+		int result = sqlSession.update("memberMapper.updateClassAttachment",a);
+		
+		if(result>0) {
+			result =sqlSession.update("memberMapper.updateClassCreateNoAtt",c);
+		}
+		return result;
+	}
+	
+	//(교수)반려 강의 수정(새로운 첨부파일이 있고 기존 첨부파일이 없는 경우)
+	@Transactional
+	public int updateClassCreateNew(SqlSessionTemplate sqlSession, Classes c, Attachment a) {
+		int	result = sqlSession.insert("memberMapper.insertClassAttachment",a);
+		
+		if(result>0) {
+			result = sqlSession.insert("memberMapper.UpdateClassNewAttNoOrigin",c);
+		}
+		return result;
 	}
 
 	// 학기별 성적 조회 -> 증명신청학점
