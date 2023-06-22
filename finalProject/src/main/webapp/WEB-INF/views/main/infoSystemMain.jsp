@@ -105,7 +105,7 @@
 	            </div>
 	        </div>
 	    </div>
-		<div>
+    	<div>
 			<%@include file="../common/weather.jsp"%>
 		</div>
 	</div>

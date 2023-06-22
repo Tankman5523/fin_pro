@@ -12,6 +12,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -29,11 +31,10 @@ public class Weather {
 	/* 날씨 정보 가공처리 */
 	@ResponseBody
 	@RequestMapping(value="weather.api",produces="application/json; charset=UTF-8")
-	public String weather() throws Exception{
+	public String weather(HttpServletRequest response) throws Exception{
 		
 		//최저온도, 최고온도, 하늘상태
 		HashMap<String, String> h = shortTerm();
-
 		//기온, 강수형태
 		HashMap<String, String> h2 = ultraShortTerm();
 		
@@ -54,7 +55,6 @@ public class Weather {
 		return new Gson().toJson(result);
 	}
 	
-	
 	/* ========== 전날 추출 ========== */
 	public String yesterday() throws Exception {
 		
@@ -70,10 +70,11 @@ public class Weather {
 		return yesterday;
 	}
 	
-	
-	/* ========== 단기 예보 ========== */
+	/* ========== 단기 예보 (쿠키 저장용)========== */
+	@ResponseBody
+	@RequestMapping(value = "tmnTmx.api", produces = "application/json; charset=UTF-8")
 	public HashMap<String, String> shortTerm() throws Exception {
-
+		
 		String yesterday = yesterday();
 		
 		String url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
@@ -122,10 +123,7 @@ public class Weather {
 			list.add(weather);
 		}
 		
-		//TMP - 1시간 온도
-		//TMN - 일 최저 온도
-		//TMX - 일 최고 온도
-		//SKY - 하늘상태  = 맑음(1), 구름많음(3), 흐림(4)
+		//TMP - 1시간 온도, TMN - 일 최저 온도, TMX - 일 최고 온도, SKY - 하늘상태  = 맑음(1), 구름많음(3), 흐림(4)
 		
 		String hour = new SimpleDateFormat("HH").format(new Date());
 		String setTime = hour + "00";
@@ -140,8 +138,7 @@ public class Weather {
 		String max = "";
 		
 		for(int i=0; i<list.size(); i++) {
-			
-			/* 일 최저,최고기온 추출 */
+			/* 일 최저,최고기온 추출 */ 
 			if(list.get(i).getCategory().equals("TMP")) {
 				
 				setTmp = Integer.parseInt(list.get(i).getFcstValue());
@@ -170,7 +167,6 @@ public class Weather {
 		
 		return h; 
 	}
-	
 	
 	/* ========== 초단기 실황 ========== */
 	public HashMap<String, String> ultraShortTerm() throws Exception {
@@ -215,7 +211,7 @@ public class Weather {
 		url += "&dataType=JSON";
 		url += "&nx=58";
 		url += "&ny=126";
-		
+		System.out.println(time);
 		URL requestUrl = new URL(url);
 		
 		HttpURLConnection urlCon = (HttpURLConnection)requestUrl.openConnection();
