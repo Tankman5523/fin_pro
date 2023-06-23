@@ -279,10 +279,15 @@ public interface MemberService {
 	// 학사일정 관리 -> 학사일정 추가
 	int insertCalendar(Calendar c);
 
+
+	// (교수) 상담 상세 조회
+	Counseling selectCounselDetail(HashMap<String, String> counselDtMap);
+
 	// 학사일정 관리 -> 학사일정 수정
 	int updateCalendar(Calendar c);
 
 	// 학사일정 관리 -> 학사일정 삭제
 	int deleteCalendar(Calendar c);
+
 
 }

@@ -311,5 +311,27 @@ public class ProfessorController {
 		return new Gson().toJson(list);			
 	}
 	
+	// (교수) 상담 상세 조회
+	@RequestMapping("counselDetail.pr")
+	public ModelAndView selectCounselDetail(@RequestParam("cno") String counselNo
+									, @RequestParam("sno") String studentNo
+									, @RequestParam("application") String application
+									, @RequestParam("request") String request
+									, ModelAndView mv) {
+		
+		HashMap<String, String> counselDtMap = new HashMap<String, String>();
+		counselDtMap.put("counselNo", counselNo);
+		counselDtMap.put("studentNo", studentNo);
+		counselDtMap.put("application", application);
+		counselDtMap.put("request", request);
+		
+		Counseling counsel = memberService.selectCounselDetail(counselDtMap);
+		
+		mv.addObject("c", counsel).setViewName("member/professor/counselHistoryDetail");
+		
+		return mv;
+	}
+	
+	
 
 }

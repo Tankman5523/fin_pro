@@ -98,8 +98,9 @@
   		<result column="STATUS" property="status"/>
   		<result column="PROFESSOR_NAME" property="professorName"/>
   		<result column="STUDENT_NAME" property="studentName"/>
-  		<result column="DEAPRTMENT_NAME" property="departmentName"/>
+  		<result column="DEPARTMENT_NAME" property="departmentName"/>
   		<result column="CLASS_LEVEL" property="classLevel"/>
+  		<result column="PHONE" property="phone"/>
   	</resultMap>
   	
   	<resultMap type="studentRest" id="studentRestResultMap">
@@ -1296,10 +1297,11 @@
 
 	<!-- (교수) 상담조회  -->
   	<select id="professorSelectCounseling" parameterType="hashMap" resultMap="counselingResultMap">
-  		SELECT COUNSEL_NO, STUDENT_NO, STUDENT_NAME, DEPARTMENT_NAME, CLASS_LEVEL, APPLICATION_DATE, REQUEST_DATE, COUNSEL_AREA, C.STATUS
+  		SELECT COUNSEL_NO, STUDENT_NO, STUDENT_NAME, D.DEPARTMENT_NAME, CLASS_LEVEL, TO_CHAR(APPLICATION_DATE, 'YYYY-MM-DD') APPLICATION_DATE
+			,  TO_CHAR(REQUEST_DATE, 'YYYY-MM-DD') REQUEST_DATE, COUNSEL_AREA, C.STATUS
 		FROM COUNSELING C
 		JOIN STUDENT S USING(STUDENT_NO)
-		JOIN DEPARTMENT C ON(S.DEPARTMENT_NO = C.DEPARTMENT_NO)
+		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO)
 		<if test="counselType.equals('allType')">
 			WHERE PROFESSOR_NO = #{professorNo}
 			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
@@ -1360,6 +1362,19 @@
   				, TO_DATE(SUBSTR(#{endDate}, 0, 10)||SUBSTR(#{endDate}, 12), 'YYYY-MM-DD HH24:MI'))
   	</insert>
   	
+  	<!-- (교수) 상담 상세 조회 -->
+  	<select id="selectCounselDetail" parameterType="hashMap" resultMap="counselingResultMap">
+	  	SELECT *
+		FROM (SELECT STUDENT_NO, DEPARTMENT_NAME, PHONE, APPLICATION_DATE, REQUEST_DATE, COUNSEL_AREA, C.STATUS
+		        FROM STUDENT S
+		        JOIN DEPARTMENT D USING(DEPARTMENT_NO)
+		        JOIN COUNSELING C USING(STUDENT_NO)
+		        WHERE COUNSEL_NO = #{counselNo }
+		        AND STUDENT_NO = #{studentNo })
+		WHERE APPLICATION_DATE =  #{application }
+		AND REQUEST_DATE = #{request}
+  	</select>
+
   	<!-- 학사일정 관리 -> 학사일정 수정 -->
   	<update id="updateCalendar">
   		UPDATE CALENDAR
@@ -1374,5 +1389,6 @@
   		DELETE FROM CALENDAR
   		WHERE CALENDAR_NO = #{calendarNo}
   	</delete>
+
   </mapper>
 
