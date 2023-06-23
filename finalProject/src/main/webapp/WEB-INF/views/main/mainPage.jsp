@@ -6,6 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Main : Feasible University</title>
+<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="/fin/resources/css/mainPage.css">
 </head>
 <body>
@@ -124,6 +125,13 @@
 					autoSlide()
 				})
 				
+				/* 날씨 정보 데이터 미리 호출(캐시값 담아놓기 위해서) */
+				$(function(){
+					
+					$.ajax({
+						url : "weather.api"
+					});
+				});
 
 			</script>
 		

@@ -47,7 +47,7 @@ public class ChatBot {
 					break;
 				case "학사소개" : result += "<button onclick="+"location.href='haksaInfo.mp'"+">학사소개 페이지로</button>";
 					break;
-				case "학사일정" : result += "<button onclick="+"location.href='haksaInfo.mp'"+">학사일정 페이지로</button>";
+				case "학사일정" : result += "<button onclick="+"location.href='haksaSchedule.mp'"+">학사일정 페이지로</button>";
 					break;
 				case "공지" : result += "<button onclick="+"location.href='notice.mp'"+">공지게시판 페이지로</button>";
 					break;

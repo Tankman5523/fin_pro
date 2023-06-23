@@ -1,11 +1,12 @@
 package com.univ.fin.member.model.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
-import com.univ.fin.common.model.vo.Calendar;
+import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -62,6 +63,9 @@ public interface MemberService {
 	
 	//예비수강신청 - 장바구니 수강취소
 	int delPreRegList(RegisterClass rc);
+	
+	//수강신청 기간인지 체크
+	ArrayList<CalendarVo> chkRegCal();
 	
 	//수강신청 - 수강신청 (수강조회)
 	ArrayList<RegisterClass> postRegClass(RegisterClass rc2);
@@ -280,16 +284,16 @@ public interface MemberService {
 	ArrayList<HashMap<String, String>> calendarList();
 
 	// 학사일정 관리 -> 학사일정 추가
-	int insertCalendar(Calendar c);
+	int insertCalendar(CalendarVo c);
 
 	// (교수) 상담 상세 조회
 	Counseling selectCounselDetail(HashMap<String, String> counselDtMap);
 
 	// 학사일정 관리 -> 학사일정 수정
-	int updateCalendar(Calendar c);
+	int updateCalendar(CalendarVo c);
 
 	// 학사일정 관리 -> 학사일정 삭제
-	int deleteCalendar(Calendar c);
+	int deleteCalendar(CalendarVo c);
 
 	// 메인 -> 학사일정 조회
 	ArrayList<HashMap<String, String>> yearCalendarList();

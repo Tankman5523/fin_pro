@@ -1,6 +1,7 @@
 package com.univ.fin.member.model.dao;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -9,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
-import com.univ.fin.common.model.vo.Calendar;
+import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -65,6 +66,11 @@ public class MemberDao {
 	//비밀번호 초기화 - 비밀번호 변경 메소드 (임직원)
 	public int changePwd2(SqlSessionTemplate sqlSession, Professor pr) {
 		return sqlSession.update("memberMapper.changePwd2", pr);
+	}
+	
+	//수강신청 기간인지 체크
+	public ArrayList<CalendarVo> chkRegCal(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.chkRegCal");
 	}
 	
 	//수강신청 - 수강신청내역조회 (로그인 학생의 수강신청 년도/학기 추출)
@@ -534,7 +540,7 @@ public class MemberDao {
 	}
 
 	// 학사일정 관리 -> 학사일정 추가
-	public int insertCalendar(SqlSessionTemplate sqlSession, Calendar c) {
+	public int insertCalendar(SqlSessionTemplate sqlSession, CalendarVo c) {
 		return sqlSession.insert("memberMapper.insertCalendar", c);
 	}
 
@@ -545,12 +551,12 @@ public class MemberDao {
 	}
 	
 	// 학사일정 관리 -> 학사일정 수정
-	public int updateCalendar(SqlSessionTemplate sqlSession, Calendar c) {
+	public int updateCalendar(SqlSessionTemplate sqlSession, CalendarVo c) {
 		return sqlSession.update("memberMapper.updateCalendar", c);
 	}
 
 	// 학사일정 관리 -> 학사일정 삭제
-	public int deleteCalendar(SqlSessionTemplate sqlSession, Calendar c) {
+	public int deleteCalendar(SqlSessionTemplate sqlSession, CalendarVo c) {
 		return sqlSession.update("memberMapper.deleteCalendar", c);
 	}
 	

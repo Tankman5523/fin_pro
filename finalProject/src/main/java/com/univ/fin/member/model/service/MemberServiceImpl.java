@@ -1,6 +1,7 @@
 package com.univ.fin.member.model.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
-import com.univ.fin.common.model.vo.Calendar;
+import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -105,6 +106,15 @@ public class MemberServiceImpl implements MemberService{
 		return result;
 	}
 
+	//수강신청 기간인지 체크
+	@Override
+	public ArrayList<CalendarVo> chkRegCal() {
+		
+		ArrayList<CalendarVo> list = memberDao.chkRegCal(sqlSession);
+		
+		return list;
+	}
+	
 	//예비수강신청 - 수강조회
 	@Override
 	public ArrayList<RegisterClass> preRegClass(RegisterClass rc2) {
@@ -733,7 +743,7 @@ public class MemberServiceImpl implements MemberService{
 
 	// 학사일정 관리 -> 학사일정 추가
 	@Override
-	public int insertCalendar(Calendar c) {
+	public int insertCalendar(CalendarVo c) {
 		return memberDao.insertCalendar(sqlSession, c);
 	}
 
@@ -748,13 +758,13 @@ public class MemberServiceImpl implements MemberService{
 
 	// 학사일정 관리 -> 학사일정 수정
 	@Override
-	public int updateCalendar(Calendar c) {
+	public int updateCalendar(CalendarVo c) {
 		return memberDao.updateCalendar(sqlSession, c);
 	}
 
 	// 학사일정 관리 -> 학사일정 삭제
 	@Override
-	public int deleteCalendar(Calendar c) {
+	public int deleteCalendar(CalendarVo c) {
 		return memberDao.deleteCalendar(sqlSession, c);
 	}
 	
