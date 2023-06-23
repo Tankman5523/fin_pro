@@ -533,4 +533,11 @@ public class MemberDao {
 		return sqlSession.insert("memberMapper.insertCalendar", c);
 	}
 
+	
+	// (교수) 상담 상세 조회
+	public Counseling selectCounselDetail(SqlSessionTemplate sqlSession, HashMap<String, String> counselDtMap) {
+		 
+		return sqlSession.selectOne("memberMapper.selectCounselDetail", counselDtMap);
+	}
+
 }
