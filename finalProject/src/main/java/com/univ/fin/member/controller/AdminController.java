@@ -12,14 +12,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.gson.Gson;
-import com.univ.fin.common.model.vo.Attachment;
-import com.univ.fin.common.model.vo.Calendar;
+import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.member.model.service.MemberService;
@@ -222,7 +220,7 @@ public class AdminController {
 	
 	// 학사일정 관리 -> 학사일정 추가/수정/삭
 	@PostMapping("manageCalendar.ad")
-	public String manageCalendar(Calendar c, String check, HttpSession session) {
+	public String manageCalendar(CalendarVo c, String check, HttpSession session) {
 		int result = 0;
 		
 		if(check.equals("insert")) { // 추가

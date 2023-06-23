@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Calendar {
+public class CalendarVo {
 	private int calendarNo; 	//일정번호
 	private String content; 	//일정내용
 	private String startDate;	//시작날짜

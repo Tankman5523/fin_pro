@@ -13,7 +13,6 @@
 <style>
 	/* body 스타일 */
 	html, body {
-/* 		overflow: hidden; */
 		font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
 		font-size: 14px;
 	}
@@ -24,18 +23,44 @@
 		padding-right: 1em;
 	}
 	
-	.fc-button-primary {
-		background-color: #4fc7ff !important;
-		color: black;
-		border: 0 !important;
-	}
+ 	.fc-button-primary {
+ 		background-color: white !important;
+ 		color: black !important;
+ 		border: 2px solid #ffbf00 !important;
+ 		font-weight: bold !important;
+ 	}
+	
+	.fc-button-active{
+		border-color: #ffbf00 !important;
+		background-color: #ffbf00 !important;
+		color: black !important;
+		font-weight: bold !important;
+	 }
 	
 	.fc-button-primary:active {
-		border: 2px solid red !important;
+		border: none;
 	}
 	
 	.fc-daygrid-day-number, .fc-col-header-cell-cushion {
 		color: black;
+	}
+	
+	/* 일요일 날짜 빨간색 */
+	.fc-day-sun a {
+	  color: red;
+	  text-decoration: none;
+	}
+	
+	/* 토요일 날짜 파란색 */
+	.fc-day-sat a {
+	  color: blue;
+	  text-decoration: none;
+	}
+	
+	/*more버튼*/ 
+	.fc-daygrid-more-link.fc-more-link {
+		color: #000;
+		font-weight: bold;
 	}
 	
 	#calendar-container {
@@ -60,9 +85,9 @@
 		width: 100px;
 		height: 35px;
 		border-radius: 10px;
-		background-color: #4fc7ff;
+		background-color: #ffbf00;
 		border: 0;
-		color: white;
+		font-weight: bold;
 	}
 	
 	.modalBtn-area {
@@ -143,6 +168,7 @@
             		        },
             				initialView: 'dayGridMonth',
             				locale: 'ko', // 한국어
+            				dayMaxEvents: true,
             				events: [ // 띄울 학사일정
             					$.ajax({
                     				url: "calendarView.ad",
@@ -163,7 +189,7 @@
                     							end: calList[i].end,
 //                     							color : $color[check],
 												color: "#" + $r + $g+ $b,
-                    							textColor : "#000000"
+                    							textColor : "#000000",
                     						});
 //                     						check++;
                     					}
@@ -226,6 +252,7 @@
 			                <script>
 			                	$(function() {
 			                		$("#insert").on("click", function() {
+			                			$("#calendarNo").val("0");
 			                			$("#check").val("insert");
 			                		});
 			                		

@@ -3,11 +3,11 @@ package com.univ.fin.member.controller;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.univ.fin.common.model.vo.Bucket;
-import com.univ.fin.common.model.vo.Calendar;
+import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -35,6 +35,7 @@ import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.common.template.ChatBot;
 import com.univ.fin.common.template.DepartmentCategory;
+import com.univ.fin.main.model.vo.Notice;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
@@ -47,6 +48,47 @@ public class StudentController {
 
 	@Autowired
 	private MemberService memberService;
+	
+	// 메인페이지
+	@RequestMapping("main.st")
+	public ModelAndView mainPage(ModelAndView mv, HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
+		
+		Calendar calendar = Calendar.getInstance();
+		String year = String.valueOf(calendar.get(calendar.YEAR)); // 년도
+		int month = calendar.get(calendar.MONTH)+1; // 월
+		String term = "";
+		if(3<=month && month<=6) { // 1학기
+			term = "1";
+		}
+		else if(9<=month && month<=12) { // 2학기
+			term = "2";
+		}
+		else {
+			term = "0";
+		}
+		String day = String.valueOf(calendar.get(calendar.DAY_OF_WEEK)-1); // 요일
+		
+		HashMap<String, String> map = new HashMap<>();
+		map.put("year", year);
+		map.put("term", term);
+		map.put("studentNo", studentNo);
+		
+		ArrayList<HashMap<String, String>> calList = memberService.yearCalendarList(); // 학사일정 조회
+		ArrayList<Classes> cList = memberService.selectStudentTimetable(map); // 해당 학기 모든 개인시간표 추출
+//		for(int i=0;i<cList.size();i++) { // 해당 요일 강의만 추출
+//			if(!cList.get(i).getDay().equals(day)) {
+//				cList.remove(i);
+//			}
+//		}
+		
+		ArrayList<Notice> nList = memberService.selectMainNotice(); // 공지사항 목록
+		
+		mv.addObject("calList", calList).addObject("cList", cList)
+			.addObject("nList", nList).setViewName("member/student/mainPage");
+		return mv;
+	}
 	
 	//챗봇
 	@ResponseBody
@@ -72,13 +114,13 @@ public class StudentController {
 	//수강신청 기간인지 체크하는 메소드
 	public int chkRegCalendar() {
 		
-		ArrayList<Calendar> list = memberService.chkRegCal();
+		ArrayList<CalendarVo> list = memberService.chkRegCal();
 		
 		String day = new SimpleDateFormat("yyyyMMdd").format(new Date());
 		int today = Integer.parseInt(day);
 		int result = 0;
 		
-		for(Calendar c : list) {
+		for(CalendarVo c : list) {
 			
 			int start = Integer.parseInt(c.getStartDate());
 			int end = Integer.parseInt(c.getEndDate());
@@ -426,45 +468,45 @@ public class StudentController {
 	}
 	
 	
-		//학적 정보조회 - 학생
-			@RequestMapping("infoStudent.st")
-			public String infoStudent() {		
-				
-				return "member/student/infoStudent";
-			}
+	//학적 정보조회 - 학생
+	@RequestMapping("infoStudent.st")
+	public String infoStudent() {		
+		
+		return "member/student/infoStudent";
+	}
 			
 			
-			//학적 정보수정 - 학생
-			
-			@RequestMapping(value="updateStudent.st" , method = RequestMethod.POST)
-			public String updateStudent(Student st,
-											Model model,
-											HttpSession session) {
-				int result = memberService.updateStudent(st);
-				
-				System.out.println("확인 : "+st);
-				
-				if(result>0) {
-					//유저 정보갱신
-					Student loginUser = memberService.loginStudent(st);
-					session.setAttribute("loginUser", loginUser);
-					model.addAttribute("msg", "수정 완료");
-				}else { //정보변경실패
-					model.addAttribute("msg", "수정 실패");
-				}
-				
-			return "member/student/infoStudent";
-				
-			}
-			
-			//학생 강의 의의신청 페이지
-			@RequestMapping("studentGradeReport.st")
-			public String studentGradeReport(String studentNo, Model model) {
-			    ArrayList<Dissent> list = memberService.studentGradeReport(studentNo);
-			    model.addAttribute("list", list);
-			    return "member/student/studentGradeReport";
-			    
-			}
+	//학적 정보수정 - 학생
+	
+	@RequestMapping(value="updateStudent.st" , method = RequestMethod.POST)
+	public String updateStudent(Student st,
+									Model model,
+									HttpSession session) {
+		int result = memberService.updateStudent(st);
+		
+		System.out.println("확인 : "+st);
+		
+		if(result>0) {
+			//유저 정보갱신
+			Student loginUser = memberService.loginStudent(st);
+			session.setAttribute("loginUser", loginUser);
+			model.addAttribute("msg", "수정 완료");
+		}else { //정보변경실패
+			model.addAttribute("msg", "수정 실패");
+		}
+		
+		return "member/student/infoStudent";
+		
+	}
+	
+	//학생 강의 의의신청 페이지
+	@RequestMapping("studentGradeReport.st")
+	public String studentGradeReport(String studentNo, Model model) {
+	    ArrayList<Dissent> list = memberService.studentGradeReport(studentNo);
+	    model.addAttribute("list", list);
+	    return "member/student/studentGradeReport";
+	    
+	}
 			
 			
 	//상담 관리 - 상담 내역 검색

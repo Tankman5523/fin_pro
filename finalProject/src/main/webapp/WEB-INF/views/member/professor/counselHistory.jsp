@@ -70,6 +70,7 @@
 							</tr>
 						</thead>
 						<tbody>
+							<tr><td colspan="7">ddddddddd</td></tr>
 						</tbody>
 					</table>
 				</div>
@@ -87,6 +88,10 @@
 			firstBtn[0].style.fontWeight = "bold"
 		}
 		
+		
+		var cno = "";
+		var appDate = "";
+		var requestDate = "";
 		
 		function searchCounsel(){
 			
@@ -115,30 +120,55 @@
 						$.each(data, function(index,data){
 							
 							result += "<tr>"
+								+"<input type='hidden' id='counselNo' value='"+data.counselNo+"'>"
+								+"<input type='hidden' id='studentNo' value='"+data.studentNo+"'>"
 								+"<td>"+data.studentName+"</td>"
 								+"<td>"+data.departmentName+"</td>"
 								+"<td>"+data.classLevel+"학년"+"</td>"
 								+"<td>"+data.applicationDate+"</td>"
 								+"<td>"+data.requestDate+"</td>"
-								+"<td>"+data.counselArea+"</td>"
-								+"<td>"+data.status+"</td>"
-								+"</tr>"
+								+"<td>"+data.counselArea+"</td>";
+								
+								switch (data.status) {
+								case 'N':
+									result+="<td style='color: orange; font-weight: bold;'>"+data.status+"</td>"
+											+"</tr>"		
+									break;
+								case 'Y':
+									result+="<td style='color: #0080ff; font-weight: bold;'>"+data.status+"</td>"
+											+"</tr>"		
+									break;
+								case 'C':
+									result+="<td style='color: red; font-weight: bold;'>"+data.status+"</td>"
+											+"</tr>"		
+									break;
+
+								}
 								
 						})
 					}
 					$("#record-table > tbody").html(result);
+					
+					var rows = document.querySelectorAll('#record-table > tbody > tr')
+					
+					rows.forEach(function(tr, index){
+						tr.addEventListener('click', function(){
+							cno = tr.children[0].value
+							sno = tr.children[1].value
+							appDate = tr.children[5].innerHTML
+							requestDate = tr.children[6].innerHTML
+							
+							location.href = "counselDetail.pr?cno="+cno+"&sno="+sno+"&application="+appDate+"&request="+requestDate;
+						})
+					})
 				},
 				error: function(){
 					alert("현재 페이지를 로드할 수 없습니다.");
 				}
 			});
+			
 		}
 		
-		function detailModal(){
-			
-			
-			
-		}
 	</script>
 </body>
 </html>

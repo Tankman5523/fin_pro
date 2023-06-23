@@ -1,11 +1,12 @@
 package com.univ.fin.member.model.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
-import com.univ.fin.common.model.vo.Calendar;
+import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -14,6 +15,7 @@ import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
+import com.univ.fin.main.model.vo.Notice;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
@@ -63,7 +65,7 @@ public interface MemberService {
 	int delPreRegList(RegisterClass rc);
 	
 	//수강신청 기간인지 체크
-	ArrayList<Calendar> chkRegCal();
+	ArrayList<CalendarVo> chkRegCal();
 	
 	//수강신청 - 수강신청 (수강조회)
 	ArrayList<RegisterClass> postRegClass(RegisterClass rc2);
@@ -191,6 +193,9 @@ public interface MemberService {
 	// 교수 개인시간표 -> 학기 선택 후 시간표 조회
 	ArrayList<Classes> selectProfessorTimetable(HashMap<String, String> map);
 
+	// 기간 확인
+	int checkPeriod(String string);
+	
 	// 성적관리 -> 학점별로 몇명이 해당되는지
 	HashMap<String, String> countStudentGrade(int classNo);
 
@@ -275,17 +280,26 @@ public interface MemberService {
 	// (교수) 상담조회교수 상담조회
 	ArrayList<Counseling> professorSelectCounseling(HashMap<String, String> counselMap);
 
-
 	// 학사일정 관리 -> 학사일정 조회
 	ArrayList<HashMap<String, String>> calendarList();
 
 	// 학사일정 관리 -> 학사일정 추가
-	int insertCalendar(Calendar c);
+	int insertCalendar(CalendarVo c);
+
+	// (교수) 상담 상세 조회
+	Counseling selectCounselDetail(HashMap<String, String> counselDtMap);
 
 	// 학사일정 관리 -> 학사일정 수정
-	int updateCalendar(Calendar c);
+	int updateCalendar(CalendarVo c);
 
 	// 학사일정 관리 -> 학사일정 삭제
-	int deleteCalendar(Calendar c);
+	int deleteCalendar(CalendarVo c);
+
+	// 메인 -> 학사일정 조회
+	ArrayList<HashMap<String, String>> yearCalendarList();
+	
+	// 메인 -> 공지사항 조회
+	ArrayList<Notice> selectMainNotice();
+
 
 }

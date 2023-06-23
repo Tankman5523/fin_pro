@@ -207,6 +207,14 @@ public class ProfessorController {
 	// 수업관리 - 성적관리
 	@GetMapping("gradeInsert.pr")
 	public ModelAndView gradeInsertView(ModelAndView mv, HttpSession session) {
+		if(memberService.checkPeriod("성적") > 0) { // 성적입력 가능한 기간인지 확인
+			session.setAttribute("check", "possible");
+		}
+		else {
+			session.setAttribute("check", "impossible");
+			
+		}
+		
 		Professor st = (Professor)session.getAttribute("loginUser");
 		String professorNo = st.getProfessorNo();
 		ArrayList<String> classTerm = memberService.selectProfessorClassTerm(professorNo); // 강의한 학년도, 학기
@@ -310,6 +318,28 @@ public class ProfessorController {
 
 		return new Gson().toJson(list);			
 	}
+	
+	// (교수) 상담 상세 조회
+	@RequestMapping("counselDetail.pr")
+	public ModelAndView selectCounselDetail(@RequestParam("cno") String counselNo
+									, @RequestParam("sno") String studentNo
+									, @RequestParam("application") String application
+									, @RequestParam("request") String request
+									, ModelAndView mv) {
+		
+		HashMap<String, String> counselDtMap = new HashMap<String, String>();
+		counselDtMap.put("counselNo", counselNo);
+		counselDtMap.put("studentNo", studentNo);
+		counselDtMap.put("application", application);
+		counselDtMap.put("request", request);
+		
+		Counseling counsel = memberService.selectCounselDetail(counselDtMap);
+		
+		mv.addObject("c", counsel).setViewName("member/professor/counselHistoryDetail");
+		
+		return mv;
+	}
+	
 	
 
 }

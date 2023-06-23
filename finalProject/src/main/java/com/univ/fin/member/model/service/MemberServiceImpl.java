@@ -1,6 +1,7 @@
 package com.univ.fin.member.model.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
-import com.univ.fin.common.model.vo.Calendar;
+import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -18,6 +19,7 @@ import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
+import com.univ.fin.main.model.vo.Notice;
 import com.univ.fin.member.model.dao.MemberDao;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
@@ -106,9 +108,9 @@ public class MemberServiceImpl implements MemberService{
 
 	//수강신청 기간인지 체크
 	@Override
-	public ArrayList<Calendar> chkRegCal() {
+	public ArrayList<CalendarVo> chkRegCal() {
 		
-		ArrayList<Calendar> list = memberDao.chkRegCal(sqlSession);
+		ArrayList<CalendarVo> list = memberDao.chkRegCal(sqlSession);
 		
 		return list;
 	}
@@ -517,6 +519,13 @@ public class MemberServiceImpl implements MemberService{
 		return cList;
 	}
 	
+	// 기간 확인
+	@Override
+	public int checkPeriod(String string) {
+		int result = memberDao.checkPeriod(sqlSession, string);
+		return result;
+	}
+	
 	// 성적관리 -> 학점별로 몇명이 해당되는지
 	@Override
 	public HashMap<String, String> countStudentGrade(int classNo) {
@@ -734,20 +743,42 @@ public class MemberServiceImpl implements MemberService{
 
 	// 학사일정 관리 -> 학사일정 추가
 	@Override
-	public int insertCalendar(Calendar c) {
+	public int insertCalendar(CalendarVo c) {
 		return memberDao.insertCalendar(sqlSession, c);
 	}
 
+
+	// (교수) 상담 상세 조회
+	@Override
+	public Counseling selectCounselDetail(HashMap<String, String> counselDtMap) {
+
+		return memberDao.selectCounselDetail(sqlSession, counselDtMap);
+	}
+
+
 	// 학사일정 관리 -> 학사일정 수정
 	@Override
-	public int updateCalendar(Calendar c) {
+	public int updateCalendar(CalendarVo c) {
 		return memberDao.updateCalendar(sqlSession, c);
 	}
 
 	// 학사일정 관리 -> 학사일정 삭제
 	@Override
-	public int deleteCalendar(Calendar c) {
+	public int deleteCalendar(CalendarVo c) {
 		return memberDao.deleteCalendar(sqlSession, c);
+	}
+	
+	// 메인 -> 학사일정 조회
+	@Override
+	public ArrayList<HashMap<String, String>> yearCalendarList() {
+		return memberDao.yearCalendarList(sqlSession);
+	}
+
+	// 메인 -> 공지사항 조회
+	@Override
+	public ArrayList<Notice> selectMainNotice() {
+		return memberDao.selectMainNotice(sqlSession);
 	}
 
 }
+

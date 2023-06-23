@@ -83,7 +83,7 @@ public class MemberController {
 					response.addCookie(cookie);
 				}
 				session.setAttribute("loginUser", loginUser);
-				mv.setViewName("common/student_category");
+				mv.setViewName("redirect:main.st");
 			}
 			
 		}else if(mno.equals("P")){ //임직원 로그인
