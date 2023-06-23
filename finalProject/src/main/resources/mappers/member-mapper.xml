@@ -1369,5 +1369,11 @@
   		  , END_DATE = TO_DATE(SUBSTR(#{endDate}, 0, 10)||SUBSTR(#{endDate}, 12), 'YYYY-MM-DD HH24:MI')
   		WHERE CALENDAR_NO = #{calendarNo}
   	</update>
+  	
+  	<!-- 학사일정 관리 -> 학사일정 삭제 -->
+  	<delete id="deleteCalendar">
+  		DELETE FROM CALENDAR
+  		WHERE CALENDAR_NO = #{calendarNo}
+  	</delete>
   </mapper>
 

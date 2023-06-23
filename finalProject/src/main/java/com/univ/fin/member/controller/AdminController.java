@@ -108,9 +108,6 @@ public class AdminController {
 	    }
 	    return "member/admin/enrollProfessor";
 	}
-
-
-
 	
 	//강의 개설 일괄 승인
 	@RequestMapping("permitAllClassCreate.ad")
@@ -223,31 +220,40 @@ public class AdminController {
 		return new Gson().toJson(calList);
 	}
 	
-	// 학사일정 관리 -> 학사일정 추가
-	@PostMapping("insertCalendar.ad")
-	public String insertCalendar(Calendar c, HttpSession session) {
-		int result = memberService.insertCalendar(c);
+	// 학사일정 관리 -> 학사일정 추가/수정/삭
+	@PostMapping("manageCalendar.ad")
+	public String manageCalendar(Calendar c, String check, HttpSession session) {
+		int result = 0;
 		
-		if(result > 0) {
-			session.setAttribute("alertMsg", "학사일정이 추가되었습니다.");
+		if(check.equals("insert")) { // 추가
+			result = memberService.insertCalendar(c);
+			
+			if(result > 0) {
+				session.setAttribute("alertMsg", "학사일정이 추가되었습니다.");
+			}
+			else {
+				session.setAttribute("alertMsg", "학사일정 추가에 실패하셨습니다.");
+			}
 		}
-		else {
-			session.setAttribute("alertMsg", "학사일정 추가에 실패하셨습니다.");
+		else if(check.equals("update")) { // 수정
+			result = memberService.updateCalendar(c);
+			
+			if(result > 0) {
+				session.setAttribute("alertMsg", "학사일정이 수정되었습니다.");
+			}
+			else {
+				session.setAttribute("alertMsg", "학사일정 수정에 실패하셨습니다.");
+			}
 		}
-		
-		return "redirect:calendarView.ad";
-	}
-	
-	// 학사일정 관리 -> 학사일정 수정
-	@PostMapping("updateCalendar.ad")
-	public String updateCalendat(Calendar c, HttpSession session) {
-		int result = memberService.updateCalendar(c);
-		
-		if(result > 0) {
-			session.setAttribute("alertMsg", "학사일정이 수정되었습니다.");
-		}
-		else {
-			session.setAttribute("alertMsg", "학사일정 수정에 실패하셨습니다.");
+		else { // 삭제
+			result = memberService.deleteCalendar(c);
+			
+			if(result > 0) {
+				session.setAttribute("alertMsg", "학사일정이 삭제되었습니다.");
+			}
+			else {
+				session.setAttribute("alertMsg", "학사일정 삭제에 실패하셨습니다.");
+			}
 		}
 		
 		return "redirect:calendarView.ad";

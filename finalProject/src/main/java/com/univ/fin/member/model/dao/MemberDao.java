@@ -538,4 +538,9 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.updateCalendar", c);
 	}
 
+	// 학사일정 관리 -> 학사일정 삭제
+	public int deleteCalendar(SqlSessionTemplate sqlSession, Calendar c) {
+		return sqlSession.update("memberMapper.deleteCalendar", c);
+	}
+
 }
