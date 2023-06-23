@@ -69,6 +69,7 @@
 		<result column="STUDENT_NAME" property="studentName"/>
 	</resultMap>
 	
+	<!-- (학생) 본인 장학금 정보 모두 조회  -->
 	<select id="selectMyScholarshipList" resultMap="scholarshipResultSet">
 		SELECT SCH_NO
 		      ,STUDENT_NO
@@ -89,17 +90,20 @@
 		AND SC.STATUS IN ('Y','W')
 	</select>	
 	
+	<!-- (관리자) 장학금 정보 입력 -->
 	<insert id="insertScholarship">
 		INSERT INTO SCHOLARSHIP
 		VALUES(SEQ_SCHNO.NEXTVAL,#{studentNo},#{schCategoryNo},#{schAmount},#{classYear},#{classTerm},SYSDATE,'W',#{etc})
 	</insert>
 	
+	<!-- (관리자) 장학금 삭제 -->
 	<delete id="deleteScholarship">
 		DELETE SCHOLARSHIP
 		WHERE SCH_NO = #{schNo}
 		AND STATUS IN ('W','N')
 	</delete>
 	
+	<!-- (관리자) 장학금 정보 상세조회 -->
 	<select id="selectOneScholarship" parameterType="_int" resultMap="scholarshipResultSet">
 		SELECT SCH_NO
 		      ,STUDENT_NO
@@ -117,6 +121,7 @@
 		AND SCH_NO = #{schNo}
 	</select>
 	
+	<!-- (관리자) 장학금정보 수정 -->
 	<update id="updateScholarship">
 		UPDATE SCHOLARSHIP
 		SET SCH_CATEGORY_NO = #{schCategoryNo}
@@ -126,6 +131,7 @@
 		WHERE SCH_NO = #{schNo}
 	</update>
 	
+	<!-- (관리자) 장학금 정보 모두 조회/검색 -->
 	<select id="selectScholarshipListAll" resultMap="scholarshipResultSet" parameterType="map">
 		SELECT SCH_NO
 		      ,STUDENT_NO
@@ -158,6 +164,7 @@
 		ORDER BY SCH_NO DESC
 	</select>
 	
+	<!-- (임직원) 급여정보 상세조회 -->
 	<select id="selectMySalary" resultMap="salaryResultSet">
 		SELECT PAY_NO
 			  ,PROFESSOR_NO
@@ -181,6 +188,7 @@
 		AND STATUS = 'Y'
 	</select>
 	
+	<!-- (임직원) 본인 급여정보 모두 조회 -->
 	<select id="selectMySalaryList" resultMap="salaryResultSet">
 		SELECT PAY_NO
 			  ,PROFESSOR_NO
@@ -203,6 +211,7 @@
 		AND PAYMENT_DATE BETWEEN #{startDate} AND #{endDate}	  
 	</select>
 	
+	<!-- (관리자) 급여정보 생성 -->
 	<insert id="insertSalary">
 		INSERT INTO PAY_STUB
 		VALUES(SEQ_PAYNO.NEXTVAL
@@ -224,6 +233,7 @@
 			  )
 	</insert>
 	
+	<!-- (관리자) 급여정보 수정 -->
 	<update id="updateSalary">
 		UPDATE PAY_STUB
 		SET BASE_PAY = #{basePay}
@@ -242,12 +252,14 @@
 		 AND STATUS IN ('N','E') 
 	</update>
 	
+	<!-- (관리자) 급여정보 삭제 -->
 	<delete id="deleteSalary" parameterType="_int">
 		DELETE PAY_STUB
 		WHERE PAY_NO = #{payNo}
 		AND STATUS IN ('N','E') <!-- 이미 지급된 월급데이터는 삭제불가  -->
 	</delete>
 	
+	<!-- (관리자) 급여정보 모두 조회/검색 -->
 	<select id="selectAllSalaryList" resultMap="salaryResultSet">
 		SELECT PAY_NO
 			  ,PROFESSOR_NO
@@ -268,6 +280,7 @@
 		</if>
 	</select>
 	
+	<!-- (관리자) 급여정보 1개 조회 -->
 	<select id="selectOneSalary" resultMap="salaryResultSet" parameterType="_int"><!--수정,상세조회-->
 		SELECT PAY_NO
 			  ,PROFESSOR_NO
@@ -305,6 +318,7 @@
 		<result column="ACCOUNT_NO" property="accountNo"/>
 	</resultMap>
 	
+	<!-- (관리자) 급여 입력을 위한 교수정보 조회 / 검색-->
 	<select id="professorListToSalary" resultMap="profResultSetForSalary">
 		SELECT PROFESSOR_NO
 			  ,PROFESSOR_NAME
@@ -319,6 +333,7 @@
 		AND PROFESSOR_NAME LIKE '%'||#{professorName}||'%'  
 	</select>
 	
+	<!-- (관리자) 급여 송금 후 상태변경 -->
 	<update id="sendSalary" parameterType="_int">
 		UPDATE PAY_STUB
 		SET STATUS = 'Y'
@@ -326,6 +341,7 @@
 		AND STATUS IN ('N','E')
 	</update>
 	
+	<!-- (학생) 등록금 전체 정보 조회 -->
 	<select id="selectMyRegistList" resultMap="registPayResultSet">
 		SELECT REG_NO
 			  ,STUDENT_NO
@@ -355,6 +371,7 @@
 		AND END_DATE BETWEEN #{startDate} AND #{endDate} -->
 	</select>
 	
+	<!-- (학생) 해당학기 등록금 정보 조회  -->
 	<select id="selectNewRegistInfo" resultMap="registPayResultSet">
 		SELECT REG_NO 
 			  ,STUDENT_NO
@@ -377,6 +394,7 @@
 		AND CLASS_TERM = #{classTerm}
 	</select>
 	
+	<!-- (관리자) 등록금 입금 됐을때 상태변경  -->
 	<update id="updateInputPay">
 		UPDATE REG_ACC
 		SET INPUT_PAY = #{inputPay}
@@ -397,6 +415,7 @@
 		AND REG_ACCOUNT_NO = #{regAccountNo}
 	</update>
 	
+	<!-- (관리자) 등록금 정보 검색 -->
 	<select id="searchRegistList" resultMap="registPayResultSet">
 		SELECT REG_NO 
 			  ,STUDENT_NO
@@ -421,10 +440,16 @@
 			<when test='filter==2'>
 				AND PAY_STATUS = 'O'  
 			</when>
+			<when test='filter==3'>
+				AND PAY_STATUS = 'D'  
+			</when>
+			<when test='filter==4'>
+				AND PAY_STATUS = 'N'  
+			</when>
 		</choose>
-		AND PAY_STATUS IN ('Y','O')
 	</select>
 	
+	<!-- (관리자) 등록금정보 입력 -->
 	<insert id="insertRegistPay">
 		INSERT INTO REG_ACC
 		VALUES(SEQ_RGNO.NEXTVAL
@@ -438,11 +463,20 @@
 			  ,null
 			  ,#{startDate}
 			  ,#{endDate}
-			  ,'N'
+			  
+			  <choose>
+			  	<when test="mustPay==0"><!-- 내야할등록금이 0일때(장학금Max) -->
+			  		,'Y'
+			  	</when>
+			  	<otherwise>
+			  		,'N'	
+			  	</otherwise>
+			  </choose>
 			  ,'N'
 		)
 	</insert>
 	
+	<!-- (관리자)수정용 등록금 정보 조회 -->
 	<select id="selectOneRegistPay" resultMap="registPayResultSet">
 		SELECT REG_NO 
 			  ,STUDENT_NO
@@ -463,6 +497,7 @@
 		WHERE REG_NO = #{regNo}
 	</select>
 	
+	<!-- 등록금 수정 -->
 	<update id="updateRegistPay">
 		UPDATE REG_ACC
 		SET MUST_PAY = #{mustPay}
@@ -470,7 +505,7 @@
 		   ,END_DATE = #{endDate}
 		WHERE REG_NO = #{regNo} 
 	</update>
-	
+	<!-- (관리자) 등록금 미납자정보  조회 -->
 	<select id="selectRegistNonPaidList" resultMap="registPayResultSet">
 		SELECT REG_NO
 			  ,STUDENT_NO
@@ -488,6 +523,8 @@
 		JOIN STUDENT ST USING(STUDENT_NO)
 		WHERE PAY_STATUS IN ('N','D')
 	</select>
+	
+	<!-- (관리자 )등록금 미납자 검색 -->
 	<select id="selectRegistNonPaidListSearch" resultMap="registPayResultSet">
 		SELECT REG_NO
 			  ,STUDENT_NO
@@ -507,6 +544,7 @@
 		AND STUDENT_NAME = '%'||#{keyword}||'%'
 	</select>
 	
+	<!-- (관리자) 등록금 초과분 환급 후 처리 -->
 	<update id="refundOverPaid">
 		UPDATE REG_ACC
 		SET INPUT_PAY = #{inputPay}
@@ -516,6 +554,7 @@
 		WHERE REG_NO = #{regNo}   
 	</update>
 	
+	<!-- (관리자) 등록기간 활성화 -->
 	<update id="activateRegistPay" parameterType="date">
 		UPDATE REG_ACC
 		SET STATUS = 'Y'
@@ -523,6 +562,7 @@
 		AND STATUS = 'N'
 	</update>
 	
+	<!-- (관리자) 등록기간 비활성화 -->
 	<update id="deactivateRegistPay" parameterType="date">
 		UPDATE REG_ACC
 		SET STATUS = 'N'
@@ -537,6 +577,7 @@
 		<result column="SCH_TOTAL" property="post"/><!-- 필드 빌려쓰기 -->
 	</resultMap>
 	
+	<!-- (관리자) 등록금 입력용 학생정보 조회,장학금 총합 추출 -->
 	<select id="studentListToInsert" resultMap="resultSetForInsertRg" parameterType="map">
 		<!-- 이번학기 등록금 값이 없는 재학중인 학생의 단대별등록금+총 장학금 -->
 		SELECT STUDENT_NO
@@ -546,6 +587,7 @@
 		FROM (SELECT STUDENT_NO,SCH_TOTAL
       		  FROM(SELECT STUDENT_NO,SUM(SCH_AMOUNT)"SCH_TOTAL"
              	   FROM SCHOLARSHIP
+             	   WHERE STATUS = 'W'
              	   GROUP BY STUDENT_NO))"SCH"
 		RIGHT JOIN STUDENT S USING(STUDENT_NO)
 		JOIN COLLEGE C USING(COLLEGE_NO)
@@ -553,16 +595,52 @@
 		AND STUDENT_NO NOT IN (SELECT STUDENT_NO FROM REG_ACC WHERE CLASS_YEAR=#{classYear} AND CLASS_TERM=#{classTerm})
 	</select>
 	
+	<!-- 가상계좌 가져오기 -->
 	<select id="selectAccountNo" resultType="string" parameterType="string">
 		SELECT REG_ACCOUNT_NO
 		FROM REG_ACC
 		WHERE STUDENT_NO = #{studentNo} 
 	</select>
 	
+	<!-- (관리자) 가상계좌 생성시 중복체크 -->
 	<select id="accountCheck" resultType="int" parameterType="string">
 		SELECT COUNT(REG_ACCOUNT_NO)
 		FROM REG_ACC
 		WHERE REG_ACCOUNT_NO = #{regAccountNo}		
 	</select>
 	
+	<!-- (관리자) 장학금 입력용 학생 이름추출  -->
+	<select id="selectStudentForSc" resultType="string" parameterType="string" >
+  		SELECT STUDENT_NAME
+		FROM STUDENT  			   
+		WHERE STUDENT_NO = #{studentNo}  			   
+  	</select>
+  	
+  	<!-- (관리자) 장학금 처리완료로 변경 -->
+  	<update id="finishScholarShip">
+  		UPDATE SCHOLARSHIP
+  		SET STATUS = 'Y'
+  		WHERE STUDENT_NO = #{studentNo}
+  		AND CLASS_YEAR = #{classYear}
+  		AND CLASS_TERM = #{classTerm}
+  	</update>
+  	
+  	<!-- (관리자) 장학금 정보 삭제 -->
+  	<delete id="deleteRegistPay">
+  		DELETE REG_ACC
+  		WHERE STUDENT_NO = #{studentNo}
+  		AND CLASS_YEAR = #{classYear}
+  		AND CLASS_TERM = #{classTerm}
+  	</delete>
+  	
+  	<!-- (관리자) 등록금 삭제에 따른 장학금 복구 -->
+  	<update id="returnScholarShip">
+  		UPDATE SCHOLARSHIP
+  		SET STATUS = 'W'
+  		WHERE STATUS = 'Y'
+  		AND STUDENT_NO = #{studentNo}
+  		AND CLASS_YEAR = #{classYear}
+  		AND CLASS_TERM = #{classTerm}
+  	</update>
+  	
 </mapper>

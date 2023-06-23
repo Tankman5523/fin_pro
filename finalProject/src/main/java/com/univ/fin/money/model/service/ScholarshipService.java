@@ -19,4 +19,6 @@ public interface ScholarshipService {
 
 	ArrayList<Scholarship> selectScholarshipListAll(HashMap<String, String> map);
 
+	String selectStudentForSc(String studentNo);
+
 }
