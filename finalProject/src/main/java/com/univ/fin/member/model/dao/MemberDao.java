@@ -66,6 +66,11 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.changePwd2", pr);
 	}
 	
+	//수강신청 기간인지 체크
+	public ArrayList<Calendar> chkRegCal(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.chkRegCal");
+	}
+	
 	//수강신청 - 수강신청내역조회 (로그인 학생의 수강신청 년도/학기 추출)
 	public ArrayList<Classes> searchRegYear(SqlSessionTemplate sqlSession, String studentNo) {
 		return (ArrayList)sqlSession.selectList("memberMapper.searchRegYear", studentNo);

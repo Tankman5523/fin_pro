@@ -20,6 +20,7 @@
 	<script>
 	
 		$(function(){
+			
 			/* 날씨정보 */
 			$.ajax({
 				
@@ -33,8 +34,17 @@
 				}
 			});
 			
-			/* 미세먼지, 초미세먼지 */
+			/* 최저,최고기온  정보 추출*/
 			/*
+			$.ajax({
+				url : "tmnTmx.api",
+				success : function(result){
+					$("#weather_minMax").html("<span style='color:#5b8fed;'>"+ result.TMN +"º</span>" + "<span style='color : #d3d5d7;'>/</span>"+"<span style='color:#f55f5e;'>"+ result.TMX +"º</span>");
+				}
+				
+			});
+			*/
+			/* 미세먼지, 초미세먼지 */
 			$.ajax({
 				url : "dust.api",
 				
@@ -42,7 +52,6 @@
 					$("#dustInfo").html("미세&nbsp" + result.pm10Grade1h + "<span style='color : #d3d5d7;'>&nbspㆁ&nbsp</span>" + "초미세&nbsp" + result.pm25Grade1h)
 				}
 			})
-			*/
 		});
 	</script>
 </body>

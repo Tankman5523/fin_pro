@@ -1,9 +1,13 @@
 package com.univ.fin.member.controller;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.Calendar;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -64,10 +69,42 @@ public class StudentController {
 		return new Gson().toJson(result);
 	}
 	
+	//수강신청 기간인지 체크하는 메소드
+	public int chkRegCalendar() {
+		
+		ArrayList<Calendar> list = memberService.chkRegCal();
+		
+		String day = new SimpleDateFormat("yyyyMMdd").format(new Date());
+		int today = Integer.parseInt(day);
+		int result = 0;
+		
+		for(Calendar c : list) {
+			
+			int start = Integer.parseInt(c.getStartDate());
+			int end = Integer.parseInt(c.getEndDate());
+			
+			if(start <= today && today <= end) {
+				result++;
+			}
+		}
+		return result;
+	}
+	
 	//수강신청 폼
 	@RequestMapping("registerClassForm.st")
-	public String registerClassForm() {
-		return "member/student/registerClass";
+	public ModelAndView registerClassForm(ModelAndView mv, HttpServletRequest request, HttpSession session) {
+		
+		int result = chkRegCalendar();
+		
+		if(result > 0) {
+			mv.setViewName("member/student/registerClass");
+		}else {
+			String referer = request.getHeader("Referer");
+			session.setAttribute("alertMsg", "지금은 수강신청 기간이 아닙니다.");
+			mv.setViewName("redirect:"+referer);
+		}
+		
+		return mv;
 	}
 	
 	//예비수강신청 폼

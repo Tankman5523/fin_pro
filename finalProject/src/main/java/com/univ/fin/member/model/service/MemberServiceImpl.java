@@ -104,6 +104,15 @@ public class MemberServiceImpl implements MemberService{
 		return result;
 	}
 
+	//수강신청 기간인지 체크
+	@Override
+	public ArrayList<Calendar> chkRegCal() {
+		
+		ArrayList<Calendar> list = memberDao.chkRegCal(sqlSession);
+		
+		return list;
+	}
+	
 	//예비수강신청 - 수강조회
 	@Override
 	public ArrayList<RegisterClass> preRegClass(RegisterClass rc2) {

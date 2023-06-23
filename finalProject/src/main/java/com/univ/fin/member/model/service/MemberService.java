@@ -62,6 +62,9 @@ public interface MemberService {
 	//예비수강신청 - 장바구니 수강취소
 	int delPreRegList(RegisterClass rc);
 	
+	//수강신청 기간인지 체크
+	ArrayList<Calendar> chkRegCal();
+	
 	//수강신청 - 수강신청 (수강조회)
 	ArrayList<RegisterClass> postRegClass(RegisterClass rc2);
 	

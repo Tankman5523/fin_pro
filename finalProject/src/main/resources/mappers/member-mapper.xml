@@ -273,6 +273,13 @@
 		                    WHERE COLLEGE_NAME = #{college})
   	</select>
   	
+  	<!-- 수강신청 기간인지 체크 -->
+  	<select id="chkRegCal" parameterType="calendar" resultMap="calendarResultMap">
+  		SELECT TO_CHAR(START_DATE,'YYYYMMDD') "START_DATE",TO_CHAR(END_DATE,'YYYYMMDD') "END_DATE"
+		FROM CALENDAR
+		WHERE CONTENT LIKE '%'||'수강'||'%'
+  	</select>
+  	
   	<!-- 수강신청 - 수강신청내역조회 (로그인 학생의 수강신청 년도/학기 추출) -->
   	<select id="searchRegYear" parameterType="classes" resultMap="classResultMap">
 	  	SELECT DISTINCT CLASS_YEAR, CLASS_TERM
