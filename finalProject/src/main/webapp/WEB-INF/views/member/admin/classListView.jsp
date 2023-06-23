@@ -180,7 +180,7 @@
                 
 	                $(function() {
 	                    $(".content_major").css("display", "block");
-	                    selectCategory();
+	                    $("select[name=year]").children().first().prop("selected", true).change();
 	                    
 	                	$(".selectTerm").on("change", "#term", function() {
 	                		selectCategory();
