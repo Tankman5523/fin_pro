@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 
 import com.univ.fin.money.model.vo.Scholarship;
@@ -33,6 +34,10 @@ public class ScholarshipDao {
 
 	public ArrayList<Scholarship> selectScholarshipListAll(HashMap<String, String> map, SqlSessionTemplate sqlSession) {
 		return (ArrayList)sqlSession.selectList("moneyMapper.selectScholarshipListAll", map);
+	}
+
+	public String selectStudentForSc(String studentNo, SqlSessionTemplate sqlSession) {
+		return sqlSession.selectOne("moneyMapper.selectStudentForSc",studentNo);
 	}
 	
 }

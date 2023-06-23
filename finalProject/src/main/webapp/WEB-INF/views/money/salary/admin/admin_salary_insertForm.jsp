@@ -50,7 +50,7 @@
                         <h2>급여 입력</h2>
                     </div>
                     <br>
-                    <div style="height:80%;overflow-y: auto;">
+                    <div style="height:80%;" id="pay_content">
                         <table align="center">
                             <tr>
                                 <td><label for="professorName">교수명</label></td>
@@ -71,13 +71,13 @@
                                 <td><input class="readonly" type="text" name="accountNo" id="accountNo" readonly></td>
                             </tr>
                         </table>
-	                    <div id="pay_stub" align="center">
+	                    <div id="pay_stub" align="center" style="height:52%;overflow-y: auto;">
 	                    	<hr>
 	                    	<form action="insert.sl" method="post" >
 	                    	<div id="hiddenNo">
 	                    		
 	                    	</div>
-	                    	<table border="1" style="text-align: center;width: 80%;" align="center">
+	                    	<table id="pay_stub_list" border="1" style="text-align: center;width: 80%;" align="center">
 	                    		<tr>
 	                    			<th class="pay">기본급</th>
 	                    			<td><input type="number" id="basePay" name="basePay"></td>
@@ -126,9 +126,8 @@
 	                    	</form>
 	                    </div>	
 	                    
-	                    <br>
-	                    <hr>
-	    				<div id="searchMemberList" >
+	                    <hr style="margin:0;margin-top:5px;">
+	    				<div id="searchMemberList" style="height:50%;overflow-y: auto;">
 	    					<span>검색결과 [ <span id="searchedMemberCount" style="color:blue;"></span> 명 ]</span>
 	    					<table align="center" border="1" style="text-align: center;width: 100%;" >
 	    						<thead style='background-color: #4fc7ff;'>
@@ -250,12 +249,12 @@
                     		$("#paymentDate").val(payDay);
                     		
                     		$("#pay_stub").show();
-                    		
+                    		$("#searchMemberList").css("height","30%");
                     		var str="<input type='hidden' name='professorNo' value="+professorNo+">"
                     			   +"<input type='hidden' name='paymentDate' value="+payDay+">";
                     		$("#hiddenNo").html(str);
                     		
-                    		
+                    		$('#pay_content').scrollTop(0);
                     		inputPay();
                     		calPay();
                     		calDeduct();

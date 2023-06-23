@@ -95,7 +95,6 @@ public class RegistController {
 									.classTerm(classTerm)
 									.classYear(classYear2)
 									.build();
-		
 		RegistPay r = registService.selectNewRegistInfo(cr);
 		mv.addObject("RegistPay", r).setViewName("money/registPay/student/student_registPay_nowList");
 		return mv;
@@ -121,10 +120,9 @@ public class RegistController {
 	@ResponseBody
 	@PostMapping("insert.rg")
 	public String insertRegistPay(RegistPay r,HttpSession session) {//학생이 내야할 등록금정보 등록
-		
 		//가상계좌 생성
 		r.setRegAccountNo(randomAccount(r.getStudentNo()));
-		
+		//등록금 정보 입력 , 해당학기 장학금 처리
 		int result = registService.insertRegistPay(r);
 		if(result>0) {
 			return "Y";
@@ -289,4 +287,19 @@ public class RegistController {
 		
 		return regAccountNo;
 	}  
+	
+	//등록금 삭제
+	@ResponseBody
+	@GetMapping("delete.rg")
+	public String deleteRegistPay(RegistPay r) {
+		
+		int result = registService.deleteRegistPay(r);
+				
+		if(result>0) {
+			return "Y";
+		}else {
+			return "N";
+		}
+	}
+	
 }

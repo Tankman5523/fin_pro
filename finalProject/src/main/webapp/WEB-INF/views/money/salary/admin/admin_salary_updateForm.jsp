@@ -35,13 +35,13 @@
             </div>
             <div id="content_1">
 				<div style="width: 90%;height: 90%;margin: 5%;">
-                    <div>
+                    <div style="height:5%;">
                         <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.sl'">급여내역조회</button> <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.sl'">급여 입력</button>
                         <hr>
                         <h2>급여 입력</h2>
                     </div>
                     <br>
-                    <div>
+                    <div style="height:80%;">
                         <table align="center">
                             <tr>
                                 <td><label for="professorName">교수명</label></td>
@@ -62,7 +62,7 @@
                                 <td><input class="readonly" type="text" name="accountNo" id="accountNo" readonly></td>
                             </tr>
                         </table>
-	                    <div id="pay_stub" align="center">
+	                    <div id="pay_stub" align="center" style="height:80%;">
 	                    	<hr>
 	                    	<form action="insert.sl" method="post" >
 	                    	<div id="hiddenNo">
@@ -166,7 +166,6 @@
                 			},
                 			
                 			success : function(list){
-                				console.log(list);
                 				var str = "";
                 				if(list[0]!=null){
                 					for(var i in list){

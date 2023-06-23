@@ -48,5 +48,10 @@ public class ScholarshipServiceImpl implements ScholarshipService{
 	public ArrayList<Scholarship> selectScholarshipListAll(HashMap<String, String> map) {
 		return scholarshipDao.selectScholarshipListAll(map,sqlSession);
 	}
+
+	@Override
+	public String selectStudentForSc(String studentNo) {
+		return scholarshipDao.selectStudentForSc(studentNo,sqlSession);
+	}
 	
 }

@@ -53,13 +53,15 @@
       .realCol{
       	background-color:lightyellow;
       }
-      
-      .hiddenInput,.hiddenVal{
-      	display: none;
-      	
+      .hiddenInput{
+      	width:130px;
       }
-      .showInput,.showVal{
-      	display: block;
+      .modalContent input{
+      	text-align:center;
+      }
+      #salaryList>tbody>tr:hover{
+      	background-color : lightgray;
+      	cursor : pointer;
       }
       
     </style>
@@ -85,18 +87,19 @@
                 </div>
             </div>
             <div id="content_1">
-				<div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
-					<div>
+				<div style="width: 90%;height: 90%;margin: 5%;">
+					<div style="height:15%;">
                         <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.sl'">급여내역조회</button> <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.sl'">급여 입력</button>
                         <hr>
                         <h2>급여 관리</h2>
                     </div>
-			        <div id="listHead">
-			            <div id="PayAllBtn" style="float:left">
+			        <div id="listHead" style="height:80%;">
+			            <div id="PayAllBtn" style="float:left;height:7%;">
 			                <button id="payAll" class="btn btn-outline-primary btn-sm">일괄지급</button> <button class="btn btn-outline-primary btn-sm" id="deleteAll">일괄삭제</button>
+			            	
 			            </div>
 			            <br>
-			            <div id="search" style="float:right">
+			            <div id="search" style="float:right;height:7%;">
 				            <form>
 				                <label for="keyword">이름검색</label> <input type="text" name="keyword" id="keyword">
 				                <select name="payStatus" id="payStatus">
@@ -109,7 +112,8 @@
 				            </form>
 			            </div>
 			            <br>
-			            <div>
+			            <span>조회결과 [ <span id="countSearch">-</span> 건 ]</span>
+			            <div style="height:80%;">
 			                <table id="salaryList" border="1" style="text-align: center;width: 100%;">
 			                    <thead style='background-color: #4fc7ff;'>
 			                        <tr>
@@ -137,15 +141,12 @@
 			        		<span style="float:right;curser:pointer;" onclick="closeModal();"><b>X</b></span>
 			        		<h4><b>급여명세서</b></h4>
 			        		<br>
-			        		<table border="1" style="text-align: center;width: 100%;height: 60%;">
+			        		<table border="1" style="text-align:center;width: 100%;height: 60%;">
 			        		
 	                    	</table>
 	                    	<br>
 	                    	<div id="modalBtns" style="float:right;width:100%;">
-		                    	<button class="hiddenInput" class="btn btn-outline-primary btn-sm" onclick="calPay();">변경값계산</button>
-		                    	<button class="hiddenInput" class="btn btn-outline-primary btn-sm" onclick="updateSubmit();">적용</button>
-		                    	<button class="showVal" class="btn btn-outline-warning btn-sm" onclick="updateMode();">수정</button>
-		                    	<button id="sendSalaryBtn" class="btn btn-outline-primary btn-sm" onclick="sendSalary();">송금</button>
+	
 	                    	</div>
 			        	</div>
 			        </div>
@@ -195,7 +196,7 @@
 	                						 +"<td>"+status+"</td>"
 	                						 +"<td onclick='stopEvent();'>"+"<input type='hidden' name='payNo' value="+list[i].payNo+">";
                 						 if(status!='지급완료'){
-                						 	str +="<button class='updateBtn btn btn-outline-primary btn-sm' >수정</button>"
+                						 	str +="<button class='deleteBtn btn btn-outline-danger btn-sm' onclick='deleteSalary("+list[i].payNo+");'>삭제</button>"
                 						 }
                 						 str+="</td>"
                 						 	 +"</tr>";
@@ -204,6 +205,8 @@
                 					str +="<tr><td colspan='11'>데이터가 없습니다.</td></tr>"
                 				}
                 				$("#salaryList>tbody").html(str);
+                				$("#countSearch").html("<b>"+list.length+"</b>");
+                				$("#countSearch").css("color","blue");
                 			},
                 			error : function(){
                 				alert("통신오류");
@@ -377,12 +380,18 @@
 		                    		var str2 = "";
 		                    		
 			                    	if(status!='지급완료'){ //이미 지급완료된 건에 대해서는 수정/송금 불가 
-		                    		str2+="<button class='hiddenInput' onclick='calPay();'>변경값계산</button>"
-			                    		 +"<button class='hiddenInput' onclick='updateSubmit();'>적용</button>"
-			                    		 +"<button class='showVal' btn btn-outline-warning btn-sm onclick='updateMode();'>수정</button>"
-			                    		 +"<button class='showVal' btn btn-outline-primary btn-sm onclick='sendSalary();'>송금</button>";
+		                    		str2+="<button class='hiddenBtn btn btn-outline-warning btn-sm' onclick='calPay();'>변경값계산</button> "
+			                    		 +"<button class='hiddenBtn btn btn-outline-primary btn-sm' onclick='updateSubmit();'>적용</button> "
+			                    		 +"<button class='showBtn btn btn-outline-warning btn-sm' onclick='updateMode();'>수정</button> "
+			                    		 +"<button class='showBtn btn btn-outline-primary btn-sm' onclick='sendSalary();'>송금</button>";	 
 			                    	}
 		                    		$("#modalBtns").html(str2);
+		                    		$(".showInput").show();
+		                    		$(".showVal").show();
+		                    		$(".showBtn").show();
+		                    		$(".hiddenInput").hide();
+		                    		$(".hiddenVal").hide();
+		                    		$(".hiddenBtn").hide();
                     			},
                     			error : function(){
                     				alert("통신에러");
@@ -394,13 +403,18 @@
                 	
                 	function closeModal(){ //모달닫기
                 		$(".modal").attr("class","modal");
-                		$(".showInput").attr("class","hiddenInput");
-                		$(".hiddenVal").attr("class","showVal");
+                	
+                		$(".showInput").hide();
+                		$(".showVal").hide();
+                		$(".hiddenInput").hide();
+                		$(".hiddenVal").hide();
                 	}
                 	
                 	function updateMode(){ //값 수정가능한 모달
-                		$(".hiddenInput").attr("class","showInput");
-                		$(".showVal").attr("class","hiddenVal");
+                		$(".showVal").hide();
+                		$(".showBtn").hide();
+                		$(".hiddenInput").show(); 
+                		$(".hiddenBtn").show();
                 	}
                 	
                 	function calPay(){ //수정한 급여 계산 + 공제
@@ -477,11 +491,18 @@
                 			},
                 			complete : function(){
                 				//재조회
+                				$(".showVal").show();
+		                		$(".showInput").show();
+		                		$(".showBtn").show();
+		                		$(".hiddenInput").hide();
+		                		$(".hiddenVal").hide();
+		                		$(".hiddenBtn").hide();
+		                		
                 				modalReload(payNo);
                 			}
                 		});
-                		$(".showInput").attr("class","hiddenInput");
-                		$(".hiddenVal").attr("class","showVal");
+                		
+                		
                 	}
                 	
                 	function modalReload(payNo){ //모달 재조회용 구문
@@ -543,7 +564,14 @@
 									 
 								$(".modalContent>table").html(str);	
 	                    		$(".modal").attr("class","modal show");
-                			
+                				$(".modal").show();
+                				
+                				$(".showInput").show();
+	                    		$(".showVal").show();
+	                    		$(".showBtn").show();
+	                    		$(".hiddenInput").hide();
+	                    		$(".hiddenVal").hide();
+	                    		$(".hiddenBtn").hide();
                 			},
                 			error : function(){
                 				alert("통신에러");
@@ -551,11 +579,10 @@
                 		});
                 	}
                 	
-                	function sendSalary(){ //급여 송금 (상태값 변경)
+                	function sendSalary(){ //급여 송금 (상태값 변경) 
                 		var control = confirm("선택된 급여를 송금하시겠습니까?");
                 		if(control){
 	                		var payNo = $("#modal_payNo").val();
-	                		console.log(payNo);
 	                		$.ajax({
        			        		url: "pay.sl",
        			        		data:{
@@ -567,6 +594,7 @@
        			        			}else{
        			        				alert("송금 실패");
        			        			}
+       			        			closeModal();
        			        		},
        			        		error: function(){
        			        			alert("통신 연결 실패");
@@ -578,6 +606,32 @@
                 		}
                 	}
                 	
+                	function deleteSalary(payNo){
+                		var control = confirm("해당 급여정보를 삭제하시겠습니까?");
+   						
+                		if(control){
+                			$.ajax({
+       			        		url: "delete.sl",
+       			        		data:{
+       			        			payNo: payNo
+       			        		},
+       			        		success: function(result){
+       			        			if(result=='Y'){
+       		   							alert("선택한 급여정보를 삭제하였습니다.");
+       		   						}else{
+       		   							alert("급여 삭제 실패!");
+       		   						}
+       			        		},
+       			        		error: function(){
+       			        			alert("통신 연결 실패");
+       			        		},
+       			        		complete: function() {
+       			                    search();
+       			                }
+       			        	}); 
+                		}
+   						
+                	}
                 	
                 </script>
                 

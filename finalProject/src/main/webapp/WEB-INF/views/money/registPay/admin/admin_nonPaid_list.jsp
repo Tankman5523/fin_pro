@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>    
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,7 +31,7 @@
             </div>
             <!--컨텐츠 영역-->
             <div id="content_1">
-				<div style="width: 90%;height: 90%;margin: 5%; overflow-y: auto;">
+				<div style="width: 90%;height: 90%;margin: 5%;">
                     <div>
                     <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.rg'">등록금 납부 현황</button> <button class="btn btn-outline-primary btn-sm" onclick="location.href='nonPaidList.rg'">미납금 조회</button>
                     <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.rg'">등록금 입력</button>
@@ -40,17 +41,21 @@
             
                     <div>
 	                    <h3>미납금 관리</h3>
-	                   	 미납인원 : ${fn:length(list)} (명) 
-	                   	 <!-- 
-	                   	 미납금 총계 : 0 (원) 
-	                   	 <br>
-	                                             미입금 : 0 (명) 
-	                                             금액미달 : 0 (명) 
-                        -->
+	                   	<span>미납인원 : <span id="searchCount" style="color:red;font-weight:bold;">${fn:length(list)}</span> (명)</span> 
+                        <br>
+                        <!-- 미납금 계산 -->
+                        <c:set var = "sumMoney" value = "0" />
+						<c:forEach var="list" items="${list}">
+							<c:set var= "sumMoney" value="${sumMoney + list.nonPaidAmount}"/>
+						</c:forEach>
+						
+						<span>미납금 총계 : <span style="color:red;font-weight:bold;"><fmt:formatNumber type="number" maxFractionDigits="3" value="${sumMoney}"/></span> (원)</span>
+						
                     </div>
                     <hr>
                     <button id="sendAll" class="btn btn-outline-primary btn-sm">일괄발송</button>
-                    <br>
+                    <br><br>
+                    <div id="scrollList" style="overflow-y: auto;height:70%;">
                     <table id="nonPaidList" border="1" style="width:100%;text-align: center;">
                         <thead>
                             <tr style='background-color: #4fc7ff;'>
@@ -73,15 +78,12 @@
 				                                <td><input type="checkbox" name="checkbox" class="checkbox"></td>
 				                                <td>${r.studentNo}</td>
 				                                <td class="studentName">${r.studentName}</td>
-				                                <td class="nonPaidAmount">${r.nonPaidAmount}</td>
+				                                <td class="nonPaidAmount">
+				                                	<fmt:formatNumber type="number" maxFractionDigits="3" value="${r.nonPaidAmount}"/>
+				                                 	원
+				                                </td>
 				                                <td>
 				                                	<c:choose>
-				                                		<c:when test="${RegistPay.payStatus eq 'O'}">
-					                                		금액초과
-				                                		</c:when>
-				                                		<c:when test="${RegistPay.payStatus eq 'Y'}">
-				                                			등록완료
-				                                		</c:when>
 				                                		<c:when test="${RegistPay.payStatus eq 'D'}">
 				                                			금액미달
 				                                		</c:when>
@@ -93,7 +95,7 @@
 				                                <td>${r.regAccountNo}</td>
 				                                <td class="email" >${r.studentEmail}</td>
 				                                <td class="phone">${r.studentPhone}</td>
-				                                <td><button class="btn btn-outline-primary btn-sm" class="sendDunningBtn">발송</button> <button class="btn btn-outline-warning btn-sm" class="cancelRegistBtn">등록취소</button></td>
+				                                <td><button class="sendDunningBtn btn btn-outline-primary btn-sm">발송</button> <button class="cancelRegistBtn btn btn-outline-warning btn-sm">등록취소</button></td>
 			                            	</tr>
 		                                </c:forEach>
 	                            </c:when>
@@ -105,6 +107,7 @@
                             </c:choose>
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -191,11 +194,31 @@
         			});
         		}
         	});
-        	
+        	//등록금 계속 안낼시 강제휴학
         	$(".cancelRegistBtn").on("click",function(){
-        		//var no = $(this);
+        		var studentNo = $(this).parent().siblings().eq(1).text();
+        		console.log(studentNo);
         		
+        		/* 
+        		$.ajax({
+        			url : "cancelRegist.st",
+        			data : {
+        				studentNo : studentNo
+        			},
+        			success : function(result){
+        				if(result=='Y'){
+        					alert("해당학생은 등록금 미납으로 휴학처리 되었습니다.");
+        					document.reload();
+        				}else{
+        					alert("데이터 처리 실패.");
+        				}
+        			},error : function(){
+        				alert("통신 오류");
+        			}
+        		}); 
+        		*/
         	});
+        	
     	});
     	
     	
