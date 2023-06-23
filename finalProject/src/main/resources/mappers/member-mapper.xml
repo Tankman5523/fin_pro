@@ -1243,11 +1243,11 @@
   	</resultMap>
   	<!-- (학생) 강의평가를 위한 강의정보 조회 -->
   	<select id="classInfoForRating" resultMap="classRatingResultMap">
-  		SELECT CLASS_NO,C.CLASS_NAME,P.PROFESSOR_NAME,C.CLASS_YEAR,C.CLASS_TERM,CR.STATUS
-		FROM SCHEDULE S
+		SELECT CLASS_NO,C.CLASS_NAME,P.PROFESSOR_NAME,C.CLASS_YEAR,C.CLASS_TERM,CR.STATUS
+		FROM (SELECT CLASS_NO,STUDENT_NO,MAX(PERIOD) FROM SCHEDULE GROUP BY CLASS_NO,STUDENT_NO) "S"
 		JOIN CLASS C USING(CLASS_NO)
 		JOIN PROFESSOR P USING(PROFESSOR_NO)
-		RIGHT JOIN CLASS_RATING CR USING(CLASS_NO) <!-- 값이 없고 있을때를 판별 -->
+		LEFT JOIN (SELECT * FROM CLASS_RATING WHERE STUDENT_NO = #{studentNo}) "CR" USING(CLASS_NO)
 		WHERE S.STUDENT_NO = #{studentNo}
 		AND CLASS_YEAR = #{classYear}
 		AND CLASS_TERM = #{classTerm}
@@ -1299,7 +1299,6 @@
 		AND CLASS_YEAR = #{classYear}
 		AND CLASS_TERM = #{classTerm}
   		GROUP BY CLASS_NO
-  		
   	</select>
 
 	<!-- (교수) 상담조회  -->
@@ -1376,5 +1375,11 @@
   		  , END_DATE = TO_DATE(SUBSTR(#{endDate}, 0, 10)||SUBSTR(#{endDate}, 12), 'YYYY-MM-DD HH24:MI')
   		WHERE CALENDAR_NO = #{calendarNo}
   	</update>
+  	
+  	<!-- 학사일정 관리 -> 학사일정 삭제 -->
+  	<delete id="deleteCalendar">
+  		DELETE FROM CALENDAR
+  		WHERE CALENDAR_NO = #{calendarNo}
+  	</delete>
   </mapper>
 

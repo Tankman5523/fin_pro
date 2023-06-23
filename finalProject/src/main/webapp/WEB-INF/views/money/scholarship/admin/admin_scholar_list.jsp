@@ -30,8 +30,8 @@
             </div>
             <div id="content_1">
 				<div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
-                    <div style="height:20%;">
-                        <button onclick="location.href='allList.sc'">장학금수혜내역</button> <button onclick="location.href='insert.sc'">장학금 수여</button>
+                    <div style="height:15%;">
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.sc'">장학금수혜내역</button> <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.sc'">장학금 수여</button>
                         <hr>
                         <h3>장학금 수혜내역 조회</h3>
                     </div>
@@ -45,8 +45,11 @@
                             <option value="studentName">학생이름</option>
                         </select>
                         <input type="text" id="keyword" name="keyword">
-                        <button onclick="selectList();">조회</button>
-                       	   조회결과 : <span id="countSearch"></span>
+                        <button class="btn btn-outline-primary btn-sm" onclick="selectList();">조회</button>
+                       	
+                       	<br>
+                       	<span>조회결과 [ <span id="countSearch">-</span> 건 ]</span>
+                       	<div id="scrollList" style="height:90%;overflow-y: auto;">
                         <table border="1" style="width:100%;text-align:center;width: 100%;" id="schList">
                             <thead  style='background-color: #4fc7ff;'>
                                 <tr>
@@ -66,6 +69,7 @@
                             	<!-- ajax 처리 -->
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -85,7 +89,8 @@
     			//dataType : "json",
     			success : function(list){
     				var countSearch = list.length;
-    				$("#countSearch").html(countSearch+" 건")
+    				$("#countSearch").html("<b>"+countSearch+"</b>");
+    				$("#countSearch").css("color","blue");
     				var str = "";
     				if(list[0]!=null){
     					for(var i in list){
@@ -108,11 +113,11 @@
     							str+="<td>"+list[i].schAmount.toLocaleString()+" 원 </td>";
     							
     							if(list[i].status=='W'){
-    								str+="<td>처리대기</td>";
+    								str+="<td style='color:red;'>처리대기</td>";
     							}else if(list[i].status=='N'){
-    								str+="<td>취소</td>";	
+    								str+="<td style='color:gray;'>취소</td>";	
     							}else{
-    								str+="<td>처리완료</td>";
+    								str+="<td style='color:green;'>처리완료</td>";
     							}
     							
     							str+="<td>"+list[i].proDate+"</td>";
@@ -126,10 +131,10 @@
     								var upLocation = "location.href='update.sc?schNo="+list[i].schNo+"';";
     								
     								str+="<td><input type='hidden' value="+list[i].schNo+">"
-    								    +"<button onclick="+upLocation+">수정</button><button class='delBtn' onclick='del("+list[i].schNo+");'>삭제</button></td>";
+    								    +"<button class='btn btn-outline-warning btn-sm' onclick="+upLocation+">수정</button> <button class='delBtn btn btn-outline-danger btn-sm' onclick='del("+list[i].schNo+");'>삭제</button></td>";
     								
     							}else{ 
-    								str+="<td></td>";
+    								str+="<td>-</td>";
     							}
     							
     							str+="</tr>";
@@ -146,7 +151,7 @@
     			}
     		});
     	}
-    	
+    	//해당 등록금 정보 삭제 
     	function del(num){
     		var schNo = num;
     		$.ajax({
@@ -155,7 +160,6 @@
     				schNo : schNo
     			},
     			success : function(result){
-    				console.log(result);
     				if(result=='Y'){
     					alert("등록금 정보 삭제 성공");
     					selectList();

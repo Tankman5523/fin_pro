@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %> 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +8,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>학생_이번학기등록금</title>
+    <style>
+    	.readonly{
+    		background-color : lightgray;
+    	}
+    </style>
 </head>
 <body>
     <div class="wrap">
@@ -34,14 +40,14 @@
 				<div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
 					<h4>등록금 납입 이력</h4>
 					<br>
-                    <label for="classNo">학번</label><input type="text" name="classNo" id="classNo" value="${loginUser.studentNo}" readonly>
+                    <label for="classNo">학번</label> <input type="text" name="classNo" id="classNo" value="${loginUser.studentNo}" readonly class="readonly">
                     <br>
-                    <label for="studentName">이름</label><input type="text" name="studentName" id="studentName" value="${loginUser.studentName}" readonly>
+                    <label for="studentName">이름</label> <input type="text" name="studentName" id="studentName" value="${loginUser.studentName}" readonly class="readonly">
                     <br>
-                    <label for="startDate">납부기간</label><input type="date" name="startDate" id="startDate" value="${RegistPay.startDate}" readonly> ~ <input type="date" name="endDate" id="endDate" value="${RegistPay.endDate}" readonly>
+                    <label for="startDate">납부기간</label> <input type="date" name="startDate" id="startDate" value="${RegistPay.startDate}" readonly class="readonly"> ~ <input type="date" name="endDate" id="endDate" value="${RegistPay.endDate}" readonly class="readonly">
                     <br><br>
-                    <table border="1" style="width: 100%;">
-                        <thead style="background-color: bisque; ">
+                    <table border="1" style="width: 100%;text-align:center;">
+                        <thead style="background-color: #4fc7ff;">
                             <tr>
                                 <th>납부일</th>
                                 <th>납부시간</th>
@@ -56,13 +62,28 @@
                         <tbody>
                         	<!-- 단일 객체 -->
                             <tr>
-                                <td>${RegistPay.payDate}</td>
-                                <td>${RegistPay.payDate}</td>
+                                <td>${RegistPay.payDate}
+                                	<c:if test="${RegistPay.payDate eq null}">
+                                	-
+                                	</c:if>
+                                </td>
+                                <td>${RegistPay.payTime}
+                                	<c:if test="${RegistPay.payTime eq null}">
+                                	-
+                                	</c:if>
+                                </td>
                                 <td>${RegistPay.studentNo}</td>
                                 <td>${RegistPay.studentName}</td>
-                                <td>${RegistPay.mustPay}</td>
+                                <td>
+                                	<fmt:formatNumber type="number" maxFractionDigits="3" value="${RegistPay.mustPay}" />
+                                	원		
+                                </td>
                                 <td>${RegistPay.regAccountNo}</td>
-                                <td>${RegistPay.payAccountNo}</td>
+                                <td>${RegistPay.payAccountNo}
+                                	<c:if test="${RegistPay.payAccountNo eq null}">
+                                	-
+                                	</c:if>
+                                </td>
                                 <td>
                                 	<c:choose>
                                 		<c:when test="${RegistPay.payStatus eq 'O'}">
@@ -82,7 +103,7 @@
                             </tr>
                         </tbody>
                     </table>
-            
+            		<br><br>
                     <fieldset>
                         <ul>
                             <li>등록금 납부는 학기 시작 전 2달 이내 부터 2주이며 당일부터 문자발송됩니다. 

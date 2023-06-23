@@ -39,5 +39,7 @@ public interface RegistService {
 	String selectAccountNo(String studentNo);
 
 	int accountCheck(String regAccountNo);
+
+	int deleteRegistPay(RegistPay r);
 	
 }

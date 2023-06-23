@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,8 +31,8 @@
                     </div>
                     <div class="list">
                         <!-- 내가 들은 강의내역 or 성적이 나온 강의내역 -->
-                        <table border="1" style="width: 100%;" id="myClassList">
-                            <thead>
+                        <table border="1" style="width: 100%;text-align:center;" id="myClassList">
+                            <thead style="background-color:#4fc7ff;">
                                 <tr>
                                     <th>강의번호</th>
                                     <th>강의명</th>
@@ -46,19 +45,20 @@
                             <tbody>
                             	<c:choose>
                             		<c:when test="${not empty list}">
-	                            		<c:forEach var="i" items="${list}">
+	                            		<c:forEach var="r" items="${list}">
 	                            			<tr>
-				                                <td>list[i].classNo</td>
-				                                <td>list[i].className</td>
-				                                <td>list[i].professorName</td>
-				                                <td>list[i].classYear</td>
-				                                <td>list[i].classTerm</td>
+				                                <td>${r.classNo}</td>
+				                                <td>${r.className}</td>
+				                                <td>${r.professorName}</td>
+				                                <td>${r.classYear}</td>
+				                                <td>${r.classYear}</td>
+				                                
 				                                <c:choose>
-				                                	<c:when test="list[i].departmentName eq null">
-						                                <td><button class="ratingStartBtn">평가시작</button></td>
+				                                	<c:when test="${r.status eq null}">
+						                                <td><button class="ratingStartBtn btn btn-outline-primary btn-sm">평가시작</button></td>
 				                                	</c:when>
 				                                	<c:otherwise>
-				                                		<td>평가완료</td>
+				                                		<td><button class="btn btn-outline-danger btn-sm" disabled>평가완료</button></td>
 				                                	</c:otherwise>
 				                                </c:choose>
 	                                		</tr>	
@@ -66,17 +66,7 @@
                             		</c:when>
                             		<c:otherwise>
                             		<tr>
-	                                	<!-- 
-	                                	<td colspan="6">데이터가 없습니다.</td> 
-	                                	-->
-	                                	
-	                                	<!-- 테스트용입니다 -->
-	                                	<td>168</td>
-	                                	<td>환경무용론</td>
-		                                <td>하재호</td>
-		                                <td>2023</td>
-		                                <td>2</td>
-		                                <td><button class="ratingStartBtn">평가시작</button></td>
+	                                	<td colspan="6">수강한 강의가 없습니다.</td> 
 	                                </tr>
                             		</c:otherwise>
                             	</c:choose>
@@ -91,15 +81,15 @@
                     		<span>강의명 : </span><span id="cn"></span> <span>/ 교수명 : </span><span id="pn"></span>
                     	</div>
                         <table border="1">
-                            <thead style="background-color: antiquewhite;">
+                            <thead>
                                 <tr>
-                                    <td colspan="6">
+                                    <td colspan="6" style="background-color:lightgray;">
                                 		본 강의평가 설문지는 익명으로 작성되며 , <br>
                                 		이번학기 교과목의 수업진행에 대한 학생들의 솔직한 의견을 파악하여 , 앞으로 보다 나은 강의를 하기 위한 목적으로 실시되는 것입니다.<br> 
                                 		따라서 학생 여러분은 각 평가 문항에 대하여 성실하고, 진지하게 답변해주시기 바랍니다.
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr style="background-color: #4fc7ff;">
                                     <th>강의 평가 점수</th>
                                     <th>5</th>
                                     <th>4</th>
@@ -108,7 +98,7 @@
                                     <th>1</th>
                                 </tr>
                             </thead>
-                            <tbody style="background-color: aquamarine;">
+                            <tbody style="background-color: #CCFFFF;">
                                 <!--sample-->
                                 <tr id="q1Head">
                                     <td> 1. 수업은 강의계획서에 따라 체계적으로 진행되었다.</td>
@@ -175,7 +165,7 @@
                                     <td><input type="radio" name="q8" value="1"></td>
                                 </tr>
                             </tbody>
-                            <tfoot style="background-color: aqua;text-align: center;">
+                            <tfoot style="background-color: ;text-align: center;">
                                 <tr>
                                     <td colspan="6">교수님께 하고싶은 말이나 기타 건의사항이 있다면 아래에 작성 바랍니다.</td>
                                 </tr>
@@ -185,7 +175,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="6"><button id="submitBtn" type="button">제출</button></td>
+                                    <td colspan="6"><button id="submitBtn" class="btn btn-outline-primary btn-sm" type="button">제출</button></td>
                                 </tr>
                             </tfoot>
                         </table>
