@@ -223,6 +223,9 @@ public class AdminController {
 	// 학사일정 관리 -> 학사일정 추가/수정/삭
 	@PostMapping("manageCalendar.ad")
 	public String manageCalendar(Calendar c, String check, HttpSession session) {
+		System.out.println("*****************" + c);
+		System.out.println("*****************" + check);
+		
 		int result = 0;
 		
 		if(check.equals("insert")) { // 추가

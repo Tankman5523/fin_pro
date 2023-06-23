@@ -19,6 +19,7 @@ import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
+import com.univ.fin.main.model.vo.Notice;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
@@ -304,6 +305,11 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectProfessorTimetable", map);
 	}
 	
+	// 기간 확인
+	public int checkPeriod(SqlSessionTemplate sqlSession, String string) {
+		return sqlSession.selectOne("memberMapper.checkPeriod", string);
+	}
+	
 	// 성적관리 -> 학점별로 몇명이 해당되는지
 	public HashMap<String, String> countStudentGrade(SqlSessionTemplate sqlSession, int classNo) {
 		return sqlSession.selectOne("memberMapper.countStudentGrade", classNo);
@@ -541,6 +547,16 @@ public class MemberDao {
 	// 학사일정 관리 -> 학사일정 삭제
 	public int deleteCalendar(SqlSessionTemplate sqlSession, Calendar c) {
 		return sqlSession.update("memberMapper.deleteCalendar", c);
+	}
+	
+	// 메인 -> 학사일정 조회
+	public ArrayList<HashMap<String, String>> yearCalendarList(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.yearCalendarList");
+	}
+
+	// 메인 -> 공지사항 조회
+	public ArrayList<Notice> selectMainNotice(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectMainNotice");
 	}
 
 }

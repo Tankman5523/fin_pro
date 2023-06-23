@@ -18,6 +18,7 @@ import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
+import com.univ.fin.main.model.vo.Notice;
 import com.univ.fin.member.model.dao.MemberDao;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
@@ -508,6 +509,13 @@ public class MemberServiceImpl implements MemberService{
 		return cList;
 	}
 	
+	// 기간 확인
+	@Override
+	public int checkPeriod(String string) {
+		int result = memberDao.checkPeriod(sqlSession, string);
+		return result;
+	}
+	
 	// 성적관리 -> 학점별로 몇명이 해당되는지
 	@Override
 	public HashMap<String, String> countStudentGrade(int classNo) {
@@ -739,6 +747,18 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public int deleteCalendar(Calendar c) {
 		return memberDao.deleteCalendar(sqlSession, c);
+	}
+	
+	// 메인 -> 학사일정 조회
+	@Override
+	public ArrayList<HashMap<String, String>> yearCalendarList() {
+		return memberDao.yearCalendarList(sqlSession);
+	}
+
+	// 메인 -> 공지사항 조회
+	@Override
+	public ArrayList<Notice> selectMainNotice() {
+		return memberDao.selectMainNotice(sqlSession);
 	}
 
 }

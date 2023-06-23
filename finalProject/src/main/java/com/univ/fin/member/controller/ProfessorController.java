@@ -207,6 +207,14 @@ public class ProfessorController {
 	// 수업관리 - 성적관리
 	@GetMapping("gradeInsert.pr")
 	public ModelAndView gradeInsertView(ModelAndView mv, HttpSession session) {
+		if(memberService.checkPeriod("성적") > 0) { // 성적입력 가능한 기간인지 확인
+			session.setAttribute("check", "possible");
+		}
+		else {
+			session.setAttribute("check", "impossible");
+			
+		}
+		
 		Professor st = (Professor)session.getAttribute("loginUser");
 		String professorNo = st.getProfessorNo();
 		ArrayList<String> classTerm = memberService.selectProfessorClassTerm(professorNo); // 강의한 학년도, 학기
