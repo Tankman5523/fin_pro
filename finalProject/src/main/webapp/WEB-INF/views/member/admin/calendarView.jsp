@@ -65,8 +65,18 @@
 		color: white;
 	}
 	
-	#insert, #update {
-		margin: 0 auto !important;
+	.modalBtn-area {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	
+	#insert {
+		margin: 0 auto;
+	}
+	
+	#update, #delete {
+		margin: 0 3%;
 	}
 </style>
 </head>
@@ -87,10 +97,10 @@
                     <span style="margin: 0 auto;">강의관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="#">학생 관리</a>
+                    <a href="enrollStudent.ad">학생 관리</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">임직원 관리</a>
+                    <a href="enrollProfessor.ad">임직원 관리</a>
                 </div>
                  <div class="child_title">
                     <a href="calendarView.ad" style="color:#00aeff; font-weight: 550;">학사일정 관리</a>
@@ -101,21 +111,22 @@
             		<div id="calendar"></div>
             	</div>
             	<div class="btn-area">
-            		<button id="btn" onclick="$('#insertModal').modal('show');">일정 추가</button>
+            		<button id="btn" onclick="$('#myModal').modal('show'); $('#insert').css('display', 'block');">일정 추가</button>
             	</div>
             	
             	<script>
             		var $color = ['#BE5EC2', '#F862A7', '#FF7B87', '#FFA26A', '#FFCE5E', '#F9F871', '#9BDE7E', '#4BBC8E', '#04aba6', '#4da5e3', '#8e84f5'];
             	
             		$(function() {
-            			$("textarea[id*=content]").val("");
-            			$("input[id*=startDate]").val("");
-            			$("input[id*=endDate]").val("");
+            			$("#modalContent").val("");
+            			$("#startDate").val("");
+            			$("#endDate").val("");
             			
-            			$("div[class=modal]").on("hidden.bs.modal", function (e) {
-            				$("textarea[id*=content]").val("");
-                			$("input[id*=startDate]").val("");
-                			$("input[id*=endDate]").val("");
+            			$("#myModal").on("hidden.bs.modal", function (e) {
+            				$("#modalContent").val("");
+                			$("#startDate").val("");
+                			$("#endDate").val("");
+                			$(".modalBtn-area>button").css("display", "none");
             			});
             			
             			var calendarEl = $("#calendar")[0];
@@ -170,69 +181,63 @@
             			var $start = JSON.stringify(arg.event.start);
             			var $end = JSON.stringify(arg.event.end);
             			
-            			$("#updateModal").modal("show");
+            			$("#myModal").modal("show");
+						$("#update").css("display", "block");
+						$("#delete").css("display", "block");
             			$("#calendarNo").val(arg.event.groupId);
-            			$("#content2").val(arg.event.title);
-            			$("#startDate2").val($start.substring(1, $start.length-2));
-            			$("#endDate2").val($end.substring(1, $end.length-2));
+            			$("#modalContent").val(arg.event.title);
+            			$("#startDate").val($start.substring(1, $start.length-2));
+            			$("#endDate").val($end.substring(1, $end.length-2));
             		}
             	</script>
             	
             	<!-- The Modal -->
-			    <div class="modal" id="insertModal">
+			    <div class="modal" id="myModal">
 			        <div class="modal-dialog modal-dialog-centered">
 			            <div class="modal-content">
 			        
 			                <!-- Modal Header -->
 			                <div class="modal-header">
-			                <h4 class="modal-title">학사일정 입력</h4>
-			                	<button type="button" class="close" onclick="$('#insertModal').modal('hide');">&times;</button>
+			                <h4 class="modal-title">학사일정 관리</h4>
+			                	<button type="button" class="close" onclick="$('#myModal').modal('hide');">&times;</button>
 			                </div>
 			        
 			                <!-- Modal body -->
 			                <div class="modal-body">
-			                	<form action="insertCalendar.ad" method="post">
-			                		<fieldset>
-								                   일정 <br>
-								        <textarea id="content" name="content" style="resize:none; width: 400px;" placeholder="일정을 입력하세요."></textarea> <br><br>
-								                   시작일: <input type="datetime-local" id="startDate1" name="startDate" style="width: 200px;"> <br><br>
-								                   종료일: <input type="datetime-local" id="endDate1" name="endDate" style="width: 200px;"> <br><br>
-			                		</fieldset>
-					                <br><br>
-					                
-					            	<button type="submit" class="btn btn-warning" id="insert">등록</button>
-			                	</form>
-			                </div>
-			            </div>
-			        </div>
-			    </div>
-			    
-			    <!-- The Modal -->
-			    <div class="modal" id="updateModal">
-			        <div class="modal-dialog modal-dialog-centered">
-			            <div class="modal-content">
-			        
-			                <!-- Modal Header -->
-			                <div class="modal-header">
-			                <h4 class="modal-title">학사일정 수정</h4>
-			                	<button type="button" class="close" onclick="$('#updateModal').modal('hide');">&times;</button>
-			                </div>
-			        
-			                <!-- Modal body -->
-			                <div class="modal-body">
-			                	<form action="updateCalendar.ad" method="post">
+			                	<form action="manageCalendar.ad" method="post">
 			                		<input type="hidden" id="calendarNo" name="calendarNo">
+			                		<input type="hidden" id="check" name="check">
 			                		<fieldset>
 								                   일정 <br>
-								        <textarea id="content2" name="content" style="resize:none; width: 400px;" placeholder="일정을 입력하세요."></textarea> <br><br>
-								                   시작일: <input type="datetime-local" id="startDate2" name="startDate" style="width: 200px;"> <br><br>
-								                   종료일: <input type="datetime-local" id="endDate2" name="endDate" style="width: 200px;"> <br><br>
+								        <textarea id="modalContent" name="content" style="resize:none; width: 400px;" placeholder="일정을 입력하세요."></textarea> <br><br>
+								                   시작일: <input type="datetime-local" id="startDate" name="startDate" style="width: 200px;"> <br><br>
+								                   종료일: <input type="datetime-local" id="endDate" name="endDate" style="width: 200px;"> <br><br>
 			                		</fieldset>
 					                <br><br>
 					                
-					            	<button type="submit" class="btn btn-warning" id="update">수정</button>
+					                <div class="modalBtn-area">
+						            	<button type="submit" class="btn btn-warning" id="insert" style="display: none;">등록</button>
+						            	<button type="submit" class="btn btn-warning" id="update" style="display: none;">수정</button>
+						            	<button type="submit" class="btn btn-danger" id="delete" style="display: none;">삭제</button>
+					                </div>
 			                	</form>
 			                </div>
+			                
+			                <script>
+			                	$(function() {
+			                		$("#insert").on("click", function() {
+			                			$("#check").val("insert");
+			                		});
+			                		
+			                		$("#update").on("click", function() {
+			                			$("#check").val("update");
+			                		});
+			                		
+			                		$("#delete").on("click", function() {
+			                			$("#check").val("delete");
+			                		});
+			                	})
+			                </script>
 			            </div>
 			        </div>
 			    </div>
