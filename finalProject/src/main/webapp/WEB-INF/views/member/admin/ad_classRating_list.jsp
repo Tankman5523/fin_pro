@@ -42,6 +42,10 @@
 			
 			transform: translateX(-50%) translateY(-50%);
 	      }
+	      #listBody>table>tbody>tr:hover{
+	      	background-color : lightgray;
+	      	cursor : pointer;
+	      }
     </style>
 </head>
 <body>
@@ -82,15 +86,15 @@
                                     <option value="2">2학기</option>
                                 </select>
                                 <label for="className">강의명</label><input type="text" id="className" name="className">
-                                <button id="searchBtn">조회</button>
+                                <button id="searchBtn" class="btn btn-outline-primary btn-sm">조회 <i class="fa-solid fa-magnifying-glass"></i></button>
                             </div>
                         </div>
                         <br>
                         <hr>
                         <div id="listBody">
                             <table border="1" style="width: 100%;text-align: center;">
-                                <thead>
-                                	<tr style='background-color: #4fc7ff;'>
+                                <thead style="background-color:#4fc7ff;">
+                                	<tr>
 	                                    <th>강의번호</th>
 	                                    <th>강의명</th>
 	                                    <th>교수명</th>
@@ -101,15 +105,6 @@
                                 </thead>
                                 <!-- 클릭시 기타건의사항 모달 -->
                                 <tbody>
-                                	<!-- sample -->
-                                	<tr onclick='etc(168);'>
-	                                    <td>168</td>
-	                                    <td>환경보호무용론</td>
-	                                    <td>하재호</td>
-	                                    <td>1</td>
-	                                    <td>40</td>
-	                                    <td>4.1</td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -186,8 +181,9 @@
 	                							 +"<td>"+list[i].professorName+"</td>"
 	                							 +"<td>"+list[i].credit+"</td>"
 	                							 +"<td>"+list[i].classNos+"</td>"
-	                							 +"<td>"+list[i].averageRating+"</td>"
+	                							 +"<td>"+Math.round((list[i].averageRating*100)/100)+"</td>"
 	                							 +"</tr>"
+	                							 
 	                					}
                 					}else{
                 						str +="<tr><td colspan='6'>데이터가 없습니다.</td></tr>"
@@ -227,8 +223,12 @@
                 							 +"<td style='background-color: #4fc7ff;'>"+"기타 건의사항 "+(i+1)+"</td>"
                 							 +"</tr>"
                 							 +"<tr>"
-                							 +"<td>"+list[i].etc+"</td>"
-                							 +"</tr>";
+                							 if(list[i].etc!=null){
+	                							 str+="<td>"+list[i].etc+"</td>"
+                							 }else{
+                								 str+="<td>"+"-"+"</td>"
+                							 }
+                							 str+="</tr>";
                 					}
                 					
                 					$(".modal_title").html("<span>강의명 : <b>"+className+"</b> / 교수명 : <b>"+professorName+"</b></span>");

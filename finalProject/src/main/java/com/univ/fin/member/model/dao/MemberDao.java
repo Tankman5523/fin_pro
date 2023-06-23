@@ -522,7 +522,6 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.classRatingAverage", cr);
 	}
 
-
 	// (교수) 상담조회
 	public ArrayList<Counseling> professorSelectCounseling(SqlSessionTemplate sqlSession, HashMap<String, String> counselMap) {
 		
@@ -539,6 +538,12 @@ public class MemberDao {
 		return sqlSession.insert("memberMapper.insertCalendar", c);
 	}
 
+	// (교수) 상담 상세 조회
+	public Counseling selectCounselDetail(SqlSessionTemplate sqlSession, HashMap<String, String> counselDtMap) {
+		 
+		return sqlSession.selectOne("memberMapper.selectCounselDetail", counselDtMap);
+	}
+	
 	// 학사일정 관리 -> 학사일정 수정
 	public int updateCalendar(SqlSessionTemplate sqlSession, Calendar c) {
 		return sqlSession.update("memberMapper.updateCalendar", c);

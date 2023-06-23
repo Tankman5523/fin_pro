@@ -737,6 +737,15 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.insertCalendar(sqlSession, c);
 	}
 
+
+	// (교수) 상담 상세 조회
+	@Override
+	public Counseling selectCounselDetail(HashMap<String, String> counselDtMap) {
+
+		return memberDao.selectCounselDetail(sqlSession, counselDtMap);
+	}
+
+
 	// 학사일정 관리 -> 학사일정 수정
 	@Override
 	public int updateCalendar(Calendar c) {
@@ -762,3 +771,4 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 }
+
