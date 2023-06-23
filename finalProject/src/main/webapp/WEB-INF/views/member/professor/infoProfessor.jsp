@@ -5,15 +5,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<!-- jQuery library -->
-<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
-<!-- Popper JS -->
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<!-- Latest compiled JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <!-- 주소API 다음(카카오) -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-
 </head>
 <style>
 	/*======================수정======================*/
@@ -58,6 +51,11 @@
 		float: right;
 		font-weight: bold;
  	}
+ 	
+ 	/*!important 다무시하고 먼저실행*/
+	table {
+	border-collapse: separate !important;
+	}
 
 
 </style>
@@ -66,13 +64,6 @@
 <script>
 	
 		var msg = "${msg}";
-		
-		$(document).ready(function(){
-			if(msg != ""){
-				alert(msg);
-			}
-		});
-		
 		
 		 function updateProfessor(){
 			 var flag = confirm("수정하시겠습니까?");
@@ -89,6 +80,10 @@
 		 }
 	
 	window.onload = function(){
+		if(msg != ""){
+			alert(msg);
+		}
+		
 	    document.getElementById("address").addEventListener("click", function(){ //주소입력칸을 클릭하면
 	        //카카오 지도 발생
 	        new daum.Postcode({
@@ -146,7 +141,7 @@
                     <span style="margin: 0 auto;">학사관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="infoProfessor.pr">교수 정보 관리</a>
+                    <a href="infoProfessor.pr" style="color:#00aeff; font-weight: 550;">교수 정보 관리</a>
                 </div>
 				<div class="child_title">
                     <a href="classListView.pr">강의 시간표</a>
@@ -178,7 +173,7 @@
 					<form id="updateForm" action="updateProfessor.pr" method="post">
 					<input type="hidden" id="professorNo" name="professorNo" value="${loginUser.professorNo }">
 					<div id="user_infomation">
-						<table id="user_info">
+						<table class="user_info2">
 							<thead>
 								<tr>
 									<th width="100px" height="30px">입사 년도 : </th>

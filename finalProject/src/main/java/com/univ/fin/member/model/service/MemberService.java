@@ -5,9 +5,11 @@ import java.util.HashMap;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.Calendar;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.RegisterClass;
@@ -186,6 +188,9 @@ public interface MemberService {
 	// 교수 개인시간표 -> 학기 선택 후 시간표 조회
 	ArrayList<Classes> selectProfessorTimetable(HashMap<String, String> map);
 
+	// 성적관리 -> 학점별로 몇명이 해당되는지
+	HashMap<String, String> countStudentGrade(int classNo);
+
 	// 성적관리 -> 수강중인 학생 조회
 	ArrayList<HashMap<String, String>> selectStudentGradeList(int classNo);
 	
@@ -201,14 +206,36 @@ public interface MemberService {
 	// 성적관리 -> 성적 수정
 	int gradeUpdate(Grade g);
 
+
+	// 강의 이의제기 -> 학생 신청
+	ArrayList<Dissent> studentGradeReport(String studentNo);
+
+	// 직원 생성하기
+	int insertProfessor(Professor pr);
+
 	// (관리자)강의개설 일괄 승인
-	int updateClassPermitAll(String cno);
+	int updateClassPermitAll(int[] cArr);
 
 	// (관리자)강의개설 개별 승인
 	int updateClassPermit(int cno);
 
 	// (관리자)강의개설 반려 업데이트
 	int updateClassReject(Classes c);
+
+	//교수이름으로 교수번호 가져오기
+	String selectProfessorNo(String keyword);
+
+	//(관리자)강의 검색
+	ArrayList<Classes> selectClassListSearch(Classes c);
+
+	//(교수)반려당한 강의 수정 페이지 이동
+	Classes selectRejectedClass(int classNo);
+
+	//(교수)반려당한 강의 첨부파일(강의계획서) 조회
+	Attachment selectRejectedClassAtt(String fileNo);
+
+	//(교수)반려된 강의 수정
+	int updateClassCreate(Classes c, Attachment a);
 
 	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
 	ArrayList<HashMap<String, String>> selectClassList(HashMap<String, String> map);
@@ -241,5 +268,21 @@ public interface MemberService {
 	
 	// (관리자) 강의평가 문항별 평균 점수 조회
 	ClassRating classRatingAverage(ClassRating cr);
+	
+	// (교수) 상담조회교수 상담조회
+	ArrayList<Counseling> professorSelectCounseling(HashMap<String, String> counselMap);
+
+
+	// 학사일정 관리 -> 학사일정 조회
+	ArrayList<HashMap<String, String>> calendarList();
+
+	// 학사일정 관리 -> 학사일정 추가
+	int insertCalendar(Calendar c);
+
+	// 학사일정 관리 -> 학사일정 수정
+	int updateCalendar(Calendar c);
+
+	// 학사일정 관리 -> 학사일정 삭제
+	int deleteCalendar(Calendar c);
 
 }

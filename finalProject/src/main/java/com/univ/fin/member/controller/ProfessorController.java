@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Classes;
+import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.template.SaveFile;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
@@ -76,12 +77,10 @@ public class ProfessorController {
 		
 		c.setProfessorNo(p.getProfessorNo()); //교수 직번 담기
 		c.setDepartmentNo(p.getDepartmentNo()); //학과명 담기
-		System.out.println(c);
-		System.out.println(upfile);
-		
 		
 		if(!upfile.getOriginalFilename().equals("")) {//첨부파일이 있다면
-			String changeName = new SaveFile().saveFile(upfile, session); //파일 이름 바꾸고, 저장하고 옴
+			String subPath = "classes/"; //강의관련 세부경로
+			String changeName = new SaveFile().saveFile(upfile, session, subPath); //파일 이름 바꾸고, 저장하고 옴
 			String filePath = "resources/uploadFiles/"; 
 			a = new Attachment();
 			
@@ -89,7 +88,7 @@ public class ProfessorController {
 			a.setOriginName(upfile.getOriginalFilename()); //파일 원래 이름
 			a.setChangeName(changeName); //파일 변경명
 			a.setFilePath(filePath); //파일 저장 경로
-			System.out.println(a);
+			
 			int result = memberService.insertClassCreate(c,a);
 			
 			if(result>0) {//작성 성공
@@ -106,6 +105,58 @@ public class ProfessorController {
 		}
 		
 		return  mv;
+	}
+	
+	//강의 개설 반려일때 수정 페이지 이동
+	@RequestMapping("updateClassCreate.pr")
+	public String selectRejectedClass(int classNo,Model model) {
+		
+		//수정할 강의 정보 가져오기
+		Classes c = memberService.selectRejectedClass(classNo);
+		Attachment a= null;
+		if(c.getFileNo()!=null) {//강의계획서가 없는게 아니면
+			//수정할 강의 첨부파일 가져오기
+			a = memberService.selectRejectedClassAtt(c.getFileNo());
+			
+		}
+		//모델에 담아 보내기
+		model.addAttribute("c",c);
+		model.addAttribute("a",a);
+		
+		return "member/professor/pro_class_update";
+	}
+	
+	//강의 개설 수정 업데이트
+	@RequestMapping(value="classCreateUpdate.pr")
+	public String classCreateUpdate(Classes c,String originFileName
+			,@RequestParam(value="reUpfile",required = false)MultipartFile reUpfile,HttpSession session) {
+		
+		Attachment a = null;
+		
+		if(!reUpfile.getOriginalFilename().equals("")) {//새로운 첨부파일이 있다면
+			String subPath = "classes/"; //강의관련 세부경로
+			String changeName = new SaveFile().saveFile(reUpfile, session, subPath); //파일 이름 바꾸고, 저장하고 옴
+			String filePath = "resources/uploadFiles/"+subPath; //저장경로
+			
+			a = new Attachment();
+			
+			//첨부파일에 담기
+			a.setOriginName(reUpfile.getOriginalFilename()); //파일 원래 이름
+			a.setChangeName(changeName); //파일 변경명
+			a.setFilePath(filePath); //파일 저장 경로
+			
+			
+			if(c.getFileNo()!=null) {//기존 첨부파일이 있다면
+				a.setFileNo(Integer.parseInt(c.getFileNo()));//첨부파일에 기존 파일번호 담고
+				
+				new File(filePath+originFileName).delete(); //기존 첨부파일 삭제
+			}else {//기존 첨부파일이 없다면
+				//사실 강의계획서는 필수라 이런 경우는 없지만 혹시 모르니까
+			}
+		}
+		int result = memberService.updateClassCreate(c,a);
+		
+		return "redirect:classCreateSelect.pr";
 	}
 	
 
@@ -169,7 +220,10 @@ public class ProfessorController {
 	@RequestMapping(value = "selectStudentGradeList.pr", produces = "application/json; charset=UTF-8;")
 	public String selectStudentGradeList(String cn) {
 		int classNo = Integer.parseInt(cn);
-		ArrayList<HashMap<String, String>> sList = memberService.selectStudentGradeList(classNo);
+		ArrayList<HashMap<String, String>> sList = new ArrayList<>();
+		sList.add(memberService.countStudentGrade(classNo)); // 학점별로 몇명이 해당되는지
+		sList.addAll(memberService.selectStudentGradeList(classNo));
+		
 		return new Gson().toJson(sList);
 	}
 	
@@ -182,7 +236,7 @@ public class ProfessorController {
 		map.put("gradeLevel", g.getGradeLevel().substring(0, 1));
 		
 		// A: 30%, A+B: 70% 이내
-		if(map.get("gradeLevel")=="A" || map.get("gradeLevel")=="B") {
+		if(map.get("gradeLevel").equals("A") || map.get("gradeLevel").equals("B")) {
 			int check = memberService.checkGradeNos(map); // 수강인원*비율에 따른 가능 인원 수
 			int count = memberService.countGradeNos(map); // 실제 몇명이 해당되는지
 			if(count < check) {
@@ -208,7 +262,7 @@ public class ProfessorController {
 		map.put("gradeLevel", g.getGradeLevel().substring(0, 1));
 		
 		// A: 30%, A+B: 70% 이내
-		if(map.get("gradeLevel").contains("A") || map.get("gradeLevel").contains("B")) {
+		if(map.get("gradeLevel").equals("A") || map.get("gradeLevel").equals("B")) {
 			int check = memberService.checkGradeNos(map); // 수강인원*비율에 따른 가능 인원 수
 			int count = memberService.countGradeNos(map); // 실제 몇명이 해당되는지
 			if(count < check) { // 성적 입력 가능
@@ -225,6 +279,7 @@ public class ProfessorController {
 		}
 	}
 	
+	//상담관리 페이지 이동
 	@RequestMapping("counselHistory.pr")
 	public String counselHistory() {
 		
@@ -239,5 +294,22 @@ public class ProfessorController {
 		mv.addObject("classTerm", classTerm).setViewName("member/professor/classListView");
 		return mv;
 	}
+	
+	// (교수) 상담조회
+	@ResponseBody
+	@PostMapping(value = "selectCounsel.pr", produces = "application/json; charset=UTF-8;")
+	public String selectCounselList(String counselType, String professorNo, String startDate, String endDate, ModelAndView mv) {
+		
+		HashMap<String, String> counselMap = new HashMap<String, String>();
+		counselMap.put("counselType", counselType);
+		counselMap.put("startDate", startDate);
+		counselMap.put("endDate", endDate);
+		counselMap.put("professorNo", professorNo);
+		
+		ArrayList<Counseling> list = memberService.professorSelectCounseling(counselMap);
+
+		return new Gson().toJson(list);			
+	}
+	
 
 }

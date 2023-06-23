@@ -97,6 +97,9 @@
   		<result column="COUNSEL_RESULT" property="counselResult"/>
   		<result column="STATUS" property="status"/>
   		<result column="PROFESSOR_NAME" property="professorName"/>
+  		<result column="STUDENT_NAME" property="studentName"/>
+  		<result column="DEAPRTMENT_NAME" property="departmentName"/>
+  		<result column="CLASS_LEVEL" property="classLevel"/>
   	</resultMap>
   	
   	<resultMap type="studentRest" id="studentRestResultMap">
@@ -126,6 +129,15 @@
   		<result column="FILE_PATH" property="filePath"/>
   		<result column="UPLOAD_DATE" property="uploadDate"/>
   		<result column="STATUS" property="status"/>
+  	</resultMap>
+  	
+  	<resultMap type="hashmap" id="gradeCountHashMap">
+  		<result column="ALL_COUNT" property="allCount"/>
+  		<result column="A_COUNT" property="aCount"/>
+  		<result column="B_COUNT" property="bCount"/>
+  		<result column="C_COUNT" property="cCount"/>
+  		<result column="D_COUNT" property="dCount"/>
+  		<result column="F_COUNT" property="fCount"/>
   	</resultMap>
 	
 	<resultMap type="hashmap" id="gradeHashMap">
@@ -164,6 +176,20 @@
   		<result column="COMMON_CLASS" property="commonClass"/>
   		<result column="NOMAL_CLASS" property="nomalClass"/>
   		<result column="MAJOR_CLASS" property="majorClass"/>
+  	</resultMap>
+  	
+  	<resultMap type="calendar" id="calendarResultMap">
+  		<result column="CALENDAR_NO" property="calendarNo"/>
+  		<result column="CONTENT" property="content"/>
+  		<result column="START_DATE" property="startDate"/>
+  		<result column="END_DATE" property="endDate"/>
+  	</resultMap>
+  	
+  	<resultMap type="hashmap" id="calendarList">
+  		<result column="CALENDAR_NO" property="calendarNo"/>
+  		<result column="CONTENT" property="title"/>
+  		<result column="START_DATE" property="start"/>
+  		<result column="END_DATE" property="end"/>
   	</resultMap>
   	
   	<!-- 학생 로그인 -->
@@ -537,7 +563,7 @@
 		                        FROM DEPARTMENT
 		                        WHERE DEPARTMENT_NAME = #{department})
 		      AND CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND C.STATUS = 'Y'
-		ORDER BY CLASS_LEVEL
+		ORDER BY CLASS_LEVEL, CLASS_NAME
   	</select>
   	
   	<!-- 강의시간표 -> 학년도,학기 조회 -->
@@ -791,7 +817,7 @@
 			AND CLASS_NAME
 		</if>
 		LIKE '%'||#{keyword}||'%'
-		ORDER BY CLASS_LEVEL
+		ORDER BY CLASS_LEVEL, CLASS_NAME
   	</select>
   	
   	<update id="updateStudent">
@@ -887,6 +913,21 @@
 		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND PROFESSOR_NO = #{professorNo}
   	</select>
   	
+  	<!-- 성적관리 -> 학점별로 몇명이 해당되는지 -->
+  	<select id="countStudentGrade" parameterType="_int" resultMap="gradeCountHashMap">
+  		SELECT SUM(CLASS_NOS)/COUNT(*) AS ALL_COUNT, SUM(COUNT), NVL(SUM(CASE WHEN GRADE='A' THEN COUNT END),0) AS A_COUNT, NVL(SUM(CASE WHEN GRADE='B' THEN COUNT END),0) AS B_COUNT
+		    , NVL(SUM(CASE WHEN GRADE='C' THEN COUNT END),0) AS C_COUNT, NVL(SUM(CASE WHEN GRADE='D' THEN COUNT END),0) AS D_COUNT, NVL(SUM(CASE WHEN GRADE='F' THEN COUNT END),0) AS F_COUNT
+		FROM (SELECT SUBSTR(GRADE_LEVEL,1,1) AS GRADE, COUNT(*) AS COUNT, CLASS_NOS
+		        FROM (SELECT A.STUDENT_NO, NVL(SCORE, 0) AS SCORE, NVL(GRADE_LEVEL,' ') AS GRADE_LEVEL, CLASS_NOS
+		                FROM (SELECT CLASS_NO, STUDENT_NO
+		                      FROM SCHEDULE
+		                      GROUP BY CLASS_NO, STUDENT_NO) A
+		                JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
+		                LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND C.CLASS_NO = G.CLASS_NO)
+		                WHERE A.CLASS_NO = #{classNo}) AA
+		        GROUP BY SUBSTR(GRADE_LEVEL,1,1), CLASS_NOS)
+  	</select>
+  	
   	<!-- 성적관리 -> 수강중인 학생 조회 -->
   	<select id="selectStudentGradeList" parameterType="_int" resultMap="gradeHashMap">
   		SELECT DEPARTMENT_NAME, A.STUDENT_NO, CLASS_LEVEL, STUDENT_NAME, NVL(SCORE, 0) AS SCORE, NVL(GRADE_LEVEL,' ') AS GRADE_LEVEL
@@ -897,7 +938,7 @@
 		LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
 		JOIN DEPARTMENT D USING(DEPARTMENT_NO)
 		WHERE A.CLASS_NO = #{classNo}
-		ORDER BY DEPARTMENT_NAME, STUDENT_NO
+		ORDER BY STUDENT_NAME
   	</select>
   	
   	<!-- 성적관리 -> 수강인원*비율에 따른 가능 인원 수 -->
@@ -916,14 +957,14 @@
   	
   	<!-- 성적관리 -> 실제 몇명이 해당되는지 -->
   	<select id="countGradeNos" parameterType="hashmap" resultType="_int">
-  		SELECT SUM(COUNT)
+  		SELECT NVL(SUM(COUNT), 0)
 		FROM (SELECT SUBSTR(GRADE_LEVEL,1,1) AS GRADE, COUNT(*) AS COUNT
 		        FROM (SELECT A.STUDENT_NO, NVL(SCORE, 0) AS SCORE, NVL(GRADE_LEVEL,' ') AS GRADE_LEVEL, CLASS_NOS
 		                FROM (SELECT CLASS_NO, STUDENT_NO
 		                      FROM SCHEDULE
 		                      GROUP BY CLASS_NO, STUDENT_NO) A
-		                LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
-		                JOIN CLASS C ON(G.CLASS_NO = C.CLASS_NO)
+		                JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
+		                LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND C.CLASS_NO = G.CLASS_NO)
 		                WHERE A.CLASS_NO = #{classNo}) AA
 		        GROUP BY SUBSTR(GRADE_LEVEL,1,1))
 		<if test="gradeLevel == 'A'.toString()">
@@ -979,10 +1020,110 @@
   		AND STATUS = 'B'
   	</update>
   	
+  	<!-- 강의 개설 검색(관리자) -->
+  	<select id="selectSearchClassList" resultMap="classResultMap">
+  		SELECT CLASS_NO,FILE_PATH||CHANGE_NAME AS FILE_NO,DIVISION,DEPARTMENT_NAME,CLASS_NAME,CLASS_YEAR,CLASS_TERM
+        		,PROFESSOR_NAME,CLASSROOM,DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금') AS DAY
+        		,DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'9:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00')
+                                  ,2,DECODE(PERIOD,1,'9:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) AS PERIOD
+		        ,CLASS_LEVEL,CLASS_NOS,CREDIT,EXPLAIN,CL.STATUS
+		FROM CLASS CL
+		JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		JOIN PROFESSOR P USING (PROFESSOR_NO)
+		LEFT JOIN ATTACHMENT A ON (A.FILE_NO=CL.FILE_NO)
+		WHERE P.PROFESSOR_NAME LIKE '%'||#{professorNo}||'%'
+        AND CL.STATUS IN 
+        
+        <choose>
+        	<when test="status=='B,C'">
+        		('B','C')
+        	</when>
+        	<when test="status=='Y,N'">
+        		('Y','N')
+        	</when>
+        	<otherwise>
+        		('B','C','Y','N')
+        	</otherwise>
+        </choose>
+        
+        AND DIVISION LIKE 
+        <choose>
+        	<when test="division==2">
+        		'%'||'%'	
+        	</when>
+        	<otherwise>
+        		'%'||#{division}||'%'
+        	</otherwise>
+        </choose>
+        AND CLASS_NAME LIKE '%'||#{className}||'%'
+        AND DEPARTMENT_NAME LIKE '%'||#{departmentNo}||'%'
+		ORDER BY CLASS_NO DESC
+  	</select>
+  	
+  	<!-- 반려당한 강의 수정위해 조회(교수) -->
+  	<select id="selectRejectedClass" resultMap="classResultMap">
+  		SELECT CLASS_NO, PROFESSOR_NAME, DEPARTMENT_NAME, C.FILE_NO,CLASS_NAME, CLASS_LEVEL, CLASS_YEAR, CLASS_TERM, CLASSROOM, DAY, PERIOD, CLASS_HOUR, CLASS_NOS, CREDIT, DIVISION, EXPLAIN, C.STATUS
+  		FROM CLASS C
+        JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+  		JOIN PROFESSOR P USING (PROFESSOR_NO)
+  		WHERE CLASS_NO = #{classNo}
+        AND C.STATUS = 'C'
+  	</select>
+  	
+  	<!-- 반려당한 강의 첨부파일(강의계획서) 조회(교수) -->
+  	<select id="selectRejectedClassAtt" resultMap="attachmentResultSet">
+  		SELECT *
+  		FROM ATTACHMENT
+  		WHERE FILE_NO = #{fileNo}
+  	</select>
+  	
+  	<!-- 반려된 강의 수정(새로운 첨부파일이 없는경우) -->
+  	<update id="updateClassCreateNoAtt">
+  		UPDATE CLASS
+  		SET FILE_NO=#{fileNo},CLASS_NAME=#{className},DIVISION = #{division}, CREDIT = #{credit}, CLASS_NOS = #{classNos}
+  		,	CLASSROOM = #{classroom}, DAY = #{day}, PERIOD = #{period}
+  		,	CLASS_HOUR = #{classHour},CLASS_LEVEL = #{classLevel},STATUS = 'B'
+  		WHERE CLASS_NO = #{classNo}
+  	</update>
+  	
+  	<!-- 반려된 강의 첨부파일 수정(기존 첨부파일이 있는경우) -->
+  	<update id="updateClassAttachment">
+  		UPDATE ATTACHMENT
+  		SET ORIGIN_NAME = #{originName}
+  		,	CHANGE_NAME = #{changeName}
+  		, FILE_PATH = #{filePath}
+  		,UPLOAD_DATE = SYSDATE
+  		WHERE FILE_NO = #{fileNo}
+  	</update>
+  	
+  	<!-- 반려된 강의 첨부파일 수정(기존 첨부파일이 없는경우) -->
+  	<update id="UpdateClassNewAttNoOrigin">
+  		UPDATE CLASS
+  		SET FILE_NO = SEQ_ANO.CURRVAL,CLASS_NAME=#{className},DIVISION = #{division}, CREDIT = #{credit}
+  		, CLASS_NOS = #{classNos},	CLASSROOM = #{classroom}, DAY = #{day}
+  		, PERIOD = #{period},	CLASS_HOUR = #{classHour}
+  		,CLASS_LEVEL = #{classLevel},STATUS = 'B'
+  		WHERE CLASS_NO = #{classNo}
+  		
+  	</update>
+  	
   	<insert id="insertStudent">
   	INSERT INTO STUDENT (STUDENT_NO, DEPARTMENT_NO, COLLEGE_NO, ENTRANCE_DATE, STUDENT_NAME, STUDENT_PWD, PHONE, EMAIL, POST, ADDRESS,CLASS_LEVEL)
-	VALUES (SEQ_SNO.NEXTVAL,(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
+	VALUES (('S'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_SNO.NEXTVAL,4,0)),(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
   	</insert>
+  	
+  	<select id="studentGradeReport" resultType="Dissent"> 
+  	SELECT C.CLASS_NAME, C.CLASS_NO, P.PROFESSOR_NAME, C.CREDIT, D.REASON
+	FROM DISSENT D
+	JOIN CLASS C ON D.CLASS_NO = C.CLASS_NO
+	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
+	WHERE D.STUDENT_NO = #{student_no}
+  	</select>
+  	
+  	<insert id="insertProfessor">
+  	INSERT INTO PROFESSOR(PROFESSOR_NO, DEPARTMENT_NO, COLLEGE_NO, PROFESSOR_NAME, PROFESSOR_PWD, POSITION, ENTRANCE_DATE, PHONE, EMAIL, POST, ADDRESS, ACCOUNT_NO, ADMIN)
+  	VALUES (('P'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_PNO.NEXTVAL,4,0)), (SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{professorName}, #{professorPwd}, #{position}, #{entranceDate}, #{phone}, #{email}, #{post}, #{address}, #{accountNo}, #{admin})
+	</insert>
   	
   	<!-- 학기별 성적 조회 -> 학기별 성적 계산 -->
   	<select id="calculatedGrade" parameterType="hashmap" resultMap="termGradeHashMap">
@@ -1152,5 +1293,86 @@
 		AND CLASS_TERM = #{classTerm}
   		GROUP BY CLASS_NO
   	</select>
+
+	<!-- (교수) 상담조회  -->
+  	<select id="professorSelectCounseling" parameterType="hashMap" resultMap="counselingResultMap">
+  		SELECT COUNSEL_NO, STUDENT_NO, STUDENT_NAME, DEPARTMENT_NAME, CLASS_LEVEL, APPLICATION_DATE, REQUEST_DATE, COUNSEL_AREA, C.STATUS
+		FROM COUNSELING C
+		JOIN STUDENT S USING(STUDENT_NO)
+		JOIN DEPARTMENT C ON(S.DEPARTMENT_NO = C.DEPARTMENT_NO)
+		<if test="counselType.equals('allType')">
+			WHERE PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="counselType.equals('jinro')">
+			WHERE COUNSEL_AREA = '진로(취업)'
+			AND PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="counselType.equals('attendance')">
+			WHERE COUNSEL_AREA = '학사(출결)'
+			AND PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="counselType.equals('rest')">
+			WHERE COUNSEL_AREA = '학사(휴학)'
+			AND PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="counselType.equals('drop')">
+			WHERE COUNSEL_AREA = '학사(제적)'
+			AND PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="counselType.equals('admin')">
+			WHERE COUNSEL_AREA = '학사행정'
+			AND PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="counselType.equals('affect')">
+			WHERE COUNSEL_AREA = '심리정서'
+			AND PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="counselType.equals('collLife')">
+			WHERE COUNSEL_AREA = '학교생활'
+			AND PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="counselType.equals('etc')">
+			WHERE COUNSEL_AREA = '기타'
+			AND PROFESSOR_NO = #{professorNo}
+			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+		</if>
+		ORDER BY COUNSEL_NO DESC
+  	</select>
+  	
+  	<!-- 학사일정 관리 -> 학사일정 조회 -->
+  	<select id="calendarList" resultMap="calendarList">
+  		SELECT CALENDAR_NO, CONTENT, TO_CHAR(START_DATE, 'YYYY-MM-DD') AS START_DATE, TO_CHAR(END_DATE+1, 'YYYY-MM-DD') AS END_DATE
+  		FROM CALENDAR
+  	</select>
+  	
+  	<!-- 학사일정 관리 -> 학사일정 추가 -->
+  	<insert id="insertCalendar">
+  		INSERT INTO CALENDAR VALUES(SEQ_CALNO.NEXTVAL, #{content}
+  				, TO_DATE(SUBSTR(#{startDate}, 0, 10)||SUBSTR(#{startDate}, 12), 'YYYY-MM-DD HH24:MI')
+  				, TO_DATE(SUBSTR(#{endDate}, 0, 10)||SUBSTR(#{endDate}, 12), 'YYYY-MM-DD HH24:MI'))
+  	</insert>
+  	
+  	<!-- 학사일정 관리 -> 학사일정 수정 -->
+  	<update id="updateCalendar">
+  		UPDATE CALENDAR
+  		SET CONTENT = #{content}
+  		  , START_DATE = TO_DATE(SUBSTR(#{startDate}, 0, 10)||SUBSTR(#{startDate}, 12), 'YYYY-MM-DD HH24:MI')
+  		  , END_DATE = TO_DATE(SUBSTR(#{endDate}, 0, 10)||SUBSTR(#{endDate}, 12), 'YYYY-MM-DD HH24:MI')
+  		WHERE CALENDAR_NO = #{calendarNo}
+  	</update>
+  	
+  	<!-- 학사일정 관리 -> 학사일정 삭제 -->
+  	<delete id="deleteCalendar">
+  		DELETE FROM CALENDAR
+  		WHERE CALENDAR_NO = #{calendarNo}
+  	</delete>
   </mapper>
 

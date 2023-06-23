@@ -12,9 +12,13 @@
 <body>
 	<div id="chatWrap">
 		<div id="chatHead">
-			<button id="startBtn" onclick="openChat();">A</button>
+			<button id="startBtn" onclick="openChat();">
+				<img src='resources/icon/blue_plane.png'>
+			</button>
 			<div id="chatBody">
-				<button id="bodyBtn" onclick="closeChat();">B</button>
+				<button id="bodyBtn" onclick="closeChat();">
+					<img src='resources/icon/white_plane.png'>
+				</button>
 				<div id="resultDiv">
 				</div>
 				<div id="startDiv">

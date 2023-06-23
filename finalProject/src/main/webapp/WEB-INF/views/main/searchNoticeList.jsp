@@ -71,7 +71,7 @@
 								<li class="page-btn"><a class="pLink" href="#"><i class="fa-solid fa-chevron-left"></i></a></li>
 							</c:when>
 							<c:otherwise>
-								<li class="page-btn"><a class="pLink" href="notice.mp?currentPage=${searchPi.currentPage - 1 }"><i class="fa-solid fa-chevron-left"></i></a></li>
+								<li class="page-btn"><a class="pLink" href="search.mp?selectBox=${selectBox }&keyword=${keyword}&currentPage=${searchPi.currentPage - 1 }"><i class="fa-solid fa-chevron-left"></i></a></li>
 							</c:otherwise>
 						</c:choose>
 						
@@ -79,10 +79,10 @@
 						<c:forEach var="p" begin="${searchPi.startPage }" end="${searchPi.endPage }">
 							<c:choose>
 								<c:when test="${p eq searchPi.currentPage }">
-									<li class="page-btn"><a class="pLink active" href="notice.mp?currentPage=${p }">${p }</a></li>
+									<li class="page-btn"><a class="pLink active" href="search.mp?selectBox=${selectBox }&keyword=${keyword}&currentPage=${p }">${p }</a></li>
 								</c:when>								
 								<c:otherwise>
-									<li class="page-btn"><a class="pLink" href="notice.mp?currentPage=${p }">${p }</a></li>
+									<li class="page-btn"><a class="pLink" href="search.mp?selectBox=${selectBox }&keyword=${keyword}&currentPage=${p }">${p }</a></li>
 								</c:otherwise>
 							</c:choose>
 						</c:forEach>
@@ -93,7 +93,7 @@
 								<li class="page-btn"><a class="pLink" href="#"><i class="fa-solid fa-chevron-right"></i></a></li>
 							</c:when>
 							<c:otherwise>
-								<li class="page-btn"><a class="pLink" href="notice.mp?currentPage=${searchPi.currentPage + 1 }"><i class="fa-solid fa-chevron-right"></i></a></li>
+								<li class="page-btn"><a class="pLink" href="search.mp?selectBox=${selectBox }&keyword=${keyword}&currentPage=${searchPi.currentPage + 1 }"><i class="fa-solid fa-chevron-right"></i></a></li>
 							</c:otherwise>
 						</c:choose>
 					</ul>
