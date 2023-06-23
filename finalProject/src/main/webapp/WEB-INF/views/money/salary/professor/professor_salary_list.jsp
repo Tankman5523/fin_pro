@@ -7,6 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>교수_급여조회</title>
+    <style>
+    	.readonly{
+    		background-color : lightgray;
+    	}
+    </style>
 </head>
 <body>
     <div class="wrap">
@@ -19,7 +24,7 @@
                     <span style="margin: 0 auto;">급여관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="mylist.sl">급여조회</a>
+                    <a href="mylist.sl" style="font-weight:bold;">급여조회</a>
                 </div>
             </div>
             <!--내용 시작-->
@@ -30,17 +35,17 @@
                             <!--로그인유저 자동입력-->
                             <tr>
                                 <th>교수명</th>
-                                <td><input type="text" name="professorName" value="${loginUser.professorName}" readonly></td>
+                                <td><input type="text" name="professorName" value="${loginUser.professorName}" readonly class="readonly"></td>
                                 <th>소속</th>
                                 <!-- 값 나중에 departmet로 변경 -->
-                                <td><input type="text" name="department" value="${loginUser.departmentNo}" readonly></td>
+                                <td><input type="text" name="department" value="${loginUser.departmentNo}" readonly class="readonly"></td>
                                 
                             </tr>
                             <tr>
                                 <th>급여 계좌번호</th>
-                                <td><input type="text" name="accountNo" value="${loginUser.accountNo}" readonly></td>
+                                <td><input type="text" name="accountNo" value="${loginUser.accountNo}" readonly class="readonly"></td>
                                 <th>연락처</th>
-                                <td><input type="text" name="phone" value="${loginUser.phone}" readonly></td>
+                                <td><input type="text" name="phone" value="${loginUser.phone}" readonly class="readonly"></td>
                             </tr>
                             <tr>
                                 <!--기간 설정 후 조회 클릭-->
@@ -69,7 +74,7 @@
                     <div>
                         <table border="1" id="payList" style="width: 100%;">
                             <thead>
-                                <tr>
+                                <tr style="background-color: #4fc7ff;">
                                     <th>No.</th>
                                     <th>지급일자</th>
                                     <th>지급액</th>
@@ -101,7 +106,6 @@
                         			},
                         			method: "POST",
                         			success : function(list){
-                        				console.log(list);
                         				var str = "";
                         				var status = "";
                         				if(list[0]!=null){

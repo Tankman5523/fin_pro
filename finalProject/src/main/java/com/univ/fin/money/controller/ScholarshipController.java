@@ -1,25 +1,23 @@
 package com.univ.fin.money.controller;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.member.model.vo.Student;
+import com.univ.fin.money.model.service.RegistService;
 import com.univ.fin.money.model.service.ScholarshipService;
+import com.univ.fin.money.model.vo.RegistPay;
 import com.univ.fin.money.model.vo.Scholarship;
 
 @Controller
@@ -28,6 +26,8 @@ public class ScholarshipController {
 	@Autowired
 	private ScholarshipService scholarshipService;
 	
+	@Autowired
+	private RegistService registService;
 	
 	//학생
 	@GetMapping("listPage.sc")
@@ -47,7 +47,6 @@ public class ScholarshipController {
 	@GetMapping(value = "list.sc",produces = "application/json; charset=UTF-8" ) //ajax처리
 	public String selectMyScholarshipList(Scholarship sc) { //학년도로 조회(본인)
 		//sc => 유저 학번, 선택한 학년도 
-		
 		ArrayList<Scholarship> list = scholarshipService.selectMyScholarshipList(sc);
 		
 		return new Gson().toJson(list);
@@ -132,23 +131,25 @@ public class ScholarshipController {
 		return new Gson().toJson(list);
 	}
 	
-//	@ResponseBody
-//	@RequestMapping(value = "allList.sc")
-//	public ResponseEntity<ArrayList<Scholarship>> selectScholarshipListAll(String filter,String keyword) { //필터에 해당하는 키워드로 검색결과
-//		
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
-//			
-//		HashMap<String,String> map = new HashMap<>();
-//		map.put("keyowrd", keyword);
-//		map.put("filter",filter);
-//		
-//		ArrayList<Scholarship> list = scholarshipService.selectScholarshipListAll(map);
-//		
-//		return ResponseEntity.ok().headers(headers).body(list);
-//	}
 	
 	
+	@ResponseBody
+	@GetMapping(value = "selectForSc.st",produces="text/html;charset=UTF-8") //"text/html;charset=UTF-8";
+	public String selectStudentForSc(String studentNo,String classYear,String classTerm) {//학생1명 정보 ajax로 출력
+		ClassRating rp = ClassRating .builder()
+									 .studentNo(studentNo)
+									 .classYear(classYear)
+									 .classTerm(classTerm)
+									 .build();
+		RegistPay r = registService.selectNewRegistInfo(rp); 
+		System.out.println(r);
+		if(r==null) {//해당학기 등록금이 이미 입력되어있지 않을 때.
+			String studentName = scholarshipService.selectStudentForSc(studentNo); //
+			return studentName; //
+		}else {
+			return "N";
+		}
+	}
 	
 	
 }
