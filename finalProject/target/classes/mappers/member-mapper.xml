@@ -287,6 +287,13 @@
 		                    WHERE COLLEGE_NAME = #{college})
   	</select>
   	
+  	<!-- 수강신청 기간인지 체크 -->
+  	<select id="chkRegCal" parameterType="calendar" resultMap="calendarResultMap">
+  		SELECT TO_CHAR(START_DATE,'YYYYMMDD') "START_DATE",TO_CHAR(END_DATE,'YYYYMMDD') "END_DATE"
+		FROM CALENDAR
+		WHERE CONTENT LIKE '%'||'수강'||'%'
+  	</select>
+  	
   	<!-- 수강신청 - 수강신청내역조회 (로그인 학생의 수강신청 년도/학기 추출) -->
   	<select id="searchRegYear" parameterType="classes" resultMap="classResultMap">
 	  	SELECT DISTINCT CLASS_YEAR, CLASS_TERM
@@ -1385,7 +1392,10 @@
   	<!-- (교수) 상담 상세 조회 -->
   	<select id="selectCounselDetail" parameterType="hashMap" resultMap="counselingResultMap">
 	  	SELECT *
-		FROM (SELECT STUDENT_NO, DEPARTMENT_NAME, PHONE, APPLICATION_DATE, REQUEST_DATE, COUNSEL_AREA, C.STATUS
+		FROM (SELECT COUNSEL_NO, STUDENT_NO, STUDENT_NAME, DEPARTMENT_NAME, PHONE
+				, TO_CHAR(APPLICATION_DATE, 'YYYY-MM-DD') APPLICATION_DATE
+				, TO_CHAR(REQUEST_DATE, 'YYYY-MM-DD') REQUEST_DATE, COUNSEL_AREA
+				, COUNSEL_CONTENT, COUNSEL_RESULT, C.STATUS
 		        FROM STUDENT S
 		        JOIN DEPARTMENT D USING(DEPARTMENT_NO)
 		        JOIN COUNSELING C USING(STUDENT_NO)
@@ -1428,5 +1438,19 @@
 		WHERE ROWNUM BETWEEN 1 AND 5
   	</select>
   	
+  	<!-- (교수) 상담 상태 변경 -->
+  	<update id="updateCounselStatus">
+  		UPDATE COUNSELING
+		SET STATUS = #{counselStatus },
+	        COUNSEL_RESULT = #{cancelResult }
+		WHERE COUNSEL_NO = #{counselNo }
+  	</update>
+  	
+  	<!-- 업데이트 후 재조회 -->
+  	<select id="selectUpdateCounsel">
+  		SELECT *
+  		FROM COUNSELING
+  		WHERE COUNSEL_NO = #{counselNo }
+  	</select>
   </mapper>
 

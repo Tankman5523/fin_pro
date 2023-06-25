@@ -70,7 +70,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr><td colspan="7">ddddddddd</td></tr>
+							
 						</tbody>
 					</table>
 				</div>

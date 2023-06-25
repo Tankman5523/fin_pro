@@ -334,12 +334,41 @@ public class ProfessorController {
 		counselDtMap.put("request", request);
 		
 		Counseling counsel = memberService.selectCounselDetail(counselDtMap);
-		
+	
 		mv.addObject("c", counsel).setViewName("member/professor/counselHistoryDetail");
-		
 		return mv;
 	}
 	
-	
+	@RequestMapping("updateCounselStatus")
+	public ModelAndView updateCounselStatus(@RequestParam("counsel-status") String counselStatus
+											,String cancelResult, String counselNo, ModelAndView mv) {
+		
+		if(cancelResult.isEmpty()) {
+			cancelResult = "null";
+		}
+		
+		HashMap<String, String> statusMap = new HashMap<String, String>();
+		statusMap.put("counselStatus", counselStatus);
+		statusMap.put("cancelResult", cancelResult);
+		statusMap.put("counselNo", counselNo);
+		
+		System.out.println(statusMap);
+		//공사중
+//		int result = memberService.updateCounselStatus(statusMap);
+//		
+//		System.out.println(result);
+		
+//		String msg = "";
+//		
+//		if(result < 0) {
+//			msg = "업데이트 실패";
+//			mv.addObject("m", msg).setViewName("member/professor/counselHistoryDetail");
+//		}else {
+//			Counseling updateCounsel = memberService.selectUpdateCounsel(counselNo);
+//			mv.addObject("c", updateCounsel).setViewName("member/professor/counselHistoryDetail");
+//		}
+		
+		return mv;
+	}
 
 }

@@ -780,5 +780,17 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.selectMainNotice(sqlSession);
 	}
 
+	//(교수) 상담 상태 변경
+	@Override
+	public int updateCounselStatus(HashMap<String, String> statusMap) {
+		return memberDao.updateCounselStatus(sqlSession, statusMap);
+	}
+
+	// (교수) 업데이트 후 재조회
+	@Override
+	public Counseling selectUpdateCounsel(String counselNo) {
+		return memberDao.selectUpdateCounsel(sqlSession, counselNo);
+	}
+
 }
 
