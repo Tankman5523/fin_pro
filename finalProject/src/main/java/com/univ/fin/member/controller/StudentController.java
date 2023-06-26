@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -55,6 +57,25 @@ public class StudentController {
 		Student st = (Student)session.getAttribute("loginUser");
 		String studentNo = st.getStudentNo();
 		
+		ArrayList<HashMap<String, String>> calList = memberService.yearCalendarList(); // 학사일정 조회
+		ArrayList<Notice> nList = memberService.selectMainNotice(); // 공지사항 목록
+		HashMap<String, String> map = new HashMap<>();
+		map.put("person", "student");
+		map.put("personNo", studentNo);
+		String filePath = memberService.selectProfile(map);
+		
+		mv.addObject("filePath", filePath).addObject("calList", calList)
+		  .addObject("nList", nList).setViewName("member/student/mainPage");
+		return mv;
+	}
+	
+	// 메인 -> 강의 조회
+	@ResponseBody
+	@RequestMapping(value = "getClasses.st", produces = "application/json; charset=UTF-8")
+	public String getClasses(String day, HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
+		
 		Calendar calendar = Calendar.getInstance();
 		String year = String.valueOf(calendar.get(calendar.YEAR)); // 년도
 		int month = calendar.get(calendar.MONTH)+1; // 월
@@ -68,26 +89,26 @@ public class StudentController {
 		else {
 			term = "0";
 		}
-		String day = String.valueOf(calendar.get(calendar.DAY_OF_WEEK)-1); // 요일
 		
 		HashMap<String, String> map = new HashMap<>();
 		map.put("year", year);
 		map.put("term", term);
 		map.put("studentNo", studentNo);
-		
-		ArrayList<HashMap<String, String>> calList = memberService.yearCalendarList(); // 학사일정 조회
 		ArrayList<Classes> cList = memberService.selectStudentTimetable(map); // 해당 학기 모든 개인시간표 추출
-//		for(int i=0;i<cList.size();i++) { // 해당 요일 강의만 추출
-//			if(!cList.get(i).getDay().equals(day)) {
-//				cList.remove(i);
-//			}
-//		}
+		Collections.sort(cList, new Comparator<Classes>() { // 요일별로 정렬
+			public int compare(Classes c1, Classes c2) {
+				int dayCompare = Integer.parseInt(c1.getDay()) - Integer.parseInt(c2.getDay());
+				
+				if(dayCompare == 0) { // 요일같으면 교시별로 정렬
+					return Integer.parseInt(c1.getPeriod()) - Integer.parseInt(c2.getPeriod());
+				}
+				else {
+					return dayCompare;
+				}
+			}
+		});
 		
-		ArrayList<Notice> nList = memberService.selectMainNotice(); // 공지사항 목록
-		
-		mv.addObject("calList", calList).addObject("cList", cList)
-			.addObject("nList", nList).setViewName("member/student/mainPage");
-		return mv;
+		return new Gson().toJson(cList);
 	}
 	
 	//챗봇

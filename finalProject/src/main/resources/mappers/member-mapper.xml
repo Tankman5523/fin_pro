@@ -218,6 +218,13 @@
 		<result column="CHANGE_NAME" property="changeName"/>
 		<result column="CATEGORY_NAME" property="categoryName"/>
 	</resultMap>
+	
+	<resultMap type="hashmap" id="counselResultMap">
+		<result column="COUNSEL_NO" property="counselNo"/>
+		<result column="APPLICATION_DATE" property="applicationDate"/>
+		<result column="STUDENT_NAME" property="studentName"/>
+		<result column="STATUS" property="status"/>
+	</resultMap>
   	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
@@ -1543,6 +1550,31 @@
   		DELETE FROM CALENDAR
   		WHERE CALENDAR_NO = #{calendarNo}
   	</delete>
+  	
+  	<!-- 메인 -> 프로필 사진 조회 -->
+  	<select id="selectProfile" parameterType="hashmap" resultType="string">
+  		SELECT FILE_PATH||CHANGE_NAME
+		FROM ATTACHMENT
+		LEFT JOIN STUDENT USING(FILE_NO)
+		LEFT JOIN PROFESSOR USING(FILE_NO)
+		<if test="person == 'student'">
+			WHERE STUDENT_NO = #{personNo}
+		</if>
+		<if test="person == 'professor'">
+			WHERE PROFESSOR_NO = #{personNo}
+		</if>
+  	</select>
+  	
+  	<!-- 메인 -> 상담신청 조회 -->
+  	<select id="selectCounceling" parameterType="string" resultMap="counselResultMap">
+  		SELECT *
+		FROM (SELECT COUNSEL_NO, TO_CHAR(APPLICATION_DATE, 'YYYY-MM-DD') APPLICATION_DATE, STUDENT_NAME, C.STATUS
+		        FROM COUNSELING C
+		        JOIN STUDENT S USING(STUDENT_NO)
+		        WHERE C.PROFESSOR_NO = #{professorNo}
+		        ORDER BY APPLICATION_DATE DESC)
+		WHERE ROWNUM BETWEEN 1 AND 4
+  	</select>
   	
   	<!-- 메인 -> 학사일정 조회 -->
   	<select id="yearCalendarList" resultMap="calendarList">
