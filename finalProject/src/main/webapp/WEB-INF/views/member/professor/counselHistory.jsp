@@ -121,7 +121,6 @@
 							
 							result += "<tr>"
 								+"<input type='hidden' id='counselNo' value='"+data.counselNo+"'>"
-								+"<input type='hidden' id='studentNo' value='"+data.studentNo+"'>"
 								+"<td>"+data.studentName+"</td>"
 								+"<td>"+data.departmentName+"</td>"
 								+"<td>"+data.classLevel+"학년"+"</td>"
@@ -154,11 +153,8 @@
 					rows.forEach(function(tr, index){
 						tr.addEventListener('click', function(){
 							cno = tr.children[0].value
-							sno = tr.children[1].value
-							appDate = tr.children[5].innerHTML
-							requestDate = tr.children[6].innerHTML
 							
-							location.href = "counselDetail.pr?cno="+cno+"&sno="+sno+"&application="+appDate+"&request="+requestDate;
+							location.href = "counselDetail.pr?cno="+cno;
 						})
 					})
 				},

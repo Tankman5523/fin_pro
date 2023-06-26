@@ -611,9 +611,9 @@ public class MemberDao {
 	}
 	
 	// (교수) 상담 상세 조회
-	public Counseling selectCounselDetail(SqlSessionTemplate sqlSession, HashMap<String, String> counselDtMap) {
+	public Counseling selectCounselDetail(SqlSessionTemplate sqlSession, String counselNo) {
 		 
-		return sqlSession.selectOne("memberMapper.selectCounselDetail", counselDtMap);
+		return sqlSession.selectOne("memberMapper.selectCounselDetail", counselNo);
 	}
 	
 	// 학사일정 관리 -> 학사일정 수정
@@ -641,10 +641,5 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.updateCounselStatus", statusMap);
 	}
 
-	// (교수) 업데이트 후 재조회
-	public Counseling selectUpdateCounsel(SqlSessionTemplate sqlSession, String counselNo) {
-		return sqlSession.selectOne("memberMapper.selectUpdateCounsel", counselNo);
-
-	}
 
 }

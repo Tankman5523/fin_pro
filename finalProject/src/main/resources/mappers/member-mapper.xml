@@ -1519,18 +1519,14 @@
   	
   	<!-- (교수) 상담 상세 조회 -->
   	<select id="selectCounselDetail" parameterType="hashMap" resultMap="counselingResultMap">
-	  	SELECT *
-		FROM (SELECT COUNSEL_NO, STUDENT_NO, STUDENT_NAME, DEPARTMENT_NAME, PHONE
+	  	SELECT COUNSEL_NO, STUDENT_NO, STUDENT_NAME, DEPARTMENT_NAME, PHONE
 				, TO_CHAR(APPLICATION_DATE, 'YYYY-MM-DD') APPLICATION_DATE
 				, TO_CHAR(REQUEST_DATE, 'YYYY-MM-DD') REQUEST_DATE, COUNSEL_AREA
 				, COUNSEL_CONTENT, COUNSEL_RESULT, C.STATUS
-		        FROM STUDENT S
-		        JOIN DEPARTMENT D USING(DEPARTMENT_NO)
-		        JOIN COUNSELING C USING(STUDENT_NO)
-		        WHERE COUNSEL_NO = #{counselNo }
-		        AND STUDENT_NO = #{studentNo })
-		WHERE APPLICATION_DATE =  #{application }
-		AND REQUEST_DATE = #{request}
+        FROM STUDENT S
+        JOIN DEPARTMENT D USING(DEPARTMENT_NO)
+        JOIN COUNSELING C USING(STUDENT_NO)
+        WHERE COUNSEL_NO = #{counselNo }
   	</select>
 
   	<!-- 학사일정 관리 -> 학사일정 수정 -->
@@ -1574,16 +1570,5 @@
 		WHERE COUNSEL_NO = #{counselNo }
   	</update>
   	
-  	<!-- 업데이트 후 재조회 -->
-  	<select id="selectUpdateCounsel" resultMap="counselingResultMap">
-  		SELECT COUNSEL_NO, STUDENT_NO, STUDENT_NAME, DEPARTMENT_NAME, PHONE
-				, TO_CHAR(APPLICATION_DATE, 'YYYY-MM-DD') APPLICATION_DATE
-				, TO_CHAR(REQUEST_DATE, 'YYYY-MM-DD') REQUEST_DATE, COUNSEL_AREA
-				, COUNSEL_CONTENT, COUNSEL_RESULT, C.STATUS
-		FROM STUDENT S
-		JOIN DEPARTMENT D USING(DEPARTMENT_NO)
-		JOIN COUNSELING C USING(STUDENT_NO)
-		WHERE COUNSEL_NO = #{counselNo }
-  	</select>
   </mapper>
 

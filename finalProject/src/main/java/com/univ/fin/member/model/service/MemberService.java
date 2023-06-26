@@ -293,7 +293,7 @@ public interface MemberService {
 	int insertCalendar(CalendarVo c);
 
 	// (교수) 상담 상세 조회
-	Counseling selectCounselDetail(HashMap<String, String> counselDtMap);
+	Counseling selectCounselDetail(String counselNo);
 
 	// 학사일정 관리 -> 학사일정 수정
 	int updateCalendar(CalendarVo c);
@@ -309,9 +309,6 @@ public interface MemberService {
 
 	// (교수) 상담 상태 변경
 	int updateCounselStatus(HashMap<String, String> statusMap);
-
-	// (교수) 업데이트 후 재조회
-	Counseling selectUpdateCounsel(String counselNo);
 
 	// (관리자) 학생 휴,복학 신청 리스트 조회
 	ArrayList<Counseling> selectCounAllStuList();
@@ -339,6 +336,5 @@ public interface MemberService {
 
 	// (관리자) 임직원 안식,퇴직 업데이트
 	int updateProfessorRest(ProfessorRest pr);
-
 
 }
