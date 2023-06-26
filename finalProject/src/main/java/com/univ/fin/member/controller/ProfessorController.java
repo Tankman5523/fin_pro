@@ -4,6 +4,9 @@
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
@@ -23,11 +26,14 @@ import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.template.SaveFile;
+import com.univ.fin.main.model.vo.Notice;
+
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
+import com.univ.fin.member.model.vo.Student;
 
 @Controller
 public class ProfessorController {
@@ -35,6 +41,67 @@ public class ProfessorController {
 	
 	@Autowired
 	private MemberService memberService;
+	
+	// 메인페이지
+	@RequestMapping("main.pr")
+	public ModelAndView mainPage(ModelAndView mv, HttpSession session) {
+		Professor pr = (Professor)session.getAttribute("loginUser");
+		String professorNo = pr.getProfessorNo();
+		
+		ArrayList<Counseling> counList = memberService.selectCounceling(professorNo); // 상담신청 조회
+		ArrayList<HashMap<String, String>> calList = memberService.yearCalendarList(); // 학사일정 조회
+		ArrayList<Notice> nList = memberService.selectMainNotice(); // 공지사항 목록
+		HashMap<String, String> map = new HashMap<>();
+		map.put("person", "professor");
+		map.put("personNo", professorNo);
+		String filePath = memberService.selectProfile(map);
+		
+		mv.addObject("filePath", filePath).addObject("counList", counList).addObject("calList", calList)
+		  .addObject("nList", nList).setViewName("member/professor/mainPage");
+		return mv;
+	}
+	
+	// 메인 -> 강의 조회
+	@ResponseBody
+	@RequestMapping(value = "getClasses.pr", produces = "application/json; charset=UTF-8")
+	public String getClasses(String day, HttpSession session) {
+		Professor pr = (Professor)session.getAttribute("loginUser");
+		String professorNo = pr.getProfessorNo();
+		
+		Calendar calendar = Calendar.getInstance();
+		String year = String.valueOf(calendar.get(calendar.YEAR)); // 년도
+		int month = calendar.get(calendar.MONTH)+1; // 월
+		String term = "";
+		if(3<=month && month<=6) { // 1학기
+			term = "1";
+		}
+		else if(9<=month && month<=12) { // 2학기
+			term = "2";
+		}
+		else {
+			term = "0";
+		}
+		
+		HashMap<String, String> map = new HashMap<>();
+		map.put("year", year);
+		map.put("term", term);
+		map.put("professorNo", professorNo);
+		ArrayList<Classes> cList = memberService.selectProfessorTimetable(map); // 해당 학기 모든 개인시간표 추출
+		Collections.sort(cList, new Comparator<Classes>() { // 요일별로 정렬
+			public int compare(Classes c1, Classes c2) {
+				int dayCompare = Integer.parseInt(c1.getDay()) - Integer.parseInt(c2.getDay());
+				
+				if(dayCompare == 0) { // 요일같으면 교시별로 정렬
+					return Integer.parseInt(c1.getPeriod()) - Integer.parseInt(c2.getPeriod());
+				}
+				else {
+					return dayCompare;
+				}
+			}
+		});
+		
+		return new Gson().toJson(cList);
+	}
 	
 	//교수 학적정보 조회
 	@RequestMapping("infoProfessor.pr")

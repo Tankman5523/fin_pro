@@ -560,6 +560,16 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.deleteCalendar", c);
 	}
 	
+	// 메인 -> 프로필 사진 조회
+	public String selectProfile(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return sqlSession.selectOne("memberMapper.selectProfile", map);
+	}
+	
+	// 메인 -> 상담신청 조회
+	public ArrayList<Counseling> selectCounceling(SqlSessionTemplate sqlSession, String professorNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectCounceling", professorNo);
+	}
+	
 	// 메인 -> 학사일정 조회
 	public ArrayList<HashMap<String, String>> yearCalendarList(SqlSessionTemplate sqlSession) {
 		return (ArrayList)sqlSession.selectList("memberMapper.yearCalendarList");
