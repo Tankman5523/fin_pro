@@ -142,7 +142,7 @@
 	}
 	
 	function prevPage(){
-		history.back();
+		location.href = 'counselHistory.pr'
 	}
 	
 	function changeValue(){
@@ -158,10 +158,10 @@
 		}
 	}
 	
-	const msg = "${m.msg}"
+	const msg = "${msg}"
 	
 	if(msg != ''){
-		alert(msg)		
+		alert(msg)	
 	}
 	
 	

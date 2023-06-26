@@ -347,26 +347,29 @@ public class ProfessorController {
 			cancelResult = "null";
 		}
 		
+		System.out.println(counselStatus);
+		System.out.println(cancelResult);
+		System.out.println(counselNo);
+		
 		HashMap<String, String> statusMap = new HashMap<String, String>();
 		statusMap.put("counselStatus", counselStatus);
 		statusMap.put("cancelResult", cancelResult);
 		statusMap.put("counselNo", counselNo);
 		
-		System.out.println(statusMap);
-		//공사중
-//		int result = memberService.updateCounselStatus(statusMap);
-//		
-//		System.out.println(result);
+		int result = memberService.updateCounselStatus(statusMap);
 		
-//		String msg = "";
-//		
-//		if(result < 0) {
-//			msg = "업데이트 실패";
-//			mv.addObject("m", msg).setViewName("member/professor/counselHistoryDetail");
-//		}else {
-//			Counseling updateCounsel = memberService.selectUpdateCounsel(counselNo);
-//			mv.addObject("c", updateCounsel).setViewName("member/professor/counselHistoryDetail");
-//		}
+		String msg = "";
+		
+		if(result < 0) {
+			msg = "업데이트 실패";
+			mv.addObject("msg", msg).setViewName("member/professor/counselHistory");
+		}else {
+			Counseling updateCounsel = memberService.selectUpdateCounsel(counselNo);
+			msg = "상담 정보가 변경 되었습니다.";
+			mv.addObject("c", updateCounsel);
+			mv.addObject("msg", msg);
+			mv.setViewName("member/professor/counselHistoryDetail");
+		}
 		
 		return mv;
 	}
