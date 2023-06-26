@@ -1,6 +1,9 @@
 package com.univ.fin.member.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
@@ -13,16 +16,25 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
+import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.ProfessorRest;
+import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
+import com.univ.fin.money.model.vo.RegistPay;
+
+import lombok.Builder;
 
 
 @Controller
@@ -146,7 +158,6 @@ public class AdminController {
 	@RequestMapping(value="classSearchList.ad",produces="application/json; charset = UTF-8")
 	public String selectSearchClassList(Classes c,String category,String keyword) {
 		
-		
 		if(!keyword.equals("")) {
 			switch(category) {//검색 카테고리에 따라 키워드 담기
 			case "professor": c.setProfessorNo(keyword);
@@ -256,5 +267,160 @@ public class AdminController {
 		
 		return "redirect:calendarView.ad";
 	}
+	
+	//학생 휴,복학 신청 관리 페이지 이동
+	@RequestMapping("stuRestList.ad")
+	public String selectStuRestList(Model model) {
+		
+		ArrayList<Counseling> list = memberService.selectCounAllStuList();
+		
+		model.addAttribute("list",list);
+		
+		return "member/admin/ad_st_rest_list";
+	}
+	
+	//학생 휴,복학 신청 상세보기 페이지 이동
+	@RequestMapping("stuRestDetailView.ad")
+	public String selectStuRestDetail(int rno,Model model) throws ParseException {
+		
+		//휴,복학 신청 정보 조회
+		StudentRest sr =memberService.selectStuRestDetail(rno);
+		
+		String studentNo = sr.getStudentNo(); //신청 학생 학번
+		
+		//학생 정보 조회
+		Student s = memberService.selectStudentInfo(studentNo);
+		
+		//휴학 횟수
+		int restCount = memberService.selectRestCount(studentNo);
+		
+		if(s.getStatus().equals("재학")) {//학생이 휴학 상태가 아니면
+			Date startDate = sr.getStartDate(); //휴,복학 시작날짜
+			String classYear =startDate.toString().substring(0, startDate.toString().indexOf("-")); //해당 년도만 뽑기
+			int classTerm ; //해당 학기
+			
+			//학기를 나누는 기준 (학사일정 생기면 아마 거기서 가져올 예정)
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); //String Date로 바꿈
+			Date termChange = formatter.parse("2023-06-30");
+			
+			if(startDate.after(termChange)) {//6월30일이 넘으면 2학기 6월30일도 1학기임
+				classTerm = 2;
+			}else {
+				classTerm = 1;
+			}
+			//학번,해당년도,학기 담기
+			RegistPay rp = RegistPay.builder().studentNo(studentNo).classYear(classYear).classTerm(classTerm).build();
+			//등록금 정보 조회
+			RegistPay checkRp = memberService.checkRegPay(rp);
+			
+			model.addAttribute("rp",checkRp); //등록금 정보
+		}else if(sr.getCategory().equals("휴학연장")) {//휴학연장이면 그전 상담 정보도 가져와야함
+			StudentRest sr2 = memberService.selectRestInfo(studentNo);
+			model.addAttribute("sr2",sr2); //연장 전 휴학 정보
+		}
+		
+		//담아 가기
+		model.addAttribute("sr",sr); //휴,복학 신청 정보
+		model.addAttribute("s",s); //학생 정보
+		model.addAttribute("rcount",restCount); //휴학횟수
+		
+		return "member/admin/ad_st_rest_detail";
+	}
+	
+	//학생 휴,복학 승인
+	@RequestMapping("updateRestPermit.ad")
+	public String updateStuRestPermit(StudentRest sr) {
+		
+		int result = memberService.updateStuRestPermit(sr);
+		
+		if(result>0) {
+			
+		}else {
+			
+		}
+		
+		return "redirect:stuRestList.ad";
+	}
+	
+	//학생 휴,복학 반려
+	@RequestMapping("updateRestRetire.ad")
+	public String updateStuRestRetire(int restNo) {
+		
+		int result = memberService.updateStuRestRetire(restNo);
+			
+		if(result>0) {
+			
+		}else {
+			
+		}
+		return "redirect:stuRestList.ad";
+	}
+	
+	//학생 휴,복학 리스트 검색 조회
+	@ResponseBody
+	@RequestMapping(value="searchStuRestList.ad",produces="application/json; charset=UTF-8")
+	public String selectSearchStuRestList(String status, String category 
+										, @RequestParam(value = "start",defaultValue = "1900-01-01")String start
+										, @RequestParam(value = "end",defaultValue = "2999-12-31")String end
+										, String searchType, String keyword) {
+		
+		HashMap<String, String> set = new HashMap<String, String>();
+		set.put("status", status);
+		set.put("category",category);
+		set.put("start",start);
+		set.put("end",end);
+		set.put(searchType,keyword);
+		
+		ArrayList<StudentRest> list = memberService.selectSearchStuRestList(set);
+		
+		//Gson Date format 설정
+		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+		
+		return gson.toJson(list);
+	}
+	
+	//임직원 안식,퇴직 신청 관리 페이지 이동
+	@RequestMapping("proRestList.ad")
+	public String selectProRestList(Model model) {
+		
+		ArrayList<ProfessorRest> list = memberService.selectCounAllProList();
+		
+		model.addAttribute("list",list);
+		
+		return "member/admin/ad_pro_rest_list";
+	}
+	
+	//임직원 안식,퇴직 신청 상세보기
+	@RequestMapping("proRestDetail.ad")
+	public String selectProRestDetail(int restNo,Model model) {
+		
+		//안식,퇴직 신청 정보 가져오기
+		ProfessorRest pr = memberService.selectProRestDetail(restNo);
+		
+		//임직원 정보 가져오기
+		Professor p = memberService.selectProfessorForNo(pr.getProfessorNo());
+		
+		model.addAttribute("pr",pr);
+		model.addAttribute("p",p);
+		
+		return "member/admin/ad_pro_rest_detail";
+	}
+	
+	//임직원 안식,퇴직 업데이트
+	@RequestMapping("updateProRest.ad")
+	public String updateProfessorRest(ProfessorRest pr) {
+		System.out.println(pr);
+		int result = memberService.updateProfessorRest(pr);
+		
+		if(result>0) {
+			System.out.println("성공");
+		}else {
+			System.out.println("실패");
+		}
+		
+		return "redirect:proRestList.ad";
+	}
+	
+	
 }
 
