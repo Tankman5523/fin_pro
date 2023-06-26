@@ -750,9 +750,9 @@ public class MemberServiceImpl implements MemberService{
 
 	// (교수) 상담 상세 조회
 	@Override
-	public Counseling selectCounselDetail(HashMap<String, String> counselDtMap) {
+	public Counseling selectCounselDetail(String counselNo) {
 
-		return memberDao.selectCounselDetail(sqlSession, counselDtMap);
+		return memberDao.selectCounselDetail(sqlSession, counselNo);
 	}
 
 
@@ -786,11 +786,6 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.updateCounselStatus(sqlSession, statusMap);
 	}
 
-	// (교수) 업데이트 후 재조회
-	@Override
-	public Counseling selectUpdateCounsel(String counselNo) {
-		return memberDao.selectUpdateCounsel(sqlSession, counselNo);
-	}
 
 }
 

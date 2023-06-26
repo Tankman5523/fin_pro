@@ -321,19 +321,9 @@ public class ProfessorController {
 	
 	// (교수) 상담 상세 조회
 	@RequestMapping("counselDetail.pr")
-	public ModelAndView selectCounselDetail(@RequestParam("cno") String counselNo
-									, @RequestParam("sno") String studentNo
-									, @RequestParam("application") String application
-									, @RequestParam("request") String request
-									, ModelAndView mv) {
+	public ModelAndView selectCounselDetail(@RequestParam("cno") String counselNo, ModelAndView mv) {
 		
-		HashMap<String, String> counselDtMap = new HashMap<String, String>();
-		counselDtMap.put("counselNo", counselNo);
-		counselDtMap.put("studentNo", studentNo);
-		counselDtMap.put("application", application);
-		counselDtMap.put("request", request);
-		
-		Counseling counsel = memberService.selectCounselDetail(counselDtMap);
+		Counseling counsel = memberService.selectCounselDetail(counselNo);
 	
 		mv.addObject("c", counsel).setViewName("member/professor/counselHistoryDetail");
 		return mv;
@@ -364,9 +354,9 @@ public class ProfessorController {
 			msg = "업데이트 실패";
 			mv.addObject("msg", msg).setViewName("member/professor/counselHistory");
 		}else {
-			Counseling updateCounsel = memberService.selectUpdateCounsel(counselNo);
+			Counseling counsel = memberService.selectCounselDetail(counselNo);
 			msg = "상담 정보가 변경 되었습니다.";
-			mv.addObject("c", updateCounsel);
+			mv.addObject("c", counsel);
 			mv.addObject("msg", msg);
 			mv.setViewName("member/professor/counselHistoryDetail");
 		}
