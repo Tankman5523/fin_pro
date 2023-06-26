@@ -63,15 +63,14 @@
 	                        <option value="class">과목명</option>
 	                    </select>
 	                    <input type="text" name="keyword" id="keyword">
-	                    <button type="button" onclick="searchClassList();" class="btn btn-secondary">조회</button>
+	                    <button type="button" onclick="searchClassList();" class="btn btn-secondary btn-sm" style="margin-bottom:5px;">조회</button>
 	                </div>
                 
                 <div style="">
                 	<button type="button" class="btn btn-primary" id="allPermit">일괄 개설</button>
                 </div>
-                <div>
-	
-                    <table id="board_list" border="1" style="width:100%; text-align: center; margin-top:5%">
+                <div style="width:100%; height:730px; overflow:auto">
+                    <table id="board_list" border="1" style="width:100%;text-align: center; margin-top:1%">
                         <thead>
                             
                             <tr>

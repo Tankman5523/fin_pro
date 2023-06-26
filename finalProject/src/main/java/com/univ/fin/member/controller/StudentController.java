@@ -317,7 +317,7 @@ public class StudentController {
 		ArrayList<Counseling> list = memberService.selectCounStuList(studentNo);
 		
 		m.addAttribute("list",list);
-		
+		System.out.println(list);
 		return "member/student/st_counseling_list";
 	}
 	
@@ -454,7 +454,6 @@ public class StudentController {
 			
 		ArrayList<Counseling> list = memberService.selectSearchCounseling(map);
 		System.out.println(list);
-		
 		return new Gson().toJson(list);
 		
 		
@@ -598,7 +597,6 @@ public class StudentController {
 	@RequestMapping("studentRestList.st")
 	public String selectStuRestList (HttpSession session,Model model) {
 		
-		
 		String studentNo = ((Student)session.getAttribute("loginUser")).getStudentNo();
 		
 		ArrayList<StudentRest> list = memberService.selectStuRestList(studentNo);
@@ -636,9 +634,7 @@ public class StudentController {
 	@RequestMapping(value="studentCheckRegistPay.st",produces = "application/json; charset=UTF-8")
 	public String checkReg (RegistPay rp) {
 		
-		
 		RegistPay checkRp = memberService.checkRegPay(rp);
-		
 		
 		return new Gson().toJson(checkRp);
 	}
@@ -646,8 +642,6 @@ public class StudentController {
 	//휴,복학 신청 인서트
 	@RequestMapping(value="studentRestInsert.st",method = RequestMethod.POST)
 	public String insertStuRest(StudentRest sr,Model model) {
-		
-		System.out.println("인서트 자료"+sr);
 		
 		int result = memberService.insertStuRest(sr);
 		

@@ -283,4 +283,32 @@ public interface MemberService {
 	// 학사일정 관리 -> 학사일정 추가
 	int insertCalendar(Calendar c);
 
+	// (관리자) 학생 휴,복학 신청 리스트 조회
+	ArrayList<Counseling> selectCounAllStuList();
+
+	// (관리자) 임직원 안식,퇴직 신청 리스트 조회
+	ArrayList<ProfessorRest> selectCounAllProList();
+
+	// (관리자) 학생 휴,복학 신청 상세보기
+	StudentRest selectStuRestDetail(int rno);
+
+	// 학번으로 학생 정보 조회 해오기
+	Student selectStudentInfo(String studentNo);
+
+	// (관리자)학생 휴,복학 승인
+	int updateStuRestPermit(StudentRest sr);
+	
+	// (관리자)학생 휴,복학 반려(비허가)
+	int updateStuRestRetire(int restNo);
+
+	// (관리자) 학생 휴,복학 목록 검색 
+	ArrayList<StudentRest> selectSearchStuRestList(HashMap<String, String> set);
+	
+	// (관리자) 임직원 안식,퇴직 정보 조회
+	ProfessorRest selectProRestDetail(int restNo);
+
+	// (관리자) 임직원 안식,퇴직 업데이트
+	int updateProfessorRest(ProfessorRest pr);
+
+
 }

@@ -20,4 +20,5 @@ public class StudentRest {
 	private Date startDate;//START_DATE	DATE
 	private Date endDate;//END_DATE	DATE
 	private String status;//STATUS	VARCHAR2(2 BYTE)
+	private String studentName; //학생 이름
 }

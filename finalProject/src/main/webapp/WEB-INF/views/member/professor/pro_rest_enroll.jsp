@@ -87,9 +87,9 @@
     		var today = new Date();//현재 날짜
     		var enter = new Date('${loginUser.entranceDate}');//입사일
     		var diff = Math.abs(today.getTime()-enter.getTime());
-    		diff = Math.ceil((diff / (1000 * 60   * 60 * 24)));//근속일
+    		diff = Math.ceil(diff / (1000 * 60 * 60 * 24));//근속일
     		
-    		var jobYear = Math.floor((diff/365)*100)/100; //근속 년수
+    		var jobYear = Math.floor(((diff/365)*100)/100); //근속 년수
     		
     		$("#jobYear").val(jobYear+"년"+"("+diff+"일)");
     	})

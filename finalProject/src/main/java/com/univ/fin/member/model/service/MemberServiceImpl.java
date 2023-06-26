@@ -739,4 +739,66 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.insertCalendar(sqlSession, c);
 	}
 
+	//(관리자) 학생 휴,복학 신청 리스트 조회
+	@Override
+	public ArrayList<Counseling> selectCounAllStuList() {
+		ArrayList<Counseling> list = memberDao.selectCounAllStuList(sqlSession);
+		return list;
+	}
+
+	//(관리자) 임직원 안식,퇴직 신청 리스트 조회
+	@Override
+	public ArrayList<ProfessorRest> selectCounAllProList() {
+		ArrayList<ProfessorRest> list = memberDao.selectCounAllProList(sqlSession);
+		return list;
+	}
+
+	//(관리자) 학생 휴,복학 신청 상세보기
+	@Override
+	public StudentRest selectStuRestDetail(int rno) {
+		StudentRest sr = memberDao.selectStuRestDetail(sqlSession,rno);
+		return sr;
+	}
+
+	// 학번으로 학생 정보 조회 해오기
+	@Override
+	public Student selectStudentInfo(String studentNo) {
+		Student s = memberDao.selectStudentInfo(sqlSession,studentNo);
+		return s;
+	}
+
+	// (관리자)생 휴,복학 승인
+	@Override
+	public int updateStuRestPermit(StudentRest sr) {
+		int result = memberDao.updateStuRestPermit(sqlSession,sr);
+		return result;
+	}
+
+	// (관리자)생 휴,복학 반려(비허가)
+	@Override
+	public int updateStuRestRetire(int restNo) {
+		int result = memberDao.updateStuRestRetire(sqlSession,restNo);
+		return result;
+	}
+
+	//(관리자) 임직원 안식,퇴직 정보 조회
+	@Override
+	public ProfessorRest selectProRestDetail(int restNo) {
+		ProfessorRest pr = memberDao.selectProRestDetail(sqlSession,restNo);
+		return pr;
+	}
+
+	// (관리자) 임직원 안식,퇴직 업데이트
+	@Override
+	public int updateProfessorRest(ProfessorRest pr) {
+		int result = memberDao.updateProfessorRest(sqlSession,pr);
+		return result;
+	}
+
+	// (관리자) 학생 휴,복학 목록 검색 
+	@Override
+	public ArrayList<StudentRest> selectSearchStuRestList(HashMap<String, String> set) {
+		return memberDao.selectSearchStuRestList(sqlSession,set);
+	}
+
 }

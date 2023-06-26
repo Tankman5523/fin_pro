@@ -60,7 +60,7 @@
 			                                <td>${c.reason }</td>
 			                                <td>${c.startDate }</td>
 			                                <td>${c.endDate }</td>
-			                                <td>${c.status }</td>
+			                                <td>${c.status eq 'B'? '처리중':c.status eq 'Y'?'승인':'비승인'}</td>
 			                            </tr>
 		                        	</c:forEach>
                         		</c:when>

@@ -151,10 +151,20 @@
 	                        </td>
 	                    </tr>                    
 	                    <tr>
-	                        <td class="litle_title">상담요청내용</td>
-	                        <td colspan="3">
-	                            <textarea name="counselContent" id="counselContent" cols="100" rows="10" style="resize: none;">${c.counselContent }</textarea>
-	                        </td>
+	                    	<c:choose>
+	                    	<c:when test="${empty c.counselResult}">
+		                        <td class="litle_title">상담요청내용</td>
+		                        <td colspan="3">
+		                            <textarea name="counselContent" id="counselContent" cols="100" rows="10" style="resize: none;">${c.counselContent }</textarea>
+		                        </td>
+	                    	</c:when>
+	                    	<c:otherwise>
+	                    		<td class="litle_title">상담반려이유</td>
+		                        <td colspan="3">
+		                            <textarea name="counselContent" id="counselContent" cols="100" rows="10" style="resize: none;">${c.counselResult }</textarea>
+		                        </td>
+	                    	</c:otherwise>
+	                    	</c:choose>
 	                    </tr>
 	            
 	                
@@ -169,7 +179,7 @@
     </div>
     <script>
     	var area = '${c.counselArea}'; //선택했었던 상담영역
-    	var status = "${c.status}"; //상담완료 여부
+    	var status = '${c.status}'; //상담완료 여부
     	$(function(){ //작성할떄 상담영역 골라주고 못바꾸게 하기
     		$("input[name=counselArea]").each(function(){
     			if($(this).eq(0).val()==area){
