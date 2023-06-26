@@ -301,5 +301,11 @@ public interface MemberService {
 	// 메인 -> 공지사항 조회
 	ArrayList<Notice> selectMainNotice();
 
+	// (교수) 상담 상태 변경
+	int updateCounselStatus(HashMap<String, String> statusMap);
+
+	// (교수) 업데이트 후 재조회
+	Counseling selectUpdateCounsel(String counselNo);
+
 
 }

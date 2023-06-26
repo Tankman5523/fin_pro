@@ -570,4 +570,14 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectMainNotice");
 	}
 
+	//(교수) 상담 상태 변경
+	public int updateCounselStatus(SqlSessionTemplate sqlSession, HashMap<String, String> statusMap) {
+		return sqlSession.update("memberMapper.updateCounselStatus", statusMap);
+	}
+
+	// (교수) 업데이트 후 재조회
+	public Counseling selectUpdateCounsel(SqlSessionTemplate sqlSession, String counselNo) {
+		return sqlSession.selectOne("memberMapper.selectUpdateCounsel", counselNo);
+	}
+
 }
