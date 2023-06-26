@@ -15,7 +15,7 @@
                     <span style="margin: 0 auto;">강의관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="classCreateSelectt.pr">강의개설신청 내역</a>
+                    <a href="classCreateSelect.pr">강의개설신청 내역</a>
                 </div>
                 <div class="child_title">
                     <a href="classCreateEnroll.pr">강의 개설 신청</a>

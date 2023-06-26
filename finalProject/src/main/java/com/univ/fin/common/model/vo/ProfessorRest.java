@@ -11,14 +11,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StudentRest {
+public class ProfessorRest {
 	private int restNo;//REST_NO	NUMBER
-	private String studentNo;//STUDENT_NO	VARCHAR2(30 BYTE)
-	private String category;//CATEGORY	VARCHAR2(20 BYTE)
-	private String reason;//REASON	VARCHAR2(100 BYTE)
+	private String professorNo;//PROFESSOR_NO	VARCHAR2(30 BYTE)
+	private int category;//CATEGORY	NUMBER (0:퇴직, 1:안식)
 	private Date requestDate;//REQUEST_DATE	DATE
 	private Date startDate;//START_DATE	DATE
 	private Date endDate;//END_DATE	DATE
+	private String reason;//REASON	VARCHAR2(600 BYTE)
 	private String status;//STATUS	VARCHAR2(2 BYTE)
-	private String studentName; //학생 이름
 }

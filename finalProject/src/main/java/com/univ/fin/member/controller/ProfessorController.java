@@ -16,16 +16,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.template.SaveFile;
-import org.springframework.web.bind.annotation.ResponseBody;
-import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Grade;
+import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 
@@ -303,11 +304,53 @@ public class ProfessorController {
 		return mv;
 	}
 	
+	//안식,퇴직 신청 조회 페이지 이동
+	@RequestMapping("professorRestList.pr")
+	public String selectProRestList(HttpSession session,Model model) {
+		
+		String professorNo = ((Professor)session.getAttribute("loginUser")).getProfessorNo();
+		
+		ArrayList<ProfessorRest> list = memberService.selectRestListPro(professorNo);
+		
+		model.addAttribute("list",list);
+		
+		return "member/professor/pro_rest_list";
+	}
+	
+	//안식 신청 페이지로 이동
+	@RequestMapping("professorRestEnroll.pr")
+	public String enrollRestForm() {
+		
+		return "member/professor/pro_rest_enroll";
+	}
+	
+	//퇴직 신청 페이지로 이동
+	@RequestMapping("professorRetireEnroll.pr")
+	public String enrollRetireForm() {
+		
+		return "member/professor/pro_retire_enroll";
+	}
+	
+	//안식,퇴직 신청 인서트
+	@RequestMapping("professorRestRetire.pr")
+	public String insertProRest(ProfessorRest pr) {
+		
+		if(pr.getEndDate()!=null) {//퇴직은 종료일을 안받기 때문에 안식이라는 뜻
+			pr.setCategory(1);//카테고리 안식(1) 담음
+		}else {//퇴직일떄
+			pr.setCategory(0);//카테고리에 퇴직(0) 담음
+		}
+		
+		int result = memberService.insertProRest(pr);
+		
+		return "redirect:professorRestList.pr";
+	}
+	
 	// (교수) 상담조회
 	@ResponseBody
 	@PostMapping(value = "selectCounsel.pr", produces = "application/json; charset=UTF-8;")
 	public String selectCounselList(String counselType, String professorNo, String startDate, String endDate, ModelAndView mv) {
-		
+	
 		HashMap<String, String> counselMap = new HashMap<String, String>();
 		counselMap.put("counselType", counselType);
 		counselMap.put("startDate", startDate);

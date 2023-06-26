@@ -16,10 +16,12 @@
         text-align: center;
         float: left;
         margin: 5px;
-        margin-left : 30px
+        margin-top : 9px;
+        margin-left : 30px;
     }
     
     td>input,textarea{
+    	text-align:center;
         border: 0px;
     }
     .litle_title{
@@ -82,11 +84,9 @@
                     <table border="1" style="width: 80%; text-align: center;">
                         <tr style="width: 1;">
                             <td class="litle_title">상담교직원</td>
-                            <td class="coun_input">
-                                <label for="pro_modal">
-                                    <input type="text" name="professor" id="pro_name" style="border:0px;" readonly>
-                                </label>
-                                <button type="button" id="pro_modal">돋보기</button>
+                            <td class="coun_input" align="right">
+                                <input type="text" name="professor" id="pro_name" style="border:0px; margin-right: 13px" readonly >
+                                <button type="button" id="pro_modal"><i class="fa-solid fa-magnifying-glass"></i></button>
                                 
                             </td>
                             <td class="litle_title">학생명</td>
@@ -112,7 +112,7 @@
                         </tr>
                         <tr>
                             <td class="litle_title">상담희망일자</td>
-                            <td class="coun_input"><input type="text" name="requestDate" class="datepicker" readonly></td>
+                            <td class="coun_input"><input type="text" name="requestDate" class="datepicker" required></td>
                             <td class="litle_title">상담신청일자</td>
                             <td class="coun_input"><input type="text"  id="today" readonly></td>
                         </tr>
@@ -122,7 +122,7 @@
                                 <ul class="counselingCategory">
                                     <li>
                                         <label>
-                                            <input type="radio" name="counselArea" value="진로(취업)">
+                                            <input type="radio" name="counselArea" value="진로(취업)" required>
                                             	진로(취업)
                                         </label>
                                     </li>
@@ -180,7 +180,7 @@
                         <tr>
                             <td class="litle_title">상담요청내용</td>
                             <td colspan="3">
-                                <textarea name="counselContent" cols="100" rows="10" style="resize: none;"></textarea>
+                                <textarea name="counselContent" cols="100" rows="10" style="resize: none;" required></textarea>
                             </td>
                         </tr>
                     </table>
