@@ -1,6 +1,7 @@
 package com.univ.fin.member.model.dao;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -9,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
-import com.univ.fin.common.model.vo.Calendar;
+import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -20,6 +21,7 @@ import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
+import com.univ.fin.main.model.vo.Notice;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
@@ -65,6 +67,11 @@ public class MemberDao {
 	//비밀번호 초기화 - 비밀번호 변경 메소드 (임직원)
 	public int changePwd2(SqlSessionTemplate sqlSession, Professor pr) {
 		return sqlSession.update("memberMapper.changePwd2", pr);
+	}
+	
+	//수강신청 기간인지 체크
+	public ArrayList<CalendarVo> chkRegCal(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.chkRegCal");
 	}
 	
 	//수강신청 - 수강신청내역조회 (로그인 학생의 수강신청 년도/학기 추출)
@@ -305,6 +312,11 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectProfessorTimetable", map);
 	}
 	
+	// 기간 확인
+	public int checkPeriod(SqlSessionTemplate sqlSession, String string) {
+		return sqlSession.selectOne("memberMapper.checkPeriod", string);
+	}
+	
 	// 성적관리 -> 학점별로 몇명이 해당되는지
 	public HashMap<String, String> countStudentGrade(SqlSessionTemplate sqlSession, int classNo) {
 		return sqlSession.selectOne("memberMapper.countStudentGrade", classNo);
@@ -517,6 +529,7 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.classRatingAverage", cr);
 	}
 
+
 	//(교수) 안식,퇴직 신청 등록
 	public int insertProRest(SqlSessionTemplate sqlSession, ProfessorRest pr) {
 		
@@ -529,13 +542,19 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectRestListPro",professorNo);
 	}
 	
+	// (교수) 상담조회
+	public ArrayList<Counseling> professorSelectCounseling(SqlSessionTemplate sqlSession, HashMap<String, String> counselMap) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.professorSelectCounseling", counselMap);
+	}
+	
 	// 학사일정 관리 -> 학사일정 조회
 	public ArrayList<HashMap<String, String>> calendarList(SqlSessionTemplate sqlSession) {
 		return (ArrayList)sqlSession.selectList("memberMapper.calendarList");
 	}
 
 	// 학사일정 관리 -> 학사일정 추가
-	public int insertCalendar(SqlSessionTemplate sqlSession, Calendar c) {
+	public int insertCalendar(SqlSessionTemplate sqlSession, CalendarVo c) {
 		return sqlSession.insert("memberMapper.insertCalendar", c);
 	}
 
@@ -589,6 +608,43 @@ public class MemberDao {
 	// (관리자) 학생 휴,복학 목록 검색
 	public ArrayList<StudentRest> selectSearchStuRestList(SqlSessionTemplate sqlSession, HashMap<String, String> set) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectSearchStuRestList",set);
+	}
+	
+	// (교수) 상담 상세 조회
+	public Counseling selectCounselDetail(SqlSessionTemplate sqlSession, HashMap<String, String> counselDtMap) {
+		 
+		return sqlSession.selectOne("memberMapper.selectCounselDetail", counselDtMap);
+	}
+	
+	// 학사일정 관리 -> 학사일정 수정
+	public int updateCalendar(SqlSessionTemplate sqlSession, CalendarVo c) {
+		return sqlSession.update("memberMapper.updateCalendar", c);
+	}
+
+	// 학사일정 관리 -> 학사일정 삭제
+	public int deleteCalendar(SqlSessionTemplate sqlSession, CalendarVo c) {
+		return sqlSession.update("memberMapper.deleteCalendar", c);
+	}
+	
+	// 메인 -> 학사일정 조회
+	public ArrayList<HashMap<String, String>> yearCalendarList(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.yearCalendarList");
+	}
+
+	// 메인 -> 공지사항 조회
+	public ArrayList<Notice> selectMainNotice(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectMainNotice");
+	}
+
+	//(교수) 상담 상태 변경
+	public int updateCounselStatus(SqlSessionTemplate sqlSession, HashMap<String, String> statusMap) {
+		return sqlSession.update("memberMapper.updateCounselStatus", statusMap);
+	}
+
+	// (교수) 업데이트 후 재조회
+	public Counseling selectUpdateCounsel(SqlSessionTemplate sqlSession, String counselNo) {
+		return sqlSession.selectOne("memberMapper.selectUpdateCounsel", counselNo);
+
 	}
 
 }

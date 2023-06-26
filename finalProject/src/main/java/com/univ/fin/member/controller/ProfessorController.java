@@ -23,9 +23,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Classes;
+import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.template.SaveFile;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.ProfessorRest;
-import com.univ.fin.common.template.SaveFile;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 
@@ -207,6 +208,14 @@ public class ProfessorController {
 	// 수업관리 - 성적관리
 	@GetMapping("gradeInsert.pr")
 	public ModelAndView gradeInsertView(ModelAndView mv, HttpSession session) {
+		if(memberService.checkPeriod("성적") > 0) { // 성적입력 가능한 기간인지 확인
+			session.setAttribute("check", "possible");
+		}
+		else {
+			session.setAttribute("check", "impossible");
+			
+		}
+		
 		Professor st = (Professor)session.getAttribute("loginUser");
 		String professorNo = st.getProfessorNo();
 		ArrayList<String> classTerm = memberService.selectProfessorClassTerm(professorNo); // 강의한 학년도, 학기
@@ -295,13 +304,6 @@ public class ProfessorController {
 		return mv;
 	}
 	
-	//상담관리 조건 검색
-	@PostMapping("selectCounsel.pr")
-	public String selectCounselList(Model model) {
-		
-		return null;
-	}
-	
 	//안식,퇴직 신청 조회 페이지 이동
 	@RequestMapping("professorRestList.pr")
 	public String selectProRestList(HttpSession session,Model model) {
@@ -344,4 +346,75 @@ public class ProfessorController {
 		return "redirect:professorRestList.pr";
 	}
 	
+	// (교수) 상담조회
+	@ResponseBody
+	@PostMapping(value = "selectCounsel.pr", produces = "application/json; charset=UTF-8;")
+	public String selectCounselList(String counselType, String professorNo, String startDate, String endDate, ModelAndView mv) {
+	
+		HashMap<String, String> counselMap = new HashMap<String, String>();
+		counselMap.put("counselType", counselType);
+		counselMap.put("startDate", startDate);
+		counselMap.put("endDate", endDate);
+		counselMap.put("professorNo", professorNo);
+		
+		ArrayList<Counseling> list = memberService.professorSelectCounseling(counselMap);
+
+		return new Gson().toJson(list);			
+	}
+	
+	// (교수) 상담 상세 조회
+	@RequestMapping("counselDetail.pr")
+	public ModelAndView selectCounselDetail(@RequestParam("cno") String counselNo
+									, @RequestParam("sno") String studentNo
+									, @RequestParam("application") String application
+									, @RequestParam("request") String request
+									, ModelAndView mv) {
+		
+		HashMap<String, String> counselDtMap = new HashMap<String, String>();
+		counselDtMap.put("counselNo", counselNo);
+		counselDtMap.put("studentNo", studentNo);
+		counselDtMap.put("application", application);
+		counselDtMap.put("request", request);
+		
+		Counseling counsel = memberService.selectCounselDetail(counselDtMap);
+	
+		mv.addObject("c", counsel).setViewName("member/professor/counselHistoryDetail");
+		return mv;
+	}
+	
+	@RequestMapping("updateCounselStatus")
+	public ModelAndView updateCounselStatus(@RequestParam("counsel-status") String counselStatus
+											,String cancelResult, String counselNo, ModelAndView mv) {
+		
+		if(cancelResult.isEmpty()) {
+			cancelResult = "null";
+		}
+		
+		System.out.println(counselStatus);
+		System.out.println(cancelResult);
+		System.out.println(counselNo);
+		
+		HashMap<String, String> statusMap = new HashMap<String, String>();
+		statusMap.put("counselStatus", counselStatus);
+		statusMap.put("cancelResult", cancelResult);
+		statusMap.put("counselNo", counselNo);
+		
+		int result = memberService.updateCounselStatus(statusMap);
+		
+		String msg = "";
+		
+		if(result < 0) {
+			msg = "업데이트 실패";
+			mv.addObject("msg", msg).setViewName("member/professor/counselHistory");
+		}else {
+			Counseling updateCounsel = memberService.selectUpdateCounsel(counselNo);
+			msg = "상담 정보가 변경 되었습니다.";
+			mv.addObject("c", updateCounsel);
+			mv.addObject("msg", msg);
+			mv.setViewName("member/professor/counselHistoryDetail");
+		}
+		
+		return mv;
+	}
+
 }

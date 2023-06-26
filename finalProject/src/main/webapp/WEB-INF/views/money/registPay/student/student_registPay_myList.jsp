@@ -7,6 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>학생</title>
+    <style>
+    	.readonly{
+    		background-color : lightgray;
+    	}
+    </style>
 </head>
 <body>
     <div class="wrap">
@@ -33,32 +38,24 @@
 					<h4>등록금 납입 이력</h4>
 					<br>
                     <!--이름/학번 로그인 세션에서 가져오기-->
-                    <label for="studentNo">학번</label><input type="text" name="studentNo" id="studentNo" value="${loginUser.studentNo}" readonly>
+                    <label for="studentNo">학번</label> <input type="text" class="readonly" name="studentNo" id="studentNo" value="${loginUser.studentNo}" readonly>
                     <br>
-                    <label for="studentName">이름</label><input type="text" name="studentName" id="studentName" value="${loginUser.studentName}" readonly>
+                    <label for="studentName">이름</label> <input type="text" class="readonly" name="studentName" id="studentName" value="${loginUser.studentName}" readonly>
                     <br>
-                     <label for="classYear">학년도</label>
-                    <select name="classYear" id="classYear">
-                        <option value="0">=전체=</option>
-                        <option value="2023">2023</option>
-                        <option value="2022">2022</option>
-                        <option value="2021">2021</option>
-                        <option value="2020">2020</option>
-                        <option value="2019">2019</option>
-                        <option value="2018">2018</option>
-                        <option value="2017">2017</option>
-                    </select>
+                    <label for="classYear">학년도</label>
+                    <input type="number" name="classYear" id="classYear" style="width:100px;">
                     <label for="classTerm">학기</label>
                     <select name="classTerm" id="classTerm">
                         <option value="0">=전체=</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
                     </select>
+                    
                     <!--버튼 클릭시 ajax로 값 가지고가서 처리-->
-                    <button onclick="searchMyRegist();">조회</button>
+                    <button onclick="searchMyRegist();" class="btn btn-outline-primary btn-sm">조회</button>
                     <br><br>
-                    <table id="registList" border="1" style="width: 100%;">
-                        <thead style="background-color: bisque;">
+                    <table id="registList" border="1" style="width: 100%;text-align:center;">
+                        <thead style="background-color: #4fc7ff;">
                             <tr>
                                 <th>납부일</th>
                                 <th>납부시간</th>
@@ -116,13 +113,13 @@
            			},
            			success : function(list){
            				var str = "";
-						var payDate = "";	            				
-						var payTime = "";
+						var payDate = "-";	            				
+						var payTime = "-";
 						var studentNo = "";
 						var studentName = "";
 						var inputPay = 0;
 						var regAccountNo = "";
-						var payAccountNo = "";
+						var payAccountNo = "-";
 						var payStatus = "";
 						
            				if(list[0]!=null){

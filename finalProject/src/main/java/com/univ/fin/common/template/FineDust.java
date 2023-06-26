@@ -24,7 +24,7 @@ public class FineDust {
 	public String fineDust() throws Exception {
 	
 		String url = "http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty";
-		url += "?serviceKey=LV1haHMzhSQa4G%2Fy3Z9xbZ9hC9LKdHt3g2Z4M5SQwQVcGxx6M7HRJqVs30pL9H4MdL7POcjH78%2FBspjr%2FNV1sw%3D%3D";
+		url += "?serviceKey=JgXo3POe0a3b4pTvBw8rueVqJHCR9e88WngrWVqtFnFyJLCgxTMU7sHDmeMFiWmVEFsKZXxapPzBPgf8FVTeOA%3D%3D";
 		url += "&returnType=JSON";
 		url += "&numOfRows=1";
 		url += "&pageNo=1";

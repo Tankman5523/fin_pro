@@ -7,6 +7,7 @@ import java.util.HashMap;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.member.model.vo.Student;
@@ -43,8 +44,14 @@ public class RegistServiceImpl implements RegistService{
 	}
 	
 	@Override
+	@Transactional
 	public int insertRegistPay(RegistPay r) {
-		return registDao.insertRegistPay(sqlSession,r);
+		int result1 = registDao.insertRegistPay(sqlSession,r);
+		int result2 = 0;
+		if(result1>0) {//등록금 입력 성공하면 해당학기 장학금 처리완료로 변경
+			result2=registDao.finishScholarShip(sqlSession,r);
+		}
+		return result1*result2;
 	}
 	
 	@Override
@@ -95,5 +102,17 @@ public class RegistServiceImpl implements RegistService{
 	@Override
 	public int accountCheck(String regAccountNo) {
 		return registDao.accountCheck(sqlSession,regAccountNo);
+	}
+
+	@Override
+	@Transactional
+	public int deleteRegistPay(RegistPay r) {
+		int result1 = registDao.deleteRegistPay(sqlSession,r);
+		int result2 = 0;
+		if(result1>0) {
+			result2 = registDao.returnScholarShip(sqlSession,r);
+		}
+		
+		return result1*result2;
 	}
 }

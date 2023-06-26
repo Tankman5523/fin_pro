@@ -34,9 +34,9 @@
                 </div>
             </div>
             <div id="content_1">
-				<div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
+				<div style="width: 90%;height: 90%;margin: 5%;">
                     <div>
-                        <button onclick="location.href='allList.sc'">장학금수혜내역</button> <button onclick="location.href='insert.sc'">장학금 수여</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.sc'">장학금수혜내역</button> <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.sc'">장학금 수여</button>
                         <hr>
                         <h2>장학금 수여</h2>
                     </div>
@@ -54,7 +54,7 @@
 	                                <td><label for="studentName">학생명</label></td>
 	                                <td><input type="text" name="studentName" class="readonly" id="studentName" placeholder="학번조회시 자동입력" required readonly></td>
 	                                <td><label for="studentNo">학번</label></td>
-	                                <td><input type="text" name="studentNo" id="studentNo" placeholder="S00000000(년도/번호)" > <button type="button" onclick="selectStudent();">조회</button></td>
+	                                <td><input type="text" name="studentNo" id="studentNo" placeholder="S00000000(년도/번호)" > <button class="btn btn-outline-primary btn-sm" type="button" onclick="selectStudent();">조회</button></td>
 	                            </tr>
 	                            <tr>
 	                                <td><label for="schAmount">수혜금액</label></td>
@@ -77,7 +77,7 @@
 	                                </td>
 	                            </tr>
 	                            <tr>
-	                            	<td colspan="3" align="center"><input type="submit" value="입력"></td>
+	                            	<td colspan="3" align="center"><input type="submit" value="입력" class="btn btn-outline-primary btn-sm"></td>
 	                            	<td id="message"></td>
 	                            </tr>
 	                        </table>
@@ -100,8 +100,6 @@
 	                    			}
                     			});
 	                    	});
-	                    	
-	                    	
 	                    	
                         </script>
                         
@@ -137,30 +135,37 @@
                     		}else{
                     			classTerm = 1;
                     		}
-                    		
                     		$.ajax({
                     			url : "selectForSc.st",
                     			data : {
-                    				studentNo : studentNo
+                    				studentNo : studentNo,
+                    				classYear : classYear, //
+                    				classTerm : classTerm  //
                     			},
-                    			success : function(result){//result : studentName
-                    				console.log(result);
-                    				if(result!=null){
+                    			async : true,
+                    			success : function(result){
+                    				if(result=="N"){
+                    					$("#message").html("이미 해당 학기 등록금이 입력되어있습니다.").css("color","orange");
+                    					$("#studentName").val("");
+	                    				$("#classYear").val("");
+	                    				$("#classTerm").val("");
+                    				}else if(result!=null&&result!=""){
 	                    				$("#studentName").val(result);
 	                    				$("#classYear").val(classYear);
 	                    				$("#classTerm").val(classTerm);
 	                    				$("#message").html("회원 검색 완료").css("color","blue");
                     				}else{
                     					$("#message").html("올바른 학번을 입력해주세요.").css("color","red");
+                    					$("#studentName").val("");
+	                    				$("#classYear").val("");
+	                    				$("#classTerm").val("");
                     				}
                     			},
                     			error: function(){
-                    				alert("통신오류");
+                    				alert("통신 오류");
                     			}
                     		});
                     	}
-                    	
-                    	
                     
                     </script>
                     

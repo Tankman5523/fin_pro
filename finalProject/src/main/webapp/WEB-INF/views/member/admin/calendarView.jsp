@@ -13,7 +13,6 @@
 <style>
 	/* body 스타일 */
 	html, body {
-/* 		overflow: hidden; */
 		font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
 		font-size: 14px;
 	}
@@ -24,18 +23,44 @@
 		padding-right: 1em;
 	}
 	
-	.fc-button-primary {
-		background-color: #4fc7ff !important;
-		color: black;
-		border: 0 !important;
-	}
+ 	.fc-button-primary {
+ 		background-color: white !important;
+ 		color: black !important;
+ 		border: 2px solid #ffbf00 !important;
+ 		font-weight: bold !important;
+ 	}
+	
+	.fc-button-active{
+		border-color: #ffbf00 !important;
+		background-color: #ffbf00 !important;
+		color: black !important;
+		font-weight: bold !important;
+	 }
 	
 	.fc-button-primary:active {
-		border: 2px solid red !important;
+		border: none;
 	}
 	
 	.fc-daygrid-day-number, .fc-col-header-cell-cushion {
 		color: black;
+	}
+	
+	/* 일요일 날짜 빨간색 */
+	.fc-day-sun a {
+	  color: red;
+	  text-decoration: none;
+	}
+	
+	/* 토요일 날짜 파란색 */
+	.fc-day-sat a {
+	  color: blue;
+	  text-decoration: none;
+	}
+	
+	/*more버튼*/ 
+	.fc-daygrid-more-link.fc-more-link {
+		color: #000;
+		font-weight: bold;
 	}
 	
 	#calendar-container {
@@ -60,13 +85,23 @@
 		width: 100px;
 		height: 35px;
 		border-radius: 10px;
-		background-color: #4fc7ff;
+		background-color: #ffbf00;
 		border: 0;
-		color: white;
+		font-weight: bold;
+	}
+	
+	.modalBtn-area {
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 	
 	#insert {
-		margin: 0 auto !important;
+		margin: 0 auto;
+	}
+	
+	#update, #delete {
+		margin: 0 3%;
 	}
 </style>
 </head>
@@ -87,10 +122,10 @@
                     <span style="margin: 0 auto;">강의관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="#">학생 관리</a>
+                    <a href="enrollStudent.ad">학생 관리</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">임직원 관리</a>
+                    <a href="enrollProfessor.ad">임직원 관리</a>
                 </div>
                  <div class="child_title">
                     <a href="calendarView.ad" style="color:#00aeff; font-weight: 550;">학사일정 관리</a>
@@ -101,7 +136,7 @@
             		<div id="calendar"></div>
             	</div>
             	<div class="btn-area">
-            		<button id="btn" onclick="$('#myModal').modal('show');">일정 추가</button>
+            		<button id="btn" onclick="$('#myModal').modal('show'); $('#insert').css('display', 'block');">일정 추가</button>
             	</div>
             	
             	<script>
@@ -116,6 +151,7 @@
             				$("#modalContent").val("");
                 			$("#startDate").val("");
                 			$("#endDate").val("");
+                			$(".modalBtn-area>button").css("display", "none");
             			});
             			
             			var calendarEl = $("#calendar")[0];
@@ -127,8 +163,12 @@
             		          center: 'title',
             		          right: 'dayGridMonth,listWeek'
             		        },
+            		        eventClick: function(arg) {
+            		        	openUpdate(arg);
+            		        },
             				initialView: 'dayGridMonth',
             				locale: 'ko', // 한국어
+            				dayMaxEvents: true,
             				events: [ // 띄울 학사일정
             					$.ajax({
                     				url: "calendarView.ad",
@@ -143,12 +183,13 @@
 //                    								check=0;
 //                    							};
                     						calendar.addEvent({
+                    							groupId: calList[i].calendarNo,
                     							title: calList[i].title,
                     							start: calList[i].start,
                     							end: calList[i].end,
 //                     							color : $color[check],
 												color: "#" + $r + $g+ $b,
-                    							textColor : "#000000"
+                    							textColor : "#000000",
                     						});
 //                     						check++;
                     					}
@@ -161,13 +202,19 @@
             			});
             			calendar.render();
             		});
-					
-            		window.onpageshow = function(event) {
-		    		    if ( event.persisted || (window.performance && window.performance.navigation.type == 2)) {
-		    		        // Back Forward Cache로 브라우저가 로딩될 경우 혹은 브라우저 뒤로가기 했을 경우
-		    		        location.reload();
-		    		    }
-		    		};
+
+            		function openUpdate(arg) {
+            			var $start = JSON.stringify(arg.event.start);
+            			var $end = JSON.stringify(arg.event.end);
+            			
+            			$("#myModal").modal("show");
+						$("#update").css("display", "block");
+						$("#delete").css("display", "block");
+            			$("#calendarNo").val(arg.event.groupId);
+            			$("#modalContent").val(arg.event.title);
+            			$("#startDate").val($start.substring(1, $start.length-2));
+            			$("#endDate").val($end.substring(1, $end.length-2));
+            		}
             	</script>
             	
             	<!-- The Modal -->
@@ -177,13 +224,15 @@
 			        
 			                <!-- Modal Header -->
 			                <div class="modal-header">
-			                <h4 class="modal-title">학사일정 추가</h4>
+			                <h4 class="modal-title">학사일정 관리</h4>
 			                	<button type="button" class="close" onclick="$('#myModal').modal('hide');">&times;</button>
 			                </div>
 			        
 			                <!-- Modal body -->
 			                <div class="modal-body">
-			                	<form action="insertCalendar.ad" method="post">
+			                	<form action="manageCalendar.ad" method="post">
+			                		<input type="hidden" id="calendarNo" name="calendarNo">
+			                		<input type="hidden" id="check" name="check">
 			                		<fieldset>
 								                   일정 <br>
 								        <textarea id="modalContent" name="content" style="resize:none; width: 400px;" placeholder="일정을 입력하세요."></textarea> <br><br>
@@ -192,12 +241,33 @@
 			                		</fieldset>
 					                <br><br>
 					                
-					            	<button type="submit" class="btn btn-warning" id="insert">등록</button>
+					                <div class="modalBtn-area">
+						            	<button type="submit" class="btn btn-warning" id="insert" style="display: none;">등록</button>
+						            	<button type="submit" class="btn btn-warning" id="update" style="display: none;">수정</button>
+						            	<button type="submit" class="btn btn-danger" id="delete" style="display: none;">삭제</button>
+					                </div>
 			                	</form>
 			                </div>
+			                
+			                <script>
+			                	$(function() {
+			                		$("#insert").on("click", function() {
+			                			$("#calendarNo").val("0");
+			                			$("#check").val("insert");
+			                		});
+			                		
+			                		$("#update").on("click", function() {
+			                			$("#check").val("update");
+			                		});
+			                		
+			                		$("#delete").on("click", function() {
+			                			$("#check").val("delete");
+			                		});
+			                	})
+			                </script>
 			            </div>
 			        </div>
-			    </div>           
+			    </div>
             </div>
 		</div>
 	</div>

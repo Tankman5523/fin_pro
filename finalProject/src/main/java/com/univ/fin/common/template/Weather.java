@@ -15,6 +15,11 @@ import java.util.Locale;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,20 +27,31 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.WeatherVo;
 
-
+@EnableCaching
 @Controller
 public class Weather {
 
+	@Autowired
+	CacheManager cacheManager;
+	
+	/* ========== (캐시 삭제후 데이터 갱신)========== */
+	@Scheduled(cron = "0 0,30 * * * *") // 매 30분,0분마다 갱신
+	public void updateShortTerm() throws Exception {
+		cacheManager.getCache("weather").clear(); //전 캐쉬 삭제
+		weather(); //갱신
+	}
+	
 	/* 날씨 정보 가공처리 */
+	@Cacheable("weather")
 	@ResponseBody
 	@RequestMapping(value="weather.api",produces="application/json; charset=UTF-8")
 	public String weather() throws Exception{
-		
-		//최저온도, 최고온도, 하늘상태
-		HashMap<String, String> h = shortTerm();
 
 		//기온, 강수형태
 		HashMap<String, String> h2 = ultraShortTerm();
+		
+		//최저온도, 최고온도, 하늘상태
+		HashMap<String, String> h = shortTerm();
 		
 		//강수, 하늘 가공처리
 		HashMap<String, String> icon = new HashMap<>();
@@ -45,7 +61,7 @@ public class Weather {
 		
 		HashMap<String, String> result = new HashMap<>();
 		
-		result.put("T1H", h2.get("T1H"));			//기온
+		result.put("T1H", h2.get("T1H"));			//기온 
 		result.put("TMN", h.get("TMN"));			//최저온도
 		result.put("TMX", h.get("TMX"));			//최고온도
 		result.put("IMG", setIcon.get("img"));		//아이콘
@@ -53,7 +69,6 @@ public class Weather {
 		
 		return new Gson().toJson(result);
 	}
-	
 	
 	/* ========== 전날 추출 ========== */
 	public String yesterday() throws Exception {
@@ -70,10 +85,9 @@ public class Weather {
 		return yesterday;
 	}
 	
-	
 	/* ========== 단기 예보 ========== */
 	public HashMap<String, String> shortTerm() throws Exception {
-
+		
 		String yesterday = yesterday();
 		
 		String url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
@@ -122,10 +136,7 @@ public class Weather {
 			list.add(weather);
 		}
 		
-		//TMP - 1시간 온도
-		//TMN - 일 최저 온도
-		//TMX - 일 최고 온도
-		//SKY - 하늘상태  = 맑음(1), 구름많음(3), 흐림(4)
+		//TMP - 1시간 온도, TMN - 일 최저 온도, TMX - 일 최고 온도, SKY - 하늘상태  = 맑음(1), 구름많음(3), 흐림(4)
 		
 		String hour = new SimpleDateFormat("HH").format(new Date());
 		String setTime = hour + "00";
@@ -140,8 +151,7 @@ public class Weather {
 		String max = "";
 		
 		for(int i=0; i<list.size(); i++) {
-			
-			/* 일 최저,최고기온 추출 */
+			/* 일 최저,최고기온 추출 */ 
 			if(list.get(i).getCategory().equals("TMP")) {
 				
 				setTmp = Integer.parseInt(list.get(i).getFcstValue());
@@ -170,7 +180,6 @@ public class Weather {
 		
 		return h; 
 	}
-	
 	
 	/* ========== 초단기 실황 ========== */
 	public HashMap<String, String> ultraShortTerm() throws Exception {
@@ -215,7 +224,7 @@ public class Weather {
 		url += "&dataType=JSON";
 		url += "&nx=58";
 		url += "&ny=126";
-		
+		System.out.println("ultraShortTerm 조회시간 : " + time);
 		URL requestUrl = new URL(url);
 		
 		HttpURLConnection urlCon = (HttpURLConnection)requestUrl.openConnection();
