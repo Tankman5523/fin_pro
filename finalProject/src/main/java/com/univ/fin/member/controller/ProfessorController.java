@@ -19,21 +19,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.template.SaveFile;
 import com.univ.fin.main.model.vo.Notice;
-
-import org.springframework.web.bind.annotation.ResponseBody;
-import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Grade;
+import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
-import com.univ.fin.member.model.vo.Student;
 
 @Controller
 public class ProfessorController {
@@ -370,11 +369,53 @@ public class ProfessorController {
 		return mv;
 	}
 	
+	//안식,퇴직 신청 조회 페이지 이동
+	@RequestMapping("professorRestList.pr")
+	public String selectProRestList(HttpSession session,Model model) {
+		
+		String professorNo = ((Professor)session.getAttribute("loginUser")).getProfessorNo();
+		
+		ArrayList<ProfessorRest> list = memberService.selectRestListPro(professorNo);
+		
+		model.addAttribute("list",list);
+		
+		return "member/professor/pro_rest_list";
+	}
+	
+	//안식 신청 페이지로 이동
+	@RequestMapping("professorRestEnroll.pr")
+	public String enrollRestForm() {
+		
+		return "member/professor/pro_rest_enroll";
+	}
+	
+	//퇴직 신청 페이지로 이동
+	@RequestMapping("professorRetireEnroll.pr")
+	public String enrollRetireForm() {
+		
+		return "member/professor/pro_retire_enroll";
+	}
+	
+	//안식,퇴직 신청 인서트
+	@RequestMapping("professorRestRetire.pr")
+	public String insertProRest(ProfessorRest pr) {
+		
+		if(pr.getEndDate()!=null) {//퇴직은 종료일을 안받기 때문에 안식이라는 뜻
+			pr.setCategory(1);//카테고리 안식(1) 담음
+		}else {//퇴직일떄
+			pr.setCategory(0);//카테고리에 퇴직(0) 담음
+		}
+		
+		int result = memberService.insertProRest(pr);
+		
+		return "redirect:professorRestList.pr";
+	}
+	
 	// (교수) 상담조회
 	@ResponseBody
 	@PostMapping(value = "selectCounsel.pr", produces = "application/json; charset=UTF-8;")
 	public String selectCounselList(String counselType, String professorNo, String startDate, String endDate, ModelAndView mv) {
-		
+	
 		HashMap<String, String> counselMap = new HashMap<String, String>();
 		counselMap.put("counselType", counselType);
 		counselMap.put("startDate", startDate);
@@ -388,19 +429,9 @@ public class ProfessorController {
 	
 	// (교수) 상담 상세 조회
 	@RequestMapping("counselDetail.pr")
-	public ModelAndView selectCounselDetail(@RequestParam("cno") String counselNo
-									, @RequestParam("sno") String studentNo
-									, @RequestParam("application") String application
-									, @RequestParam("request") String request
-									, ModelAndView mv) {
+	public ModelAndView selectCounselDetail(@RequestParam("cno") String counselNo, ModelAndView mv) {
 		
-		HashMap<String, String> counselDtMap = new HashMap<String, String>();
-		counselDtMap.put("counselNo", counselNo);
-		counselDtMap.put("studentNo", studentNo);
-		counselDtMap.put("application", application);
-		counselDtMap.put("request", request);
-		
-		Counseling counsel = memberService.selectCounselDetail(counselDtMap);
+		Counseling counsel = memberService.selectCounselDetail(counselNo);
 	
 		mv.addObject("c", counsel).setViewName("member/professor/counselHistoryDetail");
 		return mv;
@@ -414,26 +445,29 @@ public class ProfessorController {
 			cancelResult = "null";
 		}
 		
+		System.out.println(counselStatus);
+		System.out.println(cancelResult);
+		System.out.println(counselNo);
+		
 		HashMap<String, String> statusMap = new HashMap<String, String>();
 		statusMap.put("counselStatus", counselStatus);
 		statusMap.put("cancelResult", cancelResult);
 		statusMap.put("counselNo", counselNo);
 		
-		System.out.println(statusMap);
-		//공사중
-//		int result = memberService.updateCounselStatus(statusMap);
-//		
-//		System.out.println(result);
+		int result = memberService.updateCounselStatus(statusMap);
 		
-//		String msg = "";
-//		
-//		if(result < 0) {
-//			msg = "업데이트 실패";
-//			mv.addObject("m", msg).setViewName("member/professor/counselHistoryDetail");
-//		}else {
-//			Counseling updateCounsel = memberService.selectUpdateCounsel(counselNo);
-//			mv.addObject("c", updateCounsel).setViewName("member/professor/counselHistoryDetail");
-//		}
+		String msg = "";
+		
+		if(result < 0) {
+			msg = "업데이트 실패";
+			mv.addObject("msg", msg).setViewName("member/professor/counselHistory");
+		}else {
+			Counseling counsel = memberService.selectCounselDetail(counselNo);
+			msg = "상담 정보가 변경 되었습니다.";
+			mv.addObject("c", counsel);
+			mv.addObject("msg", msg);
+			mv.setViewName("member/professor/counselHistoryDetail");
+		}
 		
 		return mv;
 	}

@@ -25,7 +25,7 @@
 .record-table input[type='text']{
 	width: 90%;
 	height: 35px;
-	background-color: #e7e7e7;
+	background-color: #ddd;
 	border: 1px solid black;
 	border-radius: 5px;
 	text-align: center;
@@ -45,7 +45,7 @@
 	height: 99%;
 	resize: none;
 	overflow-y: scroll;
-	background-color: #e7e7e7;
+	background-color: #ddd;
 	border: none;
 	padding: 10px;
 	margin-top: 5px;
@@ -70,12 +70,12 @@
 	cursor: pointer;
 }
 #prevBtn{
-	border: 1px solid #e7e7e7;
-	background-color: #e7e7e7;
+	border: 1px solid #cecece;
+	background-color: #cecece;
 }
 #prevBtn:hover{
-	border: 1px solid #d4d4d4;
-	background-color: #d4d4d4;
+	border: 1px solid #c0c0c0;
+	background-color: #c0c0c0;
 }
 .openModal{
 	color: white;
