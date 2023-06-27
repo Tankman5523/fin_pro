@@ -300,6 +300,15 @@ public interface MemberService {
 
 	// 학사일정 관리 -> 학사일정 삭제
 	int deleteCalendar(CalendarVo c);
+	
+	// 메인 -> 프로필 사진 조회
+	String selectProfile(HashMap<String, String> map);
+	
+	// 메인 -> 등록금 납부 조회
+	ArrayList<HashMap<String, String>> selectReg(String studentNo);
+	
+	// 메인 -> 상담신청 조회
+	ArrayList<Counseling> selectCounceling(String professorNo);
 
 	// 메인 -> 학사일정 조회
 	ArrayList<HashMap<String, String>> yearCalendarList();

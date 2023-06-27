@@ -218,6 +218,13 @@
 		<result column="CHANGE_NAME" property="changeName"/>
 		<result column="CATEGORY_NAME" property="categoryName"/>
 	</resultMap>
+	
+	<resultMap type="hashmap" id="regResultMap">
+		<result column="STUDENT_NO" property="studentNo"/>
+		<result column="CLASS_TERM" property="classTerm"/>
+		<result column="MUST_PAY" property="mustPay"/>
+		<result column="PAY_STATUS" property="payStatus"/>
+	</resultMap>
   	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
@@ -960,7 +967,7 @@
   	
   	<!-- 성적관리 -> 학점별로 몇명이 해당되는지 -->
   	<select id="countStudentGrade" parameterType="_int" resultMap="gradeCountHashMap">
-  		SELECT SUM(CLASS_NOS)/COUNT(*) AS ALL_COUNT, SUM(COUNT), NVL(SUM(CASE WHEN GRADE='A' THEN COUNT END),0) AS A_COUNT, NVL(SUM(CASE WHEN GRADE='B' THEN COUNT END),0) AS B_COUNT
+  		SELECT SUM(COUNT) AS ALL_COUNT, NVL(SUM(CASE WHEN GRADE='A' THEN COUNT END),0) AS A_COUNT, NVL(SUM(CASE WHEN GRADE='B' THEN COUNT END),0) AS B_COUNT
 		    , NVL(SUM(CASE WHEN GRADE='C' THEN COUNT END),0) AS C_COUNT, NVL(SUM(CASE WHEN GRADE='D' THEN COUNT END),0) AS D_COUNT, NVL(SUM(CASE WHEN GRADE='F' THEN COUNT END),0) AS F_COUNT
 		FROM (SELECT SUBSTR(GRADE_LEVEL,1,1) AS GRADE, COUNT(*) AS COUNT, CLASS_NOS
 		        FROM (SELECT A.STUDENT_NO, NVL(SCORE, 0) AS SCORE, NVL(GRADE_LEVEL,' ') AS GRADE_LEVEL, CLASS_NOS
@@ -1543,6 +1550,41 @@
   		DELETE FROM CALENDAR
   		WHERE CALENDAR_NO = #{calendarNo}
   	</delete>
+  	
+  	<!-- 메인 -> 프로필 사진 조회 -->
+  	<select id="selectProfile" parameterType="hashmap" resultType="string">
+  		SELECT FILE_PATH||CHANGE_NAME
+		FROM ATTACHMENT
+		LEFT JOIN STUDENT USING(FILE_NO)
+		LEFT JOIN PROFESSOR USING(FILE_NO)
+		<if test="person == 'student'">
+			WHERE STUDENT_NO = #{personNo}
+		</if>
+		<if test="person == 'professor'">
+			WHERE PROFESSOR_NO = #{personNo}
+		</if>
+  	</select>
+  	
+  	<!-- 메인 -> 등록금 납부 조회 -->
+  	<select id="selectReg" parameterType="string" resultMap="regResultMap">
+  		SELECT *
+  		FROM (SELECT STUDENT_NO, CLASS_YEAR||'-'||CLASS_TERM AS CLASS_TERM, MUST_PAY, PAY_STATUS
+				FROM REG_ACC
+				WHERE STUDENT_NO = #{studentNo}
+				ORDER BY CLASS_TERM DESC)
+		WHERE ROWNUM BETWEEN 1 AND 4
+  	</select>
+  	
+  	<!-- 메인 -> 상담신청 조회 -->
+  	<select id="selectCounceling" parameterType="string" resultMap="counselingResultMap">
+  		SELECT *
+		FROM (SELECT COUNSEL_NO, TO_CHAR(APPLICATION_DATE, 'YYYY-MM-DD') APPLICATION_DATE, STUDENT_NAME, C.STATUS
+		        FROM COUNSELING C
+		        JOIN STUDENT S USING(STUDENT_NO)
+		        WHERE C.PROFESSOR_NO = #{professorNo}
+		        ORDER BY APPLICATION_DATE DESC)
+		WHERE ROWNUM BETWEEN 1 AND 4
+  	</select>
   	
   	<!-- 메인 -> 학사일정 조회 -->
   	<select id="yearCalendarList" resultMap="calendarList">

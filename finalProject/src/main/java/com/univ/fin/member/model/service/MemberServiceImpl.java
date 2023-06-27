@@ -844,6 +844,24 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.deleteCalendar(sqlSession, c);
 	}
 	
+	// 메인 -> 프로필 사진 조회
+	@Override
+	public String selectProfile(HashMap<String, String> map) {
+		return memberDao.selectProfile(sqlSession, map);
+	}
+	
+	// 메인 -> 등록금 납부 조회
+	@Override
+	public ArrayList<HashMap<String, String>> selectReg(String studentNo) {
+		return memberDao.selectReg(sqlSession, studentNo);
+	}
+	
+	// 메인 -> 상담신청 조회
+	@Override
+	public ArrayList<Counseling> selectCounceling(String professorNo) {
+		return memberDao.selectCounceling(sqlSession, professorNo);
+	}
+	
 	// 메인 -> 학사일정 조회
 	@Override
 	public ArrayList<HashMap<String, String>> yearCalendarList() {
