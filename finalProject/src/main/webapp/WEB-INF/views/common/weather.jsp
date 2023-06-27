@@ -21,21 +21,28 @@
 	
 		$(function(){
 			
-			/* 날씨정보 */
+			/* 현재 온도 */
 			$.ajax({
 				
 				url : "weather.api",
 				
 				success : function(result){
-					$("#weather_icon").html(result.IMG);
 					$("#weather_temp").html(result.T1H + 'º');
+				}
+			});
+			
+			/* 하늘상태(아이콘),강수형태 */
+			$.ajax({
+				
+				url : "skyPty.api",
+				
+				success : function(result){
+					$("#weather_icon").html(result.IMG);
 					$("#weather_sky").html(result.SKY);
-					$("#weather_minMax").html("<span style='color:#5b8fed;'>"+ result.TMN +"º</span>" + "<span style='color : #d3d5d7;'>/</span>"+"<span style='color:#f55f5e;'>"+ result.TMX +"º</span>");
 				}
 			});
 			
 			/* 최저,최고기온  정보 추출*/
-			/*
 			$.ajax({
 				url : "tmnTmx.api",
 				success : function(result){
@@ -43,7 +50,7 @@
 				}
 				
 			});
-			*/
+			
 			/* 미세먼지, 초미세먼지 */
 			$.ajax({
 				url : "dust.api",
