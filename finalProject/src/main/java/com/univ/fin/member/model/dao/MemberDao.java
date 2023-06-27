@@ -656,5 +656,17 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.updateCounselStatus", statusMap);
 	}
 
+	// (관리자) 공지사항 관리 - 전체 공지사항 조회
+	public ArrayList<Notice> selectNoticeAllList(SqlSessionTemplate sqlSession) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.selectNoticeAllList");
+	}
+
+	// (관리자) 공지사항 관리 - 공지사항 검색
+	public Notice searchNotice(SqlSessionTemplate sqlSession, HashMap<String, String> noticeMap) {
+		
+		return sqlSession.selectOne("memberMapper.searchNotice", noticeMap);
+	}
+
 
 }
