@@ -45,7 +45,9 @@
             <div id="content_1">
 				<div style="width: 90%;height: 90%;margin: 5%;">
                     <div style="height:15%;">
-                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.sl'">급여내역조회</button> <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.sl'">급여 입력</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.sl'">급여내역조회</button> 
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.sl'">급여 입력</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='mylist.sl'">내 급여 조회</button>
                         <hr>
                         <h2>급여 입력</h2>
                     </div>
@@ -122,6 +124,7 @@
 	                    		</tr>
 	                    	</table>
 	                    	<br>
+	                    	<button class="btn btn-outline-warning btn-sm" type="button" onclick="reCalBtn();">변경값 계산</button>
 	                    	<button class="btn btn-outline-primary btn-sm" type="submit">입력</button>
 	                    	</form>
 	                    </div>	
@@ -327,11 +330,16 @@
                 		$("#deductTotal").val(deductTotal);
                 	}
                 	
-                	function calReal(){
+                	function calReal(){//실수령액 계산
                 		var realPay = $("#paymentTotal").val() - parseInt($("#deductTotal").val()); 
                 		$("#realPay").val(realPay);
                 	}
                 	
+                	function reCalBtn(){//직접 수정 후 다시 계산버튼
+                		calPay();
+                		calDeduct();
+                		calReal();
+                	}
                 </script>
                 
             </div>

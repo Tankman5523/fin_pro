@@ -85,4 +85,8 @@ public class RegistDao {
 	public int returnScholarShip(SqlSession sqlSession, RegistPay r) {
 		return sqlSession.update("moneyMapper.returnScholarShip",r);
 	}
+
+	public int countScholarship(SqlSession sqlSession, RegistPay r) {
+		return sqlSession.selectOne("moneyMapper.countScholarship",r);
+	}
 }
