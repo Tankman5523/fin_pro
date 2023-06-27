@@ -83,7 +83,7 @@ public class MemberController {
 					response.addCookie(cookie);
 				}
 				session.setAttribute("loginUser", loginUser);
-				mv.setViewName("common/student_category");
+				mv.setViewName("redirect:main.st");
 			}
 			
 		}else if(mno.equals("P")){ //임직원 로그인
@@ -111,7 +111,7 @@ public class MemberController {
 				if(loginUser.getAdmin() == 1) { // 교수 로그인
 					
 					session.setAttribute("loginUser", loginUser);
-					mv.setViewName("common/professor_category");
+					mv.setViewName("redirect:main.pr");
 					
 				}else { // 관리자 로그인
 					

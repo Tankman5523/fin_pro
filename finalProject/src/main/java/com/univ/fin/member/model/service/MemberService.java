@@ -1,19 +1,22 @@
 package com.univ.fin.member.model.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
-import com.univ.fin.common.model.vo.Calendar;
+import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
+import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
+import com.univ.fin.main.model.vo.Notice;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
@@ -61,6 +64,9 @@ public interface MemberService {
 	
 	//예비수강신청 - 장바구니 수강취소
 	int delPreRegList(RegisterClass rc);
+	
+	//수강신청 기간인지 체크
+	ArrayList<CalendarVo> chkRegCal();
 	
 	//수강신청 - 수강신청 (수강조회)
 	ArrayList<RegisterClass> postRegClass(RegisterClass rc2);
@@ -188,6 +194,9 @@ public interface MemberService {
 	// 교수 개인시간표 -> 학기 선택 후 시간표 조회
 	ArrayList<Classes> selectProfessorTimetable(HashMap<String, String> map);
 
+	// 기간 확인
+	int checkPeriod(String string);
+	
 	// 성적관리 -> 학점별로 몇명이 해당되는지
 	HashMap<String, String> countStudentGrade(int classNo);
 
@@ -205,7 +214,6 @@ public interface MemberService {
 
 	// 성적관리 -> 성적 수정
 	int gradeUpdate(Grade g);
-
 
 	// 강의 이의제기 -> 학생 신청
 	ArrayList<Dissent> studentGradeReport(String studentNo);
@@ -268,21 +276,74 @@ public interface MemberService {
 	
 	// (관리자) 강의평가 문항별 평균 점수 조회
 	ClassRating classRatingAverage(ClassRating cr);
+
+	//(교수) 안식,퇴직 신청 목록 가져오기
+	ArrayList<ProfessorRest> selectRestListPro(String professorNo);
+
+	//(교수) 안식,퇴직 신청 등록
+	int insertProRest(ProfessorRest pr);
 	
 	// (교수) 상담조회교수 상담조회
 	ArrayList<Counseling> professorSelectCounseling(HashMap<String, String> counselMap);
-
 
 	// 학사일정 관리 -> 학사일정 조회
 	ArrayList<HashMap<String, String>> calendarList();
 
 	// 학사일정 관리 -> 학사일정 추가
-	int insertCalendar(Calendar c);
+	int insertCalendar(CalendarVo c);
+
+	// (교수) 상담 상세 조회
+	Counseling selectCounselDetail(String counselNo);
 
 	// 학사일정 관리 -> 학사일정 수정
-	int updateCalendar(Calendar c);
+	int updateCalendar(CalendarVo c);
 
 	// 학사일정 관리 -> 학사일정 삭제
-	int deleteCalendar(Calendar c);
+	int deleteCalendar(CalendarVo c);
+	
+	// 메인 -> 프로필 사진 조회
+	String selectProfile(HashMap<String, String> map);
+	
+	// 메인 -> 등록금 납부 조회
+	ArrayList<HashMap<String, String>> selectReg(String studentNo);
+	
+	// 메인 -> 상담신청 조회
+	ArrayList<Counseling> selectCounceling(String professorNo);
+
+	// 메인 -> 학사일정 조회
+	ArrayList<HashMap<String, String>> yearCalendarList();
+	
+	// 메인 -> 공지사항 조회
+	ArrayList<Notice> selectMainNotice();
+
+	// (교수) 상담 상태 변경
+	int updateCounselStatus(HashMap<String, String> statusMap);
+
+	// (관리자) 학생 휴,복학 신청 리스트 조회
+	ArrayList<Counseling> selectCounAllStuList();
+
+	// (관리자) 임직원 안식,퇴직 신청 리스트 조회
+	ArrayList<ProfessorRest> selectCounAllProList();
+
+	// (관리자) 학생 휴,복학 신청 상세보기
+	StudentRest selectStuRestDetail(int rno);
+
+	// 학번으로 학생 정보 조회 해오기
+	Student selectStudentInfo(String studentNo);
+
+	// (관리자)학생 휴,복학 승인
+	int updateStuRestPermit(StudentRest sr);
+	
+	// (관리자)학생 휴,복학 반려(비허가)
+	int updateStuRestRetire(int restNo);
+
+	// (관리자) 학생 휴,복학 목록 검색 
+	ArrayList<StudentRest> selectSearchStuRestList(HashMap<String, String> set);
+	
+	// (관리자) 임직원 안식,퇴직 정보 조회
+	ProfessorRest selectProRestDetail(int restNo);
+
+	// (관리자) 임직원 안식,퇴직 업데이트
+	int updateProfessorRest(ProfessorRest pr);
 
 }

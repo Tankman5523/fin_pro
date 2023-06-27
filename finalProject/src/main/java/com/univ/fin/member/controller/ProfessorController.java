@@ -4,6 +4,9 @@
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
@@ -16,16 +19,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.template.SaveFile;
-import org.springframework.web.bind.annotation.ResponseBody;
-import com.google.gson.Gson;
+import com.univ.fin.main.model.vo.Notice;
 import com.univ.fin.common.model.vo.Grade;
+import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 
@@ -35,6 +40,67 @@ public class ProfessorController {
 	
 	@Autowired
 	private MemberService memberService;
+	
+	// 메인페이지
+	@RequestMapping("main.pr")
+	public ModelAndView mainPage(ModelAndView mv, HttpSession session) {
+		Professor pr = (Professor)session.getAttribute("loginUser");
+		String professorNo = pr.getProfessorNo();
+		
+		ArrayList<Counseling> counList = memberService.selectCounceling(professorNo); // 상담신청 조회
+		ArrayList<HashMap<String, String>> calList = memberService.yearCalendarList(); // 학사일정 조회
+		ArrayList<Notice> nList = memberService.selectMainNotice(); // 공지사항 목록
+		HashMap<String, String> map = new HashMap<>();
+		map.put("person", "professor");
+		map.put("personNo", professorNo);
+		String filePath = memberService.selectProfile(map);
+		
+		mv.addObject("filePath", filePath).addObject("counList", counList).addObject("calList", calList)
+		  .addObject("nList", nList).setViewName("member/professor/mainPage");
+		return mv;
+	}
+	
+	// 메인 -> 강의 조회
+	@ResponseBody
+	@RequestMapping(value = "getClasses.pr", produces = "application/json; charset=UTF-8")
+	public String getClasses(String day, HttpSession session) {
+		Professor pr = (Professor)session.getAttribute("loginUser");
+		String professorNo = pr.getProfessorNo();
+		
+		Calendar calendar = Calendar.getInstance();
+		String year = String.valueOf(calendar.get(calendar.YEAR)); // 년도
+		int month = calendar.get(calendar.MONTH)+1; // 월
+		String term = "";
+		if(3<=month && month<=6) { // 1학기
+			term = "1";
+		}
+		else if(9<=month && month<=12) { // 2학기
+			term = "2";
+		}
+		else {
+			term = "0";
+		}
+		
+		HashMap<String, String> map = new HashMap<>();
+		map.put("year", year);
+		map.put("term", term);
+		map.put("professorNo", professorNo);
+		ArrayList<Classes> cList = memberService.selectProfessorTimetable(map); // 해당 학기 모든 개인시간표 추출
+		Collections.sort(cList, new Comparator<Classes>() { // 요일별로 정렬
+			public int compare(Classes c1, Classes c2) {
+				int dayCompare = Integer.parseInt(c1.getDay()) - Integer.parseInt(c2.getDay());
+				
+				if(dayCompare == 0) { // 요일같으면 교시별로 정렬
+					return Integer.parseInt(c1.getPeriod()) - Integer.parseInt(c2.getPeriod());
+				}
+				else {
+					return dayCompare;
+				}
+			}
+		});
+		
+		return new Gson().toJson(cList);
+	}
 	
 	//교수 학적정보 조회
 	@RequestMapping("infoProfessor.pr")
@@ -207,6 +273,14 @@ public class ProfessorController {
 	// 수업관리 - 성적관리
 	@GetMapping("gradeInsert.pr")
 	public ModelAndView gradeInsertView(ModelAndView mv, HttpSession session) {
+		if(memberService.checkPeriod("성적") > 0) { // 성적입력 가능한 기간인지 확인
+			session.setAttribute("check", "possible");
+		}
+		else {
+			session.setAttribute("check", "impossible");
+			
+		}
+		
 		Professor st = (Professor)session.getAttribute("loginUser");
 		String professorNo = st.getProfessorNo();
 		ArrayList<String> classTerm = memberService.selectProfessorClassTerm(professorNo); // 강의한 학년도, 학기
@@ -295,11 +369,53 @@ public class ProfessorController {
 		return mv;
 	}
 	
+	//안식,퇴직 신청 조회 페이지 이동
+	@RequestMapping("professorRestList.pr")
+	public String selectProRestList(HttpSession session,Model model) {
+		
+		String professorNo = ((Professor)session.getAttribute("loginUser")).getProfessorNo();
+		
+		ArrayList<ProfessorRest> list = memberService.selectRestListPro(professorNo);
+		
+		model.addAttribute("list",list);
+		
+		return "member/professor/pro_rest_list";
+	}
+	
+	//안식 신청 페이지로 이동
+	@RequestMapping("professorRestEnroll.pr")
+	public String enrollRestForm() {
+		
+		return "member/professor/pro_rest_enroll";
+	}
+	
+	//퇴직 신청 페이지로 이동
+	@RequestMapping("professorRetireEnroll.pr")
+	public String enrollRetireForm() {
+		
+		return "member/professor/pro_retire_enroll";
+	}
+	
+	//안식,퇴직 신청 인서트
+	@RequestMapping("professorRestRetire.pr")
+	public String insertProRest(ProfessorRest pr) {
+		
+		if(pr.getEndDate()!=null) {//퇴직은 종료일을 안받기 때문에 안식이라는 뜻
+			pr.setCategory(1);//카테고리 안식(1) 담음
+		}else {//퇴직일떄
+			pr.setCategory(0);//카테고리에 퇴직(0) 담음
+		}
+		
+		int result = memberService.insertProRest(pr);
+		
+		return "redirect:professorRestList.pr";
+	}
+	
 	// (교수) 상담조회
 	@ResponseBody
 	@PostMapping(value = "selectCounsel.pr", produces = "application/json; charset=UTF-8;")
 	public String selectCounselList(String counselType, String professorNo, String startDate, String endDate, ModelAndView mv) {
-		
+	
 		HashMap<String, String> counselMap = new HashMap<String, String>();
 		counselMap.put("counselType", counselType);
 		counselMap.put("startDate", startDate);
@@ -311,5 +427,49 @@ public class ProfessorController {
 		return new Gson().toJson(list);			
 	}
 	
+	// (교수) 상담 상세 조회
+	@RequestMapping("counselDetail.pr")
+	public ModelAndView selectCounselDetail(@RequestParam("cno") String counselNo, ModelAndView mv) {
+		
+		Counseling counsel = memberService.selectCounselDetail(counselNo);
+	
+		mv.addObject("c", counsel).setViewName("member/professor/counselHistoryDetail");
+		return mv;
+	}
+	
+	@RequestMapping("updateCounselStatus")
+	public ModelAndView updateCounselStatus(@RequestParam("counsel-status") String counselStatus
+											,String cancelResult, String counselNo, ModelAndView mv) {
+		
+		if(cancelResult.isEmpty()) {
+			cancelResult = "null";
+		}
+		
+		System.out.println(counselStatus);
+		System.out.println(cancelResult);
+		System.out.println(counselNo);
+		
+		HashMap<String, String> statusMap = new HashMap<String, String>();
+		statusMap.put("counselStatus", counselStatus);
+		statusMap.put("cancelResult", cancelResult);
+		statusMap.put("counselNo", counselNo);
+		
+		int result = memberService.updateCounselStatus(statusMap);
+		
+		String msg = "";
+		
+		if(result < 0) {
+			msg = "업데이트 실패";
+			mv.addObject("msg", msg).setViewName("member/professor/counselHistory");
+		}else {
+			Counseling counsel = memberService.selectCounselDetail(counselNo);
+			msg = "상담 정보가 변경 되었습니다.";
+			mv.addObject("c", counsel);
+			mv.addObject("msg", msg);
+			mv.setViewName("member/professor/counselHistoryDetail");
+		}
+		
+		return mv;
+	}
 
 }

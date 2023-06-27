@@ -12,11 +12,14 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,19 +27,31 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.WeatherVo;
 
-
+@EnableCaching
 @Controller
 public class Weather {
 
+	@Autowired
+	CacheManager cacheManager;
+	
+	/* ========== (캐시 삭제후 데이터 갱신)========== */
+	@Scheduled(cron = "0 0,30 * * * *") // 매 30분,0분마다 갱신
+	public void updateShortTerm() throws Exception {
+		cacheManager.getCache("weather").clear(); //전 캐쉬 삭제
+		weather(); //갱신
+	}
+	
 	/* 날씨 정보 가공처리 */
+	@Cacheable("weather")
 	@ResponseBody
 	@RequestMapping(value="weather.api",produces="application/json; charset=UTF-8")
 	public String weather() throws Exception{
+
+		//기온, 강수형태
+		HashMap<String, String> h2 = ultraShortTerm();
 		
 		//최저온도, 최고온도, 하늘상태
 		HashMap<String, String> h = shortTerm();
-		//기온, 강수형태
-		HashMap<String, String> h2 = ultraShortTerm();
 		
 		//강수, 하늘 가공처리
 		HashMap<String, String> icon = new HashMap<>();
@@ -46,7 +61,7 @@ public class Weather {
 		
 		HashMap<String, String> result = new HashMap<>();
 		
-		result.put("T1H", h2.get("T1H"));			//기온
+		result.put("T1H", h2.get("T1H"));			//기온 
 		result.put("TMN", h.get("TMN"));			//최저온도
 		result.put("TMX", h.get("TMX"));			//최고온도
 		result.put("IMG", setIcon.get("img"));		//아이콘
@@ -70,9 +85,7 @@ public class Weather {
 		return yesterday;
 	}
 	
-	/* ========== 단기 예보 (쿠키 저장용)========== */
-	@ResponseBody
-	@RequestMapping(value = "tmnTmx.api", produces = "application/json; charset=UTF-8")
+	/* ========== 단기 예보 ========== */
 	public HashMap<String, String> shortTerm() throws Exception {
 		
 		String yesterday = yesterday();
@@ -211,7 +224,7 @@ public class Weather {
 		url += "&dataType=JSON";
 		url += "&nx=58";
 		url += "&ny=126";
-		System.out.println(time);
+		System.out.println("ultraShortTerm 조회시간 : " + time);
 		URL requestUrl = new URL(url);
 		
 		HttpURLConnection urlCon = (HttpURLConnection)requestUrl.openConnection();

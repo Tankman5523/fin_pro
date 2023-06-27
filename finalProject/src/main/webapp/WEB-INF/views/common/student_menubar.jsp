@@ -19,6 +19,17 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>	
 <body>
+
+ 	<c:if test="${not empty alertMsg}">
+	
+		<script>
+		 	alert("<c:out value='${alertMsg}'/>");
+		</script>
+		
+		<c:remove var="alertMsg" scope="session"/>
+		
+	</c:if>
+	
 	<div id="header">
 		<div id="logo" style="width: 500px; height: 100%; margin: 0; float: left; display: flex; align-items: center; justify-content: center;">
 			<img src="resources/icon/blue_logo_text.png" style="width:300px;">
@@ -36,7 +47,7 @@
 	</div>
 	<div id="menubar">
 	    <ul id="nav">
-	        <li><a href="#">홈</a></li>
+	        <li><a href="main.st">홈</a></li>
 	        <li><a href="onelist.rg">등록/장학</a></li>
 	        <li><a href="infoStudent.st">학사관리</a></li>
 	        <li><a href="counselingList.st">상담관리</a></li>

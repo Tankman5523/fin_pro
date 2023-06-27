@@ -71,6 +71,7 @@
                                             		
                                             	if(!set.contains(year)){//년도가 중복된 년도가 아니라면
                                             		set.add(year); //중복제거를 위해 set에 담고 밑에 옵션 만듬
+                                            		System.out.println(set);
                                            %>
                                             	
                                             	<option value="<%=year%>"><%=year%></option>                                        
@@ -121,10 +122,10 @@
                             	<!-- 테이블 fixed해서 일반적으로 width가 안먹어서 크기 정해주기 -->
                             		<col width="15%">
                             		<col width="15%">
-                            		<col width="40%">
+                            		<col width="35%">
                             		<col width="13%">
                             		<col width="13%">
-                            		<col width="4%">
+                            		<col width="9%">
                             <tbody>
                             	<c:choose>
                             		<c:when test="${empty list }">
@@ -141,7 +142,7 @@
 		                            			<td class="con">${b.counselContent}</td>
 		                            			<td>${b.professorName}</td>
 		                            			<td>${b.counselArea}</td>
-		                            			<td>${b.status}</td>
+		                            			<td>${b.status eq 'N'?'처리중':b.status eq 'Y'?'상담승인':'비승인'}</td>
 		                            		</tr>
 		                            	</c:forEach>
                             		</c:otherwise>
@@ -167,9 +168,11 @@
 		
 		//리스트 누르면 상세보기 페이지 이동 구문
 		$(function(){
-			$("tbody>tr").click(function(){
+			$("#board_list>tbody>tr").click(function(){
 				var cno = $(this).children().eq(0).text();
-				location.href="stuCounDetail.st?counselNo="+cno;
+				if(cno!='상담내역이 없습니다.'){
+					location.href="stuCounDetail.st?counselNo="+cno;
+				}
 			});
 		});
 		
@@ -187,15 +190,6 @@
 			obj.startDate = start!=""?start:'1900-01-01';
 			obj.endDate = end!=""?end:'2999-12-31';
 			
-			
-			
-			console.log("첫번쨰"+year);
-			console.log("두번쨰"+counselArea);
-			console.log("세번쨰"+start);
-			console.log("네번쨰"+end);
-			console.log(obj);
-			
-			
 			$.ajax({
 				url:"counselingSearch.st",
 				data:{data:JSON.stringify(obj)},
@@ -203,9 +197,8 @@
 					var result = "";
 					if(list.length==0){
 						result = "<tr>"+"<td colspan='6'>상담내역이 없습니다.</td>"+"</tr>"
-					}else{					
+					}else{
 						for(var i=0; i<list.length; i++){
-							console.log(list);
 							result += "<tr>"
 									+"<td style='display:none'>"+list[i].counselNo+"</td>"
 									+"<td>"+list[i].applicationDate+"</td>"

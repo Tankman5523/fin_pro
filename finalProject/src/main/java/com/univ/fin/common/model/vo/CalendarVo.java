@@ -1,7 +1,5 @@
 package com.univ.fin.common.model.vo;
 
-import java.sql.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Calendar {
-	private int calendarNo;
-	private String content;
-	private String startDate;
-	private String endDate;
+public class CalendarVo {
+	private int calendarNo; 	//일정번호
+	private String content; 	//일정내용
+	private String startDate;	//시작날짜
+	private String endDate;		//마지막날짜
 }

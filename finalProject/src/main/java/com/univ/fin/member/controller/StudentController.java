@@ -1,9 +1,15 @@
 package com.univ.fin.member.controller;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -30,6 +37,7 @@ import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.common.template.ChatBot;
 import com.univ.fin.common.template.DepartmentCategory;
+import com.univ.fin.main.model.vo.Notice;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
@@ -42,6 +50,67 @@ public class StudentController {
 
 	@Autowired
 	private MemberService memberService;
+	
+	// 메인페이지
+	@RequestMapping("main.st")
+	public ModelAndView mainPage(ModelAndView mv, HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
+		
+		ArrayList<HashMap<String, String>> calList = memberService.yearCalendarList(); // 학사일정 조회
+		ArrayList<HashMap<String, String>> regList = memberService.selectReg(studentNo); // 등록금 납부 조회
+		ArrayList<Notice> nList = memberService.selectMainNotice(); // 공지사항 목록
+		HashMap<String, String> map = new HashMap<>();
+		map.put("person", "student");
+		map.put("personNo", studentNo);
+		String filePath = memberService.selectProfile(map);
+		
+		mv.addObject("filePath", filePath).addObject("regList", regList).addObject("calList", calList)
+		  .addObject("nList", nList).setViewName("member/student/mainPage");
+		return mv;
+	}
+	
+	// 메인 -> 강의 조회
+	@ResponseBody
+	@RequestMapping(value = "getClasses.st", produces = "application/json; charset=UTF-8")
+	public String getClasses(String day, HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
+		
+		Calendar calendar = Calendar.getInstance();
+		String year = String.valueOf(calendar.get(calendar.YEAR)); // 년도
+		int month = calendar.get(calendar.MONTH)+1; // 월
+		String term = "";
+		if(3<=month && month<=6) { // 1학기
+			term = "1";
+		}
+		else if(9<=month && month<=12) { // 2학기
+			term = "2";
+		}
+		else {
+			term = "0";
+		}
+		
+		HashMap<String, String> map = new HashMap<>();
+		map.put("year", year);
+		map.put("term", term);
+		map.put("studentNo", studentNo);
+		ArrayList<Classes> cList = memberService.selectStudentTimetable(map); // 해당 학기 모든 개인시간표 추출
+		Collections.sort(cList, new Comparator<Classes>() { // 요일별로 정렬
+			public int compare(Classes c1, Classes c2) {
+				int dayCompare = Integer.parseInt(c1.getDay()) - Integer.parseInt(c2.getDay());
+				
+				if(dayCompare == 0) { // 요일같으면 교시별로 정렬
+					return Integer.parseInt(c1.getPeriod()) - Integer.parseInt(c2.getPeriod());
+				}
+				else {
+					return dayCompare;
+				}
+			}
+		});
+		
+		return new Gson().toJson(cList);
+	}
 	
 	//챗봇
 	@ResponseBody
@@ -64,10 +133,42 @@ public class StudentController {
 		return new Gson().toJson(result);
 	}
 	
+	//수강신청 기간인지 체크하는 메소드
+	public int chkRegCalendar() {
+		
+		ArrayList<CalendarVo> list = memberService.chkRegCal();
+		
+		String day = new SimpleDateFormat("yyyyMMdd").format(new Date());
+		int today = Integer.parseInt(day);
+		int result = 0;
+		
+		for(CalendarVo c : list) {
+			
+			int start = Integer.parseInt(c.getStartDate());
+			int end = Integer.parseInt(c.getEndDate());
+			
+			if(start <= today && today <= end) {
+				result++;
+			}
+		}
+		return result;
+	}
+	
 	//수강신청 폼
 	@RequestMapping("registerClassForm.st")
-	public String registerClassForm() {
-		return "member/student/registerClass";
+	public ModelAndView registerClassForm(ModelAndView mv, HttpServletRequest request, HttpSession session) {
+		
+		int result = chkRegCalendar();
+		
+		if(result > 0) {
+			mv.setViewName("member/student/registerClass");
+		}else {
+			String referer = request.getHeader("Referer");
+			session.setAttribute("alertMsg", "지금은 수강신청 기간이 아닙니다.");
+			mv.setViewName("redirect:"+referer);
+		}
+		
+		return mv;
 	}
 	
 	//예비수강신청 폼
@@ -317,7 +418,7 @@ public class StudentController {
 		ArrayList<Counseling> list = memberService.selectCounStuList(studentNo);
 		
 		m.addAttribute("list",list);
-		
+		System.out.println(list);
 		return "member/student/st_counseling_list";
 	}
 	
@@ -389,45 +490,45 @@ public class StudentController {
 	}
 	
 	
-		//학적 정보조회 - 학생
-			@RequestMapping("infoStudent.st")
-			public String infoStudent() {		
-				
-				return "member/student/infoStudent";
-			}
+	//학적 정보조회 - 학생
+	@RequestMapping("infoStudent.st")
+	public String infoStudent() {		
+		
+		return "member/student/infoStudent";
+	}
 			
 			
-			//학적 정보수정 - 학생
-			
-			@RequestMapping(value="updateStudent.st" , method = RequestMethod.POST)
-			public String updateStudent(Student st,
-											Model model,
-											HttpSession session) {
-				int result = memberService.updateStudent(st);
-				
-				System.out.println("확인 : "+st);
-				
-				if(result>0) {
-					//유저 정보갱신
-					Student loginUser = memberService.loginStudent(st);
-					session.setAttribute("loginUser", loginUser);
-					model.addAttribute("msg", "수정 완료");
-				}else { //정보변경실패
-					model.addAttribute("msg", "수정 실패");
-				}
-				
-			return "member/student/infoStudent";
-				
-			}
-			
-			//학생 강의 의의신청 페이지
-			@RequestMapping("studentGradeReport.st")
-			public String studentGradeReport(String studentNo, Model model) {
-			    ArrayList<Dissent> list = memberService.studentGradeReport(studentNo);
-			    model.addAttribute("list", list);
-			    return "member/student/studentGradeReport";
-			    
-			}
+	//학적 정보수정 - 학생
+	
+	@RequestMapping(value="updateStudent.st" , method = RequestMethod.POST)
+	public String updateStudent(Student st,
+									Model model,
+									HttpSession session) {
+		int result = memberService.updateStudent(st);
+		
+		System.out.println("확인 : "+st);
+		
+		if(result>0) {
+			//유저 정보갱신
+			Student loginUser = memberService.loginStudent(st);
+			session.setAttribute("loginUser", loginUser);
+			model.addAttribute("msg", "수정 완료");
+		}else { //정보변경실패
+			model.addAttribute("msg", "수정 실패");
+		}
+		
+		return "member/student/infoStudent";
+		
+	}
+	
+	//학생 강의 의의신청 페이지
+	@RequestMapping("studentGradeReport.st")
+	public String studentGradeReport(String studentNo, Model model) {
+	    ArrayList<Dissent> list = memberService.studentGradeReport(studentNo);
+	    model.addAttribute("list", list);
+	    return "member/student/studentGradeReport";
+	    
+	}
 			
 			
 	//상담 관리 - 상담 내역 검색
@@ -454,7 +555,6 @@ public class StudentController {
 			
 		ArrayList<Counseling> list = memberService.selectSearchCounseling(map);
 		System.out.println(list);
-		
 		return new Gson().toJson(list);
 		
 		
@@ -598,7 +698,6 @@ public class StudentController {
 	@RequestMapping("studentRestList.st")
 	public String selectStuRestList (HttpSession session,Model model) {
 		
-		
 		String studentNo = ((Student)session.getAttribute("loginUser")).getStudentNo();
 		
 		ArrayList<StudentRest> list = memberService.selectStuRestList(studentNo);
@@ -636,9 +735,7 @@ public class StudentController {
 	@RequestMapping(value="studentCheckRegistPay.st",produces = "application/json; charset=UTF-8")
 	public String checkReg (RegistPay rp) {
 		
-		
 		RegistPay checkRp = memberService.checkRegPay(rp);
-		
 		
 		return new Gson().toJson(checkRp);
 	}
@@ -646,8 +743,6 @@ public class StudentController {
 	//휴,복학 신청 인서트
 	@RequestMapping(value="studentRestInsert.st",method = RequestMethod.POST)
 	public String insertStuRest(StudentRest sr,Model model) {
-		
-		System.out.println("인서트 자료"+sr);
 		
 		int result = memberService.insertStuRest(sr);
 		

@@ -1,6 +1,7 @@
 package com.univ.fin.member.model.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -9,15 +10,17 @@ import org.springframework.stereotype.Service;
 
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
-import com.univ.fin.common.model.vo.Calendar;
+import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
+import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
+import com.univ.fin.main.model.vo.Notice;
 import com.univ.fin.member.model.dao.MemberDao;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
@@ -104,6 +107,15 @@ public class MemberServiceImpl implements MemberService{
 		return result;
 	}
 
+	//수강신청 기간인지 체크
+	@Override
+	public ArrayList<CalendarVo> chkRegCal() {
+		
+		ArrayList<CalendarVo> list = memberDao.chkRegCal(sqlSession);
+		
+		return list;
+	}
+	
 	//예비수강신청 - 수강조회
 	@Override
 	public ArrayList<RegisterClass> preRegClass(RegisterClass rc2) {
@@ -508,6 +520,13 @@ public class MemberServiceImpl implements MemberService{
 		return cList;
 	}
 	
+	// 기간 확인
+	@Override
+	public int checkPeriod(String string) {
+		int result = memberDao.checkPeriod(sqlSession, string);
+		return result;
+	}
+	
 	// 성적관리 -> 학점별로 몇명이 해당되는지
 	@Override
 	public HashMap<String, String> countStudentGrade(int classNo) {
@@ -711,10 +730,19 @@ public class MemberServiceImpl implements MemberService{
 		
 	}
 
-	// (교수) 상담조회
+	//(교수) 안식,퇴직 신청 등록
 	@Override
-	public ArrayList<Counseling> professorSelectCounseling(HashMap<String, String> counselMap) {
-		return memberDao.professorSelectCounseling(sqlSession, counselMap);
+	public int insertProRest(ProfessorRest pr) {
+		int result = memberDao.insertProRest(sqlSession,pr);
+		return result;
+	}
+
+	//(교수) 안식,퇴직 신청 목록 가져오기
+	@Override
+	public ArrayList<ProfessorRest> selectRestListPro(String professorNo) {
+		ArrayList<ProfessorRest> list = memberDao.selectRestListPro(sqlSession,professorNo);
+		
+		return list;
 	}
 	
 	// 학사일정 관리 -> 학사일정 조회
@@ -725,20 +753,133 @@ public class MemberServiceImpl implements MemberService{
 
 	// 학사일정 관리 -> 학사일정 추가
 	@Override
-	public int insertCalendar(Calendar c) {
+	public int insertCalendar(CalendarVo c) {
 		return memberDao.insertCalendar(sqlSession, c);
+	}
+
+	//(관리자) 학생 휴,복학 신청 리스트 조회
+	@Override
+	public ArrayList<Counseling> selectCounAllStuList() {
+		ArrayList<Counseling> list = memberDao.selectCounAllStuList(sqlSession);
+		return list;
+	}
+
+	//(관리자) 임직원 안식,퇴직 신청 리스트 조회
+	@Override
+	public ArrayList<ProfessorRest> selectCounAllProList() {
+		ArrayList<ProfessorRest> list = memberDao.selectCounAllProList(sqlSession);
+		return list;
+	}
+
+	//(관리자) 학생 휴,복학 신청 상세보기
+	@Override
+	public StudentRest selectStuRestDetail(int rno) {
+		StudentRest sr = memberDao.selectStuRestDetail(sqlSession,rno);
+		return sr;
+	}
+
+	// 학번으로 학생 정보 조회 해오기
+	@Override
+	public Student selectStudentInfo(String studentNo) {
+		Student s = memberDao.selectStudentInfo(sqlSession,studentNo);
+		return s;
+	}
+
+	// (관리자)생 휴,복학 승인
+	@Override
+	public int updateStuRestPermit(StudentRest sr) {
+		int result = memberDao.updateStuRestPermit(sqlSession,sr);
+		return result;
+	}
+
+	// (관리자)생 휴,복학 반려(비허가)
+	@Override
+	public int updateStuRestRetire(int restNo) {
+		int result = memberDao.updateStuRestRetire(sqlSession,restNo);
+		return result;
+	}
+
+	//(관리자) 임직원 안식,퇴직 정보 조회
+	@Override
+	public ProfessorRest selectProRestDetail(int restNo) {
+		ProfessorRest pr = memberDao.selectProRestDetail(sqlSession,restNo);
+		return pr;
+	}
+
+	// (관리자) 임직원 안식,퇴직 업데이트
+	@Override
+	public int updateProfessorRest(ProfessorRest pr) {
+		int result = memberDao.updateProfessorRest(sqlSession,pr);
+		return result;
+	}
+
+	// (관리자) 학생 휴,복학 목록 검색 
+	@Override
+	public ArrayList<StudentRest> selectSearchStuRestList(HashMap<String, String> set) {
+		return memberDao.selectSearchStuRestList(sqlSession,set);
+	}
+	
+	// (교수) 상담조회
+	@Override
+	public ArrayList<Counseling> professorSelectCounseling(HashMap<String, String> counselMap) {
+		return memberDao.professorSelectCounseling(sqlSession, counselMap);
+	}
+	
+	// (교수) 상담 상세 조회
+	@Override
+	public Counseling selectCounselDetail(String counselNo) {
+
+		return memberDao.selectCounselDetail(sqlSession, counselNo);
 	}
 
 	// 학사일정 관리 -> 학사일정 수정
 	@Override
-	public int updateCalendar(Calendar c) {
+	public int updateCalendar(CalendarVo c) {
 		return memberDao.updateCalendar(sqlSession, c);
 	}
 
 	// 학사일정 관리 -> 학사일정 삭제
 	@Override
-	public int deleteCalendar(Calendar c) {
+	public int deleteCalendar(CalendarVo c) {
 		return memberDao.deleteCalendar(sqlSession, c);
 	}
+	
+	// 메인 -> 프로필 사진 조회
+	@Override
+	public String selectProfile(HashMap<String, String> map) {
+		return memberDao.selectProfile(sqlSession, map);
+	}
+	
+	// 메인 -> 등록금 납부 조회
+	@Override
+	public ArrayList<HashMap<String, String>> selectReg(String studentNo) {
+		return memberDao.selectReg(sqlSession, studentNo);
+	}
+	
+	// 메인 -> 상담신청 조회
+	@Override
+	public ArrayList<Counseling> selectCounceling(String professorNo) {
+		return memberDao.selectCounceling(sqlSession, professorNo);
+	}
+	
+	// 메인 -> 학사일정 조회
+	@Override
+	public ArrayList<HashMap<String, String>> yearCalendarList() {
+		return memberDao.yearCalendarList(sqlSession);
+	}
+
+	// 메인 -> 공지사항 조회
+	@Override
+	public ArrayList<Notice> selectMainNotice() {
+		return memberDao.selectMainNotice(sqlSession);
+	}
+
+	//(교수) 상담 상태 변경
+	@Override
+	public int updateCounselStatus(HashMap<String, String> statusMap) {
+		return memberDao.updateCounselStatus(sqlSession, statusMap);
+	}
+
 
 }
+

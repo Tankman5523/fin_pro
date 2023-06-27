@@ -98,8 +98,9 @@
   		<result column="STATUS" property="status"/>
   		<result column="PROFESSOR_NAME" property="professorName"/>
   		<result column="STUDENT_NAME" property="studentName"/>
-  		<result column="DEAPRTMENT_NAME" property="departmentName"/>
+  		<result column="DEPARTMENT_NAME" property="departmentName"/>
   		<result column="CLASS_LEVEL" property="classLevel"/>
+  		<result column="PHONE" property="phone"/>
   	</resultMap>
   	
   	<resultMap type="studentRest" id="studentRestResultMap">
@@ -111,6 +112,7 @@
   		<result column="START_DATE" property="startDate"/>
   		<result column="END_DATE" property="endDate"/>
   		<result column="STATUS" property="status"/>
+  		<result column="STUDENT_NAME" property="studentName"/>
   	</resultMap>
   	
   	<resultMap type="registPay" id="registPayResultSet">
@@ -178,6 +180,18 @@
   		<result column="MAJOR_CLASS" property="majorClass"/>
   	</resultMap>
   	
+  	<!-- 안식,퇴직 테이블 -->
+  	<resultMap type="professorRest" id="professorRestResultSet">
+  		<result column="REST_NO" property="restNo"/>
+  		<result column="PROFESSOR_NO" property="professorNo"/>
+  		<result column="CATEGORY" property="category"/>
+  		<result column="REQUEST_DATE" property="requestDate"/>
+  		<result column="START_DATE" property="startDate"/>
+  		<result column="END_DATE" property="endDate"/>
+  		<result column="REASON" property="reason"/>
+  		<result column="STATUS" property="status"/>
+  	</resultMap>
+  	
   	<resultMap type="calendar" id="calendarResultMap">
   		<result column="CALENDAR_NO" property="calendarNo"/>
   		<result column="CONTENT" property="content"/>
@@ -191,6 +205,26 @@
   		<result column="START_DATE" property="start"/>
   		<result column="END_DATE" property="end"/>
   	</resultMap>
+  	
+  	<resultMap type="notice" id="noticeResultSet">
+		<result column="NOTICE_NO" property="noticeNo"/>
+		<result column="NOTICE_CATEGORY" property="noticeCategory"/>
+		<result column="PROFESSOR_NAME" property="professorNo"/>
+		<result column="NOTICE_TITLE" property="noticeTitle"/>
+		<result column="NOTICE_CONTENT" property="noticeContent"/>
+		<result column="CREATE_DATE" property="createDate"/>
+		<result column="FIELD" property="field"/>
+		<result column="ORIGIN_NAME" property="originName"/>
+		<result column="CHANGE_NAME" property="changeName"/>
+		<result column="CATEGORY_NAME" property="categoryName"/>
+	</resultMap>
+	
+	<resultMap type="hashmap" id="regResultMap">
+		<result column="STUDENT_NO" property="studentNo"/>
+		<result column="CLASS_TERM" property="classTerm"/>
+		<result column="MUST_PAY" property="mustPay"/>
+		<result column="PAY_STATUS" property="payStatus"/>
+	</resultMap>
   	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
@@ -271,6 +305,13 @@
 		WHERE COLLEGE_NO = (SELECT COLLEGE_NO
 		                    FROM COLLEGE
 		                    WHERE COLLEGE_NAME = #{college})
+  	</select>
+  	
+  	<!-- 수강신청 기간인지 체크 -->
+  	<select id="chkRegCal" parameterType="calendar" resultMap="calendarResultMap">
+  		SELECT TO_CHAR(START_DATE,'YYYYMMDD') "START_DATE",TO_CHAR(END_DATE,'YYYYMMDD') "END_DATE"
+		FROM CALENDAR
+		WHERE CONTENT LIKE '%'||'수강'||'%'
   	</select>
   	
   	<!-- 수강신청 - 수강신청내역조회 (로그인 학생의 수강신청 년도/학기 추출) -->
@@ -682,7 +723,8 @@
   	
   	<!-- (학생)상담신청 내역 가져오기 -->
   	<select id="selectCounStuList" resultMap="counselingResultMap">
-  		SELECT COUNSEL_NO,PROFESSOR_NO,PROFESSOR_NAME,APPLICATION_DATE,REQUEST_DATE,COUNSEL_CONTENT,COUNSEL_AREA,C.STATUS
+  		SELECT COUNSEL_NO,PROFESSOR_NO,PROFESSOR_NAME,TO_CHAR(APPLICATION_DATE,'YYYY-MM-DD') APPLICATION_DATE
+  				,TO_CHAR(REQUEST_DATE,'YYYY-MM-DD') REQUEST_DATE,COUNSEL_CONTENT,COUNSEL_AREA,C.STATUS
   		FROM COUNSELING C
   		JOIN PROFESSOR P USING (PROFESSOR_NO)
   		WHERE STUDENT_NO = #{studentNo}
@@ -691,8 +733,8 @@
 	 
 	 <!-- (학생)상담신청 내역 검색해서 가져오기 -->
 	 <select id="selectSearchCounList" resultMap="counselingResultMap">
-		 
-		 	SELECT COUNSEL_NO,PROFESSOR_NO,PROFESSOR_NAME,APPLICATION_DATE,REQUEST_DATE,COUNSEL_CONTENT,COUNSEL_AREA,C.STATUS
+		 	SELECT COUNSEL_NO,PROFESSOR_NO,PROFESSOR_NAME,TO_CHAR(APPLICATION_DATE,'YYYY-MM-DD') APPLICATION_DATE
+		 			,TO_CHAR(REQUEST_DATE,'YYYY-MM-DD') REQUEST_DATE,COUNSEL_CONTENT,COUNSEL_AREA,C.STATUS
 	  		FROM COUNSELING C
 	  		JOIN PROFESSOR P USING (PROFESSOR_NO)
 	  		WHERE STUDENT_NO = #{studentNo}
@@ -700,7 +742,6 @@
 	        AND   TO_CHAR(APPLICATION_DATE,'YYYY') LIKE #{year}
 	        AND   APPLICATION_DATE BETWEEN TO_DATE(#{startDate},'YYYY-MM-DD') AND TO_DATE(#{endDate},'YYYY-MM-DD')
 	  		ORDER BY APPLICATION_DATE DESC
-		 
 	 </select>
   	
   	<!-- 학과명으로 확과번호 조회 -->
@@ -734,8 +775,10 @@
   	
   	<!-- 직번으로 교수정보조회 -->
   	<select id="selectProfessorForNo" resultMap="loginProfessorMap">
-  		SELECT PROFESSOR_NO,PROFESSOR_NAME,DEPARTMENT_NAME,POSITION,EMAIL
+  		SELECT PROFESSOR_NO,PROFESSOR_NAME,DEPARTMENT_NAME,COLLEGE_NAME
+  				,PHONE,ENTRANCE_DATE,PHONE,POSITION,EMAIL,ADDRESS
   		FROM PROFESSOR
+  		JOIN COLLEGE USING (COLLEGE_NO)
   		JOIN DEPARTMENT USING(DEPARTMENT_NO)
   		WHERE PROFESSOR_NO = #{professorNo}
   	</select>
@@ -761,6 +804,7 @@
   		SELECT COUNT(*)
   		FROM STUDENT_REST
   		WHERE STUDENT_NO = #{studentNo}
+  		AND CATEGORY != '복학'
   		AND STATUS = 'Y'
   	</select>
   	
@@ -770,6 +814,7 @@
 		FROM (SELECT *
 		      FROM STUDENT_REST
 		      WHERE STUDENT_NO = #{studentNo}
+		      AND STATUS = 'Y'
 		      ORDER BY REST_NO DESC) S
 		WHERE ROWNUM = 1
   	</select>
@@ -781,7 +826,6 @@
 		WHERE STUDENT_NO = #{studentNo}
 		AND   CLASS_YEAR = #{classYear}
 		AND   CLASS_TERM = #{classTerm}
-		AND   STATUS = 'Y'
   	</select>
   	
   	<!-- 휴,복학 신청 인서트(학생) -->
@@ -861,13 +905,14 @@
   	
   	<!-- (교수)강의개설 신청 리스트 조회-->
   	<select id="selectClassCreateList" resultMap="classResultMap">
-  		SELECT CLASS_NO,FILE_NO,DIVISION,DEPARTMENT_NAME,CLASS_NAME,CLASS_YEAR,CLASS_TERM
+  		SELECT CLASS_NO,PROFESSOR_NAME,C.FILE_NO,DIVISION,DEPARTMENT_NAME,CLASS_NAME,CLASS_YEAR,CLASS_TERM
         		,CLASSROOM,DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금') AS DAY
         		,DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'9:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00')
                                   ,2,DECODE(PERIOD,1,'9:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) AS PERIOD
-		        ,CLASS_LEVEL,CLASS_NOS,CREDIT,EXPLAIN,STATUS
-		FROM CLASS 
-		JOIN DEPARTMENT USING (DEPARTMENT_NO)
+		        ,CLASS_LEVEL,CLASS_NOS,CREDIT,EXPLAIN,C.STATUS
+		FROM CLASS C
+		JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+		JOIN PROFESSOR P USING (PROFESSOR_NO)
 		WHERE PROFESSOR_NO LIKE '%'||#{professorNo}||'%'
 		ORDER BY CLASS_NO DESC
   	</select>
@@ -913,9 +958,16 @@
 		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND PROFESSOR_NO = #{professorNo}
   	</select>
   	
+  	<!-- 기간 확인 -->
+  	<select id="checkPeriod" parameterType="string" resultType="_int">
+  		SELECT COUNT(*)
+		FROM CALENDAR
+		WHERE CONTENT LIKE '%'||#{string}||'%' AND TO_CHAR(TRUNC(SYSDATE), 'YYYY/MM/DD') BETWEEN START_DATE AND END_DATE
+  	</select>
+  	
   	<!-- 성적관리 -> 학점별로 몇명이 해당되는지 -->
   	<select id="countStudentGrade" parameterType="_int" resultMap="gradeCountHashMap">
-  		SELECT SUM(CLASS_NOS)/COUNT(*) AS ALL_COUNT, SUM(COUNT), NVL(SUM(CASE WHEN GRADE='A' THEN COUNT END),0) AS A_COUNT, NVL(SUM(CASE WHEN GRADE='B' THEN COUNT END),0) AS B_COUNT
+  		SELECT SUM(COUNT) AS ALL_COUNT, NVL(SUM(CASE WHEN GRADE='A' THEN COUNT END),0) AS A_COUNT, NVL(SUM(CASE WHEN GRADE='B' THEN COUNT END),0) AS B_COUNT
 		    , NVL(SUM(CASE WHEN GRADE='C' THEN COUNT END),0) AS C_COUNT, NVL(SUM(CASE WHEN GRADE='D' THEN COUNT END),0) AS D_COUNT, NVL(SUM(CASE WHEN GRADE='F' THEN COUNT END),0) AS F_COUNT
 		FROM (SELECT SUBSTR(GRADE_LEVEL,1,1) AS GRADE, COUNT(*) AS COUNT, CLASS_NOS
 		        FROM (SELECT A.STUDENT_NO, NVL(SCORE, 0) AS SCORE, NVL(GRADE_LEVEL,' ') AS GRADE_LEVEL, CLASS_NOS
@@ -1008,7 +1060,18 @@
   	<update id="updateClassPermitAll">
   		UPDATE CLASS
   		SET STATUS = 'Y'
-  		WHERE CLASS_NO IN (#{cno})
+  		WHERE CLASS_NO IN 
+  		<foreach collection="array" item="arr" open="(" close=")" separator=",">
+ 			#{arr}
+		</foreach>
+		AND STATUS = 'B'
+  	</update>
+  	
+  	<!-- 강의개설 개별승인(관리자) -->
+  	<update id="updateClassPermit">
+  		UPDATE CLASS
+  		SET STATUS = 'Y'
+  		WHERE CLASS_NO = #{cno}
   	</update>
   	
   	<!-- 강의개설 반려 (관리자) -->
@@ -1234,6 +1297,7 @@
   		<result column="CLASS_NOS" property="classNos"/>
   		<result column="AVERAGE_RATING" property="averageRating"/>
   	</resultMap>
+  	
   	<!-- (학생) 강의평가를 위한 강의정보 조회 -->
   	<select id="classInfoForRating" resultMap="classRatingResultMap">
 		SELECT CLASS_NO,C.CLASS_NAME,P.PROFESSOR_NAME,C.CLASS_YEAR,C.CLASS_TERM,CR.STATUS
@@ -1245,6 +1309,7 @@
 		AND CLASS_YEAR = #{classYear}
 		AND CLASS_TERM = #{classTerm}
   	</select>
+  	
   	<!-- (학생) 강의 평가 입력  -->
   	<insert id="insertClassRating">
   		INSERT INTO CLASS_RATING
@@ -1261,6 +1326,7 @@
   				,#{q8}
   				,#{etc},'Y')
   	</insert>
+  	
   	<!-- (관리자) 강의평가 조회 -->
   	<select id="classRatingList" resultMap="classRatingResultMap">
   		SELECT CLASS_NO,C.CLASS_NAME,PROFESSOR_NAME,CREDIT,CLASS_NOS,AVERAGE_RATING
@@ -1273,6 +1339,7 @@
   		AND C.CLASS_TERM = #{classTerm}
   		AND C.CLASS_NAME LIKE '%'||#{className}||'%'
   	</select>
+  	
   	<!-- (관리자)강의평가 기타건의사항 조회 -->
   	<select id="classRatingEtcList" resultMap="classRatingResultMap">
 		SELECT CLASS_NO , CLASS_NAME , PROFESSOR_NAME , ETC  
@@ -1283,6 +1350,7 @@
 		AND CLASS_YEAR = #{classYear}
 		AND CLASS_TERM = #{classTerm}
   	</select>
+  	
   	<!-- (관리자) 강의평가 문항별 평균 점수 조회 -->
   	<select id="classRatingAverage" resultMap="classRatingResultMap">
   		SELECT ROUND(AVG(Q1),1) "Q1",ROUND(AVG(Q2),1) "Q2",ROUND(AVG(Q3),1) "Q3",ROUND(AVG(Q4),1) "Q4",ROUND(AVG(Q5),1) "Q5",ROUND(AVG(Q6),1) "Q6",ROUND(AVG(Q7),1) "Q7",ROUND(AVG(Q8),1) "Q8" 
@@ -1294,12 +1362,121 @@
   		GROUP BY CLASS_NO
   	</select>
 
-	<!-- (교수) 상담조회  -->
+  	<!-- 안식,퇴직 신청 목록 가져오기(교수) -->
+  	<select id="selectRestListPro" resultMap="professorRestResultSet">
+  		SELECT REST_NO,PROFESSOR_NO,CATEGORY,REQUEST_DATE,START_DATE,END_DATE,REASON,STATUS
+  		FROM PROFESSOR_REST
+  		WHERE PROFESSOR_NO = #{professorNo}
+  	</select>
+  	
+  	<!-- 안식,퇴직 신청 등록(교수) -->
+  	<insert id="insertProRest">
+  		INSERT INTO PROFESSOR_REST (REST_NO,PROFESSOR_NO,CATEGORY,START_DATE,END_DATE,REASON)
+  		VALUES(SEQ_PRNO.NEXTVAL,#{professorNo},#{category},#{startDate},#{endDate},#{reason})
+  	</insert>
+  		
+  	<!-- 학사일정 관리 -> 학사일정 조회 -->
+  	<select id="calendarList" resultMap="calendarList">
+  		SELECT CALENDAR_NO, CONTENT, TO_CHAR(START_DATE, 'YYYY-MM-DD') AS START_DATE, TO_CHAR(END_DATE+1, 'YYYY-MM-DD') AS END_DATE
+  		FROM CALENDAR
+  	</select>
+  	
+  	<!-- 학사일정 관리 -> 학사일정 추가 -->
+  	<insert id="insertCalendar">
+  		INSERT INTO CALENDAR VALUES(SEQ_CALNO.NEXTVAL, #{content}
+  				, TO_DATE(SUBSTR(#{startDate}, 0, 10)||SUBSTR(#{startDate}, 12), 'YYYY-MM-DD HH24:MI')
+  				, TO_DATE(SUBSTR(#{endDate}, 0, 10)||SUBSTR(#{endDate}, 12), 'YYYY-MM-DD HH24:MI'))
+  	</insert>
+  	
+  	<!-- 학생 휴,복학 신청 리스트(관리자) -->
+  	<select id="selectCounAllStuList" resultMap="studentRestResultMap">
+  		SELECT REST_NO,STUDENT_NO,STUDENT_NAME,CATEGORY,REASON,REQUEST_DATE,START_DATE,END_DATE,R.STATUS
+  		FROM STUDENT_REST R
+  		JOIN STUDENT S USING (STUDENT_NO)
+  		WHERE R.STATUS = 'B'
+  		ORDER BY REST_NO DESC
+  	</select>
+  	
+  	<!-- 학생 휴,복학 신청 상세보기(관리자) -->
+  	<select id="selectStuRestDetail" resultMap="studentRestResultMap">
+  		SELECT *
+  		FROM STUDENT_REST
+  		WHERE REST_NO = #{rno}
+  	</select>
+  	
+  	<!-- 학번으로 학생정보 조회 -->
+  	<select id="selectStudentInfo" resultMap="loginStudentMap">
+  		SELECT STUDENT_NO,DEPARTMENT_NAME,COLLEGE_NAME,FILE_NO,STUDENT_NAME,STUDENT_PWD,
+               ENTRANCE_DATE,GRADUATION_DATE,CLASS_LEVEL,PHONE,EMAIL,POST,ADDRESS,STATUS
+  		FROM STUDENT
+  		JOIN COLLEGE USING (COLLEGE_NO)
+  		JOIN DEPARTMENT USING (DEPARTMENT_NO)
+  		WHERE STUDENT_NO = #{studentNo}
+  	</select>
+  	
+  	<!-- 학생 휴,복학 신청 승인(관리자) -->
+  	<update id="updateStuRestPermit">
+  		UPDATE STUDENT_REST
+  		SET STATUS = 'Y'
+  		WHERE REST_NO = #{restNo}
+  	</update>
+  	
+  	<!-- 학생 휴,복학 승인 후 학생 상태값 변경(관리자) -->
+  	<update id="updateStudentStatus">
+  		UPDATE STUDENT
+  		SET STATUS = #{status}
+  		WHERE STUDENT_NO = #{studentNo}
+  	</update>
+  	
+  	<!-- 학생 휴,복학 신청 반려(관리자) -->
+  	<update id="updateStuRestRetire">
+  		UPDATE STUDENT_REST
+  		SET STATUS = 'N'
+  		WHERE REST_NO = #{cno}
+  	</update>
+  	
+  	<!-- 학생 휴,복학 신청 목록 검색 (관리자) -->
+  	<select id="selectSearchStuRestList" resultMap="studentRestResultMap">
+  		SELECT REST_NO,STUDENT_NO,STUDENT_NAME,CATEGORY,REASON,REQUEST_DATE,START_DATE,END_DATE,R.STATUS
+  		FROM STUDENT_REST R
+  		JOIN STUDENT S USING (STUDENT_NO)
+  		WHERE STUDENT_NO LIKE '%'||#{studentNo}||'%'
+  		AND CATEGORY LIKE '%'||#{category}||'%'
+  		AND REQUEST_DATE BETWEEN TO_DATE(#{start},'YYYY-MM-DD') AND TO_DATE(#{end},'YYYY-MM-DD')
+  		AND STUDENT_NAME  LIKE '%'||#{studentName}||'%'
+  		AND R.STATUS LIKE '%'||#{status}||'%'
+  		ORDER BY REST_NO DESC 
+  	</select>
+  	
+  	<!-- 임직원 안식,퇴직 신청 리스트 (관리자) -->
+  	<select id="selectCounAllProList" resultMap="professorRestResultSet">
+  		SELECT *
+  		FROM PROFESSOR_REST
+  		WHERE STATUS = 'B'
+  		ORDER BY REST_NO DESC
+  	</select>
+  	
+  	<!-- 임직원 안식,퇴직 신청 정보 조회(관리자) -->
+  	<select id="selectProRestDetail" resultMap="professorRestResultSet">
+  		SELECT *
+  		FROM PROFESSOR_REST
+  		WHERE REST_NO = #{restNo}
+  	</select>
+  	
+  	<!-- 임직원 안식,퇴직 신청 승인,비승인(관리자) -->
+  	<update id="updateProfessorRest">
+  		UPDATE PROFESSOR_REST
+  		SET STATUS = #{status}
+  		WHERE REST_NO = #{restNo}
+  	</update>
+  	
+  	<!-- (교수) 상담조회  -->
   	<select id="professorSelectCounseling" parameterType="hashMap" resultMap="counselingResultMap">
-  		SELECT COUNSEL_NO, STUDENT_NO, STUDENT_NAME, DEPARTMENT_NAME, CLASS_LEVEL, APPLICATION_DATE, REQUEST_DATE, COUNSEL_AREA, C.STATUS
+  		SELECT COUNSEL_NO, STUDENT_NO, STUDENT_NAME, D.DEPARTMENT_NAME, CLASS_LEVEL, TO_CHAR(APPLICATION_DATE, 'YYYY-MM-DD') APPLICATION_DATE
+			,  TO_CHAR(REQUEST_DATE, 'YYYY-MM-DD') REQUEST_DATE, COUNSEL_AREA, C.STATUS
 		FROM COUNSELING C
 		JOIN STUDENT S USING(STUDENT_NO)
-		JOIN DEPARTMENT C ON(S.DEPARTMENT_NO = C.DEPARTMENT_NO)
+		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO)
 		<if test="counselType.equals('allType')">
 			WHERE PROFESSOR_NO = #{professorNo}
 			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
@@ -1347,19 +1524,18 @@
 		ORDER BY COUNSEL_NO DESC
   	</select>
   	
-  	<!-- 학사일정 관리 -> 학사일정 조회 -->
-  	<select id="calendarList" resultMap="calendarList">
-  		SELECT CALENDAR_NO, CONTENT, TO_CHAR(START_DATE, 'YYYY-MM-DD') AS START_DATE, TO_CHAR(END_DATE+1, 'YYYY-MM-DD') AS END_DATE
-  		FROM CALENDAR
+  	<!-- (교수) 상담 상세 조회 -->
+  	<select id="selectCounselDetail" parameterType="hashMap" resultMap="counselingResultMap">
+	  	SELECT COUNSEL_NO, STUDENT_NO, STUDENT_NAME, DEPARTMENT_NAME, PHONE
+				, TO_CHAR(APPLICATION_DATE, 'YYYY-MM-DD') APPLICATION_DATE
+				, TO_CHAR(REQUEST_DATE, 'YYYY-MM-DD') REQUEST_DATE, COUNSEL_AREA
+				, COUNSEL_CONTENT, COUNSEL_RESULT, C.STATUS
+        FROM STUDENT S
+        JOIN DEPARTMENT D USING(DEPARTMENT_NO)
+        JOIN COUNSELING C USING(STUDENT_NO)
+        WHERE COUNSEL_NO = #{counselNo }
   	</select>
-  	
-  	<!-- 학사일정 관리 -> 학사일정 추가 -->
-  	<insert id="insertCalendar">
-  		INSERT INTO CALENDAR VALUES(SEQ_CALNO.NEXTVAL, #{content}
-  				, TO_DATE(SUBSTR(#{startDate}, 0, 10)||SUBSTR(#{startDate}, 12), 'YYYY-MM-DD HH24:MI')
-  				, TO_DATE(SUBSTR(#{endDate}, 0, 10)||SUBSTR(#{endDate}, 12), 'YYYY-MM-DD HH24:MI'))
-  	</insert>
-  	
+
   	<!-- 학사일정 관리 -> 학사일정 수정 -->
   	<update id="updateCalendar">
   		UPDATE CALENDAR
@@ -1374,5 +1550,67 @@
   		DELETE FROM CALENDAR
   		WHERE CALENDAR_NO = #{calendarNo}
   	</delete>
+  	
+  	<!-- 메인 -> 프로필 사진 조회 -->
+  	<select id="selectProfile" parameterType="hashmap" resultType="string">
+  		SELECT FILE_PATH||CHANGE_NAME
+		FROM ATTACHMENT
+		LEFT JOIN STUDENT USING(FILE_NO)
+		LEFT JOIN PROFESSOR USING(FILE_NO)
+		<if test="person == 'student'">
+			WHERE STUDENT_NO = #{personNo}
+		</if>
+		<if test="person == 'professor'">
+			WHERE PROFESSOR_NO = #{personNo}
+		</if>
+  	</select>
+  	
+  	<!-- 메인 -> 등록금 납부 조회 -->
+  	<select id="selectReg" parameterType="string" resultMap="regResultMap">
+  		SELECT *
+  		FROM (SELECT STUDENT_NO, CLASS_YEAR||'-'||CLASS_TERM AS CLASS_TERM, MUST_PAY, PAY_STATUS
+				FROM REG_ACC
+				WHERE STUDENT_NO = #{studentNo}
+				ORDER BY CLASS_TERM DESC)
+		WHERE ROWNUM BETWEEN 1 AND 4
+  	</select>
+  	
+  	<!-- 메인 -> 상담신청 조회 -->
+  	<select id="selectCounceling" parameterType="string" resultMap="counselingResultMap">
+  		SELECT *
+		FROM (SELECT COUNSEL_NO, TO_CHAR(APPLICATION_DATE, 'YYYY-MM-DD') APPLICATION_DATE, STUDENT_NAME, C.STATUS
+		        FROM COUNSELING C
+		        JOIN STUDENT S USING(STUDENT_NO)
+		        WHERE C.PROFESSOR_NO = #{professorNo}
+		        ORDER BY APPLICATION_DATE DESC)
+		WHERE ROWNUM BETWEEN 1 AND 4
+  	</select>
+  	
+  	<!-- 메인 -> 학사일정 조회 -->
+  	<select id="yearCalendarList" resultMap="calendarList">
+  		SELECT CALENDAR_NO, CONTENT, TO_CHAR(START_DATE, 'YYYY-MM-DD') AS START_DATE, TO_CHAR(END_DATE, 'YYYY-MM-DD') AS END_DATE
+		FROM CALENDAR
+		WHERE TO_CHAR(SYSDATE, 'YYYY-MM') BETWEEN TO_CHAR(START_DATE, 'YYYY-MM') AND TO_CHAR(END_DATE, 'YYYY-MM')
+		ORDER BY START_DATE
+  	</select>
+  	
+  	<!-- 메인 -> 공지사항 조회 -->
+  	<select id="selectMainNotice" resultMap="noticeResultSet">
+		SELECT *
+		FROM (SELECT NOTICE_NO, NOTICE_CATEGORY, NOTICE_TITLE, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') AS CREATE_DATE
+		        FROM NOTICE
+		        WHERE STATUS = 'Y'
+		        ORDER BY CREATE_DATE DESC, NOTICE_NO DESC)
+		WHERE ROWNUM BETWEEN 1 AND 5
+  	</select>
+  	
+  	<!-- (교수) 상담 상태 변경 -->
+  	<update id="updateCounselStatus">
+  		UPDATE COUNSELING
+		SET STATUS = #{counselStatus },
+	        COUNSEL_RESULT = #{cancelResult }
+		WHERE COUNSEL_NO = #{counselNo }
+  	</update>
+  	
   </mapper>
 

@@ -10,75 +10,7 @@
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.js'></script>
 <!-- fullcalendar 언어 CDN -->
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/locales-all.min.js'></script>
-<style>
-	/* body 스타일 */
-	html, body {
-/* 		overflow: hidden; */
-		font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-		font-size: 14px;
-	}
-	/* 캘린더 위의 해더 스타일(날짜가 있는 부분) */
-	.fc-header-toolbar {
-		padding-top: 1em;
-		padding-left: 1em;
-		padding-right: 1em;
-	}
-	
-	.fc-button-primary {
-		background-color: #4fc7ff !important;
-		color: black;
-		border: 0 !important;
-	}
-	
-	.fc-button-primary:active {
-		border: 2px solid red !important;
-	}
-	
-	.fc-daygrid-day-number, .fc-col-header-cell-cushion {
-		color: black;
-	}
-	
-	#calendar-container {
-		width: 100%;
-		height: 93%;
-	}
-	
-	#calendar {
-		width: 100%;
-		height: 100%;
-	}
-	
-	.btn-area {
-		width: 100%;
- 		height: 7%;
-		display: flex;
- 		align-items: center;
-		justify-content: center;
-	}
-	
-	#btn {
-		width: 100px;
-		height: 35px;
-		border-radius: 10px;
-		background-color: #4fc7ff;
-		border: 0;
-		color: white;
-	}
-	
-	.modalBtn-area {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-	
-	#insert {
-		margin: 0 auto;
-	}
-	
-	#update, #delete {
-		margin: 0 3%;
-	}
-</style>
+<link rel="stylesheet" href="resources/css/calendarView.css">
 </head>
 <body>
 
@@ -104,6 +36,12 @@
                 </div>
                  <div class="child_title">
                     <a href="calendarView.ad" style="color:#00aeff; font-weight: 550;">학사일정 관리</a>
+                </div>
+                <div class="child_title">
+                    <a href="stuRestList.ad">휴/복학 신청 관리</a>
+                </div>
+                <div class="child_title">
+                    <a href="proRestList.ad">안식/퇴직 신청 관리</a>
                 </div>
             </div>
             <div id="content_1">
@@ -143,6 +81,7 @@
             		        },
             				initialView: 'dayGridMonth',
             				locale: 'ko', // 한국어
+            				dayMaxEvents: true,
             				events: [ // 띄울 학사일정
             					$.ajax({
                     				url: "calendarView.ad",
@@ -163,7 +102,7 @@
                     							end: calList[i].end,
 //                     							color : $color[check],
 												color: "#" + $r + $g+ $b,
-                    							textColor : "#000000"
+                    							textColor : "#000000",
                     						});
 //                     						check++;
                     					}
@@ -226,6 +165,7 @@
 			                <script>
 			                	$(function() {
 			                		$("#insert").on("click", function() {
+			                			$("#calendarNo").val("0");
 			                			$("#check").val("insert");
 			                		});
 			                		
