@@ -1570,5 +1570,27 @@
 		WHERE COUNSEL_NO = #{counselNo }
   	</update>
   	
+  	<!-- (관리자) 공지사항 관리 - 전체 리스트 조회 -->
+  	<select id="selectNoticeAllList" resultMap="noticeResultSet">
+  		SELECT *
+		FROM (SELECT NOTICE_NO, CATEGORY_NAME, NOTICE_TITLE, COUNT, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE, FIELD, N.STATUS, ORIGIN_NAME
+		        FROM NOTICE N
+		        JOIN NOTICE_CATEGORY NC ON(NOTICE_CATEGORY = CATEGORY_NO)
+		        LEFT JOIN NOTICE_ATTACHMENT NA USING(NOTICE_NO)
+		        WHERE N.STATUS = 'Y')
+		ORDER BY CREATE_DATE DESC
+  	</select>
+  	
+  	<!-- (관리자) 공지사항 관리 - 검색 조회 -->
+<!--   	<select id="searchNotice" resultMap="noticeResultSet"> -->
+<!--   		SELECT * -->
+<!-- 		FROM (SELECT NOTICE_NO, CATEGORY_NAME, NOTICE_TITLE, COUNT, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE, FIELD, N.STATUS, ORIGIN_NAME -->
+<!-- 		        FROM NOTICE N -->
+<!-- 		        JOIN NOTICE_CATEGORY NC ON(NOTICE_CATEGORY = CATEGORY_NO) -->
+<!-- 		        LEFT JOIN NOTICE_ATTACHMENT NA USING(NOTICE_NO) -->
+<!-- 		        WHERE N.STATUS = 'Y') -->
+<!-- 		ORDER BY CREATE_DATE DESC -->
+<!--   	</select> -->
+  	
   </mapper>
 

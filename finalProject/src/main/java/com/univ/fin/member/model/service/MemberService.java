@@ -337,4 +337,10 @@ public interface MemberService {
 	// (관리자) 임직원 안식,퇴직 업데이트
 	int updateProfessorRest(ProfessorRest pr);
 
+	// (관리자) 공지사항 관리 - 전체 공지사항 조회
+	ArrayList<Notice> selectNoticeAllList();
+
+	// (관리자) 공지사항 관리 - 공지사항 검색
+	Notice searchNotice(HashMap<String, String> noticeMap);
+
 }
