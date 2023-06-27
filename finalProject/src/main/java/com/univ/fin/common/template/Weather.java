@@ -34,12 +34,17 @@ public class Weather {
 	@Autowired
 	CacheManager cacheManager;
 	
-	/* ========== (캐시 삭제후 데이터 갱신 - 온도,강수형태,하늘상태)========== */
+	/* ========== (캐시 삭제후 데이터 갱신 - 온도)========== */
 	@Scheduled(cron = "0 0/10 * * * *") // 매 10분마다 갱신
 	public void updateUltraShortTerm() throws Exception {
 		cacheManager.getCache("weather").clear(); //전 캐쉬 삭제
-		cacheManager.getCache("skyPty").clear(); //전 캐쉬 삭제
 		weather(); //갱신
+	}
+	
+	/* ========== (캐시 삭제후 데이터 갱신 - 강수형태,하늘상태)========== */
+	@Scheduled(cron = "0 0/10 * * * *") // 매 10분마다 갱신
+	public void updateUltraShortTerm2() throws Exception {
+		cacheManager.getCache("skyPty").clear(); //전 캐쉬 삭제
 		skyPty();
 	}
 	
@@ -129,6 +134,7 @@ public class Weather {
 		HttpURLConnection urlCon = (HttpURLConnection)requestUrl.openConnection();
 		
 		urlCon.setRequestMethod("GET");
+		urlCon.setRequestProperty("Content-type", "application/json");
 		urlCon.setRequestProperty("Accept", "application/json");
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
@@ -198,7 +204,7 @@ public class Weather {
 	
 	/* ========== 초단기 실황 ========== */
 	public HashMap<String, String> ultraShortTerm() throws Exception {
-
+		
 		String d = new SimpleDateFormat("HHmm").format(new Date());
 		String d2 = d.substring(2,4);
 		String f = d.substring(0,2);
@@ -249,12 +255,14 @@ public class Weather {
 		HttpURLConnection urlCon = (HttpURLConnection)requestUrl.openConnection();
 		
 		urlCon.setRequestMethod("GET");
+		urlCon.setRequestProperty("Content-type", "application/json");
 		urlCon.setRequestProperty("Accept", "application/json");
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
 		
 		String responseText = "";
 		String line;
+		
 		
 		while((line = br.readLine()) != null) {
 			responseText += line;
@@ -323,7 +331,11 @@ public class Weather {
 				}else {
 					time = f + "30";
 				}
-				fcstTime = (f2+1) + "00";
+				if((f2+1) < 10) {
+					fcstTime = "0" + (f2+1) + "00";
+				}else {
+					fcstTime = (f2+1) + "00";
+				}
 			}
 		}else { //10:00 이후
 			if(Integer.parseInt(d2) < 30) { //??시 30분전 처리
@@ -357,6 +369,7 @@ public class Weather {
 		HttpURLConnection urlCon = (HttpURLConnection)requestUrl.openConnection();
 		
 		urlCon.setRequestMethod("GET");
+		urlCon.setRequestProperty("Content-type", "application/json");
 		urlCon.setRequestProperty("Accept", "application/json");
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));

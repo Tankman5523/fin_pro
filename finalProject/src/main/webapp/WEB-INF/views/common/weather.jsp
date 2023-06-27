@@ -30,7 +30,6 @@
 					$("#weather_temp").html(result.T1H + 'º');
 				}
 			});
-			
 			/* 하늘상태(아이콘),강수형태 */
 			$.ajax({
 				
@@ -41,7 +40,6 @@
 					$("#weather_sky").html(result.SKY);
 				}
 			});
-			
 			/* 최저,최고기온  정보 추출*/
 			$.ajax({
 				url : "tmnTmx.api",
@@ -50,7 +48,6 @@
 				}
 				
 			});
-			
 			/* 미세먼지, 초미세먼지 */
 			$.ajax({
 				url : "dust.api",
