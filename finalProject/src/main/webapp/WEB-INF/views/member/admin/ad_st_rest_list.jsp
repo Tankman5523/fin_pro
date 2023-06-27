@@ -49,10 +49,10 @@
                     <a href="enrollStudent.ad">학생 관리</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">임직원 관리</a>
+                    <a href="enrollProfessor.ad">임직원 관리</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">학사일정 관리</a>
+                    <a href="calendarView.ad">학사일정 관리</a>
                 </div>
                 <div class="child_title">
                     <a href="stuRestList.ad" style="color:#00aeff; font-weight: 550;">휴/복학 신청 관리</a>

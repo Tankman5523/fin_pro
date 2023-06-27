@@ -58,13 +58,14 @@ public class StudentController {
 		String studentNo = st.getStudentNo();
 		
 		ArrayList<HashMap<String, String>> calList = memberService.yearCalendarList(); // 학사일정 조회
+		ArrayList<HashMap<String, String>> regList = memberService.selectReg(studentNo); // 등록금 납부 조회
 		ArrayList<Notice> nList = memberService.selectMainNotice(); // 공지사항 목록
 		HashMap<String, String> map = new HashMap<>();
 		map.put("person", "student");
 		map.put("personNo", studentNo);
 		String filePath = memberService.selectProfile(map);
 		
-		mv.addObject("filePath", filePath).addObject("calList", calList)
+		mv.addObject("filePath", filePath).addObject("regList", regList).addObject("calList", calList)
 		  .addObject("nList", nList).setViewName("member/student/mainPage");
 		return mv;
 	}
