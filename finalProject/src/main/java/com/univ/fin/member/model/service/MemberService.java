@@ -304,6 +304,9 @@ public interface MemberService {
 	// 메인 -> 프로필 사진 조회
 	String selectProfile(HashMap<String, String> map);
 	
+	// 메인 -> 등록금 납부 조회
+	ArrayList<HashMap<String, String>> selectReg(String studentNo);
+	
 	// 메인 -> 상담신청 조회
 	ArrayList<Counseling> selectCounceling(String professorNo);
 

@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>종합정보시스템</title>
-<link rel="stylesheet" href="resources/css/studentMainPage.css">
+<link rel="stylesheet" href="resources/css/studentProfessorMainPage.css">
 </head>
 <body>
 	<div class="wrap">
@@ -41,7 +41,7 @@
 						</div>
 						<div class="c_content_112">
 							<div class="c_content_1121">
-								<span><i class="fa-solid fa-receipt fa-lg" style="color: #009eb3;"></i>&nbsp;&nbsp;최근 상담 내역</span>&nbsp;&nbsp;&nbsp;
+								<span><i class="fa-solid fa-receipt fa-lg" style="color: #118f00;"></i>&nbsp;&nbsp;상담 이력 조회</span>&nbsp;&nbsp;&nbsp;
 								<a href="counselHistory.pr"><i class="fa-regular fa-plus fa-xl" style="color: #686e78;"></i></a>
 							</div>
 							<div class="c_content_1122">
@@ -62,7 +62,16 @@
 															<td style="display: none;">${coun.counselNo }</td>
 															<td>${coun.applicationDate }</td>
 															<td>${coun.studentName }</td>
-															<td>${coun.status }</td>
+															<c:if test="${coun.status eq 'N' }">
+																<td style='color: orange; font-weight: bold;'>${coun.status }</td>
+															</c:if>
+															<c:if test="${coun.status eq 'Y' }">
+																<td style='color: #0080ff; font-weight: bold;'>${coun.status }</td>
+															</c:if>
+															<c:if test="${coun.status eq 'C' }">
+																<td style='color: red; font-weight: bold;'>${coun.status }</td>
+															</c:if>
+															
 														</tr>
 													</c:forEach>
 												</c:when>
@@ -125,7 +134,7 @@
 												<c:when test="${!empty calList }">
 													<c:forEach var="cal" items="${calList }">
 														<tr>
-															<td>${cal.start }</td>
+															<td height="32px">${cal.start }</td>
 															<td>${cal.end }</td>
 															<td>${cal.title }</td>
 														</tr>
@@ -158,7 +167,7 @@
 											<c:when test="${!empty nList }">
 												<c:forEach var="n" items="${nList }">
 													<tr>
-														<td width="80%">${n.noticeTitle }</td>
+														<td width="80%" height="50px">${n.noticeTitle }</td>
 														<td width="20%">${n.createDate }</td>
 													</tr>
 												</c:forEach>
@@ -291,7 +300,7 @@
 													str += '19:00';
 													break;
 											}
-											str += "  " + cList[i].className + "<br>";
+											str += "&nbsp;&nbsp;" + cList[i].className + "<br>";
 										}
 									}
 									

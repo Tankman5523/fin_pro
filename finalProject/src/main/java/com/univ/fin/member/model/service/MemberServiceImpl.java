@@ -850,6 +850,12 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.selectProfile(sqlSession, map);
 	}
 	
+	// 메인 -> 등록금 납부 조회
+	@Override
+	public ArrayList<HashMap<String, String>> selectReg(String studentNo) {
+		return memberDao.selectReg(sqlSession, studentNo);
+	}
+	
 	// 메인 -> 상담신청 조회
 	@Override
 	public ArrayList<Counseling> selectCounceling(String professorNo) {
