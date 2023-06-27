@@ -10,6 +10,25 @@
 <link rel="stylesheet" href="/fin/resources/css/mainPage.css">
 </head>
 <body>
+	<script>
+	/* 날씨 정보 데이터 미리 호출(캐시값 담아놓기 위해서) */
+		$(function(){
+			
+			$.ajax({
+				url : "weather.api"
+			});
+			
+			$.ajax({
+				url : "skyPty.api"
+			});
+			
+			$.ajax({
+				url : "tmnTmx.api"
+			});
+			
+		});
+	</script>
+
  	<c:if test="${not empty alertMsg}">
 	
 		<script>
@@ -124,14 +143,6 @@
 				slideBox.addEventListener('mouseleave', function(){
 					autoSlide()
 				})
-				
-				/* 날씨 정보 데이터 미리 호출(캐시값 담아놓기 위해서) */
-				$(function(){
-					
-					$.ajax({
-						url : "weather.api"
-					});
-				});
 
 			</script>
 		
