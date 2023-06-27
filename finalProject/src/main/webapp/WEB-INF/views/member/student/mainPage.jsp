@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>종합정보시스템</title>
-<link rel="stylesheet" href="resources/css/studentMainPage.css">
+<link rel="stylesheet" href="resources/css/studentProfessorMainPage.css">
 </head>
 <body>
 	<div class="wrap">
@@ -41,21 +41,48 @@
 						</div>
 						<div class="c_content_112">
 							<div class="c_content_1121">
-								<span><i class="fa-solid fa-receipt fa-lg" style="color: #009eb3;"></i>&nbsp;&nbsp;등록금 납부 현황</span>&nbsp;&nbsp;&nbsp;
-								<a href="onelist.rg"><i class="fa-regular fa-plus fa-xl" style="color: #686e78;"></i></a>
+								<span><i class="fa-solid fa-receipt fa-lg" style="color: #118f00;"></i>&nbsp;&nbsp;등록금 납부 현황</span>&nbsp;&nbsp;&nbsp;
+								<a href="listPage.rg"><i class="fa-regular fa-plus fa-xl" style="color: #686e78;"></i></a>
 							</div>
 							<div class="c_content_1122">
 								<div class="c_content_1122_table-area">
 									<table border="1">
 										<thead>
 											<tr>
-												<th>학기</th>
-												<th>금액</th>
-												<th>납부여부</th>
+												<th width="30%">학기</th>
+												<th width="45%">금액</th>
+												<th width="25%">납부여부</th>
 											</tr>
 										</thead>
 										<tbody>
-											
+											<c:choose>
+												<c:when test="${!empty regList }">
+													<c:forEach var="r" items="${regList }">
+														<tr>
+															<td>${r.classTerm }</td>
+															<td>${r.mustPay }</td>
+															<c:if test="${r.payStatus eq 'Y' }">
+																<td>납부완료</td>
+															</c:if>
+															<c:if test="${r.payStatus eq 'O' }">
+																<td>초과납부</td>
+															</c:if>
+															<c:if test="${r.payStatus eq 'D' }">
+																<td>금액미달</td>
+															</c:if>
+															<c:if test="${r.payStatus eq 'N' }">
+																<td>미납부</td>
+															</c:if>
+															
+														</tr>
+													</c:forEach>
+												</c:when>
+												<c:otherwise>
+													<tr>
+														<td colspan="3">조회된 데이터가 없습니다.</td>
+													</tr>
+												</c:otherwise>
+											</c:choose>
 										</tbody>
 									</table>
 								</div>
@@ -109,7 +136,7 @@
 												<c:when test="${!empty calList }">
 													<c:forEach var="cal" items="${calList }">
 														<tr>
-															<td>${cal.start }</td>
+															<td height="32px">${cal.start }</td>
 															<td>${cal.end }</td>
 															<td>${cal.title }</td>
 														</tr>
@@ -142,7 +169,7 @@
 											<c:when test="${!empty nList }">
 												<c:forEach var="n" items="${nList }">
 													<tr>
-														<td width="80%">${n.noticeTitle }</td>
+														<td width="80%" height="50px">${n.noticeTitle }</td>
 														<td width="20%">${n.createDate }</td>
 													</tr>
 												</c:forEach>
@@ -260,7 +287,7 @@
 													str += '19:00';
 													break;
 											}
-											str += "  " + cList[i].className + "<br>";
+											str += "&nbsp;&nbsp;" + cList[i].className + "<br>";
 										}
 									}
 									

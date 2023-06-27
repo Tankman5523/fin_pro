@@ -631,6 +631,11 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.selectProfile", map);
 	}
 	
+	// 메인 -> 등록금 납부 조회
+	public ArrayList<HashMap<String, String>> selectReg(SqlSessionTemplate sqlSession, String studentNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectReg", studentNo);
+	}
+	
 	// 메인 -> 상담신청 조회
 	public ArrayList<Counseling> selectCounceling(SqlSessionTemplate sqlSession, String professorNo) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectCounceling", professorNo);
