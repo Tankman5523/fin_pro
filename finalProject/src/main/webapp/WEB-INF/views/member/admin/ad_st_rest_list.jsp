@@ -5,49 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>학생 휴/복학 신청 승인 페이지</title>
-<style>
-	.searchCategory{
-		margin-left:20px;
-		margin-top:10px;
-		text-align:center;
-		
-	}
-	.content_title{
-		font-size: 35px;
-		font-weight: 550;
-		margin-top : 2%;
-	}
-	#datepicker1,#datepicker2{
-		width:9%;
-	}
-	
-	input{
-		autocomplete:"off";
-	}
-	
-	#rest_list>tbody tr:hover{
-		background-color: #E2E2E2;
-		font-weight: 550;
-	}
-	thead{
-		background-color: #b8f8fb;
-		color : 1b315e;
-	}
-	
-	#content_title{
-		display: flex;
-	    align-items: center;
-	    width: 100%;
-	    height: 10.8%;
-	    font-size: 30px;
-	    font-weight: 500;
-	    margin-left:4%;
-	}
-	#rest_list{
-		border-collapse:collapse;
-		border-radius: 8px;
-	}
-</style>
+<link rel="stylesheet" href="/fin/resources/css/studentRestListView.css">
 </head>
 <body>
 	<div class="wrap">

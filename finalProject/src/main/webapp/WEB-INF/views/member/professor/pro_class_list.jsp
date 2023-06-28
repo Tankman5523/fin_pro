@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>강의신청 조회</title>
+<link rel="stylesheet" href="/fin/resources/css/classCreateView.css">
 </head>
 <body>
      <div class="wrap">
@@ -22,24 +23,23 @@
                 </div>
             </div>
             <div id="content_1">
-                <h4>강의 개설정보</h4>
-                <div align="center">
-
-                    <table border="1" style="width:80%; text-align: center;">
+                <span id="content_title">강의 개설 내역</span>
+                <div align="center"  style="width:100%;height:650; border-top:2px solid lightblue">
+                    <table border="1" id="class_list" class="table-responsive">
                         <thead>
                             <tr>
-                                <th>강의번호</th>
-                                <th>전공/교양</th>
-                                <th>학과</th>
-                                <th>강의명</th>
-                                <th>학년도</th>
-                                <th>학기</th>
-                                <th>강의실</th>
-                                <th>강의시간(요일포함)</th>
-                                <th>수강대상</th>
-                                <th>수강인원</th>
-                                <th>이수학점</th>
-                                <th>개설여부</th>
+                                <th style="width:8%">강의번호</th>
+                                <th style="width:9%">전공/교양</th>
+                                <th style="width:9%">학과</th>
+                                <th style="width:9%">강의명</th>
+                                <th style="width:8%">학년도</th>
+                                <th style="width:7%">학기</th>
+                                <th style="width:8%">강의실</th>
+                                <th style="width:8%">강의시간</th>
+                                <th style="width:8%">수강대상</th>
+                                <th style="width:8%">수강인원</th>
+                                <th style="width:8%">이수학점</th>
+                                <th style="width:9%">개설여부</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -61,14 +61,14 @@
 	                        			<td>${c.classroom }</td>
 	                        			<td>
 	                        				${c.period }<br>
-	                        				${c.day }
+	                        				(${c.day })
 	                        			</td>
 	                        			<td>${c.classLevel eq 0?'전':c.classLevel }학년</td>
 	                        			<td>${c.classNos }</td>
 	                        			<td>${c.credit }</td>
 	                        			<c:choose>
 	                        			<c:when test="${c.status eq 'C'}">
-	                        				<td><button type="button" onclick="location.href='updateClassCreate.pr?classNo=${c.classNo}'" class="btn btn-warning">반려(수정)</button></td>
+	                        				<td><button type="button" onclick="location.href='updateClassCreate.pr?classNo=${c.classNo}'" class="btn btn-warning btn-sm">반려</button></td>
 	                        			</c:when>
 	                        			<c:otherwise>
 	                        				<td>${c.status eq 'Y'?'개설완료': c.status eq 'B'?'승인대기중':'학기종료'}</td>

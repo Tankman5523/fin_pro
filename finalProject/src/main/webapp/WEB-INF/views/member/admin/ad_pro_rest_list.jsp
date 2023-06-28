@@ -5,25 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<style>
-	#content_title{
-		display: flex;
-	    align-items: center;
-	    width: 100%;
-	    height: 10.8%;
-	    font-size: 30px;
-	    font-weight: 500;
-	    margin-left:4%;
-	}
-	#rest_list>tbody tr:hover{
-		background-color: #E2E2E2;
-		font-weight: 550;
-	}
-	thead{
-		background-color: #b8f8fb;
-		color : 1b315e;
-	}
-</style>
+<link rel="stylesheet" href="/fin/resources/css/adminProfessorRestList.css">
 </head>
 <body>
 	<div class="wrap">

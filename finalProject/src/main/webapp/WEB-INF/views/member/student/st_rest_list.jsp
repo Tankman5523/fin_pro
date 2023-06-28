@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>휴,복학 신청 조회 페이지</title>
+<link rel="stylesheet" href="/fin/resources/css/studentRestListView.css">
 </head>
 <body>
     <div class="wrap">
@@ -34,10 +35,10 @@
                 </div>
             </div>
             <div id="content_1">
-				<h4>휴복학 신청 조회</h4>
-                <div style="border-top:1px solid;" align="center">
+				<span id="content_title">휴복학 신청 조회</span>
+                <div style="border-top:2px solid lightblue;" align="center">
 
-                    <table border="1" style="width:90%; text-align: center; margin-top:5%;">
+                    <table  border="1" class="rest_list table" style="width:80%; text-align: center;margin-top:2%;">
                         <thead>
                             <tr>
                             	<th>신청일</th>

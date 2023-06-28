@@ -5,21 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>안식 신청 조회</title>
-<style>
-	#content_title{
-		display: flex;
-	    align-items: center;
-	    width: 100%;
-	    height: 10.8%;
-	    font-size: 30px;
-	    font-weight: 500;
-	    margin-left:4%;
-	}
-	#rest_list>thead{
-		background-color: #b8f8fb;
-		color : 1b315e;
-	}
-</style>
+<link rel="stylesheet" href="/fin/resources/css/professorRestView.css">
 </head>
 <body>
 	<div class="wrap">
@@ -49,7 +35,7 @@
             <div id="content_1">
 				<span id="content_title">안식/퇴직 신청 내역</span>
                 <div style="border-top:2px solid lightblue;" align="center">
-                    <table id="rest_list" border="2" class="table" style="width: 80%;margin-top:2%;text-align: center;">
+                    <table id="rest_list2" border="2" class="table" style="width: 80%;margin-top:2%;text-align: center;">
                         <thead>
                             <tr>
                                 <th>종류(안식/퇴직)</th>

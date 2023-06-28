@@ -5,40 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<style>
-	#content_title{
-	display: flex;
-    align-items: center;
-    width: 100%;
-    height: 10.8%;
-    font-size: 30px;
-    font-weight: 500;
-    margin-left:4%;
-	}
-	.board_list{
-		margin-top:20px;
-		text-align:center;
-	}
-	.board_list>tbody>tr>td{
-		width:25%;
-	}
-	.board_list input{
-		width:100%;
-		border:none;
-		text-align:center;
-	}
-	#board_border>table{
-		margin:5%;
-	}
-	#board_border{
-		margin-top:5%;
-		width:90%;
-		border:2px solid black;
-	}
-	.board_list>tbody td:nth-child(2n+1) {
-    	background-color: #d3d3d3;
- 	}
-</style>
+<link rel="stylesheet" href="/fin/resources/css/studentRestFormView.css">
 </head>
 <body>
 	<div class="wrap">
@@ -70,7 +37,7 @@
 				<div id="board_border">
 					<br>
 						<h5>학생 정보</h5>
-						<table border="2" class="board_list table" style="width:90%">
+						<table border="2" class="board_list table">
 							<tbody>
 								<tr>
 									<td>학생명</td>
@@ -95,7 +62,7 @@
 					
 						<br>
 						<h5>신청 정보</h5>
-						<table border="2" id="enrollTable" class="board_list table" style="width:90%">
+						<table border="2" id="enrollTable" class="board_list table">
 	
 							<tr>
 								<td>신청 구분</td>

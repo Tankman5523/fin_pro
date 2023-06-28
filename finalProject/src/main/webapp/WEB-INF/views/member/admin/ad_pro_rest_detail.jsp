@@ -5,50 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<style>
-	#content_title{
-		display: flex;
-	    align-items: center;
-	    width: 100%;
-	    height: 10.8%;
-	    font-size: 30px;
-	    font-weight: 500;
-	    margin-left:4%;
-	}
-	#content_top{
-		border-top:2px solid lightblue;
-		width:100%;
-	}
-	#content_middle{
-		width:90%;
-		border:2px solid black;
-		margin-top:5%;
-	}
-	#content_middle>*{
-		margin:5%;
-	}
-	#content_middle>table #startDate
-	,#content_middle>table #endDate	{
-		width:40%;
-	}
-	#content_middle>table input{
-		width:95%;
-		border:none;
-	}
-	#content_middle>table>tbody td:nth-child(2n) {
-    	width:33%;
- 	}
-  	#content_middle>table>tbody td:nth-child(2n+1) {
-    	width:17%;
- 	}
- 	#btn_area{
- 		text-align: center;
- 	}
- 	#btn_area>button{
- 		margin-left:20px;
- 	}
-	
-</style>
+<link rel="stylesheet" href="/fin/resources/css/adminProfessorRestList.css">
 </head>
 <body>
 	<div class="wrap">

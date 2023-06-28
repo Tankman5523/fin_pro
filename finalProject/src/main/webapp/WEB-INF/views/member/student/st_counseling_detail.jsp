@@ -5,35 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link rel="stylesheet" href="/fin/resources/css/studentPageStylesheet.css">
-<style>
-	.counselingCategory{
-        list-style: none;
-        
-    }
-    .counselingCategory>li{
-        text-align: center;
-        float: left;
-        margin: 5px;
-        margin-left : 30px
-    }
-    
-    td>input,textarea{
-        border: 0px;
-    }
-    .litle_title{
-        width:20%;
-    }
-    .coun_input{
-        width:30%;
-        background-color: gray;
-    }
-    .coun_input input{
-        width:30%;
-        background-color: gray;
-    }
- 	
-</style>
+<link rel="stylesheet" href="/fin/resources/css/studentCounselingEnroll.css">
 </head>
 <body>
     <div class="wrap">
@@ -51,43 +23,43 @@
                     <a href="counselingEnroll.st">상담신청</a>
                 </div>
             </div>
-            <div id="content_1" align="center" style="padding-top: 5%;">
+            <div id="content_1" align="center">
+            	<span id="content_title">상담 신청</span>
+            	<div id="content_top">
 				<form action="counselingUpdate.st" method="post">
 					<input type="hidden" name="counselNo" value="${c.counselNo}">
-	               <table border="1" style="width: 80%; text-align: center;">
-	                
-	
-	                    <tr style="width: 1;">
+	               <table id="coun_list" class="table">
+	                    <tr>
 	                        <td class="litle_title">상담교직원</td>
-	                        <td class="coun_input">                          
+	                        <td>                          
 	                            <input type="text" value="${p.professorName }" readonly>                  
 	                        </td>
-	                        <td style="width:20%;">학생명</td>
-	                        <td class="coun_input"><input type="text" value="${loginUser.studentName}" readonly></td>
+	                        <td class="litle_title">학생명</td>
+	                        <td><input type="text" value="${loginUser.studentName}" readonly></td>
 	                    </tr>
 	                    <tr>
 	                        <td class="litle_title">학과</td>
-	                        <td class="coun_input"><input type="text" value="${p.departmentNo}" readonly></td>
-	                        <td>학과</td>
-	                        <td class="coun_input"><input type="text" value="${loginUser.departmentNo }" readonly></td>
+	                        <td><input type="text" value="${p.departmentNo}" readonly></td>
+	                        <td class="litle_title">학과</td>
+	                        <td><input type="text" value="${loginUser.departmentNo }" readonly></td>
 	                    </tr>
 	                    <tr>
 	                        <td class="litle_title">직책</td>
-	                        <td class="coun_input"><input type="text" value="${p.position }" readonly></td>
-	                        <td>학생번호</td>
-	                        <td class="coun_input"><input type="text" value="${loginUser.studentNo}" readonly></td>
+	                        <td><input type="text" value="${p.position }" readonly></td>
+	                        <td class="litle_title">학생번호</td>
+	                        <td><input type="text" value="${loginUser.studentNo}" readonly></td>
 	                    </tr>
 	                    <tr>
 	                        <td class="litle_title">이메일</td>
-	                        <td class="coun_input"><input type="text" value="${p.email }" readonly ></td>
-	                        <td >학생 전화번호</td>
-	                        <td class="coun_input"><input type="text" value="${loginUser.phone}" readonly></td>
+	                        <td><input type="text" value="${p.email }" readonly ></td>
+	                        <td class="litle_title">학생 전화번호</td>
+	                        <td><input type="text" value="${loginUser.phone}" readonly></td>
 	                    </tr>
 	                    <tr>
 	                        <td class="litle_title">상담희망일자</td>
-	                        <td class="coun_input"><input type="text" value="${c.requestDate }" class="datepicker" readonly></td>
-	                        <td>상담신청일자</td>
-	                        <td class="coun_input"><input type="text" value="${c.applicationDate }" readonly></td>
+	                        <td><input type="text" value="${c.requestDate }" class="datepicker" readonly></td>
+	                        <td class="litle_title">상담신청일자</td>
+	                        <td><input type="text" value="${c.applicationDate }" readonly></td>
 	                    </tr>
 	                    <tr>
 	                        <td rowspan="2" class="litle_title">상담요청영역</td>
@@ -155,13 +127,13 @@
 	                    	<c:when test="${empty c.counselResult}">
 		                        <td class="litle_title">상담요청내용</td>
 		                        <td colspan="3">
-		                            <textarea name="counselContent" id="counselContent" cols="100" rows="10" style="resize: none;">${c.counselContent }</textarea>
+		                            <textarea name="counselContent" id="counselContent" cols="88" rows="10" style="resize: none;">${c.counselContent }</textarea>
 		                        </td>
 	                    	</c:when>
 	                    	<c:otherwise>
 	                    		<td class="litle_title">상담반려이유</td>
 		                        <td colspan="3">
-		                            <textarea name="counselContent" id="counselContent" cols="100" rows="10" style="resize: none;">${c.counselResult }</textarea>
+		                            <textarea name="counselContent" id="counselContent" cols="88" rows="10" style="resize: none;">${c.counselResult }</textarea>
 		                        </td>
 	                    	</c:otherwise>
 	                    	</c:choose>
@@ -174,6 +146,7 @@
 	                    <button type="submit" class="btn btn-primary" id="subBtn" style="margin-left: 2%;">수정</button>
 	                </div>
                 </form>
+                </div>
             </div>
         </div>
     </div>

@@ -1,0 +1,121 @@
+#class_enroll {
+	width: 95%;
+	margin: 2.5%;
+	border-collapse: separate;
+	border-spacing: 10px;
+	font-size: 15px;
+}
+
+#class_enroll>tr {
+	margin-top: 20px;
+}
+
+#classTerm, #classYear {
+	-webkit-appearance: none; /* 크롬 화살표 없애기 */
+	-moz-appearance: none; /* 파이어폭스 화살표 없애기 */
+	appearance: none; /* 화살표 없애기 */
+}
+
+#explain {
+	color: red;
+}
+
+#class_enroll>tbody td:nth-child(2n+1) {
+	background-color: #e2e2e2;
+}
+
+#content_title {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	height: 10.8%;
+	font-size: 30px;
+	font-weight: 500;
+	margin-left: 4%;
+}
+
+#upfile {
+	display: none;
+}
+
+#file_btn {
+	border: 1px solid #009dc4;
+	color: #009dc4;
+	width: 50%;
+	height: 5%;
+	margin: 0px;
+}
+
+#class_enroll .filebox {
+	margin: 0px;
+	padding: 0px;
+}
+
+.filebox label {
+	display: inline-block;
+	padding: 10px 20px;
+	color: #fff;
+	vertical-align: middle;
+	background-color: #999999;
+	cursor: pointer;
+	height: 40px;
+	margin-left: 10px;
+	margin-top: 2px;
+	margin-bottom: 0px;
+}
+
+.filebox input[type="file"] {
+	position: absolute;
+	width: 0;
+	height: 0;
+	padding: 0;
+	overflow: hidden;
+	border: 0;
+}
+
+#class_enroll select, #class_enroll input {
+	width: 100%;
+	border: none;
+}
+
+.upload-name {
+	display: inline-block;
+	height: 40px;
+	padding: 0 10px;
+	margin-top: 3px;
+	vertical-align: middle;
+	border: 1px solid #dddddd;
+	color: #999999;
+}
+
+#class_list {
+	width: 95%;
+	text-align: center;
+	margin-top: 20px;
+	font-size: 14px;
+	white-space: nowrap;
+	border-top: 1px solid #444444;
+	border-collapse: collapse;
+}
+
+#class_list .btn {
+	font-size: 16px;
+}
+
+#class_list>thead {
+	background-color: #0d47a1;
+	color: #ffffff;
+}
+
+#class_list td {
+	padding: 5px;
+	border-bottom: 1px solid black !important;
+}
+
+#class_list>tbody tr:nth-child(2n) {
+	background-color: #bbdefb;
+}
+
+#class_list>tbody tr:nth-child(2n+1) {
+	background-color: #e3f2fd;
+}

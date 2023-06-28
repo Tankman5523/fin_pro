@@ -742,7 +742,7 @@
 	        AND   COUNSEL_AREA LIKE #{counselArea}
 	        AND   TO_CHAR(APPLICATION_DATE,'YYYY') LIKE #{year}
 	        AND   APPLICATION_DATE BETWEEN TO_DATE(#{startDate},'YYYY-MM-DD') AND TO_DATE(#{endDate},'YYYY-MM-DD')
-	  		ORDER BY APPLICATION_DATE DESC
+	  		ORDER BY COUNSEL_NO DESC
 	 </select>
   	
   	<!-- 학과명으로 확과번호 조회 -->

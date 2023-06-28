@@ -5,54 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<style>
-	#board-list{
-		white-space: nowrap;
-		width: 100%;
-	    border-top: 1px solid #444444;
-	    border-collapse: collapse;
-		
-	}
-	#board_list tr{
-		font-size:14px;
-		
-	}
-	#board_list>tbody th, td {
-	    padding: 10px;
-	    text-align: center;
-  	}
-  	#board_list>thead tr {
-	    background-color: #0d47a1;
-	    color: #ffffff;
-  	}
- 	#board_list>tbody tr:nth-child(2n) {
-    	background-color: #bbdefb;
- 	}
-  	#board_list>tbody tr:nth-child(2n+1) {
-    	background-color: #e3f2fd;
- 	}
- 	#content_title{
-		display: flex;
-	    align-items: center;
-	    width: 100%;
-	    height: 10.8%;
-	    font-size: 30px;
-	    font-weight: 500;
-	    margin-left:4%;
-	}	
-	
-	 #content_1>div{
-        
-        
-    }
-    #class_type{
-        text-align: right;
-    }
-    #division,#status{
-    	margin-right: 20px;
-    	margin-top : 10px;
-    }
-</style>
+<link rel="stylesheet" href="/fin/resources/css/classManegeListView.css">
 </head>
 <body>
 	<div class="wrap">
@@ -97,11 +50,11 @@
 	                    <button type="button" onclick="searchClassList();" class="btn btn-secondary btn-sm" style="margin-bottom:5px;">조회</button>
 	                </div>
                 
-                <div style="margin-left:20px;">
+                <div style="margin-left:20px; margin-bottom:10px;">
                 	<button type="button" class="btn btn-primary" id="allPermit">일괄 개설</button>
                 </div>
                 <div style="width:100%; height:650px; overflow:auto">
-                    <table id="board_list" class="table" border="1" style="width:100%;text-align: center; margin-top:1%">
+                    <table id="board_list" class="table-responsive" border="1" style="text-align: center;">
                         <thead>
                             
                             <tr>
@@ -109,14 +62,14 @@
                                 <th style="width:8%">신청교수</th>
                                 <th style="width:5%">종류</th>
                                 <th style="width:10%">학과</th>
-                                <th style="width:10%">강의명</th>
+                                <th style="width:12%">강의명</th>
                                 <th style="width:7%">학년도</th>
                                 <th style="width:6%">학기</th>
-                                <th style="width:7%">강의실</th>
-                                <th style="width:6%">강의시간</th>
+                                <th style="width:6%">강의실</th>
+                                <th style="width:7%">강의시간</th>
                                 <th style="width:8%">수강대상</th>
-                                <th style="width:8%">수강인원</th>
-                                <th style="width:8%">이수학점</th>
+                                <th style="width:7%">수강인원</th>
+                                <th style="width:7%">이수학점</th>
                                 <th style="width:14%">개설여부</th>
                                 
                             </tr>
@@ -148,13 +101,13 @@
 			                                <td>${c.credit}학점</td>
 			                                <c:choose>
 				                                <c:when test="${c.status eq 'Y'}">
-				                                	<td>개설완료</td>
+				                                	<td><span class="resultMsg" style="color:blue;">개설</span></td>
 				                                </c:when>
 				                                <c:when test="${c.status eq 'N'}">
-				                                	<td>학기끝</td>
+				                                	<td><span class="resultMsg" style="color:red;">학기끝</span></td>
 				                                </c:when>
 				                                <c:when test="${c.status eq 'C'}">
-				                                	<td>반려</td>
+				                                	<td><span class="resultMsg" style="color:yellow;">반려</span></td>
 				                                </c:when>
 				                                <c:otherwise>
 					                                <td>
@@ -254,7 +207,6 @@
 	    			success:function(result){
 	    				if(result>0){
 	    					alert("개설 성공");
-	    					console.log($(this).parent());
 	    				}else{
 	    					alert("개설 승인 실패");
 	    				}
