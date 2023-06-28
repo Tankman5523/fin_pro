@@ -8,15 +8,49 @@
 <style>
 	#board-list{
 		white-space: nowrap;
+		width: 100%;
+	    border-top: 1px solid #444444;
+	    border-collapse: collapse;
+		
 	}
+	#board_list tr{
+		font-size:14px;
+		
+	}
+	#board_list>tbody th, td {
+	    padding: 10px;
+	    text-align: center;
+  	}
+  	#board_list>thead tr {
+	    background-color: #0d47a1;
+	    color: #ffffff;
+  	}
+ 	#board_list>tbody tr:nth-child(2n) {
+    	background-color: #bbdefb;
+ 	}
+  	#board_list>tbody tr:nth-child(2n+1) {
+    	background-color: #e3f2fd;
+ 	}
+ 	#content_title{
+		display: flex;
+	    align-items: center;
+	    width: 100%;
+	    height: 10.8%;
+	    font-size: 30px;
+	    font-weight: 500;
+	    margin-left:4%;
+	}	
+	
 	 #content_1>div{
-        margin: auto;
-        width:95%;
         
         
     }
     #class_type{
         text-align: right;
+    }
+    #division,#status{
+    	margin-right: 20px;
+    	margin-top : 10px;
     }
 </style>
 </head>
@@ -39,11 +73,8 @@
                 </div>
             </div>
             <div id="content_1">
-            	<div style="text-align:center;">
-                    <h3>개설 신청된 강의</h3>
-                </div>
-                
-					<div id="class_type">
+                    <span id="content_title">개설 신청된 강의</span>
+					<div id="class_type" style="border-top:2px solid lightblue">
 	                    <select name="division" id="division">
 	                       <option value="2">전공/교양</option>
 	                       <option value="0">전공</option>
@@ -66,27 +97,27 @@
 	                    <button type="button" onclick="searchClassList();" class="btn btn-secondary btn-sm" style="margin-bottom:5px;">조회</button>
 	                </div>
                 
-                <div style="">
+                <div style="margin-left:20px;">
                 	<button type="button" class="btn btn-primary" id="allPermit">일괄 개설</button>
                 </div>
-                <div style="width:100%; height:730px; overflow:auto">
-                    <table id="board_list" border="1" style="width:100%;text-align: center; margin-top:1%">
+                <div style="width:100%; height:650px; overflow:auto">
+                    <table id="board_list" class="table" border="1" style="width:100%;text-align: center; margin-top:1%">
                         <thead>
                             
                             <tr>
-                                <th><input type="checkbox" id="allCheck"></th>
-                                <th style="width:7%">신청교수</th>
-                                <th style="width:7%">전공/교양</th>
-                                <th>학과</th>
-                                <th>강의명</th>
-                                <th style="width:6%">학년도</th>
-                                <th style="width:5%">학기</th>
+                                <th style="width:3%"><input type="checkbox" id="allCheck"></th>
+                                <th style="width:8%">신청교수</th>
+                                <th style="width:5%">종류</th>
+                                <th style="width:10%">학과</th>
+                                <th style="width:10%">강의명</th>
+                                <th style="width:7%">학년도</th>
+                                <th style="width:6%">학기</th>
                                 <th style="width:7%">강의실</th>
-                                <th style="width:7%">강의시간</th>
-                                <th style="width:7%">수강대상</th>
-                                <th style="width:7%">수강인원</th>
-                                <th style="width:7%">이수학점</th>
-                                <th style="width:15%">개설여부</th>
+                                <th style="width:6%">강의시간</th>
+                                <th style="width:8%">수강대상</th>
+                                <th style="width:8%">수강인원</th>
+                                <th style="width:8%">이수학점</th>
+                                <th style="width:14%">개설여부</th>
                                 
                             </tr>
                         </thead>
@@ -113,8 +144,8 @@
 			                                   ( ${c.day} )
 			                                </td>
 			                                <td>${c.classLevel eq 0 ? '전':c.classLevel}학년</td>
-			                                <td>${c.classNos}</td>
-			                                <td>${c.credit}</td>
+			                                <td>${c.classNos}명</td>
+			                                <td>${c.credit}학점</td>
 			                                <c:choose>
 				                                <c:when test="${c.status eq 'Y'}">
 				                                	<td>개설완료</td>
@@ -270,8 +301,8 @@
 	                           +"( "+list[i].day+" )"
 	                        +"</td>"
 	                        +"<td>"+(list[i].classLevel == 0 ? '전':list[i].classLevel)+"학년</td>"
-	                        +"<td>"+list[i].classNos+"</td>"
-	                        +"<td>"+list[i].credit+"</td>"
+	                        +"<td>"+list[i].classNos+"명</td>"
+	                        +"<td>"+list[i].credit+"학점</td>"
 	                        switch(list[i].status){
 	                    	case "Y" : result+="<td>개설완료</td>"
 	                    	break;

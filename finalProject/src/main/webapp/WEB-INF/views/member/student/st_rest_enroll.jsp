@@ -17,14 +17,14 @@
 					<span style="margin: 0 auto;">학사관리</span>
 				</div>
 				<div class="child_title">
-					<a href="infoStudent.st" style="color: #00aeff; font-weight: 550;">학적
+					<a href="infoStudent.st">학적
 						정보 조회</a>
 				</div>
 				<div class="child_title">
 					<a href="personalTimetable.st">개인 시간표</a>
 				</div>
 				<div class="child_title">
-					<a href="studentRestEnroll.st">휴/복학 신청</a>
+					<a href="studentRestEnroll.st" style="color:#00aeff; font-weight: 550;">휴/복학 신청</a>
 				</div>
 				<div class="child_title">
 					<a href="studentRestList.st">휴/복학 조회</a>
@@ -243,15 +243,13 @@
 								} else { //등록금 정보 보여주는 창 만들기
 									result += "<tr class='reg'>"
 											+ "<td>납부할금액</td>"
-											+ "<td id='mustPay'>" + rp.mustPay
-											+ "</td>" + "<td>납부한금액</td>"
-											+ "<td id='inputPay'>"
-											+ rp.inputPay + "</td>" + "</tr>"
+											+ "<td id='mustPay'>" + rp.mustPay+ "</td>" 
+											+ "<td>납부한금액</td>"
+											+ "<td id='inputPay'>"+ rp.inputPay + "</td>" 
+											+ "</tr>"
 											+ "<tr class='reg'>"
-											+ "<td colspan='2'>" + year + "년 "
-											+ term + "학기" + " 등록금 납부할 계좌</td>"
-											+ "<td colspan='2'>"
-											+ rp.regAccountNo + "</td>"
+											+ "<td colspan='2'>" + year + "년 "+ term + "학기" + " 등록금 납부할 계좌</td>"
+											+ "<td colspan='2'>"+ rp.regAccountNo + "</td>"
 											+ "</tr>"
 
 								}
@@ -260,8 +258,7 @@
 								if (regCheck == "no") {//미등록휴학을 골라놓고 휴학 시작날짜를 고른경우
 									$(".reg").css("display", "none");
 								}
-								if (rp.inputPay >= rp.mustPay
-										|| regCheck == "no") {
+								if (rp.inputPay >= rp.mustPay|| regCheck == "no") {
 									$("#sm_btn").attr("disabled", false);
 								} else {
 									$("#sm_btn").attr("disabled", true);

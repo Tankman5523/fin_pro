@@ -45,7 +45,7 @@
                     <span style="margin: 0 auto;">상담관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="counselingList.st">상담이력조회</a>
+                    <a href="counselingList.st" style="color:#00aeff; font-weight: 550;">상담이력조회</a>
                 </div>
                 <div class="child_title">
                     <a href="counselingEnroll.st">상담신청</a>

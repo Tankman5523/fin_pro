@@ -190,6 +190,7 @@
   		<result column="END_DATE" property="endDate"/>
   		<result column="REASON" property="reason"/>
   		<result column="STATUS" property="status"/>
+  		<result column="PROFESSOR_NAME" property="professorName"/>
   	</resultMap>
   	
   	<resultMap type="calendar" id="calendarResultMap">
@@ -1360,6 +1361,7 @@
   		SELECT REST_NO,PROFESSOR_NO,CATEGORY,REQUEST_DATE,START_DATE,END_DATE,REASON,STATUS
   		FROM PROFESSOR_REST
   		WHERE PROFESSOR_NO = #{professorNo}
+  		ORDER BY REST_NO DESC
   	</select>
   	
   	<!-- 안식,퇴직 신청 등록(교수) -->
@@ -1430,7 +1432,8 @@
   	
   	<!-- 학생 휴,복학 신청 목록 검색 (관리자) -->
   	<select id="selectSearchStuRestList" resultMap="studentRestResultMap">
-  		SELECT REST_NO,STUDENT_NO,STUDENT_NAME,CATEGORY,REASON,REQUEST_DATE,START_DATE,END_DATE,R.STATUS
+  		SELECT REST_NO,STUDENT_NO,STUDENT_NAME,CATEGORY,REASON,REQUEST_DATE,START_DATE,END_DATE
+  			   ,DECODE(R.STATUS,'B','처리중','Y','승인완료','N','비승인') AS STATUS
   		FROM STUDENT_REST R
   		JOIN STUDENT S USING (STUDENT_NO)
   		WHERE STUDENT_NO LIKE '%'||#{studentNo}||'%'
@@ -1443,9 +1446,10 @@
   	
   	<!-- 임직원 안식,퇴직 신청 리스트 (관리자) -->
   	<select id="selectCounAllProList" resultMap="professorRestResultSet">
-  		SELECT *
-  		FROM PROFESSOR_REST
-  		WHERE STATUS = 'B'
+  		SELECT REST_NO,PROFESSOR_NO,PROFESSOR_NAME,CATEGORY,REQUEST_DATE,START_DATE,END_DATE,REASON,R.STATUS
+  		FROM PROFESSOR_REST R
+  		JOIN PROFESSOR P USING (PROFESSOR_NO)
+  		WHERE R.STATUS = 'B'
   		ORDER BY REST_NO DESC
   	</select>
   	

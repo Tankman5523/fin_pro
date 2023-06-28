@@ -16,10 +16,58 @@
         margin-top: 20px;
     }
     #classTerm,#classYear{  
-    -webkit-appearance:none; /* 크롬 화살표 없애기 */
-    -moz-appearance:none; /* 파이어폭스 화살표 없애기 */
-    appearance:none /* 화살표 없애기 */
+	    -webkit-appearance:none; /* 크롬 화살표 없애기 */
+	    -moz-appearance:none; /* 파이어폭스 화살표 없애기 */
+	    appearance:none /* 화살표 없애기 */
     }
+    #content_title{
+    	display: flex;
+	    align-items: center;
+	    width: 100%;
+	    height: 10.8%;
+	    font-size: 30px;
+	    font-weight: 500;
+	    margin-left:4%;
+    }
+    #upfile {
+       display: none;
+    }
+    #file_btn{
+    	border:1px solid #009dc4;
+    	color:#009dc4;
+    	width:50%;
+    	height:5%;
+    	margin:0px;
+    }
+    .upload-name {
+	    display: inline-block;
+	    height: 40px;
+	    padding: 0 10px;
+	    vertical-align: middle;
+	    border: 1px solid #dddddd;
+	    width: 58%;
+	    color: #999999;
+	}
+	.filebox label {
+	    display: inline-block;
+	    padding: 10px 20px;
+	    color: #fff;
+	    vertical-align: middle;
+	    background-color: #999999;
+	    cursor: pointer;
+	    height: 40px;
+	    margin-left: 10px;
+	    margin-top: 10px;
+	}
+	.filebox input[type="file"] {
+	    position: absolute;
+	    width: 0;
+	    height: 0;
+	    padding: 0;
+	    overflow: hidden;
+	    border: 0;
+	} 
+      
 </style>
 </head>
 <body>
@@ -34,12 +82,12 @@
                     <a href="classCreateSelect.pr">강의개설신청 내역</a>
                 </div>
                 <div class="child_title">
-                    <a href="classCreateEnroll.pr">강의 개설 신청</a>
+                    <a href="classCreateEnroll.pr" style="color:#00aeff; font-weight: 550;">강의 개설 신청</a>
                 </div>
             </div>
             <div id="content_1">
-				<h3>강의개설 신청</h3>
-                <div style="border-top:1px solid black">
+				<span id="content_title">강의개설 신청</span>
+                <div style="border-top:2px solid lightblue">
                     <form action="classCreateInsert.pr" method="POST" enctype="multipart/form-data">
                         
                         <table id="class_enroll">
@@ -121,8 +169,16 @@
                                         <option value="4">4학년</option>
                                     </select>
                                 </td>
-                                <td>첨부파일</td>
-                                <td colspan="2"><input type="file" name="upfile" required></td>
+                                <td>강의계획서</td>
+                                <td colspan="4" class="filebox">
+                                	<!-- 
+                                	 <label for="upfile" class="btn" id="file_btn">첨부파일</label>
+                                	<input type="file" name="upfile" id="upfile"  required>
+                                	 -->
+                                	<input class="upload-name" placeholder="강의계획서" required>
+							    	<label for="file">파일찾기</label> 
+							    	<input type="file" name="upfile" id="file" required>
+                                </td>
                                 
                             </tr>
                         </table>
@@ -178,6 +234,10 @@
                 hour.options[hour.options.length]=new Option("2교시",2);
             }
         }
+        $("#file").on('change',function(){
+        	var fileName = $("#file").val().split('/').pop().split('\\').pop();
+        	$(".upload-name").val(fileName);
+        });
         
     </script>
 </body>

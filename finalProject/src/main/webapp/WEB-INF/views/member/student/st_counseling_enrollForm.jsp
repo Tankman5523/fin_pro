@@ -74,7 +74,7 @@
                     <a href="counselingList.st">상담이력조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="counselingEnroll.st">상담신청</a>
+                    <a href="counselingEnroll.st" style="color:#00aeff; font-weight: 550;">상담신청</a>
                 </div>
             </div>
             <div id="content_1" align="center" style="padding-top: 5%;">

@@ -5,6 +5,21 @@
 <head>
 <meta charset="UTF-8">
 <title>안식 신청 조회</title>
+<style>
+	#content_title{
+		display: flex;
+	    align-items: center;
+	    width: 100%;
+	    height: 10.8%;
+	    font-size: 30px;
+	    font-weight: 500;
+	    margin-left:4%;
+	}
+	#rest_list>thead{
+		background-color: #b8f8fb;
+		color : 1b315e;
+	}
+</style>
 </head>
 <body>
 	<div class="wrap">
@@ -16,7 +31,7 @@
                     <span style="margin: 0 auto;">학사관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="infoProfessor.pr" style="color:#00aeff; font-weight: 550;">교수 정보 관리</a>
+                    <a href="infoProfessor.pr">교수 정보 관리</a>
                 </div>
 				<div class="child_title">
                     <a href="classListView.pr">강의 시간표</a>
@@ -25,16 +40,16 @@
                     <a href="personalTimetable.pr">개인 시간표</a>
                 </div>
 				<div class="child_title">
-                    <a href="professorRestList.pr">안식/퇴직 신청 조회</a>
+                    <a href="professorRestList.pr" style="color:#00aeff; font-weight: 550;">안식/퇴직 신청 조회</a>
                 </div>
 				<div class="child_title">
                     <a href="professorRestEnroll.pr">안식/퇴직 신청</a>
                 </div>
             </div>
             <div id="content_1">
-				<h4>안식/퇴직 신청 조회</h4>
-                <div style="border-top:1px solid gray;" align="center">
-                    <table border="1" style="width: 80%;margin-top:2%;text-align: center;">
+				<span id="content_title">안식/퇴직 신청 내역</span>
+                <div style="border-top:2px solid lightblue;" align="center">
+                    <table id="rest_list" border="2" class="table" style="width: 80%;margin-top:2%;text-align: center;">
                         <thead>
                             <tr>
                                 <th>종류(안식/퇴직)</th>
