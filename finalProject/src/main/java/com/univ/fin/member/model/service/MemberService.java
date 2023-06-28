@@ -293,13 +293,22 @@ public interface MemberService {
 	int insertCalendar(CalendarVo c);
 
 	// (교수) 상담 상세 조회
-	Counseling selectCounselDetail(HashMap<String, String> counselDtMap);
+	Counseling selectCounselDetail(String counselNo);
 
 	// 학사일정 관리 -> 학사일정 수정
 	int updateCalendar(CalendarVo c);
 
 	// 학사일정 관리 -> 학사일정 삭제
 	int deleteCalendar(CalendarVo c);
+	
+	// 메인 -> 프로필 사진 조회
+	String selectProfile(HashMap<String, String> map);
+	
+	// 메인 -> 등록금 납부 조회
+	ArrayList<HashMap<String, String>> selectReg(String studentNo);
+	
+	// 메인 -> 상담신청 조회
+	ArrayList<Counseling> selectCounceling(String professorNo);
 
 	// 메인 -> 학사일정 조회
 	ArrayList<HashMap<String, String>> yearCalendarList();
@@ -309,9 +318,6 @@ public interface MemberService {
 
 	// (교수) 상담 상태 변경
 	int updateCounselStatus(HashMap<String, String> statusMap);
-
-	// (교수) 업데이트 후 재조회
-	Counseling selectUpdateCounsel(String counselNo);
 
 	// (관리자) 학생 휴,복학 신청 리스트 조회
 	ArrayList<Counseling> selectCounAllStuList();
@@ -340,5 +346,10 @@ public interface MemberService {
 	// (관리자) 임직원 안식,퇴직 업데이트
 	int updateProfessorRest(ProfessorRest pr);
 
+	// (관리자) 공지사항 관리 - 전체 공지사항 조회
+	ArrayList<Notice> selectNoticeAllList();
+
+	// (관리자) 공지사항 관리 - 공지사항 검색
+	Notice searchNotice(HashMap<String, String> noticeMap);
 
 }

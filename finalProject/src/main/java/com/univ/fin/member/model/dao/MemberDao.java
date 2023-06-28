@@ -611,9 +611,9 @@ public class MemberDao {
 	}
 	
 	// (교수) 상담 상세 조회
-	public Counseling selectCounselDetail(SqlSessionTemplate sqlSession, HashMap<String, String> counselDtMap) {
+	public Counseling selectCounselDetail(SqlSessionTemplate sqlSession, String counselNo) {
 		 
-		return sqlSession.selectOne("memberMapper.selectCounselDetail", counselDtMap);
+		return sqlSession.selectOne("memberMapper.selectCounselDetail", counselNo);
 	}
 	
 	// 학사일정 관리 -> 학사일정 수정
@@ -624,6 +624,21 @@ public class MemberDao {
 	// 학사일정 관리 -> 학사일정 삭제
 	public int deleteCalendar(SqlSessionTemplate sqlSession, CalendarVo c) {
 		return sqlSession.update("memberMapper.deleteCalendar", c);
+	}
+	
+	// 메인 -> 프로필 사진 조회
+	public String selectProfile(SqlSessionTemplate sqlSession, HashMap<String, String> map) {
+		return sqlSession.selectOne("memberMapper.selectProfile", map);
+	}
+	
+	// 메인 -> 등록금 납부 조회
+	public ArrayList<HashMap<String, String>> selectReg(SqlSessionTemplate sqlSession, String studentNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectReg", studentNo);
+	}
+	
+	// 메인 -> 상담신청 조회
+	public ArrayList<Counseling> selectCounceling(SqlSessionTemplate sqlSession, String professorNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectCounceling", professorNo);
 	}
 	
 	// 메인 -> 학사일정 조회
@@ -641,10 +656,17 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.updateCounselStatus", statusMap);
 	}
 
-	// (교수) 업데이트 후 재조회
-	public Counseling selectUpdateCounsel(SqlSessionTemplate sqlSession, String counselNo) {
-		return sqlSession.selectOne("memberMapper.selectUpdateCounsel", counselNo);
-
+	// (관리자) 공지사항 관리 - 전체 공지사항 조회
+	public ArrayList<Notice> selectNoticeAllList(SqlSessionTemplate sqlSession) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.selectNoticeAllList");
 	}
+
+	// (관리자) 공지사항 관리 - 공지사항 검색
+	public Notice searchNotice(SqlSessionTemplate sqlSession, HashMap<String, String> noticeMap) {
+		
+		return sqlSession.selectOne("memberMapper.searchNotice", noticeMap);
+	}
+
 
 }

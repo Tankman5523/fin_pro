@@ -326,7 +326,7 @@
         <div id="content">
             <div id="category">
                 <div id="cate_title">
-                    <h3>학사관리</h3>
+                    <span style="margin: 0 auto;">강의관리</span>
                 </div>
                 <div class="child_title">
                     <a href="enrollStudent.ad">학생 관리</a>

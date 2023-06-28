@@ -300,7 +300,7 @@
         <div id="content">
             <div id="category">
                 <div id="cate_title">
-                    <h3>학사관리</h3>
+                    <span style="margin: 0 auto;">강의관리</span>
                 </div>
                 <div class="child_title">
                     <a href="enrollStudent.ad" style="color:#00aeff; font-weight: 550;">학생 관리</a>
@@ -317,6 +317,9 @@
                 <div class="child_title">
                     <a href="proRestList.ad">안식/퇴직 신청 관리</a>
                 </div>
+                <div class="child_title">
+				    <a href="selectNotice.ad">공지사항 관리</a>
+				</div>
             </div>
             <div id="content_1">
             	<br>

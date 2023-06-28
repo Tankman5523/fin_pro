@@ -85,7 +85,9 @@
         <property name="caches">
             <set>
                 <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" name="weather"/>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" name="skyPty"/>
                 <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" name="tmnTmx"/>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" name="dust"/>
             </set>
         </property>
     </bean>

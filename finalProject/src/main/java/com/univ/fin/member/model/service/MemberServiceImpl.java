@@ -827,9 +827,9 @@ public class MemberServiceImpl implements MemberService{
 	
 	// (교수) 상담 상세 조회
 	@Override
-	public Counseling selectCounselDetail(HashMap<String, String> counselDtMap) {
+	public Counseling selectCounselDetail(String counselNo) {
 
-		return memberDao.selectCounselDetail(sqlSession, counselDtMap);
+		return memberDao.selectCounselDetail(sqlSession, counselNo);
 	}
 
 	// 학사일정 관리 -> 학사일정 수정
@@ -842,6 +842,24 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public int deleteCalendar(CalendarVo c) {
 		return memberDao.deleteCalendar(sqlSession, c);
+	}
+	
+	// 메인 -> 프로필 사진 조회
+	@Override
+	public String selectProfile(HashMap<String, String> map) {
+		return memberDao.selectProfile(sqlSession, map);
+	}
+	
+	// 메인 -> 등록금 납부 조회
+	@Override
+	public ArrayList<HashMap<String, String>> selectReg(String studentNo) {
+		return memberDao.selectReg(sqlSession, studentNo);
+	}
+	
+	// 메인 -> 상담신청 조회
+	@Override
+	public ArrayList<Counseling> selectCounceling(String professorNo) {
+		return memberDao.selectCounceling(sqlSession, professorNo);
 	}
 	
 	// 메인 -> 학사일정 조회
@@ -862,11 +880,20 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.updateCounselStatus(sqlSession, statusMap);
 	}
 
-	// (교수) 업데이트 후 재조회
+	//공지사항 관리 - 전체 공지사항 조회
 	@Override
-	public Counseling selectUpdateCounsel(String counselNo) {
-		return memberDao.selectUpdateCounsel(sqlSession, counselNo);
+	public ArrayList<Notice> selectNoticeAllList() {
+		
+		return memberDao.selectNoticeAllList(sqlSession);
 	}
+
+	// (관리자) 공지사항 관리 - 공지사항 검색
+	@Override
+	public Notice searchNotice(HashMap<String, String> noticeMap) {
+		
+		return memberDao.searchNotice(sqlSession, noticeMap);
+	}
+
 
 }
 

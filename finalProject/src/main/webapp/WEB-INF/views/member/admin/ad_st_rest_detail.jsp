@@ -49,14 +49,14 @@
 					<span style="margin: 0 auto;">학사관리</span>
 				</div>
 				<div class="child_title">
-					<a href="enrollStudent.ad">학생 관리</a>
-				</div>
+                    <a href="enrollStudent.ad">학생 관리</a>
+                </div>
 				<div class="child_title">
-					<a href="enrollProfessor.ad">임직원 관리</a>
-				</div>
-				<div class="child_title">
-					<a href="calendarView.ad">학사일정 관리</a>
-				</div>
+                    <a href="enrollProfessor.ad">임직원 관리</a>
+                </div>
+                <div class="child_title">
+                    <a href="calendarView.ad">학사일정 관리</a>
+                </div>
 				<div class="child_title">
 					<a href="stuRestList.ad" style="color:#00aeff; font-weight: 550;">휴/복학 관리</a>
 				</div>

@@ -7,9 +7,11 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.PageInfo;
 import com.univ.fin.main.model.dao.MainDao;
 import com.univ.fin.main.model.vo.Notice;
+import com.univ.fin.member.model.dao.MemberDao;
 
 @Service
 public class MainServiceImpl implements MainService{
@@ -161,6 +163,15 @@ public class MainServiceImpl implements MainService{
 		ArrayList<Notice> faq = mainDao.infoFaqList(sqlSession);
 		
 		return faq;
+	}
+
+	//학사일정 캘린더 조회
+	@Override
+	public ArrayList<CalendarVo> selectHaksaCalendar() {
+
+		ArrayList<CalendarVo> list = mainDao.selectHaksaCalendar(sqlSession);
+		
+		return list;
 	}
 
 

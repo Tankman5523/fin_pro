@@ -9,7 +9,7 @@
 </head>
 <body>
 	<div class="wrap">
-		<%@include file="../../common/student_menubar.jsp" %>
+		<%@include file="../../common/professor_menubar.jsp" %>
 		<div id="content">
 			<div class="c_content">
 				<div class="c_content_1">
@@ -28,50 +28,48 @@
 												</c:otherwise>
 											</c:choose>
 										</td>
-										<td width="60%" style="font-weight: bold;">&nbsp;&nbsp;${loginUser.studentName } (${loginUser.studentNo })</td>
+										<td width="60%" style="font-weight: bold;">&nbsp;&nbsp;${loginUser.professorName } (${loginUser.professorNo })</td>
 									</tr>
 									<tr>
 										<td>&nbsp;&nbsp;학과:&nbsp;&nbsp;${loginUser.departmentNo }</td>
 									</tr>
 									<tr>
-										<td>&nbsp;&nbsp;학년:&nbsp;&nbsp;${loginUser.classLevel }</td>
+										<td>&nbsp;&nbsp;직급:&nbsp;&nbsp;${loginUser.position }</td>
 									</tr>
 								</tbody>
 							</table>
 						</div>
 						<div class="c_content_112">
 							<div class="c_content_1121">
-								<span><i class="fa-solid fa-receipt fa-lg" style="color: #118f00;"></i>&nbsp;&nbsp;등록금 납부 현황</span>&nbsp;&nbsp;&nbsp;
-								<a href="listPage.rg"><i class="fa-regular fa-plus fa-xl" style="color: #686e78;"></i></a>
+								<span><i class="fa-solid fa-receipt fa-lg" style="color: #118f00;"></i>&nbsp;&nbsp;상담 이력 조회</span>&nbsp;&nbsp;&nbsp;
+								<a href="counselHistory.pr"><i class="fa-regular fa-plus fa-xl" style="color: #686e78;"></i></a>
 							</div>
 							<div class="c_content_1122">
 								<div class="c_content_1122_table-area">
 									<table border="1">
 										<thead>
 											<tr>
-												<th width="30%">학기</th>
-												<th width="45%">금액</th>
-												<th width="25%">납부여부</th>
+												<th>상담신청일자</th>
+												<th>상담학생</th>
+												<th>완료여부</th>
 											</tr>
 										</thead>
 										<tbody>
 											<c:choose>
-												<c:when test="${!empty regList }">
-													<c:forEach var="r" items="${regList }">
+												<c:when test="${!empty counList }">
+													<c:forEach var="coun" items="${counList }">
 														<tr>
-															<td>${r.classTerm }</td>
-															<td>${r.mustPay }</td>
-															<c:if test="${r.payStatus eq 'Y' }">
-																<td>납부완료</td>
+															<td style="display: none;">${coun.counselNo }</td>
+															<td>${coun.applicationDate }</td>
+															<td>${coun.studentName }</td>
+															<c:if test="${coun.status eq 'N' }">
+																<td style='color: orange; font-weight: bold;'>${coun.status }</td>
 															</c:if>
-															<c:if test="${r.payStatus eq 'O' }">
-																<td>초과납부</td>
+															<c:if test="${coun.status eq 'Y' }">
+																<td style='color: #0080ff; font-weight: bold;'>${coun.status }</td>
 															</c:if>
-															<c:if test="${r.payStatus eq 'D' }">
-																<td>금액미달</td>
-															</c:if>
-															<c:if test="${r.payStatus eq 'N' }">
-																<td>미납부</td>
+															<c:if test="${coun.status eq 'C' }">
+																<td style='color: red; font-weight: bold;'>${coun.status }</td>
 															</c:if>
 															
 														</tr>
@@ -79,7 +77,7 @@
 												</c:when>
 												<c:otherwise>
 													<tr>
-														<td colspan="3">조회된 데이터가 없습니다.</td>
+														<td colspan="3">조호된 데이터가 없습니다.</td>
 													</tr>
 												</c:otherwise>
 											</c:choose>
@@ -95,7 +93,7 @@
 					<div class="c_content_13">
 						<div class="c_content_131">
 							<span><i class="fa-solid fa-calendar-days fa-lg" style="color: #ffae00;"></i>&nbsp;&nbsp;개인 시간표</span>
-							<a href="personalTimetable.st"><i class="fa-regular fa-plus fa-2xl" style="color: #686e78;"></i></a>
+							<a href="personalTimetable.pr"><i class="fa-regular fa-plus fa-2xl" style="color: #686e78;"></i></a>
 						</div>
 						<div class="c_content_132">
 							<div class="c_content_1321">
@@ -188,6 +186,21 @@
 					
 					<script>
 						$(function() {
+							//==========상담 내역==========
+							$(".c_content_1122_table-area>table>tbody>tr").hover(function() {
+								$(this).css("background-color", "#E0E0E0");
+								$(this).css("cursor", "pointer");					
+							}, function() {
+								$(this).css("background-color", "white");
+								$(this).css("cursor", "default");					
+							});
+							
+							$(".c_content_1122_table-area>table>tbody").on("click", "tr", function() {
+								var cno = $(this).children("td").eq(0).text();
+								location.href = "counselDetail.pr?cno=" + cno;
+							})
+
+							//==========학사 일정==========
 							var today = new Date();
 							var year = today.getFullYear();
 							
@@ -247,7 +260,7 @@
 						
 						function getClasses($day) {
 							$.ajax({
-								url: "getClasses.st",
+								url: "getClasses.pr",
 								success: function(cList) {
 									var str = "";
 									for(var i=0;i<cList.length;i++) {

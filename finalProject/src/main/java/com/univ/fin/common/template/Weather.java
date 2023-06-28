@@ -34,40 +34,69 @@ public class Weather {
 	@Autowired
 	CacheManager cacheManager;
 	
-	/* ========== (캐시 삭제후 데이터 갱신)========== */
-	@Scheduled(cron = "0 0,30 * * * *") // 매 30분,0분마다 갱신
-	public void updateShortTerm() throws Exception {
+	/* ========== (캐시 삭제후 데이터 갱신 - 온도)========== */
+	@Scheduled(cron = "0 0/10 * * * *") // 매 10분마다 갱신
+	public void updateUltraShortTerm() throws Exception {
 		cacheManager.getCache("weather").clear(); //전 캐쉬 삭제
 		weather(); //갱신
 	}
 	
-	/* 날씨 정보 가공처리 */
+	/* ========== (캐시 삭제후 데이터 갱신 - 강수형태,하늘상태)========== */
+	@Scheduled(cron = "0 0/10 * * * *") // 매 10분마다 갱신
+	public void updateUltraShortTerm2() throws Exception {
+		cacheManager.getCache("skyPty").clear(); //전 캐쉬 삭제
+		skyPty();
+	}
+	
+	/* ========== (캐시 삭제후 데이터 갱신 - 최저,최고온도)========== */
+	@Scheduled(cron = "0 30 23 * * *") //매 23시 30분마다 갱신
+	public void updateShortTerm() throws Exception {
+		cacheManager.getCache("tmnTmx").clear(); //전 캐쉬 삭제
+		tmnTmx();
+	}
+	
+	/* ========== 실시간 온도 ========== */
 	@Cacheable("weather")
 	@ResponseBody
 	@RequestMapping(value="weather.api",produces="application/json; charset=UTF-8")
 	public String weather() throws Exception{
 
-		//기온, 강수형태
-		HashMap<String, String> h2 = ultraShortTerm();
+		//기온
+		HashMap<String, String> h = ultraShortTerm();
 		
-		//최저온도, 최고온도, 하늘상태
-		HashMap<String, String> h = shortTerm();
+		return new Gson().toJson(h);
+	}
+	
+	/* ========== 하늘상태, 강수형태  ========== */
+	@Cacheable("skyPty")
+	@ResponseBody
+	@RequestMapping(value="skyPty.api",produces="application/json; charset=UTF-8")
+	public String skyPty() throws Exception{
+
+		//하늘 상태, 강수형태
+		HashMap<String, String> h = ultraShortforecast();
 		
 		//강수, 하늘 가공처리
 		HashMap<String, String> icon = new HashMap<>();
-		icon.put("pty", h2.get("PTY"));
 		icon.put("sky", h.get("SKY"));
+		icon.put("pty", h.get("PTY"));
+		
 		HashMap<String,String> setIcon = weatherIcon(icon);
+		/* IMG - 아이콘, SKY - 하늘상태 */
 		
-		HashMap<String, String> result = new HashMap<>();
+		return new Gson().toJson(setIcon);
+	}
+	
+	/* ========== 최저,최고 온도 ========== */
+	@Cacheable("tmnTmx")
+	@ResponseBody
+	@RequestMapping(value="tmnTmx.api",produces="application/json; charset=UTF-8")
+	public String tmnTmx() throws Exception{
+
+		//최저온도, 최고온도
+		HashMap<String, String> h = shortTerm();
 		
-		result.put("T1H", h2.get("T1H"));			//기온 
-		result.put("TMN", h.get("TMN"));			//최저온도
-		result.put("TMX", h.get("TMX"));			//최고온도
-		result.put("IMG", setIcon.get("img"));		//아이콘
-		result.put("SKY", setIcon.get("sky"));		//하늘상태
-		
-		return new Gson().toJson(result);
+		return new Gson().toJson(h);
 	}
 	
 	/* ========== 전날 추출 ========== */
@@ -105,6 +134,8 @@ public class Weather {
 		HttpURLConnection urlCon = (HttpURLConnection)requestUrl.openConnection();
 		
 		urlCon.setRequestMethod("GET");
+		urlCon.setRequestProperty("Content-type", "application/json");
+		urlCon.setRequestProperty("Accept", "application/json");
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
 		
@@ -129,17 +160,12 @@ public class Weather {
 		for(int i=0; i<arr.size(); i++) {
 			JSONObject item = (JSONObject) arr.get(i);
 			WeatherVo weather = new WeatherVo();
-			weather.setFcstDate((String)item.get("fcstDate"));
-			weather.setFcstTime((String)item.get("fcstTime"));
 			weather.setCategory((String)item.get("category"));
 			weather.setFcstValue((String)item.get("fcstValue"));
 			list.add(weather);
 		}
 		
-		//TMP - 1시간 온도, TMN - 일 최저 온도, TMX - 일 최고 온도, SKY - 하늘상태  = 맑음(1), 구름많음(3), 흐림(4)
-		
-		String hour = new SimpleDateFormat("HH").format(new Date());
-		String setTime = hour + "00";
+		//TMP - 1시간 온도, TMN - 일 최저 온도, TMX - 일 최고 온도
 		
 		HashMap<String, String> h = new HashMap<>();
 		
@@ -168,11 +194,6 @@ public class Weather {
 					setMin = setTmp;
 				}
 			}
-			
-			/* 하늘 상태 */
-			if(list.get(i).getFcstTime().equals(setTime) && list.get(i).getCategory().equals("SKY")) {
-				h.put("SKY", list.get(i).getFcstValue());
-			}
 		}
 		
 		h.put("TMN", min);
@@ -183,7 +204,7 @@ public class Weather {
 	
 	/* ========== 초단기 실황 ========== */
 	public HashMap<String, String> ultraShortTerm() throws Exception {
-
+		
 		String d = new SimpleDateFormat("HHmm").format(new Date());
 		String d2 = d.substring(2,4);
 		String f = d.substring(0,2);
@@ -192,14 +213,18 @@ public class Weather {
 		
 		if(Integer.parseInt(d) < 1000) { //10:00 이전(즉 0?:00), ?시 30분전 처리
 			if(Integer.parseInt(f) == 0) { //00시일 경우 어제일자로 변경
-				day = yesterday();
-				time = "2330";
+				if(Integer.parseInt(d2)<30) {
+					day = yesterday();
+					time = "2330";
+				}else {
+					time = "0030";
+				}
 			}else {
 				if(Integer.parseInt(d2) < 30) {
 					time = Integer.parseInt(f)-1 + "30";
 					time = "0" + time;
 				}else {
-					time = f + "00";
+					time = f + "30";
 				}
 			}
 		}else { //10:00 이후
@@ -211,7 +236,7 @@ public class Weather {
 					time = a + "30";
 				}
 			}else {//??시 30분이후 처리
-				time = Integer.parseInt(f) + "00";
+				time = f + "30";
 			}
 		}
 		
@@ -224,12 +249,128 @@ public class Weather {
 		url += "&dataType=JSON";
 		url += "&nx=58";
 		url += "&ny=126";
-		System.out.println("ultraShortTerm 조회시간 : " + time);
+		
 		URL requestUrl = new URL(url);
 		
 		HttpURLConnection urlCon = (HttpURLConnection)requestUrl.openConnection();
 		
 		urlCon.setRequestMethod("GET");
+		urlCon.setRequestProperty("Content-type", "application/json");
+		urlCon.setRequestProperty("Accept", "application/json");
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
+		
+		String responseText = "";
+		String line;
+		
+		
+		while((line = br.readLine()) != null) {
+			responseText += line;
+		}
+		
+		br.close();
+		urlCon.disconnect();
+		
+		JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
+		JSONObject bodyObj = (JSONObject) totalObj.get("response");
+		JSONObject body = (JSONObject) bodyObj.get("body");
+		JSONObject b = (JSONObject) body.get("items");
+		JSONArray arr = (JSONArray) b.get("item");
+		
+		ArrayList<WeatherVo> list = new ArrayList<>();
+		
+		for(int i=0; i<arr.size(); i++) {
+			JSONObject item = (JSONObject) arr.get(i);
+			WeatherVo weather = new WeatherVo();
+			
+			weather.setCategory((String)item.get("category"));
+			weather.setObsrValue((String)item.get("obsrValue"));
+			
+			list.add(weather);
+		}
+		
+		HashMap<String, String> h = new HashMap<>();
+		
+		for(int i=0; i<list.size(); i++) {
+			
+			//기온
+			if(list.get(i).getCategory().equals("T1H")) {
+				h.put("T1H", list.get(i).getObsrValue());
+			}
+			
+		}
+		
+		return h;
+	}
+	
+	/* ========== 초단기예보 ========== */
+	public HashMap<String, String> ultraShortforecast() throws Exception {
+		
+		String d = new SimpleDateFormat("HHmm").format(new Date());
+		String d2 = d.substring(2,4);
+		String f = d.substring(0,2);
+		int f2 = Integer.parseInt(f);
+		String time = ""; //현재 시간
+		String fcstTime = ""; //예보시간
+		String day = new SimpleDateFormat("yyyyMMdd").format(new Date());
+		
+		if(Integer.parseInt(d) < 1000) { //10:00 이전(즉 0?:00), ?시 30분전 처리
+			if(f2 == 0) { //00시일 경우
+				if(Integer.parseInt(d2)<30) { //30분전일 경우 어제일자로 변경
+					day = yesterday();
+					time = "2330";
+					fcstTime = "0000";
+				}else {
+					time = "0030";
+					fcstTime = "0100";
+				}
+			}else {
+				if(Integer.parseInt(d2) < 30) {
+					time = f2-1 + "30";
+					time = "0" + time;
+				}else {
+					time = f + "30";
+				}
+				if((f2+1) < 10) {
+					fcstTime = "0" + (f2+1) + "00";
+				}else {
+					fcstTime = (f2+1) + "00";
+				}
+			}
+		}else { //10:00 이후
+			if(Integer.parseInt(d2) < 30) { //??시 30분전 처리
+				int a = f2-1;
+				if(a == 9) {
+					time = "0" + a + "30";
+				}else {
+					time = a + "30";
+				}
+			}else {//??시 30분이후 처리
+				time = f + "30";
+			}
+			fcstTime = (f2+1) + "00";
+			if(f2 == 23) {
+				fcstTime = "0000";
+			}
+		}
+		
+		String url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst";
+		url += "?serviceKey=LV1haHMzhSQa4G%2Fy3Z9xbZ9hC9LKdHt3g2Z4M5SQwQVcGxx6M7HRJqVs30pL9H4MdL7POcjH78%2FBspjr%2FNV1sw%3D%3D";
+		url += "&pageNo=1";
+		url += "&numOfRows=60";
+		url += "&base_date=" + day;
+		url += "&base_time=" + time;
+		url += "&dataType=JSON";
+		url += "&nx=58";
+		url += "&ny=126";
+		
+		URL requestUrl = new URL(url);
+		
+		HttpURLConnection urlCon = (HttpURLConnection)requestUrl.openConnection();
+		
+		urlCon.setRequestMethod("GET");
+		urlCon.setRequestProperty("Content-type", "application/json");
+		urlCon.setRequestProperty("Accept", "application/json");
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
 		
@@ -255,10 +396,9 @@ public class Weather {
 			JSONObject item = (JSONObject) arr.get(i);
 			WeatherVo weather = new WeatherVo();
 			
-			weather.setBaseDate((String)item.get("baseDate"));
-			weather.setBaseTime((String)item.get("baseTime"));
 			weather.setCategory((String)item.get("category"));
-			weather.setObsrValue((String)item.get("obsrValue"));
+			weather.setFcstTime((String)item.get("fcstTime"));
+			weather.setFcstValue((String)item.get("fcstValue"));
 			
 			list.add(weather);
 		}
@@ -268,18 +408,18 @@ public class Weather {
 		for(int i=0; i<list.size(); i++) {
 			
 			//기온
-			if(list.get(i).getCategory().equals("T1H")) {
-				h.put("T1H", list.get(i).getObsrValue());
+			if(list.get(i).getCategory().equals("SKY") && list.get(i).getFcstTime().equals(fcstTime)) {
+				h.put("SKY", list.get(i).getFcstValue());
+			}
+			if(list.get(i).getCategory().equals("PTY") && list.get(i).getFcstTime().equals(fcstTime)) {
+				h.put("PTY", list.get(i).getFcstValue());
 			}
 			
-			//강수형태 => 없음(0), 비(1), 비/눈(2), 눈(3), 빗방울(5), 빗방울눈날림(6), 눈날림(7)
-			if(list.get(i).getCategory().equals("PTY")) {
-				h.put("PTY", list.get(i).getObsrValue());
-			}
 		}
 		
 		return h;
 	}
+
 	
 	/* ========== 강수형태 아이콘 처리 ========== */
 	public HashMap<String, String> weatherIcon(HashMap<String, String> icon) {
@@ -328,8 +468,8 @@ public class Weather {
 					img = "<img src='resources/icon/minRain.png'>";
 		}
 
-		result.put("img", img);
-		result.put("sky", resultSky);
+		result.put("IMG", img);
+		result.put("SKY", resultSky);
 		
 		return result;
 	}

@@ -4,6 +4,9 @@
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
@@ -25,6 +28,7 @@ import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.template.SaveFile;
+import com.univ.fin.main.model.vo.Notice;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.member.model.service.MemberService;
@@ -36,6 +40,67 @@ public class ProfessorController {
 	
 	@Autowired
 	private MemberService memberService;
+	
+	// 메인페이지
+	@RequestMapping("main.pr")
+	public ModelAndView mainPage(ModelAndView mv, HttpSession session) {
+		Professor pr = (Professor)session.getAttribute("loginUser");
+		String professorNo = pr.getProfessorNo();
+		
+		ArrayList<Counseling> counList = memberService.selectCounceling(professorNo); // 상담신청 조회
+		ArrayList<HashMap<String, String>> calList = memberService.yearCalendarList(); // 학사일정 조회
+		ArrayList<Notice> nList = memberService.selectMainNotice(); // 공지사항 목록
+		HashMap<String, String> map = new HashMap<>();
+		map.put("person", "professor");
+		map.put("personNo", professorNo);
+		String filePath = memberService.selectProfile(map);
+		
+		mv.addObject("filePath", filePath).addObject("counList", counList).addObject("calList", calList)
+		  .addObject("nList", nList).setViewName("member/professor/mainPage");
+		return mv;
+	}
+	
+	// 메인 -> 강의 조회
+	@ResponseBody
+	@RequestMapping(value = "getClasses.pr", produces = "application/json; charset=UTF-8")
+	public String getClasses(String day, HttpSession session) {
+		Professor pr = (Professor)session.getAttribute("loginUser");
+		String professorNo = pr.getProfessorNo();
+		
+		Calendar calendar = Calendar.getInstance();
+		String year = String.valueOf(calendar.get(calendar.YEAR)); // 년도
+		int month = calendar.get(calendar.MONTH)+1; // 월
+		String term = "";
+		if(3<=month && month<=6) { // 1학기
+			term = "1";
+		}
+		else if(9<=month && month<=12) { // 2학기
+			term = "2";
+		}
+		else {
+			term = "0";
+		}
+		
+		HashMap<String, String> map = new HashMap<>();
+		map.put("year", year);
+		map.put("term", term);
+		map.put("professorNo", professorNo);
+		ArrayList<Classes> cList = memberService.selectProfessorTimetable(map); // 해당 학기 모든 개인시간표 추출
+		Collections.sort(cList, new Comparator<Classes>() { // 요일별로 정렬
+			public int compare(Classes c1, Classes c2) {
+				int dayCompare = Integer.parseInt(c1.getDay()) - Integer.parseInt(c2.getDay());
+				
+				if(dayCompare == 0) { // 요일같으면 교시별로 정렬
+					return Integer.parseInt(c1.getPeriod()) - Integer.parseInt(c2.getPeriod());
+				}
+				else {
+					return dayCompare;
+				}
+			}
+		});
+		
+		return new Gson().toJson(cList);
+	}
 	
 	//교수 학적정보 조회
 	@RequestMapping("infoProfessor.pr")
@@ -364,19 +429,9 @@ public class ProfessorController {
 	
 	// (교수) 상담 상세 조회
 	@RequestMapping("counselDetail.pr")
-	public ModelAndView selectCounselDetail(@RequestParam("cno") String counselNo
-									, @RequestParam("sno") String studentNo
-									, @RequestParam("application") String application
-									, @RequestParam("request") String request
-									, ModelAndView mv) {
+	public ModelAndView selectCounselDetail(@RequestParam("cno") String counselNo, ModelAndView mv) {
 		
-		HashMap<String, String> counselDtMap = new HashMap<String, String>();
-		counselDtMap.put("counselNo", counselNo);
-		counselDtMap.put("studentNo", studentNo);
-		counselDtMap.put("application", application);
-		counselDtMap.put("request", request);
-		
-		Counseling counsel = memberService.selectCounselDetail(counselDtMap);
+		Counseling counsel = memberService.selectCounselDetail(counselNo);
 	
 		mv.addObject("c", counsel).setViewName("member/professor/counselHistoryDetail");
 		return mv;
@@ -407,9 +462,9 @@ public class ProfessorController {
 			msg = "업데이트 실패";
 			mv.addObject("msg", msg).setViewName("member/professor/counselHistory");
 		}else {
-			Counseling updateCounsel = memberService.selectUpdateCounsel(counselNo);
+			Counseling counsel = memberService.selectCounselDetail(counselNo);
 			msg = "상담 정보가 변경 되었습니다.";
-			mv.addObject("c", updateCounsel);
+			mv.addObject("c", counsel);
 			mv.addObject("msg", msg);
 			mv.setViewName("member/professor/counselHistoryDetail");
 		}

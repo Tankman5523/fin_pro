@@ -226,12 +226,20 @@
 	            	   
 	            	   $("#possible").css("display", "none");
 	            	   $("#impossible").css("display", "block");
+	            	   $("#impossible").prop("disabled", false);
+	            	   $(".student-table>tbody>tr").hover(function() {
+	            		   $(this).css("cursor", "pointer");
+	            	   })
 	               }
 	               
 	               function impossibleInsert() {
 	            	   $(".student-table>tbody").off("click", "tr");
 	            	   $("#possible").css("display", "block");
+	            	   $("#possible").prop("disabled", false);
 	            	   $("#impossible").css("display", "none");
+	            	   $(".student-table>tbody>tr").hover(function() {
+	            		   $(this).css("cursor", "default");
+	            	   })
 	               }
 	               
 	               function scoreInsert(e) {
