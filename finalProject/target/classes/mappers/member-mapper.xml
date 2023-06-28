@@ -1630,15 +1630,57 @@
   	</select>
   	
   	<!-- (관리자) 공지사항 관리 - 검색 조회 -->
-<!--   	<select id="searchNotice" resultMap="noticeResultSet"> -->
-<!--   		SELECT * -->
-<!-- 		FROM (SELECT NOTICE_NO, CATEGORY_NAME, NOTICE_TITLE, COUNT, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE, FIELD, N.STATUS, ORIGIN_NAME -->
-<!-- 		        FROM NOTICE N -->
-<!-- 		        JOIN NOTICE_CATEGORY NC ON(NOTICE_CATEGORY = CATEGORY_NO) -->
-<!-- 		        LEFT JOIN NOTICE_ATTACHMENT NA USING(NOTICE_NO) -->
-<!-- 		        WHERE N.STATUS = 'Y') -->
-<!-- 		ORDER BY CREATE_DATE DESC -->
-<!--   	</select> -->
+  	<select id="searchNotice" resultMap="noticeResultSet">
+  		SELECT *
+		FROM (SELECT NOTICE_NO, CATEGORY_NAME, NOTICE_TITLE, COUNT, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE, FIELD, N.STATUS, ORIGIN_NAME, NOTICE_CATEGORY
+		        FROM NOTICE N
+		        JOIN NOTICE_CATEGORY NC ON(N.NOTICE_CATEGORY = CATEGORY_NO)
+		        LEFT JOIN NOTICE_ATTACHMENT NA USING(NOTICE_NO)
+		        <choose>
+			        <when test="type.equals('all-type')">
+			        	WHERE (NOTICE_TITLE LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+						OR NOTICE_CONTENT LIKE CONCAT('%', CONCAT(#{keyword} , '%')))
+			        </when>
+			        <when test="type.equals('title')">
+			        	WHERE NOTICE_TITLE LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+			        </when>
+			        <otherwise>
+			        	WHERE NOTICE_CONTENT LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+			        </otherwise>
+		        </choose>
+		        AND N.STATUS = 'Y')
+		<choose>
+	        <when test="field.equals('all-field') and category.equals('all-category')">
+				ORDER BY CREATE_DATE DESC        
+	        </when>
+	        <when test="field.equals('all-field')">
+	        	WHERE NOTICE_CATEGORY = #{category }
+				ORDER BY CREATE_DATE DESC        
+	        </when>
+	        <when test="category.equals('all-category')">
+		        WHERE FIELD = #{field }
+				ORDER BY CREATE_DATE DESC        
+	        </when>
+	        <otherwise>
+		        WHERE FIELD = #{field }
+		        AND NOTICE_CATEGORY = #{category }
+				ORDER BY CREATE_DATE DESC
+	        </otherwise>
+		</choose>
+  	</select>
   	
+  	<update id="allDeleteNotice">
+  		UPDATE NOTICE
+		SET STATUS = 'N'
+  	</update>
+  	
+  	<update id="selectDeleteNotice">
+  		UPDATE NOTICE
+  		SET STATUS = 'N'
+		WHERE NOTICE_NO IN
+  		<foreach collection="array" item="noticeNo"  open="(" close=")" separator=",">
+			#{noticeNo }
+  		</foreach>
+  	</update>
   </mapper>
 

@@ -3,8 +3,7 @@
 #search-box{
 	width: 90%;
 	height: auto;
-	margin: 30px auto;
-/* 	margin-bottom: 50px; */
+	margin: 30px auto 10px auto;
 	padding: 20px 10px;
 	text-align: center;
 }
@@ -21,7 +20,7 @@
 
 
 #keyword{
-	width: 300px;
+	width: 400px;
 	height: 35px;
 	padding-left: 10px;
 	padding-right: 25px;
@@ -35,12 +34,15 @@
 	margin-left: -30px;
 	border: none;
 	border-radius: 5px;
+	background-color: #c0c0c0;
+}
+#search-box button:hover{
 	background-color: #0091EA;
 }
 
 #result-area{
 	width: 90%;
-	height: 700px;
+	height: 300px;
 	overflow-y: scroll;
 	margin: auto;
 	border: 1px solid #ddd;
@@ -68,4 +70,14 @@
 	cursor: pointer;
 	background-color: rgba(210,210,210, 10);
 	transition: all 0.2s ease-out;
+}
+
+#btn-area{
+	width: 90%;
+	margin: auto;
+}
+#insert, #delete, #update{
+	width: 200px;
+	height: 40px;
+	background-color: orange;
 }

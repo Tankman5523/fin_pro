@@ -889,9 +889,21 @@ public class MemberServiceImpl implements MemberService{
 
 	// (관리자) 공지사항 관리 - 공지사항 검색
 	@Override
-	public Notice searchNotice(HashMap<String, String> noticeMap) {
+	public ArrayList<Notice> searchNotice(HashMap<String, String> noticeMap) {
 		
 		return memberDao.searchNotice(sqlSession, noticeMap);
+	}
+
+	// (관리자) 공지사항 관리 - 공지사항 전체 삭제
+	@Override
+	public int allDeleteNotice() {
+		return memberDao.allDeleteNotice(sqlSession);
+	}
+
+	// (관리자) 공지사항 관리 - 공지사항 선택 삭제
+	@Override
+	public int selectDeleteNotice(String[] noticeNo) {
+		return memberDao.selectDeleteNotice(sqlSession, noticeNo);
 	}
 
 

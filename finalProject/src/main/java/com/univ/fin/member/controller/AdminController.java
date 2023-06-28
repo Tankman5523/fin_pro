@@ -447,13 +447,20 @@ public class AdminController {
 		noticeMap.put("type", type);
 		noticeMap.put("keyword", keyword);
 		
-		Notice notice = memberService.searchNotice(noticeMap);
+		ArrayList<Notice> list = memberService.searchNotice(noticeMap);
 		
-		System.out.println(notice);
-		
-		return new Gson().toJson(null);
+		return new Gson().toJson(list);
 	}
 	
+	//(관리자) 공지사항 관리 - 공지사항 선택 삭제
+//	@ResponseBody
+//	@PostMapping(value = "deleteNotice.ad", produces = "application/json; charset=UTF-8;")
+//	public String deleteNotice(String[] noticeNo) {
+//		
+//		
+//		
+//		return new Gson().toJson(null);
+//	}
 }
 
  

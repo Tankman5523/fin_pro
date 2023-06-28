@@ -663,9 +663,21 @@ public class MemberDao {
 	}
 
 	// (관리자) 공지사항 관리 - 공지사항 검색
-	public Notice searchNotice(SqlSessionTemplate sqlSession, HashMap<String, String> noticeMap) {
+	public ArrayList<Notice> searchNotice(SqlSessionTemplate sqlSession, HashMap<String, String> noticeMap) {
 		
-		return sqlSession.selectOne("memberMapper.searchNotice", noticeMap);
+		return (ArrayList)sqlSession.selectList("memberMapper.searchNotice", noticeMap);
+	}
+
+	// (관리자) 공지사항 관리 - 공지사항 전체 삭제
+	public int allDeleteNotice(SqlSessionTemplate sqlSession) {
+
+		return sqlSession.update("memberMapper.allDeleteNotice");
+	}
+
+	// (관리자) 공지사항 관리 - 공지사항 선택 삭제
+	public int selectDeleteNotice(SqlSessionTemplate sqlSession, String[] noticeNo) {
+
+		return sqlSession.update("memberMapper.selectDeleteNotice");
 	}
 
 
