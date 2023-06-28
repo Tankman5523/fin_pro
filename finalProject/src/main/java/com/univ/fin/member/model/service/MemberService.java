@@ -350,6 +350,12 @@ public interface MemberService {
 	ArrayList<Notice> selectNoticeAllList();
 
 	// (관리자) 공지사항 관리 - 공지사항 검색
-	Notice searchNotice(HashMap<String, String> noticeMap);
+	ArrayList<Notice> searchNotice(HashMap<String, String> noticeMap);
+
+	// (관리자) 공지사항 관리 - 공지사항 전체 삭제
+	int allDeleteNotice();
+
+	// (관리자) 공지사항 관리 - 공지사항 선택 삭제
+	int selectDeleteNotice(String[] noticeNo);
 
 }
