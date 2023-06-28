@@ -190,6 +190,7 @@
   		<result column="END_DATE" property="endDate"/>
   		<result column="REASON" property="reason"/>
   		<result column="STATUS" property="status"/>
+  		<result column="PROFESSOR_NAME" property="professorName"/>
   	</resultMap>
   	
   	<resultMap type="calendar" id="calendarResultMap">
@@ -234,6 +235,7 @@
   		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO) 
         JOIN COLLEGE C ON (S.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE STUDENT_NO = #{studentNo}
+  		AND STUDENT_PWD = #{studentPwd}
   	</select>
   	
   	<!-- 임직원 로그인 -->
@@ -244,6 +246,7 @@
         JOIN DEPARTMENT D ON (P.DEPARTMENT_NO = D.DEPARTMENT_NO)
         JOIN COLLEGE C ON (P.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE PROFESSOR_NO = #{professorNo}
+  		AND PROFESSOR_PWD = #{professorPwd}
   	</select>
   
   	<!-- ID조회 - 학생 -->
@@ -741,7 +744,7 @@
 	        AND   COUNSEL_AREA LIKE #{counselArea}
 	        AND   TO_CHAR(APPLICATION_DATE,'YYYY') LIKE #{year}
 	        AND   APPLICATION_DATE BETWEEN TO_DATE(#{startDate},'YYYY-MM-DD') AND TO_DATE(#{endDate},'YYYY-MM-DD')
-	  		ORDER BY APPLICATION_DATE DESC
+	  		ORDER BY COUNSEL_NO DESC
 	 </select>
   	
   	<!-- 학과명으로 확과번호 조회 -->
@@ -1367,6 +1370,7 @@
   		SELECT REST_NO,PROFESSOR_NO,CATEGORY,REQUEST_DATE,START_DATE,END_DATE,REASON,STATUS
   		FROM PROFESSOR_REST
   		WHERE PROFESSOR_NO = #{professorNo}
+  		ORDER BY REST_NO DESC
   	</select>
   	
   	<!-- 안식,퇴직 신청 등록(교수) -->
@@ -1437,7 +1441,8 @@
   	
   	<!-- 학생 휴,복학 신청 목록 검색 (관리자) -->
   	<select id="selectSearchStuRestList" resultMap="studentRestResultMap">
-  		SELECT REST_NO,STUDENT_NO,STUDENT_NAME,CATEGORY,REASON,REQUEST_DATE,START_DATE,END_DATE,R.STATUS
+  		SELECT REST_NO,STUDENT_NO,STUDENT_NAME,CATEGORY,REASON,REQUEST_DATE,START_DATE,END_DATE
+  			   ,DECODE(R.STATUS,'B','처리중','Y','승인완료','N','비승인') AS STATUS
   		FROM STUDENT_REST R
   		JOIN STUDENT S USING (STUDENT_NO)
   		WHERE STUDENT_NO LIKE '%'||#{studentNo}||'%'
@@ -1450,9 +1455,10 @@
   	
   	<!-- 임직원 안식,퇴직 신청 리스트 (관리자) -->
   	<select id="selectCounAllProList" resultMap="professorRestResultSet">
-  		SELECT *
-  		FROM PROFESSOR_REST
-  		WHERE STATUS = 'B'
+  		SELECT REST_NO,PROFESSOR_NO,PROFESSOR_NAME,CATEGORY,REQUEST_DATE,START_DATE,END_DATE,REASON,R.STATUS
+  		FROM PROFESSOR_REST R
+  		JOIN PROFESSOR P USING (PROFESSOR_NO)
+  		WHERE R.STATUS = 'B'
   		ORDER BY REST_NO DESC
   	</select>
   	

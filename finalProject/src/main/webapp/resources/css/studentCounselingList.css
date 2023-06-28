@@ -1,0 +1,72 @@
+.search_ul {
+	margin-left: 7%;
+	list-style: none;
+}
+
+.option1 {
+	margin-top: 10px;
+	width: 20%;
+	height: 50%;
+	float: left;
+}
+
+.option2 {
+	margin-top: 10px;
+	width: 40%;
+	height: 50%;
+	float: left;
+}
+
+.option3 {
+	margin-top: 10px;
+	width: 10%;
+	height: 50%;
+	float: left;
+}
+
+#datepicker1, #datepicker2 {
+	width: 35%;
+}
+
+.con {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#content_title {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	height: 10.8%;
+	font-size: 30px;
+	font-weight: 500;
+	margin-left: 4%;
+}
+
+#search {
+	border-top: 2px solid lightblue;
+	/*border-bottom:1px solid black;*/
+	height: 10%;
+	width: 100%;
+}
+
+#search input {
+	width: 25%;
+}
+
+#board_list {
+	width: 80%;
+	text-align: center;
+	table-layout: fixed;
+}
+
+#board_list>thead {
+	background-color: #b8f8fb;
+	color: 1b315e;
+}
+
+#board_list td {
+	padding: 5px;
+	border-bottom: 1px thin black;
+}
