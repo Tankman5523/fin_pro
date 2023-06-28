@@ -183,7 +183,7 @@ public class Weather {
 		
 		if(responseText.charAt(0) == '<') { //error code = 04뜰 경우  (HTTP_ERROR)
 			try {
-				wait(500);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 			}
 			shortTerm();
@@ -348,7 +348,7 @@ public class Weather {
 		
 		if(responseText.charAt(0) == '<') { //error code = 04뜰 경우  (HTTP_ERROR)
 			try {
-				wait(500);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 			}
 			ultraShortTerm();
@@ -474,12 +474,12 @@ public class Weather {
 			try {
 				urlCon = (HttpURLConnection)requestUrl.openConnection();
 			
-			urlCon.setRequestMethod("GET");
-			urlCon.setRequestProperty("Content-type", "application/json");
-			urlCon.setRequestProperty("Accept", "application/json");
-			urlCon.setConnectTimeout(1000);
-			urlCon.setReadTimeout(1000);
-			System.out.println("리스폰스 코드 : " + urlCon.getResponseCode());
+				urlCon.setRequestMethod("GET");
+				urlCon.setRequestProperty("Content-type", "application/json");
+				urlCon.setRequestProperty("Accept", "application/json");
+				urlCon.setConnectTimeout(1000);
+				urlCon.setReadTimeout(1000);
+				System.out.println("리스폰스 코드 : " + urlCon.getResponseCode());
 				try {
 					if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
 						success = true;

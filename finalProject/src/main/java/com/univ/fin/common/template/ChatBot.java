@@ -20,12 +20,27 @@ public class ChatBot {
 		h.put(3, "학사일정");
 		h.put(4, "공지");
 		h.put(5, "종합정보시스템");
-		h.put(6, "등록/장학");
-		h.put(7, "학사관리");
-		h.put(8, "상담관리");
-		h.put(9, "수강신청");
-		h.put(10, "수업관리");
-		h.put(11, "전체");
+		h.put(6, "등록장학");
+		h.put(7, "등록금납부조회");
+		h.put(8, "등록금납입이력");
+		h.put(9, "장학금수혜내역");
+		h.put(10, "학사관리");
+		h.put(11, "학적정보조회");
+		h.put(12, "개인 시간표");
+		h.put(13, "휴학복학신청");
+		h.put(14, "휴학복학조회");
+		h.put(15, "졸업사정표");
+		h.put(16, "상담관리");
+		h.put(17, "수강신청");
+		h.put(18, "수업관리");
+		h.put(19, "전체");
+//		h.put(20, "");
+//		h.put(21, "");
+//		h.put(22, "");
+//		h.put(23, "");
+//		h.put(24, "");
+//		h.put(25, "");
+//		h.put(26, "");
 		
 		/* 사용자가 검색한 관련 값 판별 후  담기 */
 		for(int i=1; i<=h.size(); i++) {
@@ -43,17 +58,17 @@ public class ChatBot {
 		for(int i=1; i<=resultHash.size(); i++) {
 			
 			switch(resultHash.get(i)) {
-				case "학교소개" : result += "<button onclick="+"location.href='universityIntro.mp'"+">학교소개 페이지로</button>";
+				case "학교소개" : result += "<button onclick="+"location.href='universityIntro.mp'"+">학교소개 페이지로</button><br>";
 					break;
-				case "학사소개" : result += "<button onclick="+"location.href='haksaInfo.mp'"+">학사소개 페이지로</button>";
+				case "학사소개" : result += "<button onclick="+"location.href='haksaInfo.mp'"+">학사소개 페이지로</button><br>";
 					break;
-				case "학사일정" : result += "<button onclick="+"location.href='haksaSchedule.mp'"+">학사일정 페이지로</button>";
+				case "학사일정" : result += "<button onclick="+"location.href='haksaSchedule.mp'"+">학사일정 페이지로</button><br>";
 					break;
-				case "공지" : result += "<button onclick="+"location.href='notice.mp'"+">공지게시판 페이지로</button>";
+				case "공지" : result += "<button onclick="+"location.href='notice.mp'"+">공지게시판 페이지로</button><br>";
 					break;
-				case "종합정보시스템" : result += "<button onclick="+"location.href='infoSystem.mp'"+">종합정보시스템 페이지로</button>";
+				case "종합정보시스템" : result += "<button onclick="+"location.href='infoSystem.mp'"+">종합정보시스템 페이지로</button><br>";
 					break;
-				case "등록/장학" : result += detailSelect(1);
+				case "등록장학" : result += detailSelect(1);
 					break;
 				case "학사관리" : result += detailSelect(2);
 					break;
@@ -70,16 +85,11 @@ public class ChatBot {
 									+ "<button onclick='questionBtn(4)'>수강신청</button>"
 									+ "<button onclick='questionBtn(5)'>수업관리</button>";
 					break;
-				default : result += "<button onclick='questionBtn(0)' style='width : 100%';>이전으로</button>";
 			}
 			
-			if(i != resultHash.size()) {
-				result += "<br>";
-			}
 		}
 		if(result == "") {
-			return result += "<div>검색결과가 없습니다.<br> 다시 한번 입력해 주세요.</div><br>"
-						  + "<button onclick='questionBtn(0)' style='width : 100%';>이전으로</button>";
+			return result += "<div>검색결과가 없습니다.<br> 다시 한번 입력해 주세요.</div><br>";
 		}else {
 			return result;
 		}
@@ -122,7 +132,7 @@ public class ChatBot {
 							+ "<button onclick="+"location.href='#'"+">성적 이의신청</button><br>";
 				break;
 		}
-		result += "<button onclick='questionBtn(0)' style='width : 100%';>이전으로</button>";
+		
 		
 		return result;
 	}
