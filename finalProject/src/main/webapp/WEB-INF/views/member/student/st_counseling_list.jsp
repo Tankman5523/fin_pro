@@ -6,37 +6,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link rel="stylesheet" href="/fin/resources/css/studentCounselingList.css">
 </head>
-<style>
-		.search_ul{
-            
-            list-style: none;
-        }
-        .option1{
-            margin-top: 10px;
-            width:25%;
-            height:50%;
-            float: left;
-            
-        }
-        .option2{
-            margin-top: 10px;
-            width:50%;
-            height:50%;
-            float: left;
-            
-        }
-        
-        #datepicker1,#datepicker2{
-            width: 35%;
-        }
-        .con{
-        	overflow: hidden;
-        	text-overflow: ellipsis;
-        	white-space:nowrap;
-        	
-        }
-</style>
 <body>
     <div class="wrap">
     	<%@include file="../../common/student_menubar.jsp" %> <%--알아서 수정해서 쓰기 --%>
@@ -47,20 +18,20 @@
                         <span style="margin: 0 auto;">상담관리</span>
                     </div>
                     <div class="child_title">
-                        <a href="counselingList.st">상담이력조회</a>
+                        <a href="counselingList.st" style="color:#00aeff; font-weight: 550;">상담이력조회</a>
                     </div>
                     <div class="child_title">
                         <a href="counselingEnroll.st">상담신청</a>
                     </div>
                 </div>
                 <div id="content_1">
-                    <div id="search" style="border-bottom:1px solid black; height:10%">
-                        
+                	<span id="content_title">상담 신청</span>
+                    <div id="search">
                             <ul class="search_ul">
                                 <li class="option1">
-                                    	학년도 
+                                    	학년도 : 
                                     <select name="year" id="">
-                                       <option value="">===전체===</option>
+                                       <option value="">==전체==</option>
                                              
                                         <% HashSet<String> set = new HashSet<String>(); //밑에서 중복 거르기 위한 hashset 선언및 초기화%>
                                         <c:forEach var="c" items="${list }">
@@ -80,9 +51,9 @@
                                     </select>
                                 </li>
                                 <li class="option1">
-                                    	상담종류 
+                                    	상담종류 :
                                     <select name="counselArea">
-                                        <option value="">===전체===</option>
+                                        <option value="">==전체==</option>
                                         <option value="진로(취업)">진로(취업)</option>
                                         <option value="학사(제적)">학사(제적)</option>
                                         <option value="학사(휴학)">학사(휴학)</option>
@@ -94,10 +65,14 @@
                                     </select>
                                 </li>
                                 <li class="option2">
-                                    	신청일자 기간조회
+                                    	신청일자 기간조회 :
                                     <input type="text" class="date" id="datepicker1"name="start">
                                      ~ 
                                     <input type="text" class="date" id="datepicker2"name="end">
+                                </li>
+                                <li class="option3">
+                        			<button class="btn btn-secondary btn-sm" type="button" onclick="searchCounseling();">조회</button>
+                                
                                 </li>
                             </ul>
                             
@@ -105,10 +80,9 @@
                        
                     </div>
                     <div style="text-align: right; margin-right:40px">
-                        <button class="btn btn-secondary" type="button" onclick="searchCounseling();">조회</button>
                     </div>
                     <div align="center">
-                        <table border="1" style="width:80%; text-align: center;table-layout: fixed;" id="board_list" >
+                        <table border="1" id="board_list" class="table table-bordered">
                             <thead>
                                 <tr>
                                 	<th>상담신청일자</th>
@@ -122,10 +96,10 @@
                             	<!-- 테이블 fixed해서 일반적으로 width가 안먹어서 크기 정해주기 -->
                             		<col width="15%">
                             		<col width="15%">
-                            		<col width="35%">
+                            		<col width="33%">
                             		<col width="13%">
-                            		<col width="13%">
-                            		<col width="9%">
+                            		<col width="14%">
+                            		<col width="10%">
                             <tbody>
                             	<c:choose>
                             		<c:when test="${empty list }">

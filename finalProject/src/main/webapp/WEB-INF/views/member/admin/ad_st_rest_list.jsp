@@ -5,36 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>학생 휴/복학 신청 승인 페이지</title>
-<style>
-	.searchCategory{
-		margin-left:20px;
-		margin-top:10px;
-		text-align:center;
-		
-	}
-	.content_title{
-		font-size: 35px;
-		font-weight: 550;
-		margin-top : 2%;
-	}
-	#datepicker1,#datepicker2{
-		width:9%;
-	}
-	
-	input{
-		autocomplete:"off";
-	}
-	
-	#content_title{
-	display: flex;
-    align-items: center;
-    width: 100%;
-    height: 10.8%;
-    font-size: 30px;
-    font-weight: 500;
-    margin-left:4%;
-	}
-</style>
+<link rel="stylesheet" href="/fin/resources/css/studentRestListView.css">
 </head>
 <body>
 	<div class="wrap">
@@ -55,14 +26,14 @@
                     <a href="calendarView.ad">학사일정 관리</a>
                 </div>
                 <div class="child_title">
-                    <a href="stuRestList.ad" style="color:#00aeff; font-weight: 550;">휴/복학 신청 관리</a>
+                    <a href="stuRestList.ad" style="color:#00aeff; font-weight: 550;">휴/복학 관리</a>
                 </div>
                 <div class="child_title">
                     <a href="proRestList.ad">안식/퇴직 관리</a>
                 </div>
             </div>
             <div id="content_1">
-				<span id="content_title">휴복학 신청 목록</span>
+				<span id="content_title">휴복학 목록</span>
                 <div  align="center" style="border-top:2px solid lightblue;">
 					<div align="left" class="searchCategory">
 						처리여부 : 
@@ -98,18 +69,18 @@
 							<i class="fa-solid fa-magnifying-glass" style="margin:auto;"></i>
 						</button>
 					</div>
-                    <table id="rest_list" border="1" style="width:90%; text-align: center; margin-top:5%;">
+                    <table id="rest_list"  class="table" border="2" style="width:90%; text-align: center; margin-top:5%;">
                         <thead>
                             <tr>
-                            	<th>신청번호</th>
-                            	<th>신청일자</th>
-                                <th>학번</th>
-                                <th>학생명</th>
-                                <th>신청 목적</th>
-                                <th>사유</th>
-                                <th>시작일자</th>
-                                <th>복학예정일</th>
-                                <th>처리여부</th>
+                            	<th width="11%">신청번호</th>
+                            	<th width="12%">신청일자</th>
+                                <th width="11%">학번</th>
+                                <th width="11%">학생명</th>
+                                <th width="11%">신청 목적</th>
+                                <th width="11%">사유</th>
+                                <th width="11%">시작일자</th>
+                                <th width="11%">복학예정일</th>
+                                <th width="11%">처리여부</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -131,7 +102,7 @@
                         		</c:when>
                         		<c:otherwise>
                         			<tr>
-                        				<td colspan="8">신청 내역이 없습니다.</td>
+                        				<td colspan="9">신청 내역이 없습니다.</td>
                         			</tr>
                         		</c:otherwise>
                         	</c:choose>
