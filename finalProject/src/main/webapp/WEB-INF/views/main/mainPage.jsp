@@ -26,6 +26,9 @@
 				url : "tmnTmx.api"
 			});
 			
+			$.ajax({
+				url : "dust.api"
+			});
 		});
 	</script>
 
