@@ -36,7 +36,7 @@
 }
 
 .area1>div, .area2>div {
-		float: left;
+	float: left;
 }
 
 .area21 {
@@ -48,24 +48,22 @@
 	position: relative;
 	width: 930px;
 	height: 700px;
-	border-bottom: 1px solid lightgray;
-       border-right: 1px solid lightgray;
 }
 
 div[class*=stClass] {
 	position: absolute;
-       font-size: 15px;
-       font-weight: 600;
-       text-align: center;
-       line-height: 70px;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 70px;
 }
 
 .divclass, .divclass_last {
 	float: left;
-	width: 185.8px;
+	width: 186px;
    	height: 70px;
-   	border-bottom: 1px solid lightgray;
-       border-right: 1px solid lightgray;
+	box-shadow: -1px -1px 0 0 lightgray inset;
+    box-sizing: border-box;
 }
    
 div[class*=day], div[class*=period] {
@@ -84,7 +82,7 @@ div[class*=day] {
 div[class*=period] {
 	font-size: large;
 	height: 70px;
-	width: 187.3px;
+	width: 187.5px;
 	line-height: 90px;
 }
 
