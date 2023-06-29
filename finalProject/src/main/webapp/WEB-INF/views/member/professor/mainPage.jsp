@@ -124,9 +124,9 @@
 								<table border="1">
 									<thead>
 										<tr>
-											<th width="20%">시작</th>
-											<th width="20%">마감</th>
-											<th width="60%">내용</th>
+											<th width="18%">시작</th>
+											<th width="18%">마감</th>
+											<th width="64%">내용</th>
 										</tr>
 									</thead>
 									<tbody>

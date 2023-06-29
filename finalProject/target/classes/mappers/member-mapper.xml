@@ -225,6 +225,13 @@
 		<result column="MUST_PAY" property="mustPay"/>
 		<result column="PAY_STATUS" property="payStatus"/>
 	</resultMap>
+	
+	<resultMap type="alarm" id="alarmResultMap">
+		<result column="ALARM_NO" property="alarmNo"/>
+		<result column="CMD" property="cmd"/>
+		<result column="STUDENT_NO" property="studentNo"/>
+		<result column="PROFESSOR_NAME" property="professorName"/>
+	</resultMap>
   	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
@@ -1610,6 +1617,25 @@
 		SET STATUS = #{counselStatus },
 	        COUNSEL_RESULT = #{cancelResult }
 		WHERE COUNSEL_NO = #{counselNo }
+  	</update>
+  	
+  	<!-- 알람 발신 -->
+  	<insert id="alarmInsert" parameterType="hashmap">
+  		INSERT INTO ALARM VALUES(SEQ_ALNO.NEXTVAL, #{cmd}, #{studentNo}, #{professorName}, 'N')
+  	</insert>
+  	
+  	<!-- 알람 수신 -->
+  	<select id="alarmReceive" parameterType="string" resultMap="alarmResultMap">
+  		SELECT *
+  		FROM ALARM
+  		WHERE STUDENT_NO = #{studentNo} AND STATUS = 'N'
+  	</select>
+  	
+  	<!-- 알람 확인 -->
+  	<update id="alarmCheck">
+  		UPDATE ALARM
+  		SET STATUS = 'Y'
+  		WHERE STUDENT_NO = #{studentNo} AND STATUS = 'N'
   	</update>
   	
   </mapper>

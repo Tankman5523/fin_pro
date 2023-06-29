@@ -1,13 +1,13 @@
 package com.univ.fin.member.model.dao;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.univ.fin.common.model.vo.AlarmVo;
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.CalendarVo;
@@ -654,6 +654,21 @@ public class MemberDao {
 	//(교수) 상담 상태 변경
 	public int updateCounselStatus(SqlSessionTemplate sqlSession, HashMap<String, String> statusMap) {
 		return sqlSession.update("memberMapper.updateCounselStatus", statusMap);
+	}
+
+	// 알람 발신
+	public int alarmInsert(SqlSessionTemplate sqlSession, HashMap<String, String> alarm) {
+		return sqlSession.insert("memberMapper.alarmInsert", alarm);
+	}
+	
+	// 알람 수신
+	public ArrayList<AlarmVo> alarmReceive(SqlSessionTemplate sqlSession, String studentNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.alarmReceive", studentNo);
+	}
+
+	// 알람 확인
+	public int alarmCheck(SqlSessionTemplate sqlSession, String studentNo) {
+		return sqlSession.update("memberMapper.alarmCheck", studentNo);
 	}
 
 

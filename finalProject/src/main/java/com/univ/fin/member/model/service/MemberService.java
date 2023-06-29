@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import com.univ.fin.common.model.vo.AlarmVo;
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.CalendarVo;
@@ -210,10 +211,10 @@ public interface MemberService {
 	int countGradeNos(HashMap<String, String> map);
 
 	// 성적관리 -> 성적 입력
-	int gradeInsert(Grade g);
+	int gradeInsert(Grade g, HashMap<String, String> alarm);
 
 	// 성적관리 -> 성적 수정
-	int gradeUpdate(Grade g);
+	int gradeUpdate(Grade g, HashMap<String, String> alarm);
 
 	// 강의 이의제기 -> 학생 신청
 	ArrayList<Dissent> studentGradeReport(String studentNo);
@@ -345,5 +346,11 @@ public interface MemberService {
 
 	// (관리자) 임직원 안식,퇴직 업데이트
 	int updateProfessorRest(ProfessorRest pr);
+
+	// 알람 수신
+	ArrayList<AlarmVo> alarmReceive(String studentNo);
+
+	// 알람 확인
+	int alarmCheck(String studentNo);
 
 }
