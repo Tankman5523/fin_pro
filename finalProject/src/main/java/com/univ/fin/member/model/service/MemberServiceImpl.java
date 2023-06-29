@@ -880,6 +880,38 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.updateCounselStatus(sqlSession, statusMap);
 	}
 
+	//공지사항 관리 - 전체 공지사항 조회
+	@Override
+	public ArrayList<Notice> selectNoticeAllList() {
+		
+		return memberDao.selectNoticeAllList(sqlSession);
+	}
+
+	// (관리자) 공지사항 관리 - 공지사항 검색
+	@Override
+	public Notice searchNotice(HashMap<String, String> noticeMap) {
+		
+		return memberDao.searchNotice(sqlSession, noticeMap);
+	}
+	
+	// (관리자) 메인 -> 강의 신청 목록 조회
+	@Override
+	public ArrayList<Classes> selectAdMainClasses() {
+		return memberDao.selectAdMainClasses(sqlSession);
+	}
+	
+	// (관리자) 메인 -> 학생 휴학 및 퇴학 신청 목록
+	@Override
+	public ArrayList<StudentRest> selectMainStudentRest() {
+		return memberDao.selectMainStudentRest(sqlSession);
+	}
+	
+	// (관리자) 메인 -> 교수 안식 및 퇴직 신청 목록
+	@Override
+	public ArrayList<ProfessorRest> selectMainProfessorRest() {
+		return memberDao.selectMainProfessorRest(sqlSession);
+	}
+
 
 }
 

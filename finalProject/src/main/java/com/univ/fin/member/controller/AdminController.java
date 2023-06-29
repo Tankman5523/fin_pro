@@ -22,19 +22,17 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.StudentRest;
+import com.univ.fin.main.model.vo.Notice;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
-
-import lombok.Builder;
 
 
 @Controller
@@ -421,6 +419,55 @@ public class AdminController {
 		return "redirect:proRestList.ad";
 	}
 	
+	// (관리자) 공지사항 관리 이동
+	@RequestMapping("selectNotice.ad")
+	public String selectNoticeList() {
+		
+		return "member/admin/ad_selectNotice";
+	}
 	
+	// (관리자) 공지사항 관리 - 전체 공지사항 조회
+	@ResponseBody
+	@PostMapping(value = "selectNoticeList.ad", produces = "application/json; charset=UTF-8;")
+	public String selectNoticeAllList() {
+		
+		ArrayList<Notice> list = memberService.selectNoticeAllList();
+		
+		return new Gson().toJson(list);
+	}
+	
+	//(관리자) 공지사항 관리 - 공지사항 검색
+	@ResponseBody
+	@PostMapping(value = "searchNotice.ad", produces = "application/json; charset=UTF-8;")
+	public String searchNotice(String field, String category, String type, String keyword) {
+		
+		HashMap<String, String> noticeMap = new HashMap<String, String>();
+		noticeMap.put("field", field);
+		noticeMap.put("category", category);
+		noticeMap.put("type", type);
+		noticeMap.put("keyword", keyword);
+		
+		Notice notice = memberService.searchNotice(noticeMap);
+		
+		System.out.println(notice);
+		
+		return new Gson().toJson(null);
+	}
+	
+	// (관리자)메인페이지
+	@RequestMapping(value="main.ad")
+	public ModelAndView mainPage(ModelAndView mv) {
+		
+		ArrayList<Classes> classList = memberService.selectAdMainClasses();
+		ArrayList<StudentRest> srList = memberService.selectMainStudentRest();
+		ArrayList<ProfessorRest> prList = memberService.selectMainProfessorRest();
+		ArrayList<HashMap<String, String>> calList = memberService.yearCalendarList(); // 학사일정 조회
+		ArrayList<Notice> nList = memberService.selectMainNotice(); // 공지사항 목록
+		
+		mv.addObject("classList", classList).addObject("srList", srList).addObject("prList",prList).addObject("calList", calList)
+		  .addObject("nList", nList).setViewName("member/admin/mainPage");
+		return mv;
+	}
 }
 
+ 

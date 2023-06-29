@@ -656,5 +656,32 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.updateCounselStatus", statusMap);
 	}
 
+	// (관리자) 공지사항 관리 - 전체 공지사항 조회
+	public ArrayList<Notice> selectNoticeAllList(SqlSessionTemplate sqlSession) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.selectNoticeAllList");
+	}
+
+	// (관리자) 공지사항 관리 - 공지사항 검색
+	public Notice searchNotice(SqlSessionTemplate sqlSession, HashMap<String, String> noticeMap) {
+		
+		return sqlSession.selectOne("memberMapper.searchNotice", noticeMap);
+	}
+	
+	// (관리자) 메인페이지 -> 강의신청 목록 조회
+	public ArrayList<Classes> selectAdMainClasses(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectAdMainClasses");
+	}
+	
+	// (관리자) 메인페이지 -> 학생 휴학 및 퇴학 신청 목록 조회
+	public ArrayList<StudentRest> selectMainStudentRest(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectMainStudentRest");
+	}
+	
+	// (관리자) 메인페이지 -> 교수 안식 및 퇴직 신청 목록 조회
+	public ArrayList<ProfessorRest> selectMainProfessorRest(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectMainProfessorRest");
+	}
+
 
 }

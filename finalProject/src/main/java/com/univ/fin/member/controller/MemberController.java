@@ -116,7 +116,7 @@ public class MemberController {
 				}else { // 관리자 로그인
 					
 					session.setAttribute("loginUser", loginUser);
-					mv.setViewName("common/admin_category");
+					mv.setViewName("redirect:main.ad");
 				}
 				
 			}

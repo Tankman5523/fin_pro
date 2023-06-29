@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>종합정보시스템</title>
-<link rel="stylesheet" href="resources/css/studentProfessorMainPage.css">
+<link rel="stylesheet" href="resources/css/adminMainPage.css">
 </head>
 <body>
 	<div class="wrap">
@@ -17,47 +17,44 @@
 						<div class="c_content_112">
 							<div class="c_content_1121">
 								<span><i class="fa-solid fa-receipt fa-lg" style="color: #118f00;"></i>&nbsp;&nbsp;강의 개설 신청 목록</span>&nbsp;&nbsp;&nbsp;
-								<a href="강의개설 리스트 매핑주소"><i class="fa-regular fa-plus fa-xl" style="color: #686e78;"></i></a>
+								<a href="classManagePage.ad"><i class="fa-regular fa-plus fa-xl" style="color: #686e78;"></i></a>
 							</div>
 							<div class="c_content_1122">
 								<div class="c_content_1122_table-area">
-									<table border="1">
+									<table border="1" style="table-layout:fixed;">
 										<thead>
 							                <tr>
-							                    <th>신청날짜</th>
-							                    <th>학년도</th>
-							                    <th>학기</th>
-							                    <th>강의시간</th>
-							                    <th>학과</th>
-							                    <th>수강학년</th>
-							                    <th>강의명</th>
-							                    <th>교수</th>
-							                    <th>개설여부</th>
+							                    <th width="60px">학년도</th>
+							                    <th width="50px">학기</th>
+							                    <th width="40px">강의시간</th>
+							                    <th width="150px">학과</th>
+							                    <th width="50px">수강학년</th>
+							                    <th width="220px">강의명</th>
+							                    <th width="70px">교수</th>
+							                    <th width="80px">개설여부</th>
 							                </tr>
 							            </thead>
 										<tbody>
 											<c:choose>
 												<c:when test="${!empty classList }">
-													<c:forEach var="class" items="${classList }">
+													<c:forEach var="classes" items="${classList }">
 														<tr>
 															<%-- <td style="display: none;">${class.classNo }</td> --%>
-															<td>${class. }</td>
-															<td>${class.classYear}</td>
-															<td>${class.classTerm}</td>
-															<td>${class.period}</td>
-															<td>${class.departmentNo}</td>
-															<td>${class.classLevel}</td>
-															<td>${class.className}</td>
-															<td>${class.professorName}</td>
-															<td>${class.status}</td>
+															<td>${classes.classYear}</td>
+															<td>${classes.classTerm}</td>
+															<td>${classes.classHour}</td>
+															<td>${classes.departmentNo}</td>
+															<td>${classes.classLevel}</td>
+															<td class="text-limit">${classes.className}</td>
+															<td>${classes.professorNo}</td>
 															
-															<c:if test="${class.status eq 'N' }">
+															<c:if test="${classes.status eq 'N' }">
 																<td style='color: orange; font-weight: bold;'>검토중</td>
 															</c:if>
-															<c:if test="${class.status eq 'Y' }">
+															<c:if test="${classes.status eq 'Y' }">
 																<td style='color: #0080ff; font-weight: bold;'>개설승인</td>
 															</c:if>
-															<c:if test="${class.status eq 'C' }">
+															<c:if test="${classes.status eq 'C' }">
 																<td style='color: red; font-weight: bold;'>개설반려</td>
 															</c:if>
 															
@@ -80,27 +77,127 @@
 					<div class="c_content_12"></div>
 					
 					<div class="c_content_13">
-						<div class="c_content_131">
-							<span><i class="fa-solid fa-calendar-days fa-lg" style="color: #ffae00;"></i>&nbsp;&nbsp;학생관리</span>
-							<a href="personalTimetable.pr"><i class="fa-regular fa-plus fa-2xl" style="color: #686e78;"></i></a>
-						</div>
-						<div class="c_content_132">
-							<div class="c_content_1321">
-								<a onclick="previousDay();"><i class="fa-solid fa-chevron-left fa-xl" style="color: #686e78;"></i></a>
-								<span id="today-date"></span>
-								<a onclick="nextDay();"><i class="fa-solid fa-chevron-right fa-xl" style="color: #686e78;"></i></a>
+						<div class="c_content_13_1">
+							<div class="c_content_131">
+								<span><i class="fa-solid fa-graduation-cap" style="color: #2071fe;"></i> &nbsp;&nbsp;학생관리</span>
+								<a href="stuRestList.ad"><i class="fa-regular fa-plus fa-2xl" style="color: #686e78;"></i></a>
 							</div>
-							<div class="c_content_1322">
-								<p id="today-class">
-								</p>
+							<br>
+							<div class="c_content_132">
+								<div class="c_content_1321">
+									<table border="1" id="stdTable" style="width:95%;">
+							            <thead>
+							                <tr>
+							                    <th>신청날짜</th>
+							                    <th>이름</th>
+							                    <th>내용</th>
+							                    <th>처리상태</th>
+							                </tr>
+							            </thead>            
+							            <tbody>
+							                <c:choose>
+												<c:when test="${!empty srList }">
+													<c:forEach var="student" items="${srList}">
+														<tr>
+															<%-- <td style="display: none;">${student.restNo }</td> --%>
+															<td>${student.requestDate}</td>
+															<td>${student.studentName}</td>
+															<td>${student.category}</td>
+															
+															<c:if test="${student.status eq 'B' }">
+																<td style='color: orange; font-weight: bold;'>검토중</td>
+															</c:if>
+															<c:if test="${student.status eq 'Y' }">
+																<td style='color: #0080ff; font-weight: bold;'>허가</td>
+															</c:if>
+															<c:if test="${student.status eq 'N' }">
+																<td style='color: red; font-weight: bold;'>비허가</td>
+															</c:if>
+															
+														</tr>
+													</c:forEach>
+												</c:when>
+												<c:otherwise>
+													<tr>
+														<td colspan="4">조회된 데이터가 없습니다.</td>
+													</tr>
+												</c:otherwise>
+											</c:choose>
+							            </tbody>
+							        </table>       
+								</div>
+							</div>
+						</div>
+						<div class="c_content_13_2">
+						<!-- 빈줄 --> 
+						
+						</div>
+						<div class="c_content_13_3">
+							<div class="c_content_131">
+								<span><i class="fa-sharp fa-solid fa-user-tie" style="color: #ffae00;"></i>&nbsp;&nbsp;임직원 관리</span>
+								<a href="proRestList.ad"><i class="fa-regular fa-plus fa-2xl" style="color: #686e78;"></i></a>
+							</div>
+							<br><br>
+							<div class="c_content_132">
+								<div class="c_content_1321">
+									<table border="1" id="profTable" style="width:95%;" >
+							            <thead>
+							                <tr>
+							                    <th>신청날짜</th>
+							                    <th>이름</th>
+							                    <th>내용</th>
+							                    <th>처리상태</th>
+							                </tr>
+							            </thead>            
+							            <tbody>
+							                <c:choose>
+												<c:when test="${!empty prList }">
+													<c:forEach var="prof" items="${prList}">
+														<tr>
+															<%-- <td style="display: none;">${student.restNo }</td> --%>
+															<td>${prof.requestDate}</td>
+															<td>${prof.professorName}</td>
+															<c:choose>
+																<c:when test="${prof.category eq 1}">
+																	<td>안식</td>
+																</c:when>
+																<c:when test="${prof.category eq 0}">
+																	<td>퇴직</td>
+																</c:when>
+															</c:choose>
+															
+															<c:if test="${prof.status eq 'B' }">
+																<td style='color: orange; font-weight: bold;'>검토중</td>
+															</c:if>
+															<c:if test="${prof.status eq 'Y' }">
+																<td style='color: #0080ff; font-weight: bold;'>허가</td>
+															</c:if>
+															<c:if test="${prof.status eq 'N' }">
+																<td style='color: red; font-weight: bold;'>비허가</td>
+															</c:if>
+															
+														</tr>
+													</c:forEach>
+												</c:when>
+												<c:otherwise>
+													<tr>
+														<td colspan="4">조회된 데이터가 없습니다.</td>
+													</tr>
+												</c:otherwise>
+											</c:choose>
+							            </tbody>
+						        	</table>  
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 				
-				
-				<div class="c_content_2"></div>
-				
+				<div class="c_content_2">
+					<div class="c_content_22">
+					
+					</div>
+				</div>
 				
 				<div class="c_content_3">
 					<div class="c_content_31">
@@ -110,11 +207,10 @@
 						</div>
 						<div class="c_content_312">
 							<div class="c_content_312_table-area">
-								<table border="1">
+								<table border="1" style="table-layout:fixed;">
 									<thead>
 										<tr>
-											<th width="20%">시작</th>
-											<th width="20%">마감</th>
+											<th width="20%">기간</th>
 											<th width="60%">내용</th>
 										</tr>
 									</thead>
@@ -123,9 +219,11 @@
 												<c:when test="${!empty calList }">
 													<c:forEach var="cal" items="${calList }">
 														<tr>
-															<td height="32px">${cal.start }</td>
-															<td>${cal.end }</td>
-															<td>${cal.title }</td>
+															<td height="32px" width="30%" style="font-size:12px;">
+																${cal.start } ~<br>
+																${cal.end }
+															</td>
+															<td class="text-limit">${cal.title }</td>
 														</tr>
 													</c:forEach>
 												</c:when>
@@ -150,14 +248,20 @@
 						</div>
 						<div class="c_content_332">
 							<div class="c_content_332_table-area">
-								<table border="1">
+								<table border="1" style="table-layout:fixed;">
+									<thead>
+										<tr>
+											<td width="80%">제목</td>
+											<td width="20%">일자</td>
+										</tr>
+									</thead>
 									<tbody>
 										<c:choose>
 											<c:when test="${!empty nList }">
 												<c:forEach var="n" items="${nList }">
 													<tr>
-														<td width="80%" height="50px">${n.noticeTitle }</td>
-														<td width="20%">${n.createDate }</td>
+														<td class="text-limit" width="80%" height="50px">${n.noticeTitle }</td>
+														<td width="20%" style="font-size:12px;">${n.createDate }</td>
 													</tr>
 												</c:forEach>
 											</c:when>
@@ -172,141 +276,15 @@
 							</div>
 						</div>
 					</div>
-					
-					<script>
-						$(function() {
-							//==========상담 내역==========
-							$(".c_content_1122_table-area>table>tbody>tr").hover(function() {
-								$(this).css("background-color", "#E0E0E0");
-								$(this).css("cursor", "pointer");					
-							}, function() {
-								$(this).css("background-color", "white");
-								$(this).css("cursor", "default");					
-							});
-							
-							$(".c_content_1122_table-area>table>tbody").on("click", "tr", function() {
-								var cno = $(this).children("td").eq(0).text();
-								location.href = "counselDetail.pr?cno=" + cno;
-							})
-
-							//==========학사 일정==========
-							var today = new Date();
-							var year = today.getFullYear();
-							
-							var month = today.getMonth() + 1;
-							if(month<10) {
-								month = "0" + month.toString();
-							}
-							
-							var date = today.getDate();
-							if(date<10) {
-								date = "0" + date.toString();
-							}
-							
-							var fullWeek = ['일', '월', '화', '수', '목', '금', '토'];
-							var day = fullWeek[today.getDay()];
-							
-							var $today = year + "-" + month + "-" + date + " (" + day + ")";
-							$("#today-date").text($today);
-							
-							getClasses(today.getDay());
-						})
-						
-						function previousDay() {
-							var today = new Date($("#today-date").text());
-							var day = today.setDate(today.getDate()-1); // 전 날
-							makeDay(day);
-						}
-						
-						function nextDay() {
-							var today = new Date($("#today-date").text());
-							var day = today.setDate(today.getDate()+1); // 다음 날
-							makeDay(day);
-						}
-						
-						function makeDay(day) {
-							var theDay = new Date(day);
-							
-							var year = theDay.getFullYear();
-							
-							var month = theDay.getMonth() + 1;
-							if(month<10) {
-								month = "0" + month.toString();
-							}
-							
-							var date = theDay.getDate();
-							if(date<10) {
-								date = "0" + date.toString();
-							}
-							
-							var fullWeek = ['일', '월', '화', '수', '목', '금', '토'];
-							var day = fullWeek[theDay.getDay()];
-							
-							var $today = year + "-" + month + "-" + date + " (" + day + ")";
-							$("#today-date").text($today);
-							getClasses(theDay.getDay());
-						}
-						
-						function getClasses($day) {
-							$.ajax({
-								url: "getClasses.pr",
-								success: function(cList) {
-									var str = "";
-									for(var i=0;i<cList.length;i++) {
-										if(cList[i].day == $day) {
-											switch(cList[i].period) {
-												case '1':
-													str += '09:00';
-													break;
-												case '2':
-													str += '10:00';
-													break;
-												case '2':
-													str += '11:00';
-													break;
-												case '3':
-													str += '12:00';
-													break;
-												case '4':
-													str += '13:00';
-													break;
-												case '5':
-													str += '14:00';
-													break;
-												case '6':
-													str += '15:00';
-													break;
-												case '7':
-													str += '16:00';
-													break;
-												case '8':
-													str += '17:00';
-													break;
-												case '9':
-													str += '18:00';
-													break;
-												case '10':
-													str += '19:00';
-													break;
-											}
-											str += "&nbsp;&nbsp;" + cList[i].className + "<br>";
-										}
-									}
-									
-									if(str == "") {
-										str = "수업이 없습니다.";
-									}
-									$("#today-class").html(str);
-								},
-								error: function() {
-									console.log("통신 오류");
-								}
-							})
-						}
-					</script>
 				</div>
 			</div>
 		</div>
 	</div>
+	
+	<script>
+		$('document').ready(function(){
+			$(".text-limit")
+		})
+	</script>
 </body>
 </html>

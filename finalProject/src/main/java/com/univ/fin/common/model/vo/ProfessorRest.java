@@ -20,4 +20,5 @@ public class ProfessorRest {
 	private Date endDate;//END_DATE	DATE
 	private String reason;//REASON	VARCHAR2(600 BYTE)
 	private String status;//STATUS	VARCHAR2(2 BYTE)
+	private String professorName;//교수명
 }
