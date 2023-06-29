@@ -136,72 +136,83 @@ public class Weather {
 		url += "&nx=58";
 		url += "&ny=126";
 		
-		boolean success = false;
 		String responseText = "";
+		JSONObject bodyObj = null;
 		
-		while(success != true) {
-			
-			URL requestUrl = new URL(url);
-			
-			HttpURLConnection urlCon;
-			try {
-				urlCon = (HttpURLConnection)requestUrl.openConnection();
-			
-				urlCon.setRequestMethod("GET");
-				urlCon.setRequestProperty("Content-type", "application/json");
-				urlCon.setRequestProperty("Accept", "application/json");
-				urlCon.setConnectTimeout(1000);
-				urlCon.setReadTimeout(1000);
-				
-				System.out.println("리스폰스 코드 : " + urlCon.getResponseCode());
-				
-				try {
-					if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
-						success = true;
+		while(true) { //03에러 while문
+			while(true) { //04에러  while문
+				boolean success = false;
+				while(success != true) {
+					
+					URL requestUrl = new URL(url);
+					
+					HttpURLConnection urlCon;
+					try {
+						urlCon = (HttpURLConnection)requestUrl.openConnection();
+					
+						urlCon.setRequestMethod("GET");
+						urlCon.setRequestProperty("Content-type", "application/json");
+						urlCon.setRequestProperty("Accept", "application/json");
+						urlCon.setConnectTimeout(1000);
+						urlCon.setReadTimeout(1000);
+						
+						System.out.println("리스폰스 코드 : " + urlCon.getResponseCode());
+						
+						try {
+							if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
+								success = true;
+							}
+						} catch (SocketTimeoutException e) {//URL커넥션 timeout발생 시 소켓타임아웃 예외가 발생하므로 1.5초안에 200~300사이 코드를 반환하지 않을 시 소켓타임아웃 예외발생시킨후 재요청
+							System.out.println("shortTerm 타임아웃 발생");
+							success = false;
+							responseText = ""; // 초기화 시켜줌
+	//						shortTerm();
+						}
+						
+						BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
+						
+						String line;
+						
+						while((line = br.readLine()) != null) {
+							responseText += line;
+						}
+						
+						br.close();
+						urlCon.disconnect();
+					} catch (IOException e1) {
 					}
-				} catch (SocketTimeoutException e) {//URL커넥션 timeout발생 시 소켓타임아웃 예외가 발생하므로 1.5초안에 200~300사이 코드를 반환하지 않을 시 소켓타임아웃 예외발생시킨후 다시 해당 메소드 재요청
-					System.out.println("shortTerm 타임아웃 발생");
-					shortTerm();
 				}
 				
-				BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
+				System.out.println("리스폰스텍스트 : " + responseText);
+				System.out.println("리스폰스텍스트 문자비교 : " + responseText.equals("[]"));
 				
-				String line;
-				
-				while((line = br.readLine()) != null) {
-					responseText += line;
+				if(responseText.charAt(0) == '<') { //error code = 04뜰 경우  (HTTP_ERROR)
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+					}
+					responseText = ""; // 초기화 시켜줌
+//					shortTerm();
+				}else {
+					break; //04 while 탈출
 				}
-				
-				br.close();
-				urlCon.disconnect();
-			} catch (IOException e1) {
 			}
-		}
-		
-		System.out.println("리스폰스텍스트 : " + responseText);
-		System.out.println("리스폰스텍스트 문자비교 : " + responseText.equals("[]"));
-		
-		if(responseText.charAt(0) == '<') { //error code = 04뜰 경우  (HTTP_ERROR)
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-			}
-			shortTerm();
-		}
-		
-		JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
-		JSONObject bodyObj = (JSONObject) totalObj.get("response");
-		
-		JSONObject head = (JSONObject) bodyObj.get("header");
-		if(head.get("resultCode").equals("03")) { //error code = 03뜰 경우 (NO DATA)
-			try {
-				Thread.sleep(2500);
+			JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
+			bodyObj = (JSONObject) totalObj.get("response");
+			
+			JSONObject head = (JSONObject) bodyObj.get("header");
+			if(head.get("resultCode").equals("03")) { //error code = 03뜰 경우 (NO DATA)
+				try {
+					Thread.sleep(2500);
+				} catch (InterruptedException e) {
+				}
 				System.out.println("shortTerm 2.5초지연");
-			} catch (InterruptedException e) {
+				responseText = ""; // 초기화 시켜줌
+//				shortTerm();
+			}else {
+				break; //03 while 탈출
 			}
-			shortTerm();
 		}
-		
 		JSONObject body = (JSONObject) bodyObj.get("body");
 		JSONObject b = (JSONObject) body.get("items");
 		JSONArray arr = (JSONArray) b.get("item");
@@ -304,70 +315,82 @@ public class Weather {
 		url += "&nx=58";
 		url += "&ny=126";
 		
-		boolean success = false;
-		String responseText = "";
+		String responseText = ""; //================================================
+		JSONObject bodyObj = null;
 		
-		while(success != true) {
-			
-			URL requestUrl = new URL(url);
-			
-			HttpURLConnection urlCon;
-			try {
-				urlCon = (HttpURLConnection)requestUrl.openConnection();
-			
-				urlCon.setRequestMethod("GET");
-				urlCon.setRequestProperty("Content-type", "application/json");
-				urlCon.setRequestProperty("Accept", "application/json");
-				urlCon.setConnectTimeout(1000);
-				urlCon.setReadTimeout(1000);
-				
-				System.out.println("리스폰스 코드 : " + urlCon.getResponseCode());
-				
-				try {
-					if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
-						success = true;
+		while(true) { //03에러 while문
+			while(true) { //04에러 while문
+				boolean success = false;
+				while(success != true) {
+					
+					URL requestUrl = new URL(url);
+					
+					HttpURLConnection urlCon;
+					try {
+						urlCon = (HttpURLConnection)requestUrl.openConnection();
+					
+						urlCon.setRequestMethod("GET");
+						urlCon.setRequestProperty("Content-type", "application/json");
+						urlCon.setRequestProperty("Accept", "application/json");
+						urlCon.setConnectTimeout(1000);
+						urlCon.setReadTimeout(1000);
+						
+						System.out.println("리스폰스 코드 : " + urlCon.getResponseCode());
+						
+						try {
+							if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
+								success = true;
+							}
+						} catch (SocketTimeoutException e) { 
+							System.out.println("ultraShortTerm 타임아웃 발생");
+	//						ultraShortTerm();
+							responseText = ""; // 초기화 시켜줌
+							success = false;
+						}
+						
+						BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
+						
+						String line;
+						
+						while((line = br.readLine()) != null) {
+							responseText += line;
+						}
+						
+						br.close();
+						urlCon.disconnect();
+					} catch (IOException e1) {
 					}
-				} catch (SocketTimeoutException e) { 
-					System.out.println("ultraShortTerm 타임아웃 발생");
-					ultraShortTerm();
 				}
 				
-				BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
-				
-				String line;
-				
-				while((line = br.readLine()) != null) {
-					responseText += line;
+				if(responseText.charAt(0) == '<') { //error code = 04뜰 경우  (HTTP_ERROR)
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+					}
+					responseText = ""; // 초기화 시켜줌
+	//				ultraShortTerm();
+				}else {
+					break; //04while 탈출
 				}
-				
-				br.close();
-				urlCon.disconnect();
-			} catch (IOException e1) {
 			}
-		}
-		
-		if(responseText.charAt(0) == '<') { //error code = 04뜰 경우  (HTTP_ERROR)
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-			}
-			ultraShortTerm();
-		}
-		
-		System.out.println("리스폰스텍스트 : " + responseText);
-		System.out.println("리스폰스텍스트 문자비교 : " + responseText.equals("[]"));
-		
-		JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
-		JSONObject bodyObj = (JSONObject) totalObj.get("response");
-		
-		JSONObject head = (JSONObject) bodyObj.get("header");
-		if(head.get("resultCode").equals("03")) { //error code = 03뜰 경우 (NO DATA)
-			try {
-				Thread.sleep(2500);
+			System.out.println("리스폰스텍스트 : " + responseText);
+			System.out.println("리스폰스텍스트 문자비교 : " + responseText.equals("[]"));
+			
+			JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
+			bodyObj = (JSONObject) totalObj.get("response");
+			
+			JSONObject head = (JSONObject) bodyObj.get("header");
+			if(head.get("resultCode").equals("03")) { //error code = 03뜰 경우 (NO DATA)
+				try {
+					Thread.sleep(2500);
+				} catch (InterruptedException e) {
+				}
 				System.out.println("ultraShortTerm 2.5초지연");
-			} catch (InterruptedException e) {
+				responseText = ""; // 초기화 시켜줌
+//				ultraShortTerm();
+			}else {
+				break; //03while 탈출
 			}
-			ultraShortTerm();
 		}
 		
 		JSONObject body = (JSONObject) bodyObj.get("body");
@@ -389,12 +412,10 @@ public class Weather {
 		HashMap<String, String> h = new HashMap<>();
 		
 		for(int i=0; i<list.size(); i++) {
-			
 			//기온
 			if(list.get(i).getCategory().equals("T1H")) {
 				h.put("T1H", list.get(i).getObsrValue());
 			}
-			
 		}
 		
 		return h;
@@ -464,69 +485,80 @@ public class Weather {
 		url += "&nx=58";
 		url += "&ny=126";
 		
-		boolean success = false;
 		String responseText = "";
-		while(success != true) {
-			
-			URL requestUrl = new URL(url);
-		
-			HttpURLConnection urlCon;
-			try {
-				urlCon = (HttpURLConnection)requestUrl.openConnection();
-			
-				urlCon.setRequestMethod("GET");
-				urlCon.setRequestProperty("Content-type", "application/json");
-				urlCon.setRequestProperty("Accept", "application/json");
-				urlCon.setConnectTimeout(1000);
-				urlCon.setReadTimeout(1000);
-				System.out.println("리스폰스 코드 : " + urlCon.getResponseCode());
-				try {
-					if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
-						success = true;
+		JSONObject bodyObj = null;
+		while(true) { //03에러 while문
+			while(true) { //04에러 while문
+				boolean success = false;
+				while(success != true) {
+					
+					URL requestUrl = new URL(url);
+				
+					HttpURLConnection urlCon;
+					try {
+						urlCon = (HttpURLConnection)requestUrl.openConnection();
+					
+						urlCon.setRequestMethod("GET");
+						urlCon.setRequestProperty("Content-type", "application/json");
+						urlCon.setRequestProperty("Accept", "application/json");
+						urlCon.setConnectTimeout(1000);
+						urlCon.setReadTimeout(1000);
+						System.out.println("리스폰스 코드 : " + urlCon.getResponseCode());
+						try {
+							if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
+								success = true;
+							}
+						} catch (SocketTimeoutException e) {
+							System.out.println("ultraShortforecast 타임아웃 발생");
+							success = false;
+							responseText = ""; // 초기화 시켜줌
+		//					ultraShortforecast();
+						}
+					
+						BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
+						
+						String line;
+						
+						while((line = br.readLine()) != null) {
+							responseText += line;
+						}
+						
+						br.close();
+						urlCon.disconnect();
+					} catch (IOException e1) {
 					}
-				} catch (SocketTimeoutException e) {
-					System.out.println("ultraShortforecast 타임아웃 발생");
-					ultraShortforecast();
 				}
+				
+				if(responseText.charAt(0) == '<') { //error code = 04뜰 경우 (HTTP_ERROR)
+					try {
+						Thread.sleep(2500);
+					} catch (InterruptedException e) {
+					}
+					responseText = ""; // 초기화 시켜줌
+	//				ultraShortforecast();
+				}else {
+					break; //04while 탈출
+				}
+			}
+			System.out.println("리스폰스텍스트 : " + responseText);
+			System.out.println("리스폰스텍스트 문자비교 : " + responseText.equals("[]"));
 			
-				BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
-				
-				String line;
-				
-				while((line = br.readLine()) != null) {
-					responseText += line;
+			JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
+			bodyObj = (JSONObject) totalObj.get("response");
+			
+			JSONObject head = (JSONObject) bodyObj.get("header");
+			if(head.get("resultCode").equals("03")) { //error code = 03뜰 경우 (NO DATA)
+				try {
+					Thread.sleep(2500); //2.5초 후 다시 재요청
+				} catch (InterruptedException e) {
 				}
-				
-				br.close();
-				urlCon.disconnect();
-			} catch (IOException e1) {
-			}
-		}
-		
-		if(responseText.charAt(0) == '<') { //error code = 04뜰 경우 (HTTP_ERROR)
-			try {
-				Thread.sleep(2500);
-			} catch (InterruptedException e) {
-			}
-			ultraShortforecast();
-		}
-		
-		System.out.println("리스폰스텍스트 : " + responseText);
-		System.out.println("리스폰스텍스트 문자비교 : " + responseText.equals("[]"));
-		
-		JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
-		JSONObject bodyObj = (JSONObject) totalObj.get("response");
-		
-		JSONObject head = (JSONObject) bodyObj.get("header");
-		if(head.get("resultCode").equals("03")) { //error code = 03뜰 경우 (NO DATA)
-			try {
-				Thread.sleep(2500); //2.5초 후 다시 재요청
 				System.out.println("ultraShortforecast 2.5초지연");
-			} catch (InterruptedException e) {
+				responseText = ""; // 초기화 시켜줌
+//				ultraShortforecast();
+			}else {
+				break; //03while 탈출
 			}
-			ultraShortforecast();
 		}
-		
 		JSONObject body = (JSONObject) bodyObj.get("body");
 		JSONObject b = (JSONObject) body.get("items");
 		JSONArray arr = (JSONArray) b.get("item");
