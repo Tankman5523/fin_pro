@@ -248,13 +248,6 @@
 			<version>${org.springframework-version}</version>
 		</dependency>
 		
-		<!-- 트랜잭션 관리 모듈 -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-			<version>${org.springframework-version}</version>
-		</dependency>
-		
 	</dependencies>
     <build>
         <plugins>
