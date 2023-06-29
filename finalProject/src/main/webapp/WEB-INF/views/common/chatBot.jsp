@@ -12,6 +12,7 @@
 <body>
 	<div id="chatWrap">
 		<div id="chatHead">
+		
 			<button id="startBtn" onclick="openChat();">
 				<img src='resources/icon/blue_plane.png'>
 			</button>
@@ -42,7 +43,7 @@
 	
 	function closeChat(){
 		$("#chatBody").hide(500);
-		$("#startBtn").show(550);
+		$("#startBtn").show(650);
 		$("#questionDiv").hide();
 		$("#startDiv").show();
 		$("#resultDiv").html("");
