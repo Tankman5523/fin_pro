@@ -7,7 +7,9 @@ import java.util.HashMap;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.univ.fin.common.model.vo.AlarmVo;
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.CalendarVo;
@@ -557,16 +559,24 @@ public class MemberServiceImpl implements MemberService{
 
 	// 성적관리 -> 성적 입력
 	@Override
-	public int gradeInsert(Grade g) {
-		int result = memberDao.gradeInsert(sqlSession, g);
-		return result;
+	@Transactional
+	public int gradeInsert(Grade g, HashMap<String, String> alarm) {
+		int result1 = 0;
+		int result2 = 0;
+		result1 = memberDao.gradeInsert(sqlSession, g);
+		result2 = memberDao.alarmInsert(sqlSession, alarm);
+		return result1*result2;
 	}
 
 	// 성적관리 -> 성적 수정
 	@Override
-	public int gradeUpdate(Grade g) {
-		int result = memberDao.gradeUpdate(sqlSession, g);
-		return result;
+	@Transactional
+	public int gradeUpdate(Grade g, HashMap<String, String> alarm) {
+		int result1 = 0;
+		int result2 = 0;
+		result1 = memberDao.gradeUpdate(sqlSession, g);
+		result2 = memberDao.alarmInsert(sqlSession, alarm);
+		return result1*result2;
 	}
 	
 	// 학기별 성적 조회 -> 학기 선택 후 강의 조회
@@ -878,6 +888,18 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public int updateCounselStatus(HashMap<String, String> statusMap) {
 		return memberDao.updateCounselStatus(sqlSession, statusMap);
+	}
+
+	// 알람 수신
+	@Override
+	public ArrayList<AlarmVo> alarmReceive(String studentNo) {
+		return memberDao.alarmReceive(sqlSession, studentNo);
+	}
+
+	// 알람 확인
+	@Override
+	public int alarmCheck(String studentNo) {
+		return memberDao.alarmCheck(sqlSession, studentNo);
 	}
 
 	//공지사항 관리 - 전체 공지사항 조회

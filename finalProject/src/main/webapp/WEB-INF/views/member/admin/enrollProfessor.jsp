@@ -338,10 +338,10 @@
                     <a href="calendarView.ad">학사일정 관리</a>
                 </div>
                 <div class="child_title">
-                    <a href="stuRestList.ad">휴/복학 신청 관리</a>
+                    <a href="stuRestList.ad">휴/복학 관리</a>
                 </div>
                 <div class="child_title">
-                    <a href="proRestList.ad">안식/퇴직 신청 관리</a>
+                    <a href="proRestList.ad">안식/퇴직 관리</a>
                 </div>
             </div>
             <div id="content_1">

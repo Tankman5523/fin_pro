@@ -8,6 +8,34 @@
 <link rel="stylesheet" href="resources/css/gradeInsertView.css">
 </head>
 <body>
+	<script>
+		var socket;
+		
+		function connect() {
+			if(!socket) {
+				var url = "ws://localhost:8888/fin/echo";
+				socket = new WebSocket(url);
+			}
+			
+			socket.onopen = function() {
+				console.log("서버와 연결되었습니다.");
+			};
+			
+			socket.onclose = function() {
+				console.log("서버와 연결이 종료되었습니다.");
+			};
+			
+			socket.onerror = function() {
+				console.log("서버와 연결 과정에서 오류가 발생했습니다.");
+			};
+		}
+		
+		function disconnect() {
+			socket.close();
+			socket = "";
+		}
+	</script>
+
 	<div class="wrap">
     	<%@include file="../../common/professor_menubar.jsp" %> <%--알아서 수정해서 쓰기 --%>
     	<c:if test="${check eq 'impossible' }">
@@ -72,6 +100,8 @@
 	                var arr = ${classTerm};
 	                
 	                $(function() {
+// 	                	connect();
+	                	
 	                	$("select[name=year]").children().first().prop("selected", true).change();
 	                	selectClassList();
 	                	$("button[id*=possible]").prop("disabled", true);
@@ -229,7 +259,8 @@
 	            	   $("#impossible").prop("disabled", false);
 	            	   $(".student-table>tbody>tr").hover(function() {
 	            		   $(this).css("cursor", "pointer");
-	            	   })
+	            	   });
+	            	   connect();
 	               }
 	               
 	               function impossibleInsert() {
@@ -239,7 +270,8 @@
 	            	   $("#impossible").css("display", "none");
 	            	   $(".student-table>tbody>tr").hover(function() {
 	            		   $(this).css("cursor", "default");
-	            	   })
+	            	   });
+	            	   disconnect();
 	               }
 	               
 	               function scoreInsert(e) {
@@ -307,6 +339,7 @@
 	               					alert("성적이 입력되었습니다.");
 	               					$("#myModal").modal("hide");
 	               					selectStudentGradeList();
+	               					socket.send("gradeInsert,"+$(".studentNo").val()+","+"${loginUser.professorName}");
 	               				}
 	               				else if(result=='N') {
 	               					alert("성적 입력 실패");
@@ -336,6 +369,7 @@
 	               					alert("성적이 수정되었습니다.");
 	               					$("#myModal").modal("hide");
 	               					selectStudentGradeList();
+	               					socket.send("gradeUpdate,"+$(".studentNo").val()+","+"${loginUser.professorName}");
 	               				}
 	               				else if(result=='N') {
 	               					alert("성적 수정 실패");

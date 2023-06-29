@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.univ.fin.common.model.vo.AlarmVo;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
@@ -42,8 +44,6 @@ import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
-
-
 
 @Controller
 public class StudentController {
@@ -818,5 +818,27 @@ public class StudentController {
 		}else {
 			return "N";
 		}
+	}
+	
+	// 알람 수신
+	@ResponseBody
+	@RequestMapping(value = "alarmReceive.me", produces = "application/json; charset=UTF-8;")
+	public String alarmReceive(HttpSession session) {
+		Student s = (Student)session.getAttribute("loginUser");
+		String studentNo = s.getStudentNo();
+		
+		ArrayList<AlarmVo> aList = memberService.alarmReceive(studentNo);
+		return new Gson().toJson(aList);
+	}
+	
+	// 알람 확인
+	@ResponseBody
+	@RequestMapping(value = "alarmCheck.me")
+	public String alarmCheck(HttpSession session) {
+		Student s = (Student)session.getAttribute("loginUser");
+		String studentNo = s.getStudentNo();
+		
+		int result = memberService.alarmCheck(studentNo);
+		return (result>0)? "Y" : "N";
 	}
 }

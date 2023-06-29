@@ -226,6 +226,13 @@
 		<result column="MUST_PAY" property="mustPay"/>
 		<result column="PAY_STATUS" property="payStatus"/>
 	</resultMap>
+	
+	<resultMap type="alarm" id="alarmResultMap">
+		<result column="ALARM_NO" property="alarmNo"/>
+		<result column="CMD" property="cmd"/>
+		<result column="STUDENT_NO" property="studentNo"/>
+		<result column="PROFESSOR_NAME" property="professorName"/>
+	</resultMap>
   	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
@@ -1441,8 +1448,7 @@
   	
   	<!-- 학생 휴,복학 신청 목록 검색 (관리자) -->
   	<select id="selectSearchStuRestList" resultMap="studentRestResultMap">
-  		SELECT REST_NO,STUDENT_NO,STUDENT_NAME,CATEGORY,REASON,REQUEST_DATE,START_DATE,END_DATE
-  			   ,DECODE(R.STATUS,'B','처리중','Y','승인완료','N','비승인') AS STATUS
+  		SELECT REST_NO,STUDENT_NO,STUDENT_NAME,CATEGORY,REASON,REQUEST_DATE,START_DATE,END_DATE,R.STATUS
   		FROM STUDENT_REST R
   		JOIN STUDENT S USING (STUDENT_NO)
   		WHERE STUDENT_NO LIKE '%'||#{studentNo}||'%'
@@ -1616,6 +1622,25 @@
 		SET STATUS = #{counselStatus },
 	        COUNSEL_RESULT = #{cancelResult }
 		WHERE COUNSEL_NO = #{counselNo }
+  	</update>
+  	
+  	<!-- 알람 발신 -->
+  	<insert id="alarmInsert" parameterType="hashmap">
+  		INSERT INTO ALARM VALUES(SEQ_ALNO.NEXTVAL, #{cmd}, #{studentNo}, #{professorName}, 'N')
+  	</insert>
+  	
+  	<!-- 알람 수신 -->
+  	<select id="alarmReceive" parameterType="string" resultMap="alarmResultMap">
+  		SELECT *
+  		FROM ALARM
+  		WHERE STUDENT_NO = #{studentNo} AND STATUS = 'N'
+  	</select>
+  	
+  	<!-- 알람 확인 -->
+  	<update id="alarmCheck">
+  		UPDATE ALARM
+  		SET STATUS = 'Y'
+  		WHERE STUDENT_NO = #{studentNo} AND STATUS = 'N'
   	</update>
   	
   	<!-- (관리자) 공지사항 관리 - 전체 리스트 조회 -->
