@@ -112,27 +112,6 @@ public class StudentController {
 		return new Gson().toJson(cList);
 	}
 	
-	//챗봇
-	@ResponseBody
-	@RequestMapping(value = "chatBot.cb", produces = "application/json; charset=UTF-8")
-	public String chatBot(String question,@RequestParam(value = "num", defaultValue = "0") int num) {
-		String result = "";
-		
-		ChatBot c = new ChatBot();
-		if(num == 0) {
-			if(question != "") {
-				result = c.answer(question);
-			}else {
-				result = "<div>뭐가 문제야 쎄이 썸띵?</div><br>";
-				result += c.select();
-			}
-		}else {
-			result += c.detailSelect(num);
-		}
-		
-		return new Gson().toJson(result);
-	}
-	
 	//수강신청 기간인지 체크하는 메소드
 	public int chkRegCalendar() {
 		

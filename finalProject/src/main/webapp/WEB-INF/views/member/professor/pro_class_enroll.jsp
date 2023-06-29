@@ -5,22 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<style>
-	#class_enroll{
-        width: 90%;
-        margin: 5%;
-        border-collapse:separate;
-        border-spacing:10px;
-    }
-    #class_enroll>tr{
-        margin-top: 20px;
-    }
-    #classTerm,#classYear{  
-    -webkit-appearance:none; /* 크롬 화살표 없애기 */
-    -moz-appearance:none; /* 파이어폭스 화살표 없애기 */
-    appearance:none /* 화살표 없애기 */
-    }
-</style>
+<link rel="stylesheet" href="/fin/resources/css/classCreateView.css">
 </head>
 <body>
     <div class="wrap">
@@ -34,32 +19,32 @@
                     <a href="classCreateSelect.pr">강의개설신청 내역</a>
                 </div>
                 <div class="child_title">
-                    <a href="classCreateEnroll.pr">강의 개설 신청</a>
+                    <a href="classCreateEnroll.pr" style="color:#00aeff; font-weight: 550;">강의 개설 신청</a>
                 </div>
             </div>
             <div id="content_1">
-				<h3>강의개설 신청</h3>
-                <div style="border-top:1px solid black">
-                    <form action="classCreateInsert.pr" method="POST" enctype="multipart/form-data">
-                        
-                        <table id="class_enroll">
+				<span id="content_title">강의개설 신청</span>
+                <div style="border-top:2px solid lightblue" align="center">
+                    <form id="createform" action="classCreateInsert.pr" method="POST" enctype="multipart/form-data">
+                        <div style="width:95%; border:1px solid black; margin:2.5%;">
+                        <table id="class_enroll" class="table">
                             <tr>
                                 <td>개설학과 </td>
-                                <td><input type="text" value="${loginUser.departmentNo }" disabled></td>
+                                <td><input type="text" value="${loginUser.departmentNo }" style="color:#BCBCBC" disabled></td>
                                 <td>교수명</td>
-                                <td><input type="text" value="${loginUser.professorName }" disabled></td>
+                                <td><input type="text" value="${loginUser.professorName }" style="color:#BCBCBC" disabled></td>
                                 <td>*강의명</td>
-                                <td><input type="text"  name="className" placeholder="최대 16글자" required></td>
+                                <td><input type="text"  name="className" placeholder="최대 16글자" maxlength="16" required></td>
                             </tr>
                             <tr>
-                                <td>전공여부</td>
+                                <td>*전공여부</td>
                                 <td>
                                     <select name="division"  id="division" onchange="changeDivision(this)">
                                         <option value="0">전공</option>
                                         <option value="1">교양</option>
                                     </select>
                                 </td>
-                                <td>이수학점</td>
+                                <td>*이수학점</td>
                                 <td>
                                     <select name="credit"  id="credit">
 
@@ -70,14 +55,14 @@
                             </tr>
                             <tr>
                                 <td>학년도</td>
-                                <td><select name="classYear"  id="classYear"></select></td>
+                                <td><select name="classYear"  id="classYear" disabled></select></td>
                                 <td>학기</td>
-                                <td><select name="classTerm"  id="classTerm"></select></td>
+                                <td><select name="classTerm"  id="classTerm" disabled></select></td>
                                 <td>*강의실</td>
                                 <td><input type="text" name="classroom"  placeholder="ex)태양관 101호" required></td>
                             </tr>
                             <tr>
-                                <td>요일</td>
+                                <td>*요일</td>
                                 <td>
                                     <select name="day"  id="day">
                                         <option value="1">월요일</option>
@@ -87,7 +72,7 @@
                                         <option value="5">금요일</option>
                                     </select>
                                 </td>
-                                <td>교시</td>
+                                <td>*교시</td>
                                 <td>
                                     <select name="period"  onchange="changePeriod(this)">
                                         <option value="1">1교시</option>
@@ -102,7 +87,7 @@
                                         <option value="10">10교시</option>
                                     </select>
                                 </td>
-                                <td>수업시간</td>
+                                <td>*수업시간</td>
                                 <td>
                                     <select name="classHour"  id="classHour">
                                         <option value="1">1시간</option>
@@ -111,7 +96,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>수강대상</td>
+                                <td>*수강대상</td>
                                 <td>
                                     <select name="classLevel" >
                                         <option value="0">전학년</option>
@@ -121,13 +106,22 @@
                                         <option value="4">4학년</option>
                                     </select>
                                 </td>
-                                <td>첨부파일</td>
-                                <td colspan="2"><input type="file" name="upfile" required></td>
+                                <td>*강의계획서</td>
+                                <td colspan="4" class="filebox">
+                                	<!-- 
+                                	 <label for="upfile" class="btn" id="file_btn">첨부파일</label>
+                                	<input type="file" name="upfile" id="upfile"  required>
+                                	 -->
+                                	<input class="upload-name" placeholder="강의계획서" style="width:58%" required>
+							    	<label for="file">파일찾기</label> 
+							    	<input type="file" name="upfile" id="file" required>
+                                </td>
                                 
                             </tr>
                         </table>
+                        </div>
                         <div style="text-align:center">
-                        	<button type="submit" class="btn btn-primary">신청</button>
+                        	<button type="submit" class="btn btn-primary" id="submitbtn">신청</button>
                         </div>
                     </form>
                 </div>
@@ -178,6 +172,19 @@
                 hour.options[hour.options.length]=new Option("2교시",2);
             }
         }
+        $("#file").on('change',function(){//첨부파일 올리면
+        	var fileName = $("#file").val().split('/').pop().split('\\').pop();
+        	$(".upload-name").val(fileName);//첨부파일 이름 보여주는곳에 올림
+        });
+        
+        $("#createform").submit(function(){
+        	if(confirm('강의 개설을 신청 하시겠습니까?')){//개설 신청을 한다면
+        		$("#classTerm").prop("disabled",false);
+        		$("#classYear").prop("disabled",false);
+        	}else{//취소
+        		return false;
+        	}
+        })
         
     </script>
 </body>

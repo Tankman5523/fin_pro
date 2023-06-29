@@ -353,4 +353,16 @@ public interface MemberService {
 	// 알람 확인
 	int alarmCheck(String studentNo);
 
+	// (관리자) 공지사항 관리 - 전체 공지사항 조회
+	ArrayList<Notice> selectNoticeAllList();
+
+	// (관리자) 공지사항 관리 - 공지사항 검색
+	ArrayList<Notice> searchNotice(HashMap<String, String> noticeMap);
+
+	// (관리자) 공지사항 관리 - 공지사항 전체 삭제
+	int allDeleteNotice();
+
+	// (관리자) 공지사항 관리 - 공지사항 선택 삭제
+	int selectDeleteNotice(String[] noticeNo);
+
 }

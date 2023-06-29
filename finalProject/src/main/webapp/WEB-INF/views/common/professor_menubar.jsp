@@ -21,7 +21,7 @@
 <body>
 	<div id="header">
 		<div id="logo" style="width: 500px; height: 100%; margin: 0; float: left; display: flex; align-items: center; justify-content: center;">
-			<img src="resources/icon/blue_logo_text.png" style="width:300px;">
+			<img src="resources/icon/blue_logo_text.png" onclick="location.href='mainPage.mp'" style="width:300px;">
 		</div>
 		<table id="user_log">
 	        <tr>

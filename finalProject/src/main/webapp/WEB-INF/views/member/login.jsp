@@ -25,20 +25,33 @@
 				<c:remove var="alertMsg" scope="session"/>
 				
 			</c:if>
-	
-	 		<script>
+			
+			<script>
 				$(function(){
 					
+					/* 아이디 저장 */
 					var saveId = "${cookie.userNo.value}";
 					
 					if(saveId != ""){
 						$("#userNo").val(saveId);
 						$("#save_userNo").attr("checked",true);
+					};
+					
+					/* 자동 로그인 */
+					var autoLogin = decodeURIComponent("${cookie.autoLoginInfo.value}");
+					if(autoLogin != ""){
+						var autoId = autoLogin.substring(0,autoLogin.indexOf(",")); //아이디
+						var autoPwd = autoLogin.substring(autoLogin.indexOf(",")+1); //비밀번호
+						$("#userNo").val(autoId);
+						$("#userPwd").val(autoPwd);
+						$("#autoLogin").attr("checked",true);
+						$(".wrap").hide();
+						$("#loginForm").submit();
 					}
 				});
 			</script> 
-
-            <form action="login.me" method="post" onsubmit="return chkLogin()">
+			
+            <form action="login.me" method="post" onsubmit="return chkLogin()" id="loginForm">
             
                 <h2>통합 LOGIN</h2>
 
@@ -62,7 +75,7 @@
                     <label for="save_userNo">아이디 저장</label>
                     <div id="auto_login_area">
 						<input type="checkbox" name="autoLogin" id="autoLogin">
-	                    <label for="autoLogin">자동 로그인</label>
+	                    <label for="autoLogin">로그인 상태 유지</label>
                     </div>
                 </div>
 
@@ -83,6 +96,7 @@
                 	<button type="button" onclick="location.href='infoSystem.mp'">돌아가기</button>
                 </div>
             </form>
+            
             <script>
             	function chkLogin(){
             		if($("#userNo").val() == ""){ //아이디 빈값 처리

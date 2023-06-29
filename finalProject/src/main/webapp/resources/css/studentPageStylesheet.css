@@ -39,6 +39,10 @@ div{
     float: right;
 }
 
+#logo>img:hover{
+    cursor: pointer;
+}
+
 /*=========메뉴바 영역===========*/
 #nav{
 	height: 100%;

@@ -576,7 +576,6 @@ public class MemberServiceImpl implements MemberService{
 		int result2 = 0;
 		result1 = memberDao.gradeUpdate(sqlSession, g);
 		result2 = memberDao.alarmInsert(sqlSession, alarm);
-		System.out.println("**********************"+result2);
 		return result1*result2;
 	}
 	
@@ -901,6 +900,32 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public int alarmCheck(String studentNo) {
 		return memberDao.alarmCheck(sqlSession, studentNo);
+	}
+
+	//공지사항 관리 - 전체 공지사항 조회
+	@Override
+	public ArrayList<Notice> selectNoticeAllList() {
+		
+		return memberDao.selectNoticeAllList(sqlSession);
+	}
+
+	// (관리자) 공지사항 관리 - 공지사항 검색
+	@Override
+	public ArrayList<Notice> searchNotice(HashMap<String, String> noticeMap) {
+		
+		return memberDao.searchNotice(sqlSession, noticeMap);
+	}
+
+	// (관리자) 공지사항 관리 - 공지사항 전체 삭제
+	@Override
+	public int allDeleteNotice() {
+		return memberDao.allDeleteNotice(sqlSession);
+	}
+
+	// (관리자) 공지사항 관리 - 공지사항 선택 삭제
+	@Override
+	public int selectDeleteNotice(String[] noticeNo) {
+		return memberDao.selectDeleteNotice(sqlSession, noticeNo);
 	}
 
 

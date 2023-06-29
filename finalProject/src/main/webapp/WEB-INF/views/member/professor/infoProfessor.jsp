@@ -153,7 +153,7 @@
                     <a href="professorRestList.pr">안식/퇴직 신청 조회</a>
                 </div>
 				<div class="child_title">
-                    <a href="professorRetireEnroll.pr">안식/퇴직 신청</a>
+                    <a href="professorRestEnroll.pr">안식/퇴직 신청</a>
                 </div>
             </div>
             <div id="content_1">

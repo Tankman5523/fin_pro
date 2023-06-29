@@ -3,6 +3,7 @@ package com.univ.fin.main.model.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.PageInfo;
 import com.univ.fin.main.model.vo.Notice;
 
@@ -55,6 +56,9 @@ public interface MainService {
 
 	//종합정보시스템 FAQ
 	ArrayList<Notice> infoFaqList();
+
+	//학사일정 캘린더 조회
+	ArrayList<CalendarVo> selectHaksaCalendar();
 
 	
 
