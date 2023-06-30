@@ -133,6 +133,9 @@
 .c_content_1122_table-area, .c_content_312_table-area, .c_content_332_table-area {
 	width: 95%;
 	height: 85%;
+}
+
+.c_content_312_table-area {
 	overflow-y: auto;
 }
 
@@ -141,8 +144,18 @@
 	text-align: center;
 }
 
-.c_content_1122_table-area>table>thead>tr, .c_content_312_table-area>table>thead>tr {
+.c_content_1122_table-area>table>thead, .c_content_312_table-area>table>thead {
 	background-color: #88C1E3;
+}
+
+.c_content_312_table-area>table {
+	border-collapse: seperate;
+	table-layout: fixed;
+}
+
+.c_content_312_table-area>table>thead {
+	position: sticky;
+    top: 0;
 }
 
 #today-date {

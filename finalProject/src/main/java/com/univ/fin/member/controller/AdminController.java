@@ -34,7 +34,6 @@ import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
 
-
 @Controller
 public class AdminController {
 	
@@ -485,4 +484,3 @@ public class AdminController {
 //	}
 }
 
- 

@@ -1,7 +1,5 @@
  package com.univ.fin.member.controller;
 
-
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,7 +35,6 @@ import com.univ.fin.member.model.vo.Professor;
 
 @Controller
 public class ProfessorController {
-	
 	
 	@Autowired
 	private MemberService memberService;
@@ -304,17 +302,24 @@ public class ProfessorController {
 	// 성적관리 -> 성적 입력
 	@ResponseBody
 	@PostMapping("gradeInsert.pr")
-	public String gradeInsert(Grade g) {
+	public String gradeInsert(Grade g, HttpSession session) {
+		Professor p = (Professor)session.getAttribute("loginUser");
+		
 		HashMap<String, String> map = new HashMap<>();
 		map.put("classNo", g.getClassNo());
 		map.put("gradeLevel", g.getGradeLevel().substring(0, 1));
+		
+		HashMap<String, String> alarm = new HashMap<>();
+		alarm.put("cmd", "gradeInsert");
+		alarm.put("studentNo", g.getStudentNo());
+		alarm.put("professorName", p.getProfessorName());
 		
 		// A: 30%, A+B: 70% 이내
 		if(map.get("gradeLevel").equals("A") || map.get("gradeLevel").equals("B")) {
 			int check = memberService.checkGradeNos(map); // 수강인원*비율에 따른 가능 인원 수
 			int count = memberService.countGradeNos(map); // 실제 몇명이 해당되는지
 			if(count < check) {
-				int result = memberService.gradeInsert(g);
+				int result = memberService.gradeInsert(g, alarm);
 				return (result>0)? "Y": "N";
 			}
 			else {
@@ -322,7 +327,7 @@ public class ProfessorController {
 			}
 		}
 		else {
-			int result = memberService.gradeInsert(g);
+			int result = memberService.gradeInsert(g, alarm);
 			return (result>0)? "Y": "N";
 		}
 	}
@@ -330,17 +335,24 @@ public class ProfessorController {
 	// 성적관리 -> 성적 수정
 	@ResponseBody
 	@PostMapping("gradeUpdate.pr")
-	public String gradeUpdate(Grade g) {
+	public String gradeUpdate(Grade g, HttpSession session) {
+		Professor p = (Professor)session.getAttribute("loginUser");
+		
 		HashMap<String, String> map = new HashMap<>();
 		map.put("classNo", g.getClassNo());
 		map.put("gradeLevel", g.getGradeLevel().substring(0, 1));
+		
+		HashMap<String, String> alarm = new HashMap<>();
+		alarm.put("cmd", "gradeUpdate");
+		alarm.put("studentNo", g.getStudentNo());
+		alarm.put("professorName", p.getProfessorName());
 		
 		// A: 30%, A+B: 70% 이내
 		if(map.get("gradeLevel").equals("A") || map.get("gradeLevel").equals("B")) {
 			int check = memberService.checkGradeNos(map); // 수강인원*비율에 따른 가능 인원 수
 			int count = memberService.countGradeNos(map); // 실제 몇명이 해당되는지
 			if(count < check) { // 성적 입력 가능
-				int result = memberService.gradeUpdate(g);
+				int result = memberService.gradeUpdate(g, alarm);
 				return (result>0)? "Y": "N";
 			}
 			else { // 불가능
@@ -348,7 +360,7 @@ public class ProfessorController {
 			}
 		}
 		else {
-			int result = memberService.gradeUpdate(g);
+			int result = memberService.gradeUpdate(g, alarm);
 			return (result>0)? "Y": "N";
 		}
 	}

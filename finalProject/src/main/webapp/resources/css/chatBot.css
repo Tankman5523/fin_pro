@@ -113,3 +113,8 @@
 #questionBtn:hover{
     box-shadow: 1px 1px 1px #000000;
 }
+
+#chatBody textarea{
+    border-radius: 20px 20px 20px 20px;
+    resize: none;
+}

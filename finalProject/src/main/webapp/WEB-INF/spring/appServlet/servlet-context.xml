@@ -2,6 +2,7 @@
 <beans:beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
 	xmlns="http://www.springframework.org/schema/mvc"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
 
@@ -71,5 +72,16 @@
     </mvc:interceptor>
     
   </mvc:interceptors>
+  
+  <!-- 웹소켓 설정 -->
+  <beans:bean id="echoHandler" class="com.univ.fin.member.EchoHandler" />
+  
+  <websocket:handlers>
+  	<websocket:mapping handler="echoHandler" path="/echo"/>
+  	
+  	<websocket:handshake-interceptors>
+  		<beans:bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor"></beans:bean>
+  	</websocket:handshake-interceptors>
+  </websocket:handlers>
 	
 </beans:beans>
