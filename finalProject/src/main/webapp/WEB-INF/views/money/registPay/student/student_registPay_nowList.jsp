@@ -114,7 +114,7 @@
                                 <td>${RegistPay.studentName}</td>
                                 <td>
                                 	<fmt:formatNumber type="number" maxFractionDigits="3" value="${RegistPay.mustPay}" />
-                                	원		
+                                			
                                 </td>
                                 <td>${RegistPay.regAccountNo}</td>
                                 <td>${RegistPay.payAccountNo}
@@ -151,7 +151,7 @@
 		                                			</button>
 	                                			</c:when>
 	                                			<c:otherwise>
-	                                				등록기간이 아닙니다.
+	                                				-
 	                                			</c:otherwise>
                                 			</c:choose>
                                 		</c:otherwise>

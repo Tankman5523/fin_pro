@@ -17,7 +17,7 @@
 						<div class="c_content_112">
 							<div class="c_content_1121">
 								<span><i class="fa-solid fa-receipt fa-lg" style="color: #118f00;"></i>&nbsp;&nbsp;강의 개설 신청 목록</span>&nbsp;&nbsp;&nbsp;
-								<a href="classManagePage.ad"><i class="fa-regular fa-plus fa-xl" style="color: #686e78;"></i></a>
+								<a href="classManagePage.ad"><i class="fa-regular fa-plus fa-2xl" style="color: #686e78;"></i></a>
 							</div>
 							<div class="c_content_1122">
 								<div class="c_content_1122_table-area">
@@ -82,49 +82,50 @@
 								<span><i class="fa-solid fa-graduation-cap" style="color: #2071fe;"></i> &nbsp;&nbsp;학생관리</span>
 								<a href="stuRestList.ad"><i class="fa-regular fa-plus fa-2xl" style="color: #686e78;"></i></a>
 							</div>
-							<br>
 							<div class="c_content_132">
 								<div class="c_content_1321">
-									<table border="1" id="stdTable" style="width:95%;">
-							            <thead>
-							                <tr>
-							                    <th>신청날짜</th>
-							                    <th>이름</th>
-							                    <th>내용</th>
-							                    <th>처리상태</th>
-							                </tr>
-							            </thead>            
-							            <tbody>
-							                <c:choose>
-												<c:when test="${!empty srList }">
-													<c:forEach var="student" items="${srList}">
+									<div class="c_content_1321_table-area">
+										<table border="1" id="stdTable" style="width:95%;">
+								            <thead>
+								                <tr>
+								                    <th>신청날짜</th>
+								                    <th>이름</th>
+								                    <th>내용</th>
+								                    <th>처리상태</th>
+								                </tr>
+								            </thead>            
+								            <tbody>
+								                <c:choose>
+													<c:when test="${!empty srList }">
+														<c:forEach var="student" items="${srList}">
+															<tr>
+																<%-- <td style="display: none;">${student.restNo }</td> --%>
+																<td>${student.requestDate}</td>
+																<td>${student.studentName}</td>
+																<td>${student.category}</td>
+																
+																<c:if test="${student.status eq 'B' }">
+																	<td style='color: orange; font-weight: bold;'>검토중</td>
+																</c:if>
+																<c:if test="${student.status eq 'Y' }">
+																	<td style='color: #0080ff; font-weight: bold;'>허가</td>
+																</c:if>
+																<c:if test="${student.status eq 'N' }">
+																	<td style='color: red; font-weight: bold;'>비허가</td>
+																</c:if>
+																
+															</tr>
+														</c:forEach>
+													</c:when>
+													<c:otherwise>
 														<tr>
-															<%-- <td style="display: none;">${student.restNo }</td> --%>
-															<td>${student.requestDate}</td>
-															<td>${student.studentName}</td>
-															<td>${student.category}</td>
-															
-															<c:if test="${student.status eq 'B' }">
-																<td style='color: orange; font-weight: bold;'>검토중</td>
-															</c:if>
-															<c:if test="${student.status eq 'Y' }">
-																<td style='color: #0080ff; font-weight: bold;'>허가</td>
-															</c:if>
-															<c:if test="${student.status eq 'N' }">
-																<td style='color: red; font-weight: bold;'>비허가</td>
-															</c:if>
-															
+															<td colspan="4">조회된 데이터가 없습니다.</td>
 														</tr>
-													</c:forEach>
-												</c:when>
-												<c:otherwise>
-													<tr>
-														<td colspan="4">조회된 데이터가 없습니다.</td>
-													</tr>
-												</c:otherwise>
-											</c:choose>
-							            </tbody>
-							        </table>       
+													</c:otherwise>
+												</c:choose>
+								            </tbody>
+								        </table>  
+							        </div>     
 								</div>
 							</div>
 						</div>
@@ -137,56 +138,57 @@
 								<span><i class="fa-sharp fa-solid fa-user-tie" style="color: #ffae00;"></i>&nbsp;&nbsp;임직원 관리</span>
 								<a href="proRestList.ad"><i class="fa-regular fa-plus fa-2xl" style="color: #686e78;"></i></a>
 							</div>
-							<br><br>
 							<div class="c_content_132">
 								<div class="c_content_1321">
-									<table border="1" id="profTable" style="width:95%;" >
-							            <thead>
-							                <tr>
-							                    <th>신청날짜</th>
-							                    <th>이름</th>
-							                    <th>내용</th>
-							                    <th>처리상태</th>
-							                </tr>
-							            </thead>            
-							            <tbody>
-							                <c:choose>
-												<c:when test="${!empty prList }">
-													<c:forEach var="prof" items="${prList}">
+									<div class="c_content_1321_table-area">
+										<table border="1" id="profTable" style="width:95%;" >
+								            <thead>
+								                <tr>
+								                    <th>신청날짜</th>
+								                    <th>이름</th>
+								                    <th>내용</th>
+								                    <th>처리상태</th>
+								                </tr>
+								            </thead>            
+								            <tbody>
+								                <c:choose>
+													<c:when test="${!empty prList }">
+														<c:forEach var="prof" items="${prList}">
+															<tr>
+																<%-- <td style="display: none;">${student.restNo }</td> --%>
+																<td>${prof.requestDate}</td>
+																<td>${prof.professorName}</td>
+																<c:choose>
+																	<c:when test="${prof.category eq 1}">
+																		<td>안식</td>
+																	</c:when>
+																	<c:when test="${prof.category eq 0}">
+																		<td>퇴직</td>
+																	</c:when>
+																</c:choose>
+																
+																<c:if test="${prof.status eq 'B' }">
+																	<td style='color: orange; font-weight: bold;'>검토중</td>
+																</c:if>
+																<c:if test="${prof.status eq 'Y' }">
+																	<td style='color: #0080ff; font-weight: bold;'>허가</td>
+																</c:if>
+																<c:if test="${prof.status eq 'N' }">
+																	<td style='color: red; font-weight: bold;'>비허가</td>
+																</c:if>
+																
+															</tr>
+														</c:forEach>
+													</c:when>
+													<c:otherwise>
 														<tr>
-															<%-- <td style="display: none;">${student.restNo }</td> --%>
-															<td>${prof.requestDate}</td>
-															<td>${prof.professorName}</td>
-															<c:choose>
-																<c:when test="${prof.category eq 1}">
-																	<td>안식</td>
-																</c:when>
-																<c:when test="${prof.category eq 0}">
-																	<td>퇴직</td>
-																</c:when>
-															</c:choose>
-															
-															<c:if test="${prof.status eq 'B' }">
-																<td style='color: orange; font-weight: bold;'>검토중</td>
-															</c:if>
-															<c:if test="${prof.status eq 'Y' }">
-																<td style='color: #0080ff; font-weight: bold;'>허가</td>
-															</c:if>
-															<c:if test="${prof.status eq 'N' }">
-																<td style='color: red; font-weight: bold;'>비허가</td>
-															</c:if>
-															
+															<td colspan="4">조회된 데이터가 없습니다.</td>
 														</tr>
-													</c:forEach>
-												</c:when>
-												<c:otherwise>
-													<tr>
-														<td colspan="4">조회된 데이터가 없습니다.</td>
-													</tr>
-												</c:otherwise>
-											</c:choose>
-							            </tbody>
-						        	</table>  
+													</c:otherwise>
+												</c:choose>
+								            </tbody>
+							        	</table>  
+						        	</div>
 								</div>
 							</div>
 						</div>
@@ -251,8 +253,8 @@
 								<table border="1" style="table-layout:fixed;">
 									<thead>
 										<tr>
-											<td width="80%">제목</td>
-											<td width="20%">일자</td>
+											<th width="80%">제목</th>
+											<th width="20%">작성일</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -280,11 +282,5 @@
 			</div>
 		</div>
 	</div>
-	
-	<script>
-		$('document').ready(function(){
-			$(".text-limit")
-		})
-	</script>
 </body>
 </html>

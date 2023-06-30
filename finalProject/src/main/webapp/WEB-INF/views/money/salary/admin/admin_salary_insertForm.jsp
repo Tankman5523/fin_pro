@@ -244,9 +244,19 @@
                     		
                     		
                     		var today = new Date();
+                    		today.setMonth(today.getMonth()+1); //작성하는 다음 달
+                    		today.setDate(10);
+                    		
                     		var year = today.getFullYear();
-                    		var month = today.getMonth()+2 ; //작성하는 다음 달
-                    		var day = 10;
+                    		var month = today.getMonth()+1; //월이 0~11 로 리턴되기 때문에 여기서 +1처리 
+                    		var day = today.getDate();
+                    		
+                    		var weekDay = today.getDay();
+                    		if(weekDay==7){ //해당 요일이 일요일일시
+                    			day = day - 2;
+                    		}else if(weekDay==6){
+                    			day = day - 1;
+                    		}
                     		var payDay = year+'/'+month+'/'+day;
                     		
                     		$("#paymentDate").val(payDay);
