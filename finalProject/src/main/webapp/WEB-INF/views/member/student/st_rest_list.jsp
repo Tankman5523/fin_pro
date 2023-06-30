@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>휴,복학 신청 조회 페이지</title>
+<link rel="stylesheet" href="/fin/resources/css/studentRestListView.css">
 </head>
 <body>
     <div class="wrap">
@@ -15,7 +16,7 @@
                     <span style="margin: 0 auto;">학사관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="infoStudent.st" style="color:#00aeff; font-weight: 550;">학적 정보 조회</a>
+                    <a href="infoStudent.st">학적 정보 조회</a>
                 </div>
 				<div class="child_title">
                     <a href="personalTimetable.st">개인 시간표</a>
@@ -24,20 +25,17 @@
                     <a href="studentRestEnroll.st">휴/복학 신청</a>
                 </div>
 				<div class="child_title">
-                    <a href="studentRestList.st">휴/복학 조회</a>
+                    <a href="studentRestList.st" style="color:#00aeff; font-weight: 550;">휴/복학 조회</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">졸업사정표</a>
-                </div>
-				<div class="child_title">
-                    <a href="#">졸업 확정 신고</a>
+                    <a href="graduationInfoForm.st">졸업 사정표</a>
                 </div>
             </div>
             <div id="content_1">
-				<h4>휴복학 신청 조회</h4>
-                <div style="border-top:1px solid;" align="center">
+				<span id="content_title">휴복학 신청 조회</span>
+                <div style="border-top:2px solid lightblue;" align="center">
 
-                    <table border="1" style="width:90%; text-align: center; margin-top:5%;">
+                    <table  border="1" class="rest_list table" style="width:80%; text-align: center;margin-top:2%;">
                         <thead>
                             <tr>
                             	<th>신청일</th>
@@ -70,17 +68,6 @@
                         			</tr>
                         		</c:otherwise>
                         	</c:choose>
-                        	<!-- 
-                            <tr>                            
-                                <td>S20230546</td>
-                                <td>특별휴학</td>
-                                <td>군입대휴학</td>
-                                <td>2023-04-05</td>
-                                <td>2023-06-02</td>
-                                <td>Y</td>
-                            </tr>
-                        	 -->
-                            
                         </tbody>
                     </table>
                 </div>

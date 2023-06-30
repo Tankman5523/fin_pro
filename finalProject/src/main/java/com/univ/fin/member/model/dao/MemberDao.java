@@ -8,6 +8,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.univ.fin.common.model.vo.AlarmVo;
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.CalendarVo;
@@ -656,6 +657,21 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.updateCounselStatus", statusMap);
 	}
 
+	// 알람 발신
+	public int alarmInsert(SqlSessionTemplate sqlSession, HashMap<String, String> alarm) {
+		return sqlSession.insert("memberMapper.alarmInsert", alarm);
+	}
+	
+	// 알람 수신
+	public ArrayList<AlarmVo> alarmReceive(SqlSessionTemplate sqlSession, String studentNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.alarmReceive", studentNo);
+	}
+
+	// 알람 확인
+	public int alarmCheck(SqlSessionTemplate sqlSession, String studentNo) {
+		return sqlSession.update("memberMapper.alarmCheck", studentNo);
+	}
+
 	// (관리자) 공지사항 관리 - 전체 공지사항 조회
 	public ArrayList<Notice> selectNoticeAllList(SqlSessionTemplate sqlSession) {
 		
@@ -663,9 +679,21 @@ public class MemberDao {
 	}
 
 	// (관리자) 공지사항 관리 - 공지사항 검색
-	public Notice searchNotice(SqlSessionTemplate sqlSession, HashMap<String, String> noticeMap) {
+	public ArrayList<Notice> searchNotice(SqlSessionTemplate sqlSession, HashMap<String, String> noticeMap) {
 		
-		return sqlSession.selectOne("memberMapper.searchNotice", noticeMap);
+		return (ArrayList)sqlSession.selectList("memberMapper.searchNotice", noticeMap);
+	}
+
+	// (관리자) 공지사항 관리 - 공지사항 전체 삭제
+	public int allDeleteNotice(SqlSessionTemplate sqlSession) {
+
+		return sqlSession.update("memberMapper.allDeleteNotice");
+	}
+
+	// (관리자) 공지사항 관리 - 공지사항 선택 삭제
+	public int selectDeleteNotice(SqlSessionTemplate sqlSession, String[] noticeNo) {
+
+		return sqlSession.update("memberMapper.selectDeleteNotice");
 	}
 	
 	// (관리자) 메인페이지 -> 강의신청 목록 조회

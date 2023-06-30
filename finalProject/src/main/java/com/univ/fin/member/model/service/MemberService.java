@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import com.univ.fin.common.model.vo.AlarmVo;
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.CalendarVo;
@@ -210,10 +211,10 @@ public interface MemberService {
 	int countGradeNos(HashMap<String, String> map);
 
 	// 성적관리 -> 성적 입력
-	int gradeInsert(Grade g);
+	int gradeInsert(Grade g, HashMap<String, String> alarm);
 
 	// 성적관리 -> 성적 수정
-	int gradeUpdate(Grade g);
+	int gradeUpdate(Grade g, HashMap<String, String> alarm);
 
 	// 강의 이의제기 -> 학생 신청
 	ArrayList<Dissent> studentGradeReport(String studentNo);
@@ -346,11 +347,17 @@ public interface MemberService {
 	// (관리자) 임직원 안식,퇴직 업데이트
 	int updateProfessorRest(ProfessorRest pr);
 
+	// 알람 수신
+	ArrayList<AlarmVo> alarmReceive(String studentNo);
+
+	// 알람 확인
+	int alarmCheck(String studentNo);
+
 	// (관리자) 공지사항 관리 - 전체 공지사항 조회
 	ArrayList<Notice> selectNoticeAllList();
 
-	// (관리자) 공지사항 관리 - 공지사항 검색
-	Notice searchNotice(HashMap<String, String> noticeMap);
+	
+
 	
 	// (관리자) 메인페이지 -> 강의신청 목록 조회
 	ArrayList<Classes> selectAdMainClasses();
@@ -360,5 +367,15 @@ public interface MemberService {
 
 	// (관리자) 메인페이지 -> 교수 안식 및 퇴직 신청 목록 조회
 	ArrayList<ProfessorRest> selectMainProfessorRest();
+	
+	// (관리자) 공지사항 관리 - 공지사항 검색
+	ArrayList<Notice> searchNotice(HashMap<String, String> noticeMap);
+
+	// (관리자) 공지사항 관리 - 공지사항 전체 삭제
+	int allDeleteNotice();
+
+	// (관리자) 공지사항 관리 - 공지사항 선택 삭제
+	int selectDeleteNotice(String[] noticeNo);
+
 
 }

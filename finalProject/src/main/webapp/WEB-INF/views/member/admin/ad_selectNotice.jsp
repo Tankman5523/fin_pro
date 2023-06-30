@@ -38,32 +38,39 @@
 		<div id="content_1">
 			
 			<div id="search-box">
-				<select id="field-select">
-					<option value="all-field">=== 공지사항 전체 ===</option>
-					<option value="0">공지사항</option>
-					<option value="1">FAQ</option>
-				</select>
-				<select id="category-select">
-					<option value="all-category">=== 카테고리 전체 ===</option>
-					<option value="1">학사</option>
-					<option value="2">장학</option>
-					<option value="3">입학</option>
-					<option value="4">채용</option>
-					<option value="5">기타</option>
-				</select>
-				<select id="search-type">
-					<option value="all-type">=== 전체 ===</option>
-					<option value="title">제목만</option>
-					<option value="content">내용만</option>
-				</select>
+				<div style="margin-bottom: 30px;">
+					<select id="field-select">
+						<option value="all-field">=== 공지사항 전체 ===</option>
+						<option value="0">공지사항</option>
+						<option value="1">FAQ</option>
+					</select>
+					<select id="category-select">
+						<option value="all-category">=== 카테고리 전체 ===</option>
+						<option value="1">학사</option>
+						<option value="2">장학</option>
+						<option value="3">입학</option>
+						<option value="4">채용</option>
+						<option value="5">기타</option>
+					</select>
+					<select id="search-type">
+						<option value="all-type">=== 전체 ===</option>
+						<option value="title">제목만</option>
+						<option value="content">내용만</option>
+					</select>
+				</div>
 				<input type="text" id="keyword" name="keyword" placeholder="검색어를 입력해 주세요.">				
 				<button id="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+			</div>
+			
+			<div style="width: 90%; margin: auto;">
+				<button class="btn" id="insert" onclick="location.href='insertNotice.ad'">등록</button>
 			</div>
 			
 			<div id="result-area">
 				<table id="result-table">
 					<thead>
 						<tr>
+							<th><input type='checkBox' id='allChk' name='allChk' onclick="selectAll(this)"></th>
 							<th>No.</th>
 							<th>분류</th>
 							<th>카테고리</th>
@@ -74,6 +81,10 @@
 					</thead>
 					<tbody></tbody>
 				</table>
+			</div>
+			<div id="btn-area">
+				<button class="btn" id="delete" onclick="deleteVal()">삭제</button>
+				<button class="btn" id="update" onclick="update()">수정</button>
 			</div>
 
 		</div>
@@ -92,6 +103,7 @@
 				
 				result.forEach(function(result){
 					str += "<tr>"
+						+"<td>"+"<input type='checkBox' class='chkRows' name='chkRows'>"+"</td>"
 						+"<td>"+result.noticeNo+"</td>"
 						+"<td>"+result.field+"</td>"
 						+"<td>"+result.categoryName+"</td>"
@@ -106,7 +118,6 @@
 							+"<td>"+result.createDate+"</td>"
 							+"</tr>"
 						}
-					
 				})
 				
 				$('#result-table > tbody').html(str);
@@ -117,7 +128,7 @@
 		})
 		
 		var submit = document.getElementById('submit')
-		
+	
 		submit.addEventListener('click', function(){
 			var fieldSelect = document.getElementById('field-select');
 			var categorySelect = document.getElementById('category-select');
@@ -138,36 +149,122 @@
 					type : type
 				},
 				success: function(data){
-// 					var str = "";
+					var str = "";
 					
-// 					data.forEach(function(data){
-// 						str += "<tr>"
-// 							+"<td>"+data.noticeNo+"</td>"
-// 							+"<td>"+data.field+"</td>"
-// 							+"<td>"+data.categoryName+"</td>"
-// 							+"<td>"+data.noticeTitle+"</td>";
+					data.forEach(function(data){
+						str += "<tr>"
+							+"<td>"+"<input type='checkBox' class='chkRows' name='chkRows'>"+"</td>"
+							+"<td>"+data.noticeNo+"</td>"
+							+"<td>"+data.field+"</td>"
+							+"<td>"+data.categoryName+"</td>"
+							+"<td>"+data.noticeTitle+"</td>";
 							
-// 							if (data.originName != null) {
-// 								str += "<td style='width: 80px;'>"+"<i class='fa-solid fa-paperclip'></i>"+"</td>"
-// 								+"<td>"+data.createDate+"</td>"
-// 								+"</tr>"
-// 							}else{
-// 								str += "<td></td>"
-// 								+"<td>"+data.createDate+"</td>"
-// 								+"</tr>"
-// 							}
+							if (data.originName != null) {
+								str += "<td style='width: 80px;'>"+"<i class='fa-solid fa-paperclip'></i>"+"</td>"
+								+"<td>"+data.createDate+"</td>"
+								+"</tr>"
+							}else{
+								str += "<td></td>"
+								+"<td>"+data.createDate+"</td>"
+								+"</tr>"
+							}
 						
-// 					})
+					})
 					
-// 					$('#result-table > tbody').html(str);
+					alert("검색 결과는 총 "+data.length+" 건 입니다.");
+					$('#result-table > tbody').html(str);
 				},
 				error: function(){
-					
+					console.log("통신오류");
 				}
 			})		
 		})
-		
 	}
+	
+	function selectAll(selectAll){
+		const checkBoxes = document.getElementsByName('chkRows')
+		
+		checkBoxes.forEach(function(checkBox){
+			checkBox.checked = selectAll.checked
+		})
+	}
+	
+	function update(){
+		const query = 'input[name="chkRows"]:checked';
+		const selectBox = document.querySelectorAll(query);
+		const tr = document.querySelectorAll('#result-table tbody tr')
+		
+		if(selectBox.length > 1){
+			alert("게시글을 한 개만 선택해주세요.")
+		}else{
+			tr.forEach(function(tr){
+				const checkBox = tr.children[0].children[0];
+				
+				if(checkBox.checked == true){
+					const noticeNo = tr.children[1].innerHTML
+					location.href = "updateNotice.ad?noticeNo="+noticeNo;
+				}
+			})
+		}
+	}
+	
+	function deleteVal(){
+		const allChk = $('#allChk').is(':checked');
+		const query = 'input[name="chkRows"]:checked';
+		const selectBox = document.querySelectorAll(query);
+		const tr = document.querySelectorAll('#result-table tbody tr')
+		
+		if(selectBox.length < 1){
+			alert("게시글을 한 개 이상 선택해주세요.")
+		}
+		
+		var noticeNo = new Array();
+		
+		if(allChk == true){
+			noticeNo.length = 0;
+// 			location.href = 'deleteNotice.ad?noticeNo='+noticeNo;
+		}else{
+			tr.forEach(function(tr, idx){
+				const checkBox = tr.children[0].children[0];
+
+				if(checkBox.checked == true){
+					noticeNo.push(tr.children[1].innerHTML)
+				}
+			})
+		}
+		
+		$.ajax({
+			url: "deleteNotice.ad",
+			data: {
+				noticeNo : noticeNo
+			},
+			traditional: true,
+			type: "post",
+			success: function(data){
+				alert(msg);
+				location.reload();
+			},
+			error: function(){
+				console.log("오류")
+			}
+		})
+	}
+	
+	//전체선택
+	$(document).on('click', '#result-table tbody tr', function(e){
+		if($(e.target).is('input[type="checkBox"]')){
+			return;
+		}
+		const chkBox = $(this).find('input[type="checkBox"]')
+		chkBox.prop('checked', !chkBox.prop('checked'))
+	})
+	
+	const msg = "${msg}"
+	
+	if(msg != ''){
+		alert(msg)	
+	}
+	
 </script>
 </body>
 </html>

@@ -226,6 +226,13 @@
 		<result column="MUST_PAY" property="mustPay"/>
 		<result column="PAY_STATUS" property="payStatus"/>
 	</resultMap>
+	
+	<resultMap type="alarm" id="alarmResultMap">
+		<result column="ALARM_NO" property="alarmNo"/>
+		<result column="CMD" property="cmd"/>
+		<result column="STUDENT_NO" property="studentNo"/>
+		<result column="PROFESSOR_NAME" property="professorName"/>
+	</resultMap>
   	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
@@ -235,6 +242,7 @@
   		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO) 
         JOIN COLLEGE C ON (S.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE STUDENT_NO = #{studentNo}
+  		AND STUDENT_PWD = #{studentPwd}
   	</select>
   	
   	<!-- 임직원 로그인 -->
@@ -245,6 +253,7 @@
         JOIN DEPARTMENT D ON (P.DEPARTMENT_NO = D.DEPARTMENT_NO)
         JOIN COLLEGE C ON (P.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE PROFESSOR_NO = #{professorNo}
+  		AND PROFESSOR_PWD = #{professorPwd}
   	</select>
   
   	<!-- ID조회 - 학생 -->
@@ -742,7 +751,7 @@
 	        AND   COUNSEL_AREA LIKE #{counselArea}
 	        AND   TO_CHAR(APPLICATION_DATE,'YYYY') LIKE #{year}
 	        AND   APPLICATION_DATE BETWEEN TO_DATE(#{startDate},'YYYY-MM-DD') AND TO_DATE(#{endDate},'YYYY-MM-DD')
-	  		ORDER BY APPLICATION_DATE DESC
+	  		ORDER BY COUNSEL_NO DESC
 	 </select>
   	
   	<!-- 학과명으로 확과번호 조회 -->
@@ -1368,6 +1377,7 @@
   		SELECT REST_NO,PROFESSOR_NO,CATEGORY,REQUEST_DATE,START_DATE,END_DATE,REASON,STATUS
   		FROM PROFESSOR_REST
   		WHERE PROFESSOR_NO = #{professorNo}
+  		ORDER BY REST_NO DESC
   	</select>
   	
   	<!-- 안식,퇴직 신청 등록(교수) -->
@@ -1438,7 +1448,8 @@
   	
   	<!-- 학생 휴,복학 신청 목록 검색 (관리자) -->
   	<select id="selectSearchStuRestList" resultMap="studentRestResultMap">
-  		SELECT REST_NO,STUDENT_NO,STUDENT_NAME,CATEGORY,REASON,REQUEST_DATE,START_DATE,END_DATE,R.STATUS
+  		SELECT REST_NO,STUDENT_NO,STUDENT_NAME,CATEGORY,REASON,REQUEST_DATE,START_DATE,END_DATE
+  			   ,DECODE(R.STATUS,'B','처리중','Y','승인완료','N','비승인') AS STATUS
   		FROM STUDENT_REST R
   		JOIN STUDENT S USING (STUDENT_NO)
   		WHERE STUDENT_NO LIKE '%'||#{studentNo}||'%'
@@ -1451,9 +1462,10 @@
   	
   	<!-- 임직원 안식,퇴직 신청 리스트 (관리자) -->
   	<select id="selectCounAllProList" resultMap="professorRestResultSet">
-  		SELECT *
-  		FROM PROFESSOR_REST
-  		WHERE STATUS = 'B'
+  		SELECT REST_NO,PROFESSOR_NO,PROFESSOR_NAME,CATEGORY,REQUEST_DATE,START_DATE,END_DATE,REASON,R.STATUS
+  		FROM PROFESSOR_REST R
+  		JOIN PROFESSOR P USING (PROFESSOR_NO)
+  		WHERE R.STATUS = 'B'
   		ORDER BY REST_NO DESC
   	</select>
   	
@@ -1613,6 +1625,25 @@
 		WHERE COUNSEL_NO = #{counselNo }
   	</update>
   	
+  	<!-- 알람 발신 -->
+  	<insert id="alarmInsert" parameterType="hashmap">
+  		INSERT INTO ALARM VALUES(SEQ_ALNO.NEXTVAL, #{cmd}, #{studentNo}, #{professorName}, 'N')
+  	</insert>
+  	
+  	<!-- 알람 수신 -->
+  	<select id="alarmReceive" parameterType="string" resultMap="alarmResultMap">
+  		SELECT *
+  		FROM ALARM
+  		WHERE STUDENT_NO = #{studentNo} AND STATUS = 'N'
+  	</select>
+  	
+  	<!-- 알람 확인 -->
+  	<update id="alarmCheck">
+  		UPDATE ALARM
+  		SET STATUS = 'Y'
+  		WHERE STUDENT_NO = #{studentNo} AND STATUS = 'N'
+  	</update>
+  	
   	<!-- (관리자) 공지사항 관리 - 전체 리스트 조회 -->
   	<select id="selectNoticeAllList" resultMap="noticeResultSet">
   		SELECT *
@@ -1623,17 +1654,6 @@
 		        WHERE N.STATUS = 'Y')
 		ORDER BY CREATE_DATE DESC
   	</select>
-  	
-  	<!-- (관리자) 공지사항 관리 - 검색 조회 -->
-<!--   	<select id="searchNotice" resultMap="noticeResultSet"> -->
-<!--   		SELECT * -->
-<!-- 		FROM (SELECT NOTICE_NO, CATEGORY_NAME, NOTICE_TITLE, COUNT, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE, FIELD, N.STATUS, ORIGIN_NAME -->
-<!-- 		        FROM NOTICE N -->
-<!-- 		        JOIN NOTICE_CATEGORY NC ON(NOTICE_CATEGORY = CATEGORY_NO) -->
-<!-- 		        LEFT JOIN NOTICE_ATTACHMENT NA USING(NOTICE_NO) -->
-<!-- 		        WHERE N.STATUS = 'Y') -->
-<!-- 		ORDER BY CREATE_DATE DESC -->
-<!--   	</select> -->
 
 	<!-- (관리자) 메인 -> 강의 신청 목록 조회 -->
   	<select id="selectAdMainClasses" resultMap="classResultMap">
@@ -1649,6 +1669,45 @@
 	         WHERE CL.STATUS IN ('B','C','Y','N')
 			 ORDER BY CLASS_NO DESC)
 		WHERE ROWNUM BETWEEN 1 AND 3
+	</select>	
+	<!-- (관리자) 공지사항 관리 - 검색 조회 -->
+  	<select id="searchNotice" resultMap="noticeResultSet">
+  		SELECT *
+		FROM (SELECT NOTICE_NO, CATEGORY_NAME, NOTICE_TITLE, COUNT, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE, FIELD, N.STATUS, ORIGIN_NAME, NOTICE_CATEGORY
+		        FROM NOTICE N
+		        JOIN NOTICE_CATEGORY NC ON(N.NOTICE_CATEGORY = CATEGORY_NO)
+		        LEFT JOIN NOTICE_ATTACHMENT NA USING(NOTICE_NO)
+		        <choose>
+			        <when test="type.equals('all-type')">
+			        	WHERE (NOTICE_TITLE LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+						OR NOTICE_CONTENT LIKE CONCAT('%', CONCAT(#{keyword} , '%')))
+			        </when>
+			        <when test="type.equals('title')">
+			        	WHERE NOTICE_TITLE LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+			        </when>
+			        <otherwise>
+			        	WHERE NOTICE_CONTENT LIKE CONCAT('%', CONCAT(#{keyword} , '%'))
+			        </otherwise>
+		        </choose>
+		        AND N.STATUS = 'Y')
+		<choose>
+	        <when test="field.equals('all-field') and category.equals('all-category')">
+				ORDER BY CREATE_DATE DESC        
+	        </when>
+	        <when test="field.equals('all-field')">
+	        	WHERE NOTICE_CATEGORY = #{category }
+				ORDER BY CREATE_DATE DESC        
+	        </when>
+	        <when test="category.equals('all-category')">
+		        WHERE FIELD = #{field }
+				ORDER BY CREATE_DATE DESC        
+	        </when>
+	        <otherwise>
+		        WHERE FIELD = #{field }
+		        AND NOTICE_CATEGORY = #{category }
+				ORDER BY CREATE_DATE DESC
+	        </otherwise>
+		</choose>
   	</select>
   	
   	<!-- (관리자) 메인 -> 학생 휴학 및 퇴학 신청 목록 -->
@@ -1670,5 +1729,20 @@
 		     ORDER BY REST_NO DESC)
 		WHERE ROWNUM BETWEEN 1 AND 5
   	</select>
+  	
+  	<update id="allDeleteNotice">
+  		UPDATE NOTICE
+		SET STATUS = 'N'
+  	</update>
+  	
+  	<update id="selectDeleteNotice">
+  		UPDATE NOTICE
+  		SET STATUS = 'N'
+		WHERE NOTICE_NO IN
+  		<foreach collection="array" item="noticeNo"  open="(" close=")" separator=",">
+			#{noticeNo }
+  		</foreach>
+  	</update>
+  	
   </mapper>
 

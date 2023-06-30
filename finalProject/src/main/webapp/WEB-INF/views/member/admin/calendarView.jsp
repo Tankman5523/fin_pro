@@ -13,7 +13,6 @@
 <link rel="stylesheet" href="resources/css/calendarView.css">
 </head>
 <body>
-
 	<div class="wrap">
 		<%@include file="../../common/admin_menubar.jsp" %>
 		<c:if test="${!empty alertMsg }">
@@ -38,10 +37,10 @@
                     <a href="calendarView.ad" style="color:#00aeff; font-weight: 550;">학사일정 관리</a>
                 </div>
                 <div class="child_title">
-                    <a href="stuRestList.ad">휴/복학 신청 관리</a>
+                    <a href="stuRestList.ad">휴/복학 관리</a>
                 </div>
                 <div class="child_title">
-                    <a href="proRestList.ad">안식/퇴직 신청 관리</a>
+                    <a href="proRestList.ad">안식/퇴직 관리</a>
                 </div>
             </div>
             <div id="content_1">
@@ -76,8 +75,11 @@
             		          center: 'title',
             		          right: 'dayGridMonth,listWeek'
             		        },
-            		        eventClick: function(arg) {
+            		        eventClick: function(arg) { // 일정 클릭시
             		        	openUpdate(arg);
+            		        },
+            		        dateClick: function(arg) { // 날짜 클릭시
+            		        	openInsert(arg);
             		        },
             				initialView: 'dayGridMonth',
             				locale: 'ko', // 한국어
@@ -127,6 +129,12 @@
             			$("#modalContent").val(arg.event.title);
             			$("#startDate").val($start.substring(1, $start.length-2));
             			$("#endDate").val($end.substring(1, $end.length-2));
+            		}
+            		
+            		function openInsert(arg) {
+            			$("#myModal").modal("show");
+            			$("#insert").css("display", "block");
+            			$("#startDate").val(arg.dateStr+"T00:00");
             		}
             	</script>
             	

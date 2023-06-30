@@ -1,8 +1,11 @@
 package com.univ.fin.common.template;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,10 +14,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
@@ -92,7 +95,7 @@ public class Weather {
 	@ResponseBody
 	@RequestMapping(value="tmnTmx.api",produces="application/json; charset=UTF-8")
 	public String tmnTmx() throws Exception{
-
+		
 		//최저온도, 최고온도
 		HashMap<String, String> h = shortTerm();
 		
@@ -115,9 +118,13 @@ public class Weather {
 	}
 	
 	/* ========== 단기 예보 ========== */
-	public HashMap<String, String> shortTerm() throws Exception {
+	public HashMap<String, String> shortTerm() throws ParseException, MalformedURLException{
 		
-		String yesterday = yesterday();
+		String yesterday = null;
+		try {
+			yesterday = yesterday();
+		} catch (Exception e) {
+		}
 		
 		String url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
 		url += "?serviceKey=LV1haHMzhSQa4G%2Fy3Z9xbZ9hC9LKdHt3g2Z4M5SQwQVcGxx6M7HRJqVs30pL9H4MdL7POcjH78%2FBspjr%2FNV1sw%3D%3D";
@@ -129,28 +136,83 @@ public class Weather {
 		url += "&nx=58";
 		url += "&ny=126";
 		
-		URL requestUrl = new URL(url);
-		
-		HttpURLConnection urlCon = (HttpURLConnection)requestUrl.openConnection();
-		
-		urlCon.setRequestMethod("GET");
-		urlCon.setRequestProperty("Content-type", "application/json");
-		urlCon.setRequestProperty("Accept", "application/json");
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
-		
 		String responseText = "";
-		String line;
+		JSONObject bodyObj = null;
 		
-		while((line = br.readLine()) != null) {
-			responseText += line;
+		while(true) { //03에러 while문
+			while(true) { //04에러  while문
+				boolean success = false;
+				while(success != true) {
+					
+					URL requestUrl = new URL(url);
+					
+					HttpURLConnection urlCon;
+					try {
+						urlCon = (HttpURLConnection)requestUrl.openConnection();
+					
+						urlCon.setRequestMethod("GET");
+						urlCon.setRequestProperty("Content-type", "application/json");
+						urlCon.setRequestProperty("Accept", "application/json");
+						urlCon.setConnectTimeout(1000);
+						urlCon.setReadTimeout(1000);
+						
+						System.out.println("리스폰스 코드 : " + urlCon.getResponseCode());
+						
+						try {
+							if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
+								success = true;
+							}
+						} catch (SocketTimeoutException e) {//URL커넥션 timeout발생 시 소켓타임아웃 예외가 발생하므로 1.5초안에 200~300사이 코드를 반환하지 않을 시 소켓타임아웃 예외발생시킨후 재요청
+							System.out.println("shortTerm 타임아웃 발생");
+							success = false;
+							responseText = ""; // 초기화 시켜줌
+	//						shortTerm();
+						}
+						
+						BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
+						
+						String line;
+						
+						while((line = br.readLine()) != null) {
+							responseText += line;
+						}
+						
+						br.close();
+						urlCon.disconnect();
+					} catch (IOException e1) {
+					}
+				}
+				
+				System.out.println("리스폰스텍스트 : " + responseText);
+				System.out.println("리스폰스텍스트 문자비교 : " + responseText.equals("[]"));
+				
+				if(responseText.charAt(0) == '<') { //error code = 04뜰 경우  (HTTP_ERROR)
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+					}
+					responseText = ""; // 초기화 시켜줌
+//					shortTerm();
+				}else {
+					break; //04 while 탈출
+				}
+			}
+			JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
+			bodyObj = (JSONObject) totalObj.get("response");
+			
+			JSONObject head = (JSONObject) bodyObj.get("header");
+			if(head.get("resultCode").equals("03")) { //error code = 03뜰 경우 (NO DATA)
+				try {
+					Thread.sleep(2500);
+				} catch (InterruptedException e) {
+				}
+				System.out.println("shortTerm 2.5초지연");
+				responseText = ""; // 초기화 시켜줌
+//				shortTerm();
+			}else {
+				break; //03 while 탈출
+			}
 		}
-		
-		br.close();
-		urlCon.disconnect();
-		
-		JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
-		JSONObject bodyObj = (JSONObject) totalObj.get("response");
 		JSONObject body = (JSONObject) bodyObj.get("body");
 		JSONObject b = (JSONObject) body.get("items");
 		JSONArray arr = (JSONArray) b.get("item");
@@ -203,7 +265,7 @@ public class Weather {
 	}
 	
 	/* ========== 초단기 실황 ========== */
-	public HashMap<String, String> ultraShortTerm() throws Exception {
+	public HashMap<String, String> ultraShortTerm() throws ParseException, MalformedURLException {
 		
 		String d = new SimpleDateFormat("HHmm").format(new Date());
 		String d2 = d.substring(2,4);
@@ -214,7 +276,10 @@ public class Weather {
 		if(Integer.parseInt(d) < 1000) { //10:00 이전(즉 0?:00), ?시 30분전 처리
 			if(Integer.parseInt(f) == 0) { //00시일 경우 어제일자로 변경
 				if(Integer.parseInt(d2)<30) {
-					day = yesterday();
+					try {
+						day = yesterday();
+					} catch (Exception e) {
+					}
 					time = "2330";
 				}else {
 					time = "0030";
@@ -250,29 +315,84 @@ public class Weather {
 		url += "&nx=58";
 		url += "&ny=126";
 		
-		URL requestUrl = new URL(url);
+		String responseText = ""; //================================================
+		JSONObject bodyObj = null;
 		
-		HttpURLConnection urlCon = (HttpURLConnection)requestUrl.openConnection();
-		
-		urlCon.setRequestMethod("GET");
-		urlCon.setRequestProperty("Content-type", "application/json");
-		urlCon.setRequestProperty("Accept", "application/json");
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
-		
-		String responseText = "";
-		String line;
-		
-		
-		while((line = br.readLine()) != null) {
-			responseText += line;
+		while(true) { //03에러 while문
+			while(true) { //04에러 while문
+				boolean success = false;
+				while(success != true) {
+					
+					URL requestUrl = new URL(url);
+					
+					HttpURLConnection urlCon;
+					try {
+						urlCon = (HttpURLConnection)requestUrl.openConnection();
+					
+						urlCon.setRequestMethod("GET");
+						urlCon.setRequestProperty("Content-type", "application/json");
+						urlCon.setRequestProperty("Accept", "application/json");
+						urlCon.setConnectTimeout(1000);
+						urlCon.setReadTimeout(1000);
+						
+						System.out.println("리스폰스 코드 : " + urlCon.getResponseCode());
+						
+						try {
+							if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
+								success = true;
+							}
+						} catch (SocketTimeoutException e) { 
+							System.out.println("ultraShortTerm 타임아웃 발생");
+	//						ultraShortTerm();
+							responseText = ""; // 초기화 시켜줌
+							success = false;
+						}
+						
+						BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
+						
+						String line;
+						
+						while((line = br.readLine()) != null) {
+							responseText += line;
+						}
+						
+						br.close();
+						urlCon.disconnect();
+					} catch (IOException e1) {
+					}
+				}
+				
+				if(responseText.charAt(0) == '<') { //error code = 04뜰 경우  (HTTP_ERROR)
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+					}
+					responseText = ""; // 초기화 시켜줌
+	//				ultraShortTerm();
+				}else {
+					break; //04while 탈출
+				}
+			}
+			System.out.println("리스폰스텍스트 : " + responseText);
+			System.out.println("리스폰스텍스트 문자비교 : " + responseText.equals("[]"));
+			
+			JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
+			bodyObj = (JSONObject) totalObj.get("response");
+			
+			JSONObject head = (JSONObject) bodyObj.get("header");
+			if(head.get("resultCode").equals("03")) { //error code = 03뜰 경우 (NO DATA)
+				try {
+					Thread.sleep(2500);
+				} catch (InterruptedException e) {
+				}
+				System.out.println("ultraShortTerm 2.5초지연");
+				responseText = ""; // 초기화 시켜줌
+//				ultraShortTerm();
+			}else {
+				break; //03while 탈출
+			}
 		}
 		
-		br.close();
-		urlCon.disconnect();
-		
-		JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
-		JSONObject bodyObj = (JSONObject) totalObj.get("response");
 		JSONObject body = (JSONObject) bodyObj.get("body");
 		JSONObject b = (JSONObject) body.get("items");
 		JSONArray arr = (JSONArray) b.get("item");
@@ -292,19 +412,17 @@ public class Weather {
 		HashMap<String, String> h = new HashMap<>();
 		
 		for(int i=0; i<list.size(); i++) {
-			
 			//기온
 			if(list.get(i).getCategory().equals("T1H")) {
 				h.put("T1H", list.get(i).getObsrValue());
 			}
-			
 		}
 		
 		return h;
 	}
 	
 	/* ========== 초단기예보 ========== */
-	public HashMap<String, String> ultraShortforecast() throws Exception {
+	public HashMap<String, String> ultraShortforecast() throws ParseException, MalformedURLException{
 		
 		String d = new SimpleDateFormat("HHmm").format(new Date());
 		String d2 = d.substring(2,4);
@@ -317,7 +435,10 @@ public class Weather {
 		if(Integer.parseInt(d) < 1000) { //10:00 이전(즉 0?:00), ?시 30분전 처리
 			if(f2 == 0) { //00시일 경우
 				if(Integer.parseInt(d2)<30) { //30분전일 경우 어제일자로 변경
-					day = yesterday();
+					try {
+						day = yesterday();
+					} catch (Exception e) {
+					}
 					time = "2330";
 					fcstTime = "0000";
 				}else {
@@ -364,28 +485,80 @@ public class Weather {
 		url += "&nx=58";
 		url += "&ny=126";
 		
-		URL requestUrl = new URL(url);
-		
-		HttpURLConnection urlCon = (HttpURLConnection)requestUrl.openConnection();
-		
-		urlCon.setRequestMethod("GET");
-		urlCon.setRequestProperty("Content-type", "application/json");
-		urlCon.setRequestProperty("Accept", "application/json");
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
-		
 		String responseText = "";
-		String line;
-		
-		while((line = br.readLine()) != null) {
-			responseText += line;
+		JSONObject bodyObj = null;
+		while(true) { //03에러 while문
+			while(true) { //04에러 while문
+				boolean success = false;
+				while(success != true) {
+					
+					URL requestUrl = new URL(url);
+				
+					HttpURLConnection urlCon;
+					try {
+						urlCon = (HttpURLConnection)requestUrl.openConnection();
+					
+						urlCon.setRequestMethod("GET");
+						urlCon.setRequestProperty("Content-type", "application/json");
+						urlCon.setRequestProperty("Accept", "application/json");
+						urlCon.setConnectTimeout(1000);
+						urlCon.setReadTimeout(1000);
+						System.out.println("리스폰스 코드 : " + urlCon.getResponseCode());
+						try {
+							if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
+								success = true;
+							}
+						} catch (SocketTimeoutException e) {
+							System.out.println("ultraShortforecast 타임아웃 발생");
+							success = false;
+							responseText = ""; // 초기화 시켜줌
+		//					ultraShortforecast();
+						}
+					
+						BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
+						
+						String line;
+						
+						while((line = br.readLine()) != null) {
+							responseText += line;
+						}
+						
+						br.close();
+						urlCon.disconnect();
+					} catch (IOException e1) {
+					}
+				}
+				
+				if(responseText.charAt(0) == '<') { //error code = 04뜰 경우 (HTTP_ERROR)
+					try {
+						Thread.sleep(2500);
+					} catch (InterruptedException e) {
+					}
+					responseText = ""; // 초기화 시켜줌
+	//				ultraShortforecast();
+				}else {
+					break; //04while 탈출
+				}
+			}
+			System.out.println("리스폰스텍스트 : " + responseText);
+			System.out.println("리스폰스텍스트 문자비교 : " + responseText.equals("[]"));
+			
+			JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
+			bodyObj = (JSONObject) totalObj.get("response");
+			
+			JSONObject head = (JSONObject) bodyObj.get("header");
+			if(head.get("resultCode").equals("03")) { //error code = 03뜰 경우 (NO DATA)
+				try {
+					Thread.sleep(2500); //2.5초 후 다시 재요청
+				} catch (InterruptedException e) {
+				}
+				System.out.println("ultraShortforecast 2.5초지연");
+				responseText = ""; // 초기화 시켜줌
+//				ultraShortforecast();
+			}else {
+				break; //03while 탈출
+			}
 		}
-		
-		br.close();
-		urlCon.disconnect();
-		
-		JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
-		JSONObject bodyObj = (JSONObject) totalObj.get("response");
 		JSONObject body = (JSONObject) bodyObj.get("body");
 		JSONObject b = (JSONObject) body.get("items");
 		JSONArray arr = (JSONArray) b.get("item");

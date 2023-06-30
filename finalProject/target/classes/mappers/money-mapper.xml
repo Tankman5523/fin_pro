@@ -168,7 +168,7 @@
 	<select id="selectMySalary" resultMap="salaryResultSet">
 		SELECT PAY_NO
 			  ,PROFESSOR_NO
-			  ,PAYMENT_DATE
+			  ,TO_CHAR(PAYMENT_DATE,'YYYY-MM-DD')"PAYMENT_DATE"
 			  ,BASE_PAY
 			  ,POSITION_PAY
 			  ,EXTENSION_PAY
@@ -192,7 +192,7 @@
 	<select id="selectMySalaryList" resultMap="salaryResultSet">
 		SELECT PAY_NO
 			  ,PROFESSOR_NO
-			  ,PAYMENT_DATE
+			  ,TO_CHAR(PAYMENT_DATE,'YYYY-MM-DD')"PAYMENT_DATE"
 			  ,BASE_PAY
 			  ,POSITION_PAY
 			  ,EXTENSION_PAY
@@ -263,7 +263,7 @@
 	<select id="selectAllSalaryList" resultMap="salaryResultSet">
 		SELECT PAY_NO
 			  ,PROFESSOR_NO
-			  ,PAYMENT_DATE
+			  ,TO_CHAR(PAYMENT_DATE,'YYYY-MM-DD')"PAYMENT_DATE"
 			  ,RESEARCH_PAY
 			  ,PAYMENT_TOTAL
 			  ,DEDUCT_TOTAL
