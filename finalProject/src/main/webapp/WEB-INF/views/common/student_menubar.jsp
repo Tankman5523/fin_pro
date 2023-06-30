@@ -59,41 +59,38 @@
 				
 				if(obj.length != 0) {
 					console.log("메세지가 도착했습니다.");
-					var str = "<ul>";
 					if(obj.length != undefined) { // 뒤늦게 메세지 받은거
+						var str = "<ul>";
 						for(var i=0;i<obj.length;i++) {
 							if(obj[i].cmd == 'gradeInsert') { // 성적 입력
-								str += "<li style='font-size: 14px; line-height: 14px;'><a href='classManagement.st'>" + obj[i].professorName + " 교수님이 성적을 입력하셨습니다.</a></li><br>";
+								str += "<li style='font-size: 14px; line-height: 14px;'><input type='hidden' value='" + obj[i].alarmNo + "'><a href='classManagement.st'>" + obj[i].professorName + " 교수님이 성적을 입력하셨습니다.</a>&nbsp;&nbsp;<button type='button' class='btn btn-light btn-sm' onclick='alarmCheck(this);'>확인</button></li><br>";
 							}
 							else if(obj[i].cmd == 'gradeUpdate') { // 성적 수정
-								str += "<li style='font-size: 14px; line-height: 14px;'><a href='classManagement.st'>" + obj[i].professorName + " 교수님이 성적을 수정하셨습니다.</a></li><br>";
+								str += "<li style='font-size: 14px; line-height: 14px;'><input type='hidden' value='" + obj[i].alarmNo + "'><a href='classManagement.st'>" + obj[i].professorName + " 교수님이 성적을 수정하셨습니다.</a>&nbsp;&nbsp;<button type='button' class='btn btn-light btn-sm' onclick='alarmCheck(this);'>확인</button></li><br>";
 							}
 							else if(obj[i].cmd == 'counselUpdate') { // 상담신청 변동
-								str += "<li style='font-size: 14px; line-height: 14px;'><a href=''>" + obj[i].professorName + " 교수님이 상담신청에 응하셨습니다.</a>&nbsp;&nbsp;<button onclick='alarmCheck();'>확인</button></li><br>";
+								str += "<li style='font-size: 14px; line-height: 14px;'><input type='hidden' value='" + obj[i].alarmNo + "'><a href='counselingList.st'>" + obj[i].professorName + " 교수님이 상담신청에 응하셨습니다.</a>&nbsp;&nbsp;<button type='button' class='btn btn-light btn-sm' onclick='alarmCheck(this);'>확인</button></li><br>";
 							}
 						}
 						str += "</ul>";
 						$("#alarmDiv").html(str);
+						$("#alarm-area>button").text("전체 확인");
 					}
 					else { // 실시간 메세지
-						if($("#alarmDiv").html() == "<span>새로운 알람이 없습니다.</span>") {
-							$("#alarmDiv").html("");
-						}
-					
+						var str = "<span>";
 						if(obj.cmd == 'gradeInsert') { // 성적 입력
-							str += "<li style='font-size: 14px; line-height: 14px;'><a href='classManagement.st'>" + obj.professorName + " 교수님이 성적을 입력하셨습니다.</a></li><br>";
+							str += "<a href='classManagement.st'>" + obj.professorName + " 교수님이 성적을 입력하셨습니다.</a>";
 						}
 						else if(obj.cmd == 'gradeUpdate') { // 성적 수정
-							str += "<li style='font-size: 14px; line-height: 14px;'><a href='classManagement.st'>" + obj.professorName + " 교수님이 성적을 수정하셨습니다.</a></li><br>";
+							str += "<a href='classManagement.st'>" + obj.professorName + " 교수님이 성적을 수정하셨습니다.</a>";
 						}
 						else if(obj.cmd == 'counselUpdate') { // 상담신청 변동
-							str += "<li style='font-size: 14px; line-height: 14px;'><a href=''>" + obj.professorName + " 교수님이 상담신청에 응하셨습니다.</a></li><br>";
+							str += "<a href='counselingList.st'>" + obj.professorName + " 교수님이 상담신청에 응하셨습니다.</a>";
 						}
-						str += "</ul>";
+						str += "</span>";
 						$("#alarmDiv").append(str);
 					}
 					
-					$("#alarm-area>button").text("전체 확인");
 					$("#alarmImg").attr("src", $("#alarmImg").data("animated"));
 				}
 			};
@@ -118,6 +115,7 @@
 			<button type="button" class="btn btn-warning btn-sm" onclick="closeAlarm();">닫기</button><br><br>
 			<div id="alarmDiv"><span>새로운 알람이 없습니다.</span></div>
 		</div>
+		<div id="alarm-area2"></div>
 		<table id="user_log">
 	        <tr>
 	        	<td><img id="alarmImg" src="resources/icon/bell_static.png" data-animated="resources/icon/bell_animated.gif" data-static="resources/icon/bell_static.png" onclick="openAlarm();"></td>
@@ -142,8 +140,8 @@
 	</div>
 	
 	<script>
-		function alarmCheck() {
-			alert("알람 확인");
+		function alarmCheck(e) {
+			console.log($(e).siblings("input").val());
 		}
 	
 		function openAlarm() {
