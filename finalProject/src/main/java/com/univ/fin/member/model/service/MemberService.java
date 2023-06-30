@@ -318,7 +318,7 @@ public interface MemberService {
 	ArrayList<Notice> selectMainNotice();
 
 	// (교수) 상담 상태 변경
-	int updateCounselStatus(HashMap<String, String> statusMap);
+	int updateCounselStatus(HashMap<String, String> statusMap, HashMap<String, String> alarm);
 
 	// (관리자) 학생 휴,복학 신청 리스트 조회
 	ArrayList<Counseling> selectCounAllStuList();
@@ -358,9 +358,6 @@ public interface MemberService {
 
 	// (관리자) 공지사항 관리 - 전체 공지사항 조회
 	ArrayList<Notice> selectNoticeAllList();
-
-	
-
 	
 	// (관리자) 메인페이지 -> 강의신청 목록 조회
 	ArrayList<Classes> selectAdMainClasses();
@@ -379,8 +376,5 @@ public interface MemberService {
 
 	// (관리자) 공지사항 관리 - 공지사항 선택 삭제
 	int selectDeleteNotice(String[] noticeNo);
-
-
-
 
 }
