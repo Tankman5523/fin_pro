@@ -5,7 +5,9 @@
 	xmlns:task="http://www.springframework.org/schema/task"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:cache="http://www.springframework.org/schema/cache"
 	xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.3.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
@@ -74,5 +76,22 @@
 	  	<property name="maxUploadSize" value="10000000"/> <!-- 업로드 파일 용량제한 -->
 	  	<property name="maxInMemorySize" value="10000000"/> <!-- 메모리 보관 최대크기 -->
 	  </bean>
+	  
+	  <beans>
+	  
+	 <!-- 캐시매니저 빈 등록 -->
+    <cache:annotation-driven />
+    <bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
+        <property name="caches">
+            <set>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" name="weather"/>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" name="skyPty"/>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" name="tmnTmx"/>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" name="dust"/>
+            </set>
+        </property>
+    </bean>
+    
+</beans>
 	 
 </beans>

@@ -5,123 +5,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <!-- 주소API 다음(카카오) -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
 </head>
 <style>
-	div{
-	    box-sizing: border-box;
-	}
-	.wrap{
-	    width: 1400px;
-	    height: 1100px;
-	    margin: auto;
-	}
-	.wrap>div{
-	    width: 100%;
-	}
-	#header{
-	    height: 15%;
-	}
-	#menubar{
-	    height: 6%;
-	    background-color: #4fc7ff
-	}
-	#content{
-	    width: 100%;
-	    height: 78%;
-	}
-	#header_1{
-	    height: 65%;
-	}
-	#category{
-		border : 1px solid gray;
-	    width: 20%;
-	    height: 100%;
-	    float: left;
-	}
-	#content_1{
-		border : 1px solid gray;
-	    width: 80%;
-	    height: 100%;
-	    float: right;
-	}
-	/*=========메뉴바 영역===========*/
-    #nav{
-        margin: 0%;
-        padding: 0%;
-        list-style-type: none;
-		
-		
-    }
-    #nav>li{
-        width: 9.5%;
-        height: 100%;
-        display: inline-block;
-        line-height: 70px;
-        text-align: center;
-        vertical-align: top;
-    }
-    #menubar a{
-        width: 100%;
-        height: 100%;
-        display: block;
-        text-decoration: none;
-        font-size: 23px;
-        font-weight: bold;
-        color: whitesmoke;
-    }
-    /*===============로그인 유저============*/
-	#user_log{
-	    margin: 0 50px;
-	    float: right;
-	    line-height: 137px;
-	}
-	#user_log td{
-	    text-align: right;
-	}
-	#logout-btn{
-	    width: 80px;
-	    height: 30px;
-	    border: none;
-	    border-radius: 5px;
-	    background-color: #4fc7ff;
-	    /* color: white; */
-	    font-weight: bold;
-	}
-
-
-    /*===========카테고리 영역=============*/
-    #cate_title{
-        width: 100%;
-        height: 9%;
-        font-size: 25px;
-        border-bottom: 1px solid black;
-        position: relative;
-    }
-    #cate_title>h3{
-        margin: 0%;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-    }
-    .child_title{
-        display: flex;
-        align-items: center;
-        width: 100%;
-        height: 7%;
-        border-bottom: 1px solid black;
-        text-align: center;
-        font-size: 25px;
-    }
-    .child_title a{
-        margin-left: 50px;
-        text-decoration: none;
-        color: black;
-    }
 	/*======================수정======================*/
 	input:read-only{
 		background-color: #D3D3D3;
@@ -419,7 +307,11 @@
         <div id="content">
             <div id="category">
                 <div id="cate_title">
+<<<<<<< HEAD
                     <span style="margin: 0 auto;">학사관리</span>
+=======
+                    <span style="margin: 0 auto;">강의관리</span>
+>>>>>>> refs/remotes/origin/main
                 </div>
                 <div class="child_title">
                     <a href="enrollStudent.ad" style="color:#00aeff; font-weight: 550;">학생 관리</a>
@@ -428,8 +320,17 @@
                     <a href="enrollProfessor.ad">임직원 관리</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">학사일정 관리</a>
+                    <a href="calendarView.ad">학사일정 관리</a>
                 </div>
+                <div class="child_title">
+                    <a href="stuRestList.ad">휴/복학 관리</a>
+                </div>
+                <div class="child_title">
+                    <a href="proRestList.ad">안식/퇴직 관리</a>
+                </div>
+                <div class="child_title">
+				    <a href="selectNotice.ad">공지사항 관리</a>
+				</div>
             </div>
             <div id="content_1">
             	<br>

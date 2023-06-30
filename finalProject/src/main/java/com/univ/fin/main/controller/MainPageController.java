@@ -1,6 +1,7 @@
 package com.univ.fin.main.controller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,12 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.PageInfo;
 import com.univ.fin.common.template.Pagination;
 import com.univ.fin.main.model.service.MainService;
@@ -45,6 +48,15 @@ public class MainPageController {
 	@GetMapping("haksaSchedule.mp")
 	public String haksaSchedule() {
 		return "main/haksaSchedule";
+	}
+	
+	@ResponseBody
+	@PostMapping(value="haksaSchedule.mp", produces = "application/json; charset=UTF-8")
+	public String selectHaksaCalendar() {
+		
+		ArrayList<CalendarVo> list = mainService.selectHaksaCalendar();
+		System.out.println(list);
+		return new Gson().toJson(list);
 	}
 	
 	@GetMapping("notice.mp")

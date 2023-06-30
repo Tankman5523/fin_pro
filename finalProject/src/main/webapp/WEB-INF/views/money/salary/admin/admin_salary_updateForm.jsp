@@ -35,19 +35,21 @@
             </div>
             <div id="content_1">
 				<div style="width: 90%;height: 90%;margin: 5%;">
-                    <div>
-                        <button onclick="location.href='allList.sl'">급여내역조회</button> <button onclick="location.href='insert.sl'">급여 입력</button>
+                    <div style="height:5%;">
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.sl'">급여내역조회</button> 
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.sl'">급여 입력</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='mylist.sl'">내 급여 조회</button>
                         <hr>
-                        <h2>급여 입력</h2>
+                        <h2>급여 수정</h2>
                     </div>
                     <br>
-                    <div>
+                    <div style="height:80%;">
                         <table align="center">
                             <tr>
                                 <td><label for="professorName">교수명</label></td>
                                 <td><input type="text" name="professorName" id="professorName"></td>
                                 <td><label for="professorNo">직번</label></td>
-                                <td><input type="text" name="professorNo" id="professorNo"> <button onclick="search();">조회</button></td>
+                                <td><input type="text" name="professorNo" id="professorNo"> <button class="btn btn-outline-primary btn-sm" onclick="search();">조회</button></td>
                             </tr>
                             <tr>
                                 <td><label for="position">직책</label></td>
@@ -62,7 +64,7 @@
                                 <td><input class="readonly" type="text" name="accountNo" id="accountNo" readonly></td>
                             </tr>
                         </table>
-	                    <div id="pay_stub" align="center">
+	                    <div id="pay_stub" align="center" style="height:80%;">
 	                    	<hr>
 	                    	<form action="insert.sl" method="post" >
 	                    	<div id="hiddenNo">
@@ -113,7 +115,7 @@
 	                    		</tr>
 	                    	</table>
 	                    	<br>
-	                    	<button type="submit">입력</button>
+	                    	<button class="btn btn-outline-primary btn-sm" type="submit">입력</button>
 	                    	</form>
 	                    </div>	
 	                    
@@ -166,7 +168,6 @@
                 			},
                 			
                 			success : function(list){
-                				console.log(list);
                 				var str = "";
                 				if(list[0]!=null){
                 					for(var i in list){

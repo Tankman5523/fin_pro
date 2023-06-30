@@ -29,14 +29,27 @@ public class SalaryController {
 	
 	//임직원 
 	@PostMapping("myselect.sl")//(임직원) 해당월 급여명세서 조회
-	public ModelAndView selectmySalary(Salary sl,ModelAndView mv) { 
+	public ModelAndView selectmySalary(Salary sl,ModelAndView mv,HttpSession session) { 
+		Professor loginUser = (Professor)session.getAttribute("loginUser");
 		Salary payStub = salaryService.selectMySalary(sl);
-		mv.addObject("salary", payStub).setViewName("money/salary/professor/professor_salary_detail");
+		mv.addObject("salary", payStub);
+		
+		if(loginUser.getAdmin()==1) {//교수일경우
+			mv.setViewName("money/salary/professor/professor_salary_detail");
+		}else {//행정직원이거나, 관리자일경우
+			mv.setViewName("money/salary/admin/admin_mySalary_list");	
+		}
+		
 		return mv;
 	}
 	@GetMapping("mylist.sl")//급여 페이지로 이동
-	public String selectMySalaryListPage() { 
-		return "money/salary/professor/professor_salary_list";
+	public String selectMySalaryListPage(HttpSession session) { 
+		Professor loginUser = (Professor)session.getAttribute("loginUser");
+		if(loginUser.getAdmin()==1) {//교수일경우
+			return "money/salary/professor/professor_salary_list";
+		}else {//행정직원이거나, 관리자일경우
+			return "money/salary/admin/admin_mySalary_list";
+		}
 	}
 	
 	@ResponseBody

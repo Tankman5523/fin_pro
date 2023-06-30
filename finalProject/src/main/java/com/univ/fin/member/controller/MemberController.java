@@ -1,5 +1,7 @@
 package com.univ.fin.member.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -26,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.univ.fin.common.model.vo.Classes;
+import com.univ.fin.common.template.ChatBot;
 import com.univ.fin.common.template.Sms;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
@@ -43,6 +46,29 @@ public class MemberController {
 	@Autowired
 	private BCryptPasswordEncoder bcryptPasswordEncoder;
 	
+	//챗봇
+	@ResponseBody
+	@RequestMapping(value = "chatBot.cb", produces = "application/json; charset=UTF-8")
+	public String chatBot(String question,@RequestParam(value = "num", defaultValue = "0") int num) {
+		String result = "";
+		
+		ChatBot c = new ChatBot();
+		if(num == 0) {
+			if(question != "") {
+				result = c.answer(question);
+				result += "<button onclick='questionBtn(0)' style='width : 100%';>이전으로</button>";
+			}else {
+				result = "<div>뭐가 문제야 쎄이 썸띵?</div><br>";
+				result += c.select();
+			}
+		}else {
+			result += c.detailSelect(num);
+			result += "<button onclick='questionBtn(0)' style='width : 100%';>이전으로</button>";
+		}
+		
+		return new Gson().toJson(result);
+	}
+	
 	//로그인 폼 메소드
 	@GetMapping("login.me")
 	public String loginForm() {
@@ -53,7 +79,7 @@ public class MemberController {
 	//로그인 메소드
 	@PostMapping("login.me")
 	public ModelAndView loginUser(ModelAndView mv,String userNo,String userPwd
-								 ,String saveId,HttpSession session,HttpServletResponse response) {
+								 ,String saveId,String autoLogin,HttpSession session,HttpServletResponse response) throws UnsupportedEncodingException {
 		
 		//회원 식별문자 대문자 처리
 		String mno = (String.valueOf(userNo.charAt(0))).toUpperCase();
@@ -63,17 +89,16 @@ public class MemberController {
 		
 		if(mno.equals("S")) { //학생 로그인
 			
-			Student st = Student.builder().studentNo(memberNo).build();
+			Student st = Student.builder().studentNo(memberNo).studentPwd(userPwd).build();
 			
 			Student loginUser = memberService.loginStudent(st);
-			
-			if(loginUser == null) { //로그인 되었을때만 쿠키 생성 및 저장
+			if(loginUser == null) {
 				session.setAttribute("alertMsg", "아이디 또는 비밀번호를 잘못 입력했습니다.");
 				mv.setViewName("member/login");
-			}else {
+			}else { //로그인 되었을때만 쿠키 생성 및 저장
 				Cookie cookie = null;
 				
-				if(saveId != null && saveId.equals("on")) {
+				if(saveId != null && saveId.equals("on")) { //아이디 저장 체크 시
 					cookie = new Cookie("userNo",memberNo);
 					cookie.setMaxAge(60*60*24); //1일
 					response.addCookie(cookie);
@@ -82,8 +107,15 @@ public class MemberController {
 					cookie.setMaxAge(0);
 					response.addCookie(cookie);
 				}
+				
+				if(autoLogin != null && autoLogin.equals("on")) { //자동로그인 체크 시
+					cookie = new Cookie("autoLoginInfo",URLEncoder.encode(loginUser.getStudentNo() + "," + loginUser.getStudentPwd(),"UTF-8"));
+					cookie.setMaxAge(60*60*24*365); //1년
+					response.addCookie(cookie);
+				} //로그아웃 시 해당 쿠키 삭제하므로 else처리 x
+				
 				session.setAttribute("loginUser", loginUser);
-				mv.setViewName("common/student_category");
+				mv.setViewName("redirect:main.st");
 			}
 			
 		}else if(mno.equals("P")){ //임직원 로그인
@@ -92,10 +124,10 @@ public class MemberController {
 			
 			Professor loginUser = memberService.loginProfessor(pr);
 			
-			if(loginUser == null) { //로그인 되었을때만 쿠키 생성 및 저장
+			if(loginUser == null) {
 				session.setAttribute("alertMsg", "아이디 또는 비밀번호를 잘못 입력했습니다.");
 				mv.setViewName("member/login");
-			}else {
+			}else { //로그인 되었을때만 쿠키 생성 및 저장
 				Cookie cookie = null;
 				
 				if(saveId != null && saveId.equals("on")) {
@@ -108,15 +140,21 @@ public class MemberController {
 					response.addCookie(cookie);
 				}
 				
+				if(autoLogin != null && autoLogin.equals("on")) {
+					cookie = new Cookie("autoLoginInfo",URLEncoder.encode(loginUser.getProfessorNo() + "," + loginUser.getProfessorPwd(),"UTF-8"));
+					cookie.setMaxAge(60*60*24*365); //1년
+					response.addCookie(cookie);
+				}
+				
 				if(loginUser.getAdmin() == 1) { // 교수 로그인
 					
 					session.setAttribute("loginUser", loginUser);
-					mv.setViewName("common/professor_category");
+					mv.setViewName("redirect:main.pr");
 					
 				}else { // 관리자 로그인
 					
 					session.setAttribute("loginUser", loginUser);
-					mv.setViewName("common/admin_category");
+					mv.setViewName("redirect:main.ad");
 				}
 				
 			}
@@ -131,7 +169,13 @@ public class MemberController {
 	
 	//로그아웃 메소드
 	@GetMapping("logout.me")
-	public String logoutUser(HttpSession session) {
+	public String logoutUser(HttpSession session,HttpServletResponse response) {
+		
+		Cookie cookie = null;
+		cookie = new Cookie("autoLoginInfo",null);
+		cookie.setMaxAge(0);
+		response.addCookie(cookie);
+		
 		session.removeAttribute("loginUser");
 		return "redirect:infoSystem.mp";
 	}

@@ -73,4 +73,20 @@ public class RegistDao {
 	public int accountCheck(SqlSession sqlSession, String regAccountNo) {
 		return sqlSession.selectOne("moneyMapper.accountCheck",regAccountNo);
 	}
+
+	public int finishScholarShip(SqlSession sqlSession, RegistPay r) {
+		return sqlSession.update("moneyMapper.finishScholarShip",r);
+	}
+
+	public int deleteRegistPay(SqlSession sqlSession, RegistPay r) {
+		return sqlSession.update("moneyMapper.deleteRegistPay",r);
+	}
+
+	public int returnScholarShip(SqlSession sqlSession, RegistPay r) {
+		return sqlSession.update("moneyMapper.returnScholarShip",r);
+	}
+
+	public int countScholarship(SqlSession sqlSession, RegistPay r) {
+		return sqlSession.selectOne("moneyMapper.countScholarship",r);
+	}
 }

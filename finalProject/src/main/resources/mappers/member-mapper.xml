@@ -97,6 +97,10 @@
   		<result column="COUNSEL_RESULT" property="counselResult"/>
   		<result column="STATUS" property="status"/>
   		<result column="PROFESSOR_NAME" property="professorName"/>
+  		<result column="STUDENT_NAME" property="studentName"/>
+  		<result column="DEPARTMENT_NAME" property="departmentName"/>
+  		<result column="CLASS_LEVEL" property="classLevel"/>
+  		<result column="PHONE" property="phone"/>
   	</resultMap>
   	
   	<resultMap type="studentRest" id="studentRestResultMap">

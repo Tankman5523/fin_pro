@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>    
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,21 +40,10 @@
                         </ul>
                     </div>
                     <div class="list">
-                        <!--loginUser 입학일자 기준으로 최근까지 / 변경시 ajax로 비동기처리-->
-                        <select id="classYear" onchange="yearChange();">
-                            <option value="0">==전체==</option>
-                            <option value="2023">2023</option>
-                            <option value="2022">2022</option>
-                            <option value="2021">2021</option>
-                            <option value="2020">2020</option>
-                            <option value="2019">2019</option>
-                            <option value="2018">2018</option>
-                            <option value="2017">2017</option>
-                            <option value="2017">2016</option>
-                        </select>
-                        <table border="1" style="width: 100%;" id="scholarList">
-                            <thead>
-                                <tr>
+                        <label for="classYear">학년도</label> <input type="number" id="classYear" onchange="yearChange();" style="width:100px;text-align:center;">
+                        <table border="1" style="width: 100%;text-align:center;" id="scholarList">
+                            <thead >
+                                <tr style="background-color: #4fc7ff;">
                                     <th>년도</th>
                                     <th>학기</th>
                                     <th>장학금명</th>
@@ -86,22 +76,29 @@
 													</c:when>                                    				
 			                                    </c:choose>
 			                                    
-			                                    <td>${sc.schAmount} 원</td>
+			                                    <td>
+			                                    	<fmt:formatNumber type="number" maxFractionDigits="3" value="${sc.schAmount}" />
+			                                    	 원
+			                                    </td>
 			                                    
 			                                    <c:choose>
 					                            	<c:when test="${sc.status eq 'Y'}">
-					                            		 <td>처리완료</td>
+					                            		 <td style='color:green;'>처리완료</td>
 					                            	</c:when>
 					                            	<c:when test="${sc.status eq 'W'}">
-					                            		 <td>처리대기</td>
+					                            		 <td style='color:orange;'>처리대기</td>
 					                            	</c:when>
 					                            	<c:when test="${sc.status eq 'N'}">
-					                            		 <td>취소</td>
+					                            		 <td style='color:gray;'>취소</td>
 					                            	</c:when>
 			                                    </c:choose>
 			                                    
 			                                    <td>${sc.proDate}</td>
-			                                    <td>${sc.etc}</td>
+			                                    <td>${sc.etc}
+			                                    	<c:if test="${sc.etc eq null}">
+			                                    	-
+			                                    	</c:if>
+			                                    </td>
 		                                	</tr>
 	                                	</c:forEach>
                             		</c:when>
@@ -114,9 +111,20 @@
                             </tbody>
                         </table>
                         <span>* 장학금은 차학기 등록금에서 차감되며 금액초과시 입금통장으로 환급됩니다.</span>
+                        <br>
                         <span>* 해당 학기 장학금은 해학기 등록금을 초과하지 않습니다. 이에 유의 바랍니다.</span>
                     </div>
                     <script>
+	                    $('document').ready(function(){
+	            			
+	            			var now = new Date();
+	            			
+	            			var classYear = now.getFullYear();
+	            			
+	            			$("#classYear").val(classYear);
+	            			
+	            		});
+                    
                     	function yearChange(){
                     		//onChnage로 연도 바뀔때마다 장학금 리스트 갱신
                     		var stuNo = "${loginUser.studentNo}";
@@ -128,7 +136,6 @@
                     				studentNo : stuNo
                     			},
                     			success: function(list){
-                    				console.log(list);
                     				var str = "";
                     				if(list[0]!=null){
                     					for(var i in list){
@@ -149,17 +156,17 @@
 	                    						 str+="<td>"+list[i].schAmount.toLocaleString()+" 원 </td>";
 	                    						 
 	                    						 if(list[i].status=='W'){
-	                 								str+="<td>처리대기</td>";
+	                 								str+="<td style='color:orange;'>처리대기</td>";
 	                 							 }else if(list[i].status=='N'){
-	                 								str+="<td>취소</td>";	
+	                 								str+="<td  style='color:gray;'>취소</td>";	
 	                 							 }else{
-	                 								str+="<td>처리완료</td>";
+	                 								str+="<td style='color:green;'>처리완료</td>";
 	                 							 }
                     							 
 	                    						 str+="<td>"+list[i].proDate+"</td>";
 	                    						 
                     							 if(list[i].etc==null){
-                     								str+="<td></td>";
+                     								str+="<td>-</td>";
                      							 }else{
                      								str+="<td>"+list[i].etc+"</td>";
                      							 } 
@@ -174,6 +181,8 @@
 									 alert("통신오류");                   				
                     			}
                     		});
+                    		
+                    		
                     	}
                     
                     </script>

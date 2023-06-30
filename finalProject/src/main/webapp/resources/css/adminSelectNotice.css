@@ -1,0 +1,83 @@
+@charset "UTF-8";
+
+#search-box{
+	width: 90%;
+	height: auto;
+	margin: 30px auto 10px auto;
+	padding: 20px 10px;
+	text-align: center;
+}
+
+#search-box select{
+	width: 200px;
+	height: 35px;
+	text-align: center;
+	margin-right: 30px;
+}
+#search-box select:focus{
+	outline: none;
+}
+
+
+#keyword{
+	width: 400px;
+	height: 35px;
+	padding-left: 10px;
+	padding-right: 25px;
+}
+#keyword:focus {
+	outline: none;
+}
+#search-box button{
+	width: 80px;
+	height: 35px;
+	margin-left: -30px;
+	border: none;
+	border-radius: 5px;
+	background-color: #c0c0c0;
+}
+#search-box button:hover{
+	background-color: #0091EA;
+}
+
+#result-area{
+	width: 90%;
+	height: 300px;
+	overflow-y: scroll;
+	margin: auto;
+	border: 1px solid #ddd;
+}
+
+#result-table{
+	width: 100%;
+	text-align: center;
+}
+#result-table thead{
+	position: sticky;
+	top: 0;
+	background-color: #ddd;
+}
+#result-table th{
+	height: 50px;
+}
+#result-table td{
+	height: 40px;
+}
+#result-table tr{
+	border-bottom: 1px solid #ddd;
+}
+#result-table tbody tr:hover{
+	cursor: pointer;
+	background-color: rgba(210,210,210, 10);
+	transition: all 0.2s ease-out;
+}
+
+#btn-area{
+	width: 90%;
+	margin: auto;
+}
+#insert, #delete, #update{
+	width: 200px;
+	height: 40px;
+	background-color: orange;
+}

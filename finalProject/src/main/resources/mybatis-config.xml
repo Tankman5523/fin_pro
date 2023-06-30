@@ -22,11 +22,13 @@
 		<typeAlias type="com.univ.fin.common.model.vo.Attachment" alias="attachment"/>
 		<typeAlias type="com.univ.fin.common.model.vo.Grade" alias="grade"/>
 		<typeAlias type="com.univ.fin.common.model.vo.Graduation" alias="graduation"/>
+		<typeAlias type="com.univ.fin.common.model.vo.CalendarVo" alias="calendar"/>
+		<typeAlias type="com.univ.fin.common.model.vo.AlarmVo" alias="alarm"/>
 		<typeAlias type="com.univ.fin.main.model.vo.Notice" alias="notice"/>
 		<typeAlias type="com.univ.fin.common.model.vo.Dissent" alias="dissent"/>
 		<typeAlias type="com.univ.fin.common.model.vo.ClassRating" alias="classRating"/>
 		<typeAlias type="com.univ.fin.common.model.vo.Objection" alias="objection"/>
-		
+		<typeAlias type="com.univ.fin.common.model.vo.ProfessorRest" alias="professorRest"/>
 	</typeAliases>
 	
 	<mappers>
