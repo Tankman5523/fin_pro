@@ -21,6 +21,10 @@
 	border: 1px solid;
 }
 
+input[type='date']{
+	text-align:center;
+}
+
 #rest_list input {
 	width: 95%;
 	border: none;
