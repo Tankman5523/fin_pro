@@ -1,7 +1,6 @@
 package com.univ.fin.member.model.service;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -16,9 +15,9 @@ import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
-import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
+import com.univ.fin.common.model.vo.Objection;
 import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
@@ -588,8 +587,8 @@ public class MemberServiceImpl implements MemberService{
 
 
 	@Override
-	public ArrayList<Dissent> studentGradeReport(String studentNo) {
-		ArrayList<Dissent> list = memberDao.studentGradeReport(sqlSession,studentNo);
+	public ArrayList<Objection> studentGradeReport(String studentNo) {
+		ArrayList<Objection> list = memberDao.studentGradeReport(sqlSession,studentNo);
 		
 		return list;
 	}
@@ -956,7 +955,28 @@ public class MemberServiceImpl implements MemberService{
 	public int selectDeleteNotice(String[] noticeNo) {
 		return memberDao.selectDeleteNotice(sqlSession, noticeNo);
 	}
+	
+	@Override
+	public int studentGradeRequest(Objection obj) {
+		
+		int result = memberDao.studentGradeRequest(sqlSession, obj);
+		
+		return result;
+	}
+	
+	//이의신청 확인
+	@Override
+	public ArrayList<Objection> studentGradeView(Objection obj) {
+		
+		return memberDao.studentGradeView(sqlSession,obj);
+	}
 
+	//이의신청 년도 학기검색
+	@Override
+	public int searchGradeReport(Objection objc) {
+		
+		return memberDao.searchGradeReport(sqlSession, objc);
+	}
 	
 
 

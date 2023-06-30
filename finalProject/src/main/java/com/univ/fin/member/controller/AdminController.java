@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -113,8 +114,9 @@ public class AdminController {
 	    } else {
 	        model.addAttribute("msg", "직원 생성 실패");
 	    }
-	    return "member/admin/enrollProfessor";
+	    return "redirect:enrollProfessor.ad";
 	}
+
 	
 	//강의 개설 일괄 승인
 	@RequestMapping("permitAllClassCreate.ad")
