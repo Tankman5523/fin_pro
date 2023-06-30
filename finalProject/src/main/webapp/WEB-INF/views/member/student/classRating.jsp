@@ -51,7 +51,7 @@
 				                                <td>${r.className}</td>
 				                                <td>${r.professorName}</td>
 				                                <td>${r.classYear}</td>
-				                                <td>${r.classYear}</td>
+				                                <td>${r.classTerm}</td>
 				                                
 				                                <c:choose>
 				                                	<c:when test="${r.status eq null}">

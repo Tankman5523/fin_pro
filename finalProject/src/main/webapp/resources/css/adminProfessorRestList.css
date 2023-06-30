@@ -8,6 +8,16 @@
 	margin-left: 4%;
 }
 
+.searchCategory {
+	margin-left: 20px;
+	margin-top: 10px;
+	text-align: center;
+}
+
+#datepicker1, #datepicker2 {
+	width:8.5%;
+}
+
 #content_top {
 	border-top: 2px solid lightblue;
 	width: 100%;
@@ -56,4 +66,8 @@
 #rest_list>thead {
 	background-color: #b8f8fb;
 	color: 1b315e;
+}
+
+#rest_list td{
+	padding:5px;
 }

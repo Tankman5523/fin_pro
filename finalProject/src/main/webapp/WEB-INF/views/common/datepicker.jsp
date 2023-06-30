@@ -7,6 +7,17 @@
 <title>datepicker</title>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.13.2/themes/redmond/jquery-ui.css">
+<style>
+	input[type="date"]::-webkit-calendar-picker-indicator {
+	   color: rgba(0, 0, 0, 0);
+	   opacity: 0;
+	   display: none;
+	   width: 0px;
+	   height: 0px;
+	   border-width: thin;
+	}
+	
+</style>
 </head>
 <body>
 	<!-- 달력보면서 날짜 고르게 하는 페이지 -->
@@ -31,7 +42,7 @@
 	            dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
 	            monthNames:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
 	            monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월']
-	            
+	        	
 	        });
 	    });
 		/*

@@ -132,8 +132,19 @@
 				<br>
 				<br>
 				<div>
-					<button type="button" onclick="location.href='updateRestRetire.ad?restNo=${sr.restNo}'" class="btn btn-danger btn-lg">반려</button>
-					<button type="button" onclick="permitbtn();" class="btn btn-primary btn-lg" style="margin-left:20px;">승인</button>
+					<c:choose>
+						<c:when test="${sr.status eq 'B'}">
+							<button type="button" onclick="location.href='updateRestRetire.ad?restNo=${sr.restNo}'"
+							class="btn btn-danger btn-lg">반려</button>
+							
+							<button type="button" onclick="permitbtn();"
+							class="btn btn-primary btn-lg" style="margin-left:20px;">승인</button>
+						</c:when>
+						<c:otherwise>
+							<!-- 이미 승인하거나 반려했다면 뒤로 돌아가는 버튼 보여줌 -->
+							<input type="button" value="돌아가기" class="btn btn-secondary btn-lg" onclick="history.back();" />
+						</c:otherwise>
+					</c:choose>
 				</div>
 			</div>
 		</div>

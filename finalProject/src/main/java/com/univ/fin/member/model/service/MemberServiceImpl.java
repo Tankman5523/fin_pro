@@ -829,6 +829,12 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.selectSearchStuRestList(sqlSession,set);
 	}
 	
+	// (관리자) 임직원 안식,퇴직 검색 리스트 조회
+	@Override
+	public ArrayList<ProfessorRest> selectSearchProRestList(HashMap<String, String> set) {
+		return memberDao.selectSearchProRestList(sqlSession,set);
+	}
+	
 	// (교수) 상담조회
 	@Override
 	public ArrayList<Counseling> professorSelectCounseling(HashMap<String, String> counselMap) {
@@ -920,6 +926,24 @@ public class MemberServiceImpl implements MemberService{
 		
 		return memberDao.searchNotice(sqlSession, noticeMap);
 	}
+	
+	// (관리자) 메인 -> 강의 신청 목록 조회
+	@Override
+	public ArrayList<Classes> selectAdMainClasses() {
+		return memberDao.selectAdMainClasses(sqlSession);
+	}
+	
+	// (관리자) 메인 -> 학생 휴학 및 퇴학 신청 목록
+	@Override
+	public ArrayList<StudentRest> selectMainStudentRest() {
+		return memberDao.selectMainStudentRest(sqlSession);
+	}
+	
+	// (관리자) 메인 -> 교수 안식 및 퇴직 신청 목록
+	@Override
+	public ArrayList<ProfessorRest> selectMainProfessorRest() {
+		return memberDao.selectMainProfessorRest(sqlSession);
+	}
 
 	// (관리자) 공지사항 관리 - 공지사항 전체 삭제
 	@Override
@@ -932,6 +956,8 @@ public class MemberServiceImpl implements MemberService{
 	public int selectDeleteNotice(String[] noticeNo) {
 		return memberDao.selectDeleteNotice(sqlSession, noticeNo);
 	}
+
+	
 
 
 }

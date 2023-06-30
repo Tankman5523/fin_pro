@@ -418,6 +418,28 @@ public class AdminController {
 		return "redirect:proRestList.ad";
 	}
 	
+	//임직원 안식,퇴직 신청 검색 리스트 조회
+	@ResponseBody
+	@RequestMapping(value="searchProRestList.ad",produces="application/json; charset=UTF-8;")
+	public String searchProRestList(String status, String category 
+									, @RequestParam(value = "start",defaultValue = "1900-01-01")String start
+									, @RequestParam(value = "end",defaultValue = "2999-12-31")String end
+									, String searchType, String keyword) {
+
+		HashMap<String, String> set = new HashMap<String, String>();
+		set.put("status", status);
+		set.put("category",category);
+		set.put("start",start);
+		set.put("end",end);
+		set.put(searchType,keyword);
+		
+		ArrayList<ProfessorRest> list = memberService.selectSearchProRestList(set);
+		
+		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+		
+		return gson.toJson(list);
+	}
+	
 	// (관리자) 공지사항 관리 이동
 	@RequestMapping("selectNotice.ad")
 	public String selectNoticeList() {
@@ -451,6 +473,21 @@ public class AdminController {
 		return new Gson().toJson(list);
 	}
 	
+	// (관리자)메인페이지
+	@RequestMapping(value="main.ad")
+	public ModelAndView mainPage(ModelAndView mv) {
+		
+		ArrayList<Classes> classList = memberService.selectAdMainClasses();
+		ArrayList<StudentRest> srList = memberService.selectMainStudentRest();
+		ArrayList<ProfessorRest> prList = memberService.selectMainProfessorRest();
+		ArrayList<HashMap<String, String>> calList = memberService.yearCalendarList(); // 학사일정 조회
+		ArrayList<Notice> nList = memberService.selectMainNotice(); // 공지사항 목록
+		
+		mv.addObject("classList", classList).addObject("srList", srList).addObject("prList",prList).addObject("calList", calList)
+		  .addObject("nList", nList).setViewName("member/admin/mainPage");
+		return mv;
+	}
+
 	//(관리자) 공지사항 관리 - 공지사항 선택 삭제
 //	@ResponseBody
 //	@PostMapping(value = "deleteNotice.ad", produces = "application/json; charset=UTF-8;")
@@ -460,5 +497,6 @@ public class AdminController {
 //		
 //		return new Gson().toJson(null);
 //	}
+
 }
 

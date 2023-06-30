@@ -45,7 +45,7 @@ public class RegistController {
 	//학생
 	
 	@PostMapping("input.rg")
-	public void updateInputPay(RegistPay r) {//학생이 등록금을 냈을때 정보수정
+	public String updateInputPay(RegistPay r) {//학생이 등록금을 냈을때 정보수정
 		//금액 , 입금학생계좌 , 입금시각/날짜, 입금학교계좌
 		int result = registService.updateInputPay(r);
 		if(result>0) {
@@ -54,6 +54,8 @@ public class RegistController {
 		else {
 			log.info("inputPay failed) SchoolAccount : "+r.getRegAccountNo());
 		}
+		
+		return "redirect:/onelist.rg";
 	}
 	
 	@GetMapping("listPage.rg")
@@ -205,11 +207,12 @@ public class RegistController {
 	}
 	
 	@ResponseBody
-	@PostMapping(value="refund.rg" , produces = "application/json;charset=UTF-8")
+	@PostMapping(value="refund.rg" , produces = "text/html;charset=UTF-8")
 	public String refundOverPaid(RegistPay r) { //초과금 환급
 		//payAccountNo로 (inputPay - mustPay) 만큼을 반환했다고 가정. 
-		int remainPay = r.getInputPay() - r.getMustPay();
-		r.setInputPay(remainPay);
+		//int returnPay = r.getInputPay() - r.getMustPay();
+		
+		System.out.println(r);
 		int result = registService.refundOverPaid(r);
 		if(result>0) {
 			return "Y";
@@ -219,7 +222,7 @@ public class RegistController {
 		
 	}
 	
-	/*
+	
 	//@GetMapping("activate.rg") //나중에 스케줄러 고장나면 버튼으로 처리
 	//@Scheduled(cron = "0 0 10 * * *")//매일 아침 10시마다 실행
 	//@Scheduled(cron = "9/60 * * * * *")//테스트용. 10초마다 실행
@@ -236,7 +239,7 @@ public class RegistController {
 		}
 	}
 	
-	//@GetMapping("deactivate.rg") //나중에 스케줄러 고장나면 버튼으로 처리
+	@GetMapping("deactivate.rg") //나중에 스케줄러 고장나면 버튼으로 처리
 	//@Scheduled(cron = "10/60 * * * * *")//매일 새벽 1시마다 실행
 	@Async
 	public void deactivateRegistPay() {//스케쥴러에 의해 등록금 비활성화 개시 
@@ -250,7 +253,7 @@ public class RegistController {
 			log.info("등록금 비활성화 실패 / 테스트중입니다.");
 		}
 	}
-	*/
+	
 	@GetMapping("allList.rg")
 	public String selectRegistPayAllPage() { //등록금 전부조회 페이지로
 		return "money/registPay/admin/admin_registPay_allList";
