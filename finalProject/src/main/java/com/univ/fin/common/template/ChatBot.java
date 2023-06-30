@@ -1,24 +1,24 @@
 package com.univ.fin.common.template;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 
 public class ChatBot {
 
 	public String answer (String que){
 		
-		HashMap<Integer, String> resultHash = new HashMap<>(); //사용자가 검색한 관련 값 담을 맵
+		HashMap<Integer, String> resultHash = new HashMap<>(); //사용자가 검색한 관련 값 담을 최종맵
 		String result = ""; //최종 결과 담을 변수
+		
 		if(que.equals("전체")) {
 			resultHash.put(0, "전체");
 		}else {
 			//공백 제거
 			String question = que.replace(" ", "");
 			
-			HashMap<Integer, String> h = new HashMap<>(); //사용자가 검색한 관련 값 판별할 맵
-			
-			
+			//사용자가 검색한 관련 값 판별할 맵
+			HashMap<Integer, String> h = new HashMap<>(); 
 			h.put(0, "학교소개");
 			h.put(1, "학사소개");
 			h.put(2, "학사일정");
@@ -49,62 +49,49 @@ public class ChatBot {
 			h.put(27, "전체");
 			
 			
-			HashMap<Integer, String> test = new HashMap<>();
-			int num = 0; //인덱스 처리할 변수
+			/* 사용자 입력값 경우의 수 처리 */ 
+			HashMap<Integer, String> sliceMap = new HashMap<>();
+			int sliceMapCount = 0; //인덱스 처리할 변수
 			
-			/* 사용자 입력값 경우의 수 처리 */
 			for(int i=0; i<question.length(); i++) {
-				
-				String setText = String.valueOf(question.charAt(i));
-				for(int j=0; j<question.length(); j++) {
+				String setText = String.valueOf(question.charAt(i)); //첫 글자 추출
+				for(int j=0; j<question.length(); j++) { //글자수의 제곱만큼
 					String resultText = setText+question.charAt(j);
-					test.put(num, resultText);
-					num++;
+					sliceMap.put(sliceMapCount, resultText);
+					sliceMapCount++;
 				}
 			}
 			
-			/* 해당 값 담아주기 */
+			/* 해당 값 담아주기 */ 
 			HashMap<Integer, String> setHash = new HashMap<>(); //사용자가 검색한 관련 값 담을 맵
-			int count = 0;
-			for(int i=0; i<h.size(); i++) {
-				for(int j=0; j<test.size(); j++) {
-					if(h.get(i).contains(test.get(j))) {
-						setHash.put(count, h.get(i));
-						count++;
+			int setHashCount = 0;
+			
+			for(int i=0; i<h.size(); i++) { //판별할 맵의 사이즈만큼
+				for(int j=0; j<sliceMap.size(); j++) { //경우의 수 처리한 맵의 크기만큼
+					if(h.get(i).contains(sliceMap.get(j))) { //판별맵과 처리맵의 값이 같다면 담기
+						setHash.put(setHashCount, h.get(i));
+						setHashCount++;
 					}
 				}
 			}
 			
-			ArrayList<Integer> list = new ArrayList<>();
-			int listCount = 0;
-			
-			int chkCount2 = 0;
+			/* 중복값 처리 */
+			HashSet<String> hs = new HashSet<>();
 			for(int i=0; i<setHash.size(); i++) {
-				for(int j=0; j<setHash.size(); j++) {
-					if(i!=j && setHash.get(i).equals(setHash.get(j))) {
-						chkCount2++;
-					}
-					if(chkCount2 == 2) {
-						list.add(listCount, j);
-						listCount++;
-						chkCount2 = 0;
-					}
-				}
+				hs.add(setHash.get(i));
 			}
 			
-			for(int i=0; i<list.size(); i++) {
-				setHash.remove(list.get(i));
-			}
+			/* 중복 처리한 값들 뽑아서 최종맵에 담아주기 */
+			Iterator<String> iter = hs.iterator();
+			int iterCount = 0;
 			
-			/*
-			int resultCount = 0;
-			for(int i=0; i<setHash.size(); i++) {
-				resultHash.put(resultCount, setHash.get(i));
-				setHash.
+			while(iter.hasNext()) { //값 있을때까지
+				resultHash.put(iterCount, iter.next());
+				iterCount++;
 			}
-			*/
 			
 		}
+		
 		/* 최종 변수 생성 */
 		for(int i=0; i<resultHash.size(); i++) {
 			
@@ -155,7 +142,7 @@ public class ChatBot {
 					break;
 				case "예비수강신청" : result += "<button onclick="+"location.href='preRegisterClassForm.st'"+">예비수강신청</button><br>";
 					break;
-				case "수업관리" : result += "<button onclick='questionBtn(5)'>수강신청</button><br>";
+				case "수업관리" : result += "<button onclick='questionBtn(5)'>수업관리</button><br>";
 					break;
 				case "학기별성적조회" : result += "<button onclick="+"location.href='classManagement.st'"+">학기별 성적 조회</button><br>";
 					break;

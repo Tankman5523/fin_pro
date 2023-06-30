@@ -30,9 +30,6 @@
                 <div class="child_title">
                     <a href="graduationInfoForm.st">졸업 사정표</a>
                 </div>
-                <div class="child_title">
-                    <a href="#">졸업 확정 신고</a>
-                </div>
             </div>
             <div id="content_1">
                 <br>

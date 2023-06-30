@@ -148,6 +148,11 @@ p{
     border-radius: 10px;
 }
 
+#majorModal{
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
 .common{
     width: 100%;
 }
