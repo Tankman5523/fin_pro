@@ -87,14 +87,10 @@
     	$("#datepicker1").datepicker();
     	
     	function retireDate(){
-    		console.log("들어옴");
     		var today = new Date($("#datepicker1").val());//현재 날짜
     		var enter = new Date('${loginUser.entranceDate}');//입사일
     		var diff = Math.abs(today.getTime()-enter.getTime());
     		diff = Math.ceil(diff / (1000 * 60   * 60 * 24));//근속일
-    		console.log(today);
-    		console.log(enter);
-    		console.log(diff);
     		var jobYear = Math.floor((diff/365)*100)/100; //근속 년수
     		
     		$("#jobYear").val(jobYear+"년"+"("+diff+"일)");

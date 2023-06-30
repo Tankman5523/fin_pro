@@ -242,7 +242,7 @@
   		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO) 
         JOIN COLLEGE C ON (S.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE STUDENT_NO = #{studentNo}
-  		AND STUDENT_PWD = #{studentPwd}
+  		<!-- AND STUDENT_PWD = #{studentPwd} -->
   	</select>
   	
   	<!-- 임직원 로그인 -->
@@ -253,7 +253,7 @@
         JOIN DEPARTMENT D ON (P.DEPARTMENT_NO = D.DEPARTMENT_NO)
         JOIN COLLEGE C ON (P.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE PROFESSOR_NO = #{professorNo}
-  		AND PROFESSOR_PWD = #{professorPwd}
+  		<!-- AND PROFESSOR_PWD = #{professorPwd} -->
   	</select>
   
   	<!-- ID조회 - 학생 -->
@@ -778,8 +778,10 @@
   	
   	<!-- 상담 상세보기 -->
   	<select id="selectCounseling" resultMap="counselingResultMap">
-  		SELECT *
-  		FROM COUNSELING
+  		SELECT COUNSEL_NO,PROFESSOR_NO,PROFESSOR_NAME,TO_CHAR(APPLICATION_DATE,'YYYY-MM-DD') APPLICATION_DATE
+		 			,TO_CHAR(REQUEST_DATE,'YYYY-MM-DD') REQUEST_DATE,COUNSEL_CONTENT,COUNSEL_AREA,C.STATUS
+	  	FROM COUNSELING C
+	  	JOIN PROFESSOR P USING (PROFESSOR_NO)
   		WHERE COUNSEL_NO = #{counselNo}
   	</select>
   	
@@ -1449,7 +1451,7 @@
   	<!-- 학생 휴,복학 신청 목록 검색 (관리자) -->
   	<select id="selectSearchStuRestList" resultMap="studentRestResultMap">
   		SELECT REST_NO,STUDENT_NO,STUDENT_NAME,CATEGORY,REASON,REQUEST_DATE,START_DATE,END_DATE
-  			   ,DECODE(R.STATUS,'B','처리중','Y','승인완료','N','비승인') AS STATUS
+  			   ,DECODE(R.STATUS,'B','승인대기중','Y','승인완료','N','비승인') AS STATUS
   		FROM STUDENT_REST R
   		JOIN STUDENT S USING (STUDENT_NO)
   		WHERE STUDENT_NO LIKE '%'||#{studentNo}||'%'
@@ -1481,7 +1483,22 @@
   		UPDATE PROFESSOR_REST
   		SET STATUS = #{status}
   		WHERE REST_NO = #{restNo}
+  		AND STATUS = 'B'
   	</update>
+  	
+  	<!-- 임직원 안식,퇴직 신청 목록 검색 (관리자) -->
+  	<select id="selectSearchProRestList" resultMap="professorRestResultSet">
+  		SELECT REST_NO,PROFESSOR_NO,PROFESSOR_NAME,CATEGORY,REASON,REQUEST_DATE,START_DATE,END_DATE
+  			   ,DECODE(R.STATUS,'B','승인대기중','Y','승인완료','N','비승인') AS STATUS
+  		FROM PROFESSOR_REST R
+  		JOIN PROFESSOR P USING (PROFESSOR_NO)
+  		WHERE PROFESSOR_NO LIKE '%'||#{professorNo}||'%'
+  		AND CATEGORY LIKE '%'||#{category}||'%'
+  		AND REQUEST_DATE BETWEEN TO_DATE(#{start},'YYYY-MM-DD') AND TO_DATE(#{end},'YYYY-MM-DD')
+  		AND PROFESSOR_NAME  LIKE '%'||#{professorName}||'%'
+  		AND R.STATUS LIKE '%'||#{status}||'%'
+  		ORDER BY REST_NO DESC 
+  	</select>
   	
   	<!-- (교수) 상담조회  -->
   	<select id="professorSelectCounseling" parameterType="hashMap" resultMap="counselingResultMap">
@@ -1654,8 +1671,23 @@
 		        WHERE N.STATUS = 'Y')
 		ORDER BY CREATE_DATE DESC
   	</select>
-  	
-  	<!-- (관리자) 공지사항 관리 - 검색 조회 -->
+
+	<!-- (관리자) 메인 -> 강의 신청 목록 조회 -->
+  	<select id="selectAdMainClasses" resultMap="classResultMap">
+  		SELECT *
+		FROM(SELECT CLASS_NO,DEPARTMENT_NAME,CLASS_NAME,CLASS_YEAR,CLASS_TERM,CLASS_HOUR
+        		,PROFESSOR_NAME,CLASSROOM,DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금') AS DAY
+        		,DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'9:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00')
+                                  ,2,DECODE(PERIOD,1,'9:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) AS PERIOD
+		        ,CLASS_LEVEL,CLASS_NOS,CREDIT,EXPLAIN,CL.STATUS
+			 FROM CLASS CL
+			 JOIN DEPARTMENT D USING (DEPARTMENT_NO)
+			 JOIN PROFESSOR P USING (PROFESSOR_NO)
+	         WHERE CL.STATUS IN ('B','C','Y','N')
+			 ORDER BY CLASS_NO DESC)
+		WHERE ROWNUM BETWEEN 1 AND 3
+	</select>	
+	<!-- (관리자) 공지사항 관리 - 검색 조회 -->
   	<select id="searchNotice" resultMap="noticeResultSet">
   		SELECT *
 		FROM (SELECT NOTICE_NO, CATEGORY_NAME, NOTICE_TITLE, COUNT, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE, FIELD, N.STATUS, ORIGIN_NAME, NOTICE_CATEGORY
@@ -1695,6 +1727,26 @@
 		</choose>
   	</select>
   	
+  	<!-- (관리자) 메인 -> 학생 휴학 및 퇴학 신청 목록 -->
+  	<select id="selectMainStudentRest" resultMap="studentRestResultMap">
+  		SELECT *
+		FROM (SELECT REST_NO,STUDENT_NO,STUDENT_NAME,REASON,SR.STATUS,CATEGORY,REQUEST_DATE
+		      FROM STUDENT_REST SR
+		      JOIN STUDENT S USING (STUDENT_NO)
+		      ORDER BY REST_NO DESC)
+		WHERE ROWNUM BETWEEN 1 AND 5
+  	</select>
+  	
+  	<!-- (관리자) 메인 -> 교수 안식 및 퇴직 신청 목록 -->
+  	<select id="selectMainProfessorRest" resultMap="professorRestResultSet">
+  		SELECT *    
+		FROM(SELECT REST_NO,PROFESSOR_NO,PROFESSOR_NAME,PR.STATUS,REASON,CATEGORY,REQUEST_DATE
+		     FROM PROFESSOR_REST PR
+		     JOIN PROFESSOR P USING (PROFESSOR_NO)
+		     ORDER BY REST_NO DESC)
+		WHERE ROWNUM BETWEEN 1 AND 5
+  	</select>
+  	
   	<update id="allDeleteNotice">
   		UPDATE NOTICE
 		SET STATUS = 'N'
@@ -1708,5 +1760,6 @@
 			#{noticeNo }
   		</foreach>
   	</update>
+  	
   </mapper>
 

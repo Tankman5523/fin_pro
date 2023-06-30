@@ -89,7 +89,9 @@
             <div id="content_1">
 				<div style="width: 90%;height: 90%;margin: 5%;">
 					<div style="height:15%;">
-                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.sl'">급여내역조회</button> <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.sl'">급여 입력</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.sl'">급여전체조회</button> 
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.sl'">급여 입력</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='mylist.sl'">내 급여 조회</button>
                         <hr>
                         <h2>급여 관리</h2>
                     </div>
@@ -232,11 +234,11 @@
 	                   		var control = confirm("선택된 급여정보를 모두 삭제하시겠습니까?");
 	                   		
 	                   		if(control){
-                   			
+	                   			var succ = 0;
+	                   			var fail = 0;
                 			 	$("#salaryList>tbody>tr>td>input:checkbox:checked").each(function(index){
 	           						var payNo = $(this).parent().siblings().eq(9).children("input").val();
 	           						var status = $(this).parent().siblings().eq(8).text();
-	               					var flag = 0;
 	               					
 	               					if(status!='지급완료'){ //이미 정상지급한 객체는 실패
 		           						$.ajax({
@@ -247,7 +249,7 @@
 		           			        		success: function(result){
 		           			        			if(result=='Y'){
 		           			        			}else{
-		           			        				flag+=1;
+		           			        				fail+=1;
 		           			        			}
 		           			        		},
 		           			        		error: function(){
@@ -258,16 +260,16 @@
 		           			                }
 		           			        	});
 	               					}else{
-	               						flag+= 1;
+	               						fail+= 1;
 	               					}
 	           						
-	           						if(flag>0){
-	           							alert("삭제 실패! 실패한 급여 수 :"+flag+"(개)");
-	           						}else{
-	           							alert("선택한 급여를 모두 삭제 완료하였습니다.");
-	           						}
 	           						
 	               				}); 
+                			 	if(flag>0){
+           							alert("성공한 급여 수 : "+succ+"(개) / 실패한 급여 수 :"+fail+"(개)");
+           						}else{
+           							alert("선택한 급여를 모두 삭제 완료하였습니다.");
+           						}
 	                   		}
                     	});
                 		
@@ -276,11 +278,12 @@
 	                   		var control = confirm("선택된 급여를 모두 송금하시겠습니까?");
 	                   		
 	                   		if(control){
-	                   			
+	                   			var succ = 0;
+	                   			var fail = 0;
 	                			$("#salaryList>tbody>tr>td>input:checkbox:checked").each(function(index){
 	           						var payNo = $(this).parent().siblings().eq(9).children("input").val();
 	           						var status = $(this).parent().siblings().eq(8).text();
-	               					var flag = 0;
+	               					
 	               					if(status!='지급완료'){ //이미 정상지급한 객체는 실패
 		           						$.ajax({
 		           			        		url: "pay.sl",
@@ -288,9 +291,10 @@
 		           			        			payNo: payNo
 		           			        		},
 		           			        		success: function(result){
-		           			        			if(result=='Y'){
+		           			        			if(result=='N'){
+		           			        				fail+=1;
 		           			        			}else{
-		           			        				flag+=1;
+		           			        				succ+=1;
 		           			        			}
 		           			        		},
 		           			        		error: function(){
@@ -301,16 +305,14 @@
 		           			                }
 		           			        	}); 
 	               					}else{
-	               						flag+=1;
+	               						fail+=1;
 	               					}
-	               					
-	           						if(flag>0){
-	           							alert("송금 실패! 실패한 급여 수 :"+flag+"(개)");
-	           						}else{
-	           							alert("선택한 급여를 모두 송금 완료하였습니다.");
-	           						}
-	           						
 	               				}); 
+	                			if(flag>0){
+           							alert("성공한 급여 수 :"+succ+"(개) / 실패한 급여 수 :"+fail+"(개)");
+           						}else{
+           							alert("선택한 급여를 모두 송금 완료하였습니다.");
+           						}
 	                   		}
                     	});
                     	

@@ -611,6 +611,11 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectSearchStuRestList",set);
 	}
 	
+	// (관리자) 임직원 안식,퇴직 검색 리스트 조회
+	public ArrayList<ProfessorRest> selectSearchProRestList(SqlSessionTemplate sqlSession,HashMap<String, String> set) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectSearchProRestList",set);
+	}
+		
 	// (교수) 상담 상세 조회
 	public Counseling selectCounselDetail(SqlSessionTemplate sqlSession, String counselNo) {
 		 
@@ -695,6 +700,23 @@ public class MemberDao {
 
 		return sqlSession.update("memberMapper.selectDeleteNotice");
 	}
+	
+	// (관리자) 메인페이지 -> 강의신청 목록 조회
+	public ArrayList<Classes> selectAdMainClasses(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectAdMainClasses");
+	}
+	
+	// (관리자) 메인페이지 -> 학생 휴학 및 퇴학 신청 목록 조회
+	public ArrayList<StudentRest> selectMainStudentRest(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectMainStudentRest");
+	}
+	
+	// (관리자) 메인페이지 -> 교수 안식 및 퇴직 신청 목록 조회
+	public ArrayList<ProfessorRest> selectMainProfessorRest(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectMainProfessorRest");
+	}
+
+	
 
 
 }

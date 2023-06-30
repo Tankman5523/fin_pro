@@ -24,7 +24,7 @@
                 </div>
             </div>
             <div id="content_1" align="center">
-            	<span id="content_title">상담 신청</span>
+            	<span id="content_title">상담 신청 상세보기</span>
             	<div id="content_top">
 				<form action="counselingUpdate.st" method="post">
 					<input type="hidden" name="counselNo" value="${c.counselNo}">
