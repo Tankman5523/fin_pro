@@ -242,7 +242,7 @@
   		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO) 
         JOIN COLLEGE C ON (S.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE STUDENT_NO = #{studentNo}
-  		AND STUDENT_PWD = #{studentPwd}
+  		<!-- AND STUDENT_PWD = #{studentPwd} -->
   	</select>
   	
   	<!-- 임직원 로그인 -->
@@ -253,7 +253,7 @@
         JOIN DEPARTMENT D ON (P.DEPARTMENT_NO = D.DEPARTMENT_NO)
         JOIN COLLEGE C ON (P.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE PROFESSOR_NO = #{professorNo}
-  		AND PROFESSOR_PWD = #{professorPwd}
+  		<!-- AND PROFESSOR_PWD = #{professorPwd} -->
   	</select>
   
   	<!-- ID조회 - 학생 -->
@@ -778,8 +778,10 @@
   	
   	<!-- 상담 상세보기 -->
   	<select id="selectCounseling" resultMap="counselingResultMap">
-  		SELECT *
-  		FROM COUNSELING
+  		SELECT COUNSEL_NO,PROFESSOR_NO,PROFESSOR_NAME,TO_CHAR(APPLICATION_DATE,'YYYY-MM-DD') APPLICATION_DATE
+		 			,TO_CHAR(REQUEST_DATE,'YYYY-MM-DD') REQUEST_DATE,COUNSEL_CONTENT,COUNSEL_AREA,C.STATUS
+	  	FROM COUNSELING C
+	  	JOIN PROFESSOR P USING (PROFESSOR_NO)
   		WHERE COUNSEL_NO = #{counselNo}
   	</select>
   	
@@ -1449,7 +1451,7 @@
   	<!-- 학생 휴,복학 신청 목록 검색 (관리자) -->
   	<select id="selectSearchStuRestList" resultMap="studentRestResultMap">
   		SELECT REST_NO,STUDENT_NO,STUDENT_NAME,CATEGORY,REASON,REQUEST_DATE,START_DATE,END_DATE
-  			   ,DECODE(R.STATUS,'B','처리중','Y','승인완료','N','비승인') AS STATUS
+  			   ,DECODE(R.STATUS,'B','승인대기중','Y','승인완료','N','비승인') AS STATUS
   		FROM STUDENT_REST R
   		JOIN STUDENT S USING (STUDENT_NO)
   		WHERE STUDENT_NO LIKE '%'||#{studentNo}||'%'
@@ -1481,7 +1483,22 @@
   		UPDATE PROFESSOR_REST
   		SET STATUS = #{status}
   		WHERE REST_NO = #{restNo}
+  		AND STATUS = 'B'
   	</update>
+  	
+  	<!-- 임직원 안식,퇴직 신청 목록 검색 (관리자) -->
+  	<select id="selectSearchProRestList" resultMap="professorRestResultSet">
+  		SELECT REST_NO,PROFESSOR_NO,PROFESSOR_NAME,CATEGORY,REASON,REQUEST_DATE,START_DATE,END_DATE
+  			   ,DECODE(R.STATUS,'B','승인대기중','Y','승인완료','N','비승인') AS STATUS
+  		FROM PROFESSOR_REST R
+  		JOIN PROFESSOR P USING (PROFESSOR_NO)
+  		WHERE PROFESSOR_NO LIKE '%'||#{professorNo}||'%'
+  		AND CATEGORY LIKE '%'||#{category}||'%'
+  		AND REQUEST_DATE BETWEEN TO_DATE(#{start},'YYYY-MM-DD') AND TO_DATE(#{end},'YYYY-MM-DD')
+  		AND PROFESSOR_NAME  LIKE '%'||#{professorName}||'%'
+  		AND R.STATUS LIKE '%'||#{status}||'%'
+  		ORDER BY REST_NO DESC 
+  	</select>
   	
   	<!-- (교수) 상담조회  -->
   	<select id="professorSelectCounseling" parameterType="hashMap" resultMap="counselingResultMap">

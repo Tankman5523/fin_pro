@@ -6,8 +6,8 @@
 	font-size: 15px;
 }
 
-#class_enroll>tr {
-	margin-top: 20px;
+#class_enroll td{
+	vertical-align: middle;
 }
 
 #classTerm, #classYear {

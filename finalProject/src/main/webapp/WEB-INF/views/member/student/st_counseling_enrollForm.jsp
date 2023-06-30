@@ -27,14 +27,14 @@
             	<span id="content_title">상담 신청</span>
             	<div id="content_top">
             	
-				<form action="insertCounseling.st" method="post">
+				<form action="insertCounseling.st" method="post" id="counselingForm">
                     <input type="hidden" id="pno" name="ProfessorNo">
                     <input type="hidden" name="studentNo" value="${loginUser.studentNo}">
                     <table 	id="coun_list" style="" class="table">
                         <tr>
                             <td class="litle_title">상담교직원</td>
                             <td align="right" style="padding:5px;">
-                                <input type="text" name="professor" id="pro_name" style="border:0px; margin-left: 7%;" readonly >
+                                <input type="text" name="professor" id="pro_name" style="border:0px; margin-left: 7%;" required >
                                 <button type="button" id="pro_modal"><i class="fa-solid fa-magnifying-glass"></i></button>
                                 
                             </td>
@@ -43,7 +43,7 @@
                         </tr>
                         <tr>
                             <td class="litle_title">학과</td>
-                            <td><input type="text" id="pro_depa" readonly></td>
+                            <td><input type="text" id="pro_depa" readonly ></td>
                             <td class="litle_title">학과</td>
                             <td><input type="text" value="${loginUser.departmentNo }" readonly></td>
                         </tr>
@@ -61,7 +61,7 @@
                         </tr>
                         <tr>
                             <td class="litle_title">상담희망일자</td>
-                            <td><input type="text" name="requestDate" class="datepicker" required></td>
+                            <td><input type="text" name="requestDate" class="datepicker" readonly></td>
                             <td class="litle_title">상담신청일자</td>
                             <td><input type="text"  id="today" readonly></td>
                         </tr>
@@ -147,8 +147,8 @@
             <div id="modalBody">
             <h4>상담 교수님을 선택해주세요.</h4>
             <span id="closeBtn">&times;</span> 
-                <table border="1" style="width: 100%;text-align: center;" id="pro_list">
-                	<thead>
+                <table border="1" class="table" style="width: 100%;text-align: center;" id="pro_list">
+                	<thead class="thead-dark">
                 		<tr>
                             <th>교수명</th>
                             <th>학과</th>
@@ -166,6 +166,9 @@
                 
             </div>
         </div>
+      </div>
+      <div>
+      	
       </div>
     <script>
         $(function(){         
@@ -202,6 +205,14 @@
                 
             }) 
         }
+        
+        $("#counselingForm").submit(function(){
+        	var requestDate = $("input[name=requestDate]");
+        	
+        	if(requestDate.val()==''){
+        		console.log(requestDate.offset());
+        	}
+        })
         
         //밑에는 모달 위한 스크립트
         const btn = document.getElementById('pro_modal'); //모달 키는 버튼

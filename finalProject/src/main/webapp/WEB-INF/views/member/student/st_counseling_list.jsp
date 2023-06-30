@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div id="content_1">
-                	<span id="content_title">상담 신청</span>
+                	<span id="content_title">상담 신청 이력</span>
                     <div id="search">
                             <ul class="search_ul">
                                 <li class="option1">
@@ -75,9 +75,6 @@
                                 
                                 </li>
                             </ul>
-                            
-                        
-                       
                     </div>
                     <div style="text-align: right; margin-right:40px">
                     </div>
@@ -122,7 +119,6 @@
                             		</c:otherwise>
                             	</c:choose>
                             </tbody>
-                            
                         </table>
                     </div>
                 </div>
