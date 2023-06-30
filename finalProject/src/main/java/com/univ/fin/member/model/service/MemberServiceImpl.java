@@ -891,9 +891,14 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	//(교수) 상담 상태 변경
+	@Transactional
 	@Override
-	public int updateCounselStatus(HashMap<String, String> statusMap) {
-		return memberDao.updateCounselStatus(sqlSession, statusMap);
+	public int updateCounselStatus(HashMap<String, String> statusMap, HashMap<String, String> alarm) {
+		int result1 = 0;
+		int result2 = 0;
+		result1 = memberDao.updateCounselStatus(sqlSession, statusMap);
+		result2 = memberDao.alarmInsert(sqlSession, alarm);
+		return result1*result2;
 	}
 
 	// 알람 수신

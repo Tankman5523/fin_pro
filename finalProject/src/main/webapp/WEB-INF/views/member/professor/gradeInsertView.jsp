@@ -8,34 +8,6 @@
 <link rel="stylesheet" href="resources/css/gradeInsertView.css">
 </head>
 <body>
-	<script>
-		var socket;
-		
-		function connect() {
-			if(!socket) {
-				var url = "ws://localhost:8888/fin/echo";
-				socket = new WebSocket(url);
-			}
-			
-			socket.onopen = function() {
-				console.log("서버와 연결되었습니다.");
-			};
-			
-			socket.onclose = function() {
-				console.log("서버와 연결이 종료되었습니다.");
-			};
-			
-			socket.onerror = function() {
-				console.log("서버와 연결 과정에서 오류가 발생했습니다.");
-			};
-		}
-		
-		function disconnect() {
-			socket.close();
-			socket = "";
-		}
-	</script>
-
 	<div class="wrap">
     	<%@include file="../../common/professor_menubar.jsp" %> <%--알아서 수정해서 쓰기 --%>
     	<c:if test="${check eq 'impossible' }">
