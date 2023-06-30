@@ -468,12 +468,8 @@ public class ProfessorController {
 		statusMap.put("counselNo", counselNo);
 		
 		HashMap<String, String> alarm = new HashMap<>();
-		if(statusMap.get("counselStatus").equals("C")) {
-			alarm.put("cmd", "counselUpdate");
-		} else {
-			alarm.put("cmd", "nothing");
-		}
 		Counseling c = memberService.selectCounselDetail(counselNo);
+		alarm.put("cmd", "counselUpdate");
 		alarm.put("studentNo", c.getStudentNo());
 		alarm.put("professorName", p.getProfessorName());
 		

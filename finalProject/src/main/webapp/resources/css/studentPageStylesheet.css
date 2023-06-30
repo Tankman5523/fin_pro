@@ -107,8 +107,8 @@ div{
 }
 
 #alarmDiv>ul>li>a:hover {
-	font-size: 15px;
-	line-height: 15px;
+/* 	font-size: 15px; */
+/* 	line-height: 15px; */
 	text-decoration: none;
 	color: black;
 }

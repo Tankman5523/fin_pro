@@ -69,11 +69,17 @@
 								str += "<li style='font-size: 14px; line-height: 14px;'><a href='classManagement.st'>" + obj[i].professorName + " 교수님이 성적을 수정하셨습니다.</a></li><br>";
 							}
 							else if(obj[i].cmd == 'counselUpdate') { // 상담신청 변동
-								str += "<li style='font-size: 14px; line-height: 14px;'><a href=''>" + obj[i].professorName + " 교수님이 상담신청을 거절하셨습니다.</a></li><br>";
+								str += "<li style='font-size: 14px; line-height: 14px;'><a href=''>" + obj[i].professorName + " 교수님이 상담신청에 응하셨습니다.</a>&nbsp;&nbsp;<button onclick='alarmCheck();'>확인</button></li><br>";
 							}
 						}
+						str += "</ul>";
+						$("#alarmDiv").html(str);
 					}
 					else { // 실시간 메세지
+						if($("#alarmDiv").html() == "<span>새로운 알람이 없습니다.</span>") {
+							$("#alarmDiv").html("");
+						}
+					
 						if(obj.cmd == 'gradeInsert') { // 성적 입력
 							str += "<li style='font-size: 14px; line-height: 14px;'><a href='classManagement.st'>" + obj.professorName + " 교수님이 성적을 입력하셨습니다.</a></li><br>";
 						}
@@ -81,13 +87,13 @@
 							str += "<li style='font-size: 14px; line-height: 14px;'><a href='classManagement.st'>" + obj.professorName + " 교수님이 성적을 수정하셨습니다.</a></li><br>";
 						}
 						else if(obj.cmd == 'counselUpdate') { // 상담신청 변동
-							str += "<li style='font-size: 14px; line-height: 14px;'><a href=''>" + obj.professorName + " 교수님이 상담신청을 거절하셨습니다.</a></li><br>";
+							str += "<li style='font-size: 14px; line-height: 14px;'><a href=''>" + obj.professorName + " 교수님이 상담신청에 응하셨습니다.</a></li><br>";
 						}
+						str += "</ul>";
+						$("#alarmDiv").append(str);
 					}
 					
-					str += "</ul>";
-					$("#alarmDiv").html(str);
-					$("#alarm-area>button").text("확인");
+					$("#alarm-area>button").text("전체 확인");
 					$("#alarmImg").attr("src", $("#alarmImg").data("animated"));
 				}
 			};
@@ -136,6 +142,10 @@
 	</div>
 	
 	<script>
+		function alarmCheck() {
+			alert("알람 확인");
+		}
+	
 		function openAlarm() {
 			$("#alarm-area").removeClass("alarm-remove");
 			$("#alarmImg").attr("src", $("#alarmImg").data("static"));
