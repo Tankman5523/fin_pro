@@ -66,9 +66,9 @@
                                 </li>
                                 <li class="option2">
                                     	신청일자 기간조회 :
-                                    <input type="text" class="date" id="datepicker1"name="start">
+                                    <input type="text" class="date" id="datepicker1"name="start" readonly>
                                      ~ 
-                                    <input type="text" class="date" id="datepicker2"name="end">
+                                    <input type="text" class="date" id="datepicker2"name="end" readonly>
                                 </li>
                                 <li class="option3">
                         			<button class="btn btn-secondary btn-sm" type="button" onclick="searchCounseling();">조회</button>
@@ -113,7 +113,7 @@
 		                            			<td class="con">${b.counselContent}</td>
 		                            			<td>${b.professorName}</td>
 		                            			<td>${b.counselArea}</td>
-		                            			<td>${b.status eq 'N'?'처리중':b.status eq 'Y'?'상담승인':'비승인'}</td>
+		                            			<td>${b.status eq 'N'?'상담전':b.status eq 'Y'?'상담완료':'상담취소'}</td>
 		                            		</tr>
 		                            	</c:forEach>
                             		</c:otherwise>
