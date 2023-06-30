@@ -63,6 +63,8 @@ public class FineDust {
 			responseText += line;
 		}
 		
+		System.out.println("dust responseText : " + responseText);
+		
 		br.close();
 		urlCon.disconnect();
 		
