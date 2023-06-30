@@ -31,7 +31,7 @@ import com.google.gson.Gson;
 public class FineDust {
 	
 	@Autowired
-	CacheManager cacheManager;
+	private CacheManager cacheManager;
 	
 	@Scheduled(cron = "0 0/30 * * * *")
 	public void updateDust() throws Exception {
@@ -97,17 +97,34 @@ public class FineDust {
 		JSONObject bodyObj = (JSONObject) totalObj.get("response");
 		JSONObject body = (JSONObject) bodyObj.get("body");
 		JSONArray arr = (JSONArray) body.get("items");
-		JSONObject item = (JSONObject)arr.get(0);
 		
-		String setPm10 = (String)item.get("pm10Grade1h"); //미세먼지 1시간 등급
-		String setPm25 = (String)item.get("pm25Grade1h"); //초미세먼지 1시간 등급
+		String setPm10 = "";
+		String setPm25 = "";
+		for(int i=0; i<arr.size(); i++) {
+			JSONObject item = (JSONObject)arr.get(i);
+			if(item.get("stationName").equals("영등포구")) {
+				setPm10 = (String)item.get("pm10Grade1h"); //미세먼지 1시간 등급
+				setPm25 = (String)item.get("pm25Grade1h"); //초미세먼지 1시간 등급
+			}
+		}
 		
-		String pm10 = chkGrade(setPm10); //미세먼지 등급 변환
-		String pm25 = chkGrade(setPm25); //초미세먼지 등급 변환
+		/* 통신관련 상태 이상일때 */
+		String pm10 = "";
+		String pm25 = "";
+		String chkError = "YYYY";
+		if(setPm10 == null || setPm25 == null) { //비정상처리
+			pm10 = chkGrade("0");
+			pm25 = chkGrade("0");
+			chkError = "NNNN";
+		}else { //정상처리
+			pm10 = chkGrade(setPm10); //미세먼지 등급 변환
+			pm25 = chkGrade(setPm25); //초미세먼지 등급 변환
+		}
 		
 		HashMap<String, String> h = new HashMap<>();
 		h.put("pm10Grade1h", pm10);
 		h.put("pm25Grade1h", pm25);
+		h.put("chkError", chkError);
 		
 		return new Gson().toJson(h);
 	}
@@ -121,6 +138,8 @@ public class FineDust {
 		
 		/* 좋음 : 1, 보통 : 2, 나쁨 : 3, 매우나쁨 : 4 */
 		switch(pm2) {
+			case 0 : setPm = "<span><img id='dustErrorGif' src='resources/icon/dust_error.gif' data-animated='resources/icon/dust_error.gif'></span>";
+				break;
 			case 1 : setPm = "<span style='color : #32a1ff;'>좋음</span>";
 				break;
 			case 2 : setPm = "<span style='color : #00c73c;'>보통</span>";
@@ -132,6 +151,13 @@ public class FineDust {
 		}
 		
 		return setPm;
+	}
+	
+	/* 통신관련 상태이상일 경우 캐시 삭제 */
+	@ResponseBody
+	@RequestMapping(value="dustCache.api",produces = "application/json; charset=UTF-8")
+	public void dustCache() {
+		cacheManager.getCache("dust").clear();
 	}
 	
 }

@@ -168,3 +168,9 @@
 #faq_section button:hover{
 	cursor: pointer;
 }
+
+#autoLoginStatus{
+    font-size: 12px;
+    padding: 10px 0px 0px 0px;
+    color : #00c73c;
+}
