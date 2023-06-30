@@ -716,7 +716,20 @@ public class MemberDao {
 	// (관리자) 공지사항 관리 - 공지사항 선택 삭제
 	public int selectDeleteNotice(SqlSessionTemplate sqlSession, String[] noticeNo) {
 
-		return sqlSession.update("memberMapper.selectDeleteNotice");
+		return sqlSession.update("memberMapper.selectDeleteNotice", noticeNo);
+	}
+
+	
+	// (관리자) 공지사항 관리 - 공지사항 수정 페이지 이동
+	public Notice selectUpdateNotice(SqlSessionTemplate sqlSession, String noticeNo) {
+
+		return sqlSession.selectOne("memberMapper.selectUpdateNotice", noticeNo);
+	}
+
+	// (교수) 전체 상담 신청 조회
+	public ArrayList<Counseling> selectAllCounseling(SqlSessionTemplate sqlSession, String user) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.selectAllCounseling", user);
 	}
 	
 	// (관리자) 메인페이지 -> 강의신청 목록 조회

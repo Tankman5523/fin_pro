@@ -2,6 +2,7 @@ package com.univ.fin.member.model.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import com.univ.fin.common.model.vo.AlarmVo;
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
@@ -383,5 +384,13 @@ public interface MemberService {
 		
 	//이의 신청 패이지 검색
 	int searchGradeReport(Objection objc);
+	
+	// (관리자) 공지사항 관리 - 공지사항 수정 페이지 이동
+	Notice selectUpdateNotice(String noticeNo);
+
+	// (교수) 전체 상담 신청 조회
+	ArrayList<Counseling> selectAllCounseling(String user);
+
+
 
 }

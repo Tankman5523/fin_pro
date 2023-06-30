@@ -372,6 +372,15 @@ public class ProfessorController {
 		return "member/professor/counselHistory";
 	}
 	
+	@ResponseBody
+	@RequestMapping(value = "counselHistory.pr", produces = "application/json; charset=UTF-8;")
+	public String counselHistory(String user) {
+		
+		ArrayList<Counseling> list = memberService.selectAllCounseling(user);
+		
+		return new Gson().toJson(list);
+	}
+	
 	// 학사관리 - 강의시간표
 	@RequestMapping("classListView.pr")
 	public ModelAndView classListView(ModelAndView mv) {
