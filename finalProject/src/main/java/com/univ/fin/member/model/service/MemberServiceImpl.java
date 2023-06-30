@@ -829,6 +829,12 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.selectSearchStuRestList(sqlSession,set);
 	}
 	
+	// (관리자) 임직원 안식,퇴직 검색 리스트 조회
+	@Override
+	public ArrayList<ProfessorRest> selectSearchProRestList(HashMap<String, String> set) {
+		return memberDao.selectSearchProRestList(sqlSession,set);
+	}
+	
 	// (교수) 상담조회
 	@Override
 	public ArrayList<Counseling> professorSelectCounseling(HashMap<String, String> counselMap) {
@@ -927,6 +933,8 @@ public class MemberServiceImpl implements MemberService{
 	public int selectDeleteNotice(String[] noticeNo) {
 		return memberDao.selectDeleteNotice(sqlSession, noticeNo);
 	}
+
+	
 
 
 }

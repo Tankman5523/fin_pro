@@ -38,8 +38,8 @@
 					<div align="left" class="searchCategory">
 						처리여부 : 
 						<select name="status">
-							<option value="">==전체==</option>
-							<option value="B">처리중</option>
+							<option value="">===전체===</option>
+							<option value="B" selected>승인대기중</option>
 							<option value="Y">승인완료</option>
 							<option value="N">비승인</option>
 						</select>
@@ -54,9 +54,12 @@
 						</select>
 						&nbsp;
 						신청일자 :  
-						<input type="text" name="start" id="datepicker1">
+						<input style="display:none;" aria-hidden="true">
+					<input type="password" style="display:none;" aria-hidden="true">
+						<input type="text" name="start" id="datepicker1" readonly>
 						~
-						<input type="text" name="end" id="datepicker2">
+						<input type="text" name="end" id="datepicker2" readonly>
+						
 					</div>
 					<br>
 					<div align="center">
@@ -64,8 +67,8 @@
 							<option value="studentNo">학번</option>
 							<option value="studentName">학생명</option>
 						</select>
-						<input type="text" name="keyword" placeholder="입력안하면 전체조회"  style="margin:auto;">
-						<button type="button" class="btn btn-primary btn-sm" style="margin-bottom:4px;" onclick="stuRestSearchList();">
+						<input type="text" name="keyword" id="keyword" placeholder="입력안하면 전체조회"  style="margin:auto;">
+						<button type="button" id="search_btn" class="btn btn-primary btn-sm" style="margin-bottom:4px;" onclick="stuRestSearchList();">
 							<i class="fa-solid fa-magnifying-glass" style="margin:auto;"></i>
 						</button>
 					</div>
@@ -156,8 +159,6 @@
     				var result = "";
     				if(list.length!=0){
     					for(var i=0; i<list.length; i++){
-    						console.log(list[i].requestDate);
-    						console.log(typeof list[i].requestDate);
 	    					result += "<tr>"
     								+"<td>"+list[i].restNo+"</td>"
     								+"<td>"+list[i].requestDate+"</td>"
@@ -182,6 +183,12 @@
     		})
     		
     	}
+    	
+    	$("#keyword").keyup(function(e){//검색할때 엔터키로 조회버튼 누르기
+    		if(e.code=='Enter'){
+    			$("#search_btn").click();
+    		}
+    	})
     </script>
 </body>
 </html>

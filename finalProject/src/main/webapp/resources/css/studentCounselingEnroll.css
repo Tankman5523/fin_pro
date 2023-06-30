@@ -39,7 +39,7 @@ td>input, textarea {
 
 #modalBody {
 	width: 500px;
-	height: 300px;
+	height: 410px;
 	padding: 30px 30px;
 	margin: 0 auto;
 	border: 1px solid #777;
@@ -84,4 +84,8 @@ td>input, textarea {
 #content_top {
 	width: 100%;
 	border-top: 2px solid lightblue;
+}
+
+#pro_list td{
+	padding:5px;
 }
