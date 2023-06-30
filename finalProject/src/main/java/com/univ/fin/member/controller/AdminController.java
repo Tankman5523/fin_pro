@@ -114,8 +114,9 @@ public class AdminController {
 	    } else {
 	        model.addAttribute("msg", "직원 생성 실패");
 	    }
-	    return "member/admin/enrollProfessor";
+	    return "redirect:enrollProfessor.ad";
 	}
+
 	
 	//강의 개설 일괄 승인
 	@RequestMapping("permitAllClassCreate.ad")

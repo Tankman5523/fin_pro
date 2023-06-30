@@ -29,6 +29,7 @@
 		<typeAlias type="com.univ.fin.common.model.vo.ClassRating" alias="classRating"/>
 		<typeAlias type="com.univ.fin.common.model.vo.Objection" alias="objection"/>
 		<typeAlias type="com.univ.fin.common.model.vo.ProfessorRest" alias="professorRest"/>
+
 	</typeAliases>
 	
 	<mappers>
