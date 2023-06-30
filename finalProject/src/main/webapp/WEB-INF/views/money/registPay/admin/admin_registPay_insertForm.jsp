@@ -7,6 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>관리자_등록금납부조회</title>
+    <style>
+    	.readonly{
+    		background-color : lightgray;
+    	}
+    </style>
 </head>
 <body>
     <div class="wrap">
@@ -29,42 +34,43 @@
                 </div>
             </div>
             <div id="content_1">
-				<div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
+				<div style="width: 90%;height: 90%;margin: 5%;">
                     <div style="height:15%;">
-                        <button onclick="location.href='allList.rg'">등록금 납부 현황</button> <button onclick="location.href='nonPaidList.rg'">미납금 조회</button>
-                        <button onclick="location.href='insert.rg'">등록금 입력</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.rg'">등록금 납부 현황</button> <button class="btn btn-outline-primary btn-sm" onclick="location.href='nonPaidList.rg'">미납금 조회</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.rg'">등록금 입력</button>
                         <hr>
                         <h3>등록금 납부 정보 입력</h3>
                     </div>
-                    
                     <br>
-                    <div style="height:85%;">
+                    <div style="height:90%;">
                         <table align="center">
                             <tr>
                                 <td><label for="classYear">학년도</label></td>
-                                <td><input type="text" name="classYear" id="classYear" value="현재년도" readonly></td>
+                                <td><input type="text" name="classYear" id="classYear" value="현재년도" readonly class="readonly"></td>
                                 <td><label for="classTerm">학기</label></td>
-                                <td><input type="text" name="classTerm" id="classTerm" value="현재학기" readonly></td>
-                                <td><button onclick="search();">조회</button></td>
+                                <td><input type="text" name="classTerm" id="classTerm" value="현재학기" readonly class="readonly"></td>
+                                <td><button class="btn btn-outline-primary btn-sm" onclick="search();">조회 <i class="fa-solid fa-magnifying-glass"></i></button></td>
                             </tr>
                         </table>
-                        <br>
-                        <table id="periodSetter" align="center" style="width:50%;overflow-y: auto;">
+                        
+                        <table id="periodSetter" align="center" style="width:50%;">
                         	 <tr>
                                 <td><label for="startDate">등록시작일</label></td>
                                 <td><input type="date" name="startDate" id="startDate" value=""></td>
                                 <td><label for="endDate">등록마감일</label></td>
                                 <td><input type="date" name="endDate" id="endDate" value=""></td>
+                                <td></td>
                             </tr>
                         </table>
                         
                         
                         <br>
                         <hr>
-                        <div>
-                            <button id="insertAll">일괄생성</button> 조회결과  [ <span id="countSearch">0</span>건 ]
+                        <div style="height:70%;overflow-y: auto;">
+                            <button class="btn btn-outline-primary btn-sm" id="insertAll">일괄생성</button> 조회결과  [ <span id="countSearch">0</span>건 ]
                             <br>
                             <br>
+                            <div id="scrollList" style="height:80%;overflow-y: auto;">
                             <table border="1"  id="studentList" style="text-align: center;width: 100%;">
                                 <thead style='background-color: #4fc7ff;'>
                                 	<tr>
@@ -80,6 +86,7 @@
                                 <tbody><!--ajax처리-->
                                 </tbody>
                             </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -88,7 +95,6 @@
     </div>
     
     <script>
-    	/*레디펑션으로 년도 , 학기 추출 */
     	
     	$(function(){
     		//체크박스 일괄체크
@@ -146,7 +152,7 @@
     		
     		});
     	});
-    	
+    	/*레디펑션으로 년도 , 학기 추출 */
     	$('document').ready(function(){
     		
     		/*학기 , 학년도 등록*/
@@ -189,7 +195,8 @@
     			},
     			success : function(list){
     				var count = list.length;
-    				$("#countSearch").text(count).css("color","blue");
+    				$("#countSearch").text(count).css("color","blue").css("font-weight","bold");
+    				
     				var str = "";
     				if(list[0]!=null){
 	    				for(var i in list){
@@ -233,6 +240,8 @@
 				var startDate = $("#startDate").val();
 				var endDate = $("#endDate").val();
 				
+				var schAmount = $(this).parent().siblings().eq(4).text().replace(/,/g,"");
+				
 				$.ajax({
 					url : "insert.rg",
 					data : {
@@ -241,11 +250,11 @@
 						classYear : classYear,
 						classTerm : classTerm,
 						startDate : startDate,
-						endDate : endDate
+						endDate : endDate,
+						schAmount : schAmount	
 					},
 					method: "POST",
 					success : function(result){
-						console.log(result);
 						if(result=='Y'){
 							alert("등록금정보 입력에 성공했습니다.");
 						}else{

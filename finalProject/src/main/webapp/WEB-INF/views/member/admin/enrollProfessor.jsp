@@ -6,6 +6,7 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<title>Insert title here</title>
 <!-- 주소API 다음(카카오) -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
@@ -335,7 +336,13 @@
                     <a href="enrollProfessor.ad" style="color:#00aeff; font-weight: 550;">임직원 관리</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">학사일정 관리</a>
+                    <a href="calendarView.ad">학사일정 관리</a>
+                </div>
+                <div class="child_title">
+                    <a href="stuRestList.ad">휴/복학 관리</a>
+                </div>
+                <div class="child_title">
+                    <a href="proRestList.ad">안식/퇴직 관리</a>
                 </div>
             </div>
             <div id="content_1">

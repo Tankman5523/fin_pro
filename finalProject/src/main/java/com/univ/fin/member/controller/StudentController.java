@@ -1,18 +1,20 @@
 package com.univ.fin.member.controller;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +24,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.univ.fin.common.model.vo.AlarmVo;
 import com.univ.fin.common.model.vo.Bucket;
+import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
@@ -33,8 +36,8 @@ import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.Objection;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
-import com.univ.fin.common.template.ChatBot;
 import com.univ.fin.common.template.DepartmentCategory;
+import com.univ.fin.main.model.vo.Notice;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
@@ -45,32 +48,104 @@ public class StudentController {
 
 	@Autowired
 	private MemberService memberService;
-
-	// 챗봇
+	
+	// 메인페이지
+	@RequestMapping("main.st")
+	public ModelAndView mainPage(ModelAndView mv, HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
+		
+		ArrayList<HashMap<String, String>> calList = memberService.yearCalendarList(); // 학사일정 조회
+		ArrayList<HashMap<String, String>> regList = memberService.selectReg(studentNo); // 등록금 납부 조회
+		ArrayList<Notice> nList = memberService.selectMainNotice(); // 공지사항 목록
+		HashMap<String, String> map = new HashMap<>();
+		map.put("person", "student");
+		map.put("personNo", studentNo);
+		String filePath = memberService.selectProfile(map);
+		
+		mv.addObject("filePath", filePath).addObject("regList", regList).addObject("calList", calList)
+		  .addObject("nList", nList).setViewName("member/student/mainPage");
+		return mv;
+	}
+	
+	// 메인 -> 강의 조회
 	@ResponseBody
-	@RequestMapping(value = "chatBot.cb", produces = "application/json; charset=UTF-8")
-	public String chatBot(String question, @RequestParam(value = "num", defaultValue = "0") int num) {
-		String result = "";
-
-		ChatBot c = new ChatBot();
-		if (num == 0) {
-			if (question != "") {
-				result = c.answer(question);
-			} else {
-				result = "<div>뭐가 문제야 쎄이 썸띵?</div><br>";
-				result += c.select();
-			}
-		} else {
-			result += c.detailSelect(num);
+	@RequestMapping(value = "getClasses.st", produces = "application/json; charset=UTF-8")
+	public String getClasses(String day, HttpSession session) {
+		Student st = (Student)session.getAttribute("loginUser");
+		String studentNo = st.getStudentNo();
+		
+		Calendar calendar = Calendar.getInstance();
+		String year = String.valueOf(calendar.get(calendar.YEAR)); // 년도
+		int month = calendar.get(calendar.MONTH)+1; // 월
+		String term = "";
+		if(3<=month && month<=6) { // 1학기
+			term = "1";
 		}
-
-		return new Gson().toJson(result);
+		else if(9<=month && month<=12) { // 2학기
+			term = "2";
+		}
+		else {
+			term = "0";
+		}
+		
+		HashMap<String, String> map = new HashMap<>();
+		map.put("year", year);
+		map.put("term", term);
+		map.put("studentNo", studentNo);
+		ArrayList<Classes> cList = memberService.selectStudentTimetable(map); // 해당 학기 모든 개인시간표 추출
+		Collections.sort(cList, new Comparator<Classes>() { // 요일별로 정렬
+			public int compare(Classes c1, Classes c2) {
+				int dayCompare = Integer.parseInt(c1.getDay()) - Integer.parseInt(c2.getDay());
+				
+				if(dayCompare == 0) { // 요일같으면 교시별로 정렬
+					return Integer.parseInt(c1.getPeriod()) - Integer.parseInt(c2.getPeriod());
+				}
+				else {
+					return dayCompare;
+				}
+			}
+		});
+		
+		return new Gson().toJson(cList);
+	}
+	
+	//수강신청 기간인지 체크하는 메소드
+	public int chkRegCalendar() {
+		
+		ArrayList<CalendarVo> list = memberService.chkRegCal();
+		
+		String day = new SimpleDateFormat("yyyyMMdd").format(new Date());
+		int today = Integer.parseInt(day);
+		int result = 0;
+		
+		for(CalendarVo c : list) {
+			
+			int start = Integer.parseInt(c.getStartDate());
+			int end = Integer.parseInt(c.getEndDate());
+			
+			if(start <= today && today <= end) {
+				result++;
+			}
+		}
+		return result;
 	}
 
 	// 수강신청 폼
 	@RequestMapping("registerClassForm.st")
-	public String registerClassForm() {
-		return "member/student/registerClass";
+	public ModelAndView registerClassForm(ModelAndView mv, HttpServletRequest request, HttpSession session) {
+		
+		int result = chkRegCalendar();
+		
+		if(result > 0) {
+			mv.setViewName("member/student/registerClass");
+		}else {
+			String referer = request.getHeader("Referer");
+			session.setAttribute("alertMsg", "지금은 수강신청 기간이 아닙니다.");
+			mv.setViewName("redirect:"+referer);
+		}
+		
+		return mv;
 	}
 
 	// 예비수강신청 폼
@@ -304,8 +379,9 @@ public class StudentController {
 
 		ArrayList<Counseling> list = memberService.selectCounStuList(studentNo);
 
-		m.addAttribute("list", list);
-
+		
+		m.addAttribute("list",list);
+		System.out.println(list);
 		return "member/student/st_counseling_list";
 	}
 
@@ -500,7 +576,6 @@ public class StudentController {
 
 		ArrayList<Counseling> list = memberService.selectSearchCounseling(map);
 		System.out.println(list);
-
 		return new Gson().toJson(list);
 
 	}
@@ -638,10 +713,10 @@ public class StudentController {
 
 	// 휴,복학 신청 조회(리스트) 페이지 이동(학생)
 	@RequestMapping("studentRestList.st")
-	public String selectStuRestList(HttpSession session, Model model) {
-
-		String studentNo = ((Student) session.getAttribute("loginUser")).getStudentNo();
-
+	public String selectStuRestList (HttpSession session,Model model) {
+		
+		String studentNo = ((Student)session.getAttribute("loginUser")).getStudentNo();
+		
 		ArrayList<StudentRest> list = memberService.selectStuRestList(studentNo);
 
 		model.addAttribute("list", list);
@@ -674,20 +749,17 @@ public class StudentController {
 
 	// 휴학하는 학기 등록금 납부 여부
 	@ResponseBody
-	@RequestMapping(value = "studentCheckRegistPay.st", produces = "application/json; charset=UTF-8")
-	public String checkReg(RegistPay rp) {
-
+	@RequestMapping(value="studentCheckRegistPay.st",produces = "application/json; charset=UTF-8")
+	public String checkReg (RegistPay rp) {
+		
 		RegistPay checkRp = memberService.checkRegPay(rp);
-
 		return new Gson().toJson(checkRp);
 	}
-
-	// 휴,복학 신청 인서트
-	@RequestMapping(value = "studentRestInsert.st", method = RequestMethod.POST)
-	public String insertStuRest(StudentRest sr, Model model) {
-
-		System.out.println("인서트 자료" + sr);
-
+	
+	//휴,복학 신청 인서트
+	@RequestMapping(value="studentRestInsert.st",method = RequestMethod.POST)
+	public String insertStuRest(StudentRest sr,Model model) {
+		
 		int result = memberService.insertStuRest(sr);
 
 		if (result > 0) {
@@ -744,26 +816,35 @@ public class StudentController {
 
 	// 강의평가에 필요한 본인이 수강한 강의정보 셀렉트
 	@GetMapping("classRatingInfo.st")
-	public ModelAndView classInfoForRating(ModelAndView mv, HttpSession session) {
-		Student st = (Student) session.getAttribute("loginUser");
-
-		// 현재 날짜정보로 현재학기 , 년도 찾기
-		LocalDate now = LocalDate.now();
-		String classYear = Integer.toString(now.getYear());
-		int month = now.getMonthValue();
-		String classTerm = "";
-
-		if (month < 2 && month > 8) {
-			classTerm = "2";
-		} else {
-			classTerm = "1";
+	public ModelAndView classInfoForRating(ModelAndView mv,HttpSession session) {
+		if(memberService.checkPeriod("강의 평가")>0) { //현재 날짜가 강의평가 기간이면 (캘린터 DB에 데이터가 1개 이상이면)
+			Student st = (Student)session.getAttribute("loginUser");
+			
+			//현재 날짜정보로 현재학기 , 년도 찾기
+			LocalDate now = LocalDate.now();
+			String classYear = Integer.toString(now.getYear());
+			int month = now.getMonthValue();
+			String classTerm = "";
+			
+			
+			if(month<2 && month>8) {
+				classTerm = "2";
+			}else{
+				classTerm = "1";
+			}
+			
+			ClassRating cr = ClassRating.builder()
+										.studentNo(st.getStudentNo())
+										.classTerm(classTerm)
+										.classYear(classYear)
+										.build();
+			
+			ArrayList<RegisterClass> list = memberService.classInfoForRating(cr);
+			mv.addObject("list", list).setViewName("member/student/classRating");
+		}else {//현재 날짜가 강의평가 기간이 아니면
+			session.setAttribute("alertMsg", "강의평가 기간이 아닙니다.");
+			mv.setViewName("redirect:classManagement.st");
 		}
-
-		ClassRating cr = ClassRating.builder().studentNo(st.getStudentNo()).classTerm(classTerm).classYear(classYear)
-				.build();
-
-		ArrayList<RegisterClass> list = memberService.classInfoForRating(cr);
-		mv.addObject("list", list).setViewName("member/student/classRating");
 		return mv;
 	}
 
@@ -777,5 +858,27 @@ public class StudentController {
 		} else {
 			return "N";
 		}
+	}
+	
+	// 알람 수신
+	@ResponseBody
+	@RequestMapping(value = "alarmReceive.me", produces = "application/json; charset=UTF-8;")
+	public String alarmReceive(HttpSession session) {
+		Student s = (Student)session.getAttribute("loginUser");
+		String studentNo = s.getStudentNo();
+		
+		ArrayList<AlarmVo> aList = memberService.alarmReceive(studentNo);
+		return new Gson().toJson(aList);
+	}
+	
+	// 알람 확인
+	@ResponseBody
+	@RequestMapping(value = "alarmCheck.me")
+	public String alarmCheck(HttpSession session) {
+		Student s = (Student)session.getAttribute("loginUser");
+		String studentNo = s.getStudentNo();
+		
+		int result = memberService.alarmCheck(studentNo);
+		return (result>0)? "Y" : "N";
 	}
 }

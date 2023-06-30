@@ -10,21 +10,37 @@ import java.util.HashMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 
+@EnableCaching
 @Controller
 public class FineDust {
 	
+	@Autowired
+	CacheManager cacheManager;
+	
+	@Scheduled(cron = "0 0/30 * * * *")
+	public void updateDust() throws Exception {
+		cacheManager.getCache("dust").clear();
+		fineDust();
+	}
+	
+	@Cacheable("dust")
 	@ResponseBody
 	@RequestMapping(value="dust.api", produces="application/json; charset=UTF-8")
 	public String fineDust() throws Exception {
 	
 		String url = "http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty";
-		url += "?serviceKey=LV1haHMzhSQa4G%2Fy3Z9xbZ9hC9LKdHt3g2Z4M5SQwQVcGxx6M7HRJqVs30pL9H4MdL7POcjH78%2FBspjr%2FNV1sw%3D%3D";
+		url += "?serviceKey=JgXo3POe0a3b4pTvBw8rueVqJHCR9e88WngrWVqtFnFyJLCgxTMU7sHDmeMFiWmVEFsKZXxapPzBPgf8FVTeOA%3D%3D";
 		url += "&returnType=JSON";
 		url += "&numOfRows=1";
 		url += "&pageNo=1";
@@ -36,6 +52,7 @@ public class FineDust {
 		HttpURLConnection urlCon = (HttpURLConnection)requestUrl.openConnection();
 		
 		urlCon.setRequestMethod("GET");
+		urlCon.setRequestProperty("Accept", "application/json");
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
 		

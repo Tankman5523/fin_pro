@@ -1,14 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
 <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="resources/css/weather.css">
-<script src="https://kit.fontawesome.com/7f4a340891.js" crossorigin="anonymous"></script>
+<title>Insert title here</title>
 </head>
 <body>
 	<div id="weather_area">
@@ -18,21 +16,42 @@
 		<div id="weather_minMax"></div>
 		<div id="dustInfo"></div>
 	</div>
+	
 	<script>
-	/* 날씨정보 */
+	
 		$(function(){
+			
+			/* 현재 온도 */
 			$.ajax({
 				
 				url : "weather.api",
 				
 				success : function(result){
-					$("#weather_icon").html(result.IMG);
 					$("#weather_temp").html(result.T1H + 'º');
-					$("#weather_sky").html(result.SKY);
-					$("#weather_minMax").html("<span style='color:#5b8fed;'>"+result.TMN+"º</span>" + "<span style='color : #d3d5d7;'>/</span>"+"<span style='color:#f55f5e;'>"+ result.TMX+"º</span>");
 				}
 			});
 			
+			/* 하늘상태(아이콘),강수형태 */
+			$.ajax({
+				
+				url : "skyPty.api",
+				
+				success : function(result){
+					$("#weather_icon").html(result.IMG);
+					$("#weather_sky").html(result.SKY);
+				}
+			});
+			
+			/* 최저,최고기온  정보 추출*/
+			$.ajax({
+				url : "tmnTmx.api",
+				success : function(result){
+					$("#weather_minMax").html("<span style='color:#5b8fed;'>"+ result.TMN +"º</span>" + "<span style='color : #d3d5d7;'>/</span>"+"<span style='color:#f55f5e;'>"+ result.TMX +"º</span>");
+				}
+				
+			});
+			
+			/* 미세먼지, 초미세먼지 */
 			$.ajax({
 				url : "dust.api",
 				

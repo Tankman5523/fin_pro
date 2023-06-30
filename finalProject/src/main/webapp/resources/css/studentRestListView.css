@@ -1,0 +1,59 @@
+.searchCategory {
+	margin-left: 20px;
+	margin-top: 10px;
+	text-align: center;
+	autocomplete: "off";
+}
+
+.content_title {
+	font-size: 35px;
+	font-weight: 550;
+	margin-top: 2%;
+}
+
+#datepicker1, #datepicker2 {
+	width:8.5%;
+}
+
+#rest_list>tbody tr:hover {
+	background-color: #E2E2E2;
+	font-weight: 550;
+}
+
+#rest_list>thead {
+	background-color: #b8f8fb;
+	color: 1b315e;
+}
+
+#content_title {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	height: 10.8%;
+	font-size: 30px;
+	font-weight: 500;
+	margin-left: 4%;
+}
+
+#rest_list {
+	border-collapse: collapse;
+	border-radius: 8px;
+}
+#rest_list td{
+	padding: 5px;
+}
+
+.rest_list {
+	width: 80%;
+	text-align: center;
+	margin-top: 5%;
+}
+
+.rest_list>thead {
+	background-color: #b8f8fb;
+	color: 1b315e;
+}
+
+.rest_list>tbody>tr>td {
+	padding: 5px;
+}

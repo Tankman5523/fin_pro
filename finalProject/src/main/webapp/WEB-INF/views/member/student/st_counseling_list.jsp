@@ -6,37 +6,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link rel="stylesheet" href="/fin/resources/css/studentCounselingList.css">
 </head>
-<style>
-		.search_ul{
-            
-            list-style: none;
-        }
-        .option1{
-            margin-top: 10px;
-            width:25%;
-            height:50%;
-            float: left;
-            
-        }
-        .option2{
-            margin-top: 10px;
-            width:50%;
-            height:50%;
-            float: left;
-            
-        }
-        
-        #datepicker1,#datepicker2{
-            width: 35%;
-        }
-        .con{
-        	overflow: hidden;
-        	text-overflow: ellipsis;
-        	white-space:nowrap;
-        	
-        }
-</style>
 <body>
     <div class="wrap">
     	<%@include file="../../common/student_menubar.jsp" %> <%--알아서 수정해서 쓰기 --%>
@@ -47,20 +18,20 @@
                         <span style="margin: 0 auto;">상담관리</span>
                     </div>
                     <div class="child_title">
-                        <a href="counselingList.st">상담이력조회</a>
+                        <a href="counselingList.st" style="color:#00aeff; font-weight: 550;">상담이력조회</a>
                     </div>
                     <div class="child_title">
                         <a href="counselingEnroll.st">상담신청</a>
                     </div>
                 </div>
                 <div id="content_1">
-                    <div id="search" style="border-bottom:1px solid black; height:10%">
-                        
+                	<span id="content_title">상담 신청 이력</span>
+                    <div id="search">
                             <ul class="search_ul">
                                 <li class="option1">
-                                    	학년도 
+                                    	학년도 : 
                                     <select name="year" id="">
-                                       <option value="">===전체===</option>
+                                       <option value="">==전체==</option>
                                              
                                         <% HashSet<String> set = new HashSet<String>(); //밑에서 중복 거르기 위한 hashset 선언및 초기화%>
                                         <c:forEach var="c" items="${list }">
@@ -71,6 +42,7 @@
                                             		
                                             	if(!set.contains(year)){//년도가 중복된 년도가 아니라면
                                             		set.add(year); //중복제거를 위해 set에 담고 밑에 옵션 만듬
+                                            		System.out.println(set);
                                            %>
                                             	
                                             	<option value="<%=year%>"><%=year%></option>                                        
@@ -79,9 +51,9 @@
                                     </select>
                                 </li>
                                 <li class="option1">
-                                    	상담종류 
+                                    	상담종류 :
                                     <select name="counselArea">
-                                        <option value="">===전체===</option>
+                                        <option value="">==전체==</option>
                                         <option value="진로(취업)">진로(취업)</option>
                                         <option value="학사(제적)">학사(제적)</option>
                                         <option value="학사(휴학)">학사(휴학)</option>
@@ -93,21 +65,21 @@
                                     </select>
                                 </li>
                                 <li class="option2">
-                                    	신청일자 기간조회
-                                    <input type="text" class="date" id="datepicker1"name="start">
+                                    	신청일자 기간조회 :
+                                    <input type="text" class="date" id="datepicker1"name="start" readonly>
                                      ~ 
-                                    <input type="text" class="date" id="datepicker2"name="end">
+                                    <input type="text" class="date" id="datepicker2"name="end" readonly>
+                                </li>
+                                <li class="option3">
+                        			<button class="btn btn-secondary btn-sm" type="button" onclick="searchCounseling();">조회</button>
+                                
                                 </li>
                             </ul>
-                            
-                        
-                       
                     </div>
                     <div style="text-align: right; margin-right:40px">
-                        <button class="btn btn-secondary" type="button" onclick="searchCounseling();">조회</button>
                     </div>
                     <div align="center">
-                        <table border="1" style="width:80%; text-align: center;table-layout: fixed;" id="board_list" >
+                        <table border="1" id="board_list" class="table table-bordered">
                             <thead>
                                 <tr>
                                 	<th>상담신청일자</th>
@@ -121,10 +93,10 @@
                             	<!-- 테이블 fixed해서 일반적으로 width가 안먹어서 크기 정해주기 -->
                             		<col width="15%">
                             		<col width="15%">
-                            		<col width="40%">
+                            		<col width="33%">
                             		<col width="13%">
-                            		<col width="13%">
-                            		<col width="4%">
+                            		<col width="14%">
+                            		<col width="10%">
                             <tbody>
                             	<c:choose>
                             		<c:when test="${empty list }">
@@ -141,13 +113,12 @@
 		                            			<td class="con">${b.counselContent}</td>
 		                            			<td>${b.professorName}</td>
 		                            			<td>${b.counselArea}</td>
-		                            			<td>${b.status}</td>
+		                            			<td>${b.status eq 'N'?'상담전':b.status eq 'Y'?'상담완료':'상담취소'}</td>
 		                            		</tr>
 		                            	</c:forEach>
                             		</c:otherwise>
                             	</c:choose>
                             </tbody>
-                            
                         </table>
                     </div>
                 </div>
@@ -167,9 +138,11 @@
 		
 		//리스트 누르면 상세보기 페이지 이동 구문
 		$(function(){
-			$("tbody>tr").click(function(){
+			$("#board_list>tbody>tr").click(function(){
 				var cno = $(this).children().eq(0).text();
-				location.href="stuCounDetail.st?counselNo="+cno;
+				if(cno!='상담내역이 없습니다.'){
+					location.href="stuCounDetail.st?counselNo="+cno;
+				}
 			});
 		});
 		
@@ -187,15 +160,6 @@
 			obj.startDate = start!=""?start:'1900-01-01';
 			obj.endDate = end!=""?end:'2999-12-31';
 			
-			
-			
-			console.log("첫번쨰"+year);
-			console.log("두번쨰"+counselArea);
-			console.log("세번쨰"+start);
-			console.log("네번쨰"+end);
-			console.log(obj);
-			
-			
 			$.ajax({
 				url:"counselingSearch.st",
 				data:{data:JSON.stringify(obj)},
@@ -203,9 +167,8 @@
 					var result = "";
 					if(list.length==0){
 						result = "<tr>"+"<td colspan='6'>상담내역이 없습니다.</td>"+"</tr>"
-					}else{					
+					}else{
 						for(var i=0; i<list.length; i++){
-							console.log(list);
 							result += "<tr>"
 									+"<td style='display:none'>"+list[i].counselNo+"</td>"
 									+"<td>"+list[i].applicationDate+"</td>"

@@ -1,0 +1,64 @@
+#content_title {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	height: 10.8%;
+	font-size: 30px;
+	font-weight: 500;
+	margin-left: 4%;
+}
+
+#change_btn {
+	border-top: 2px solid lightblue;
+}
+
+#change_btn>a {
+	margin: 1%;
+}
+
+#rest_list #datepicker1, #rest_list #datepicker2 {
+	width: 40%;
+	border: 1px solid;
+}
+
+input[type='date']{
+	text-align:center;
+}
+
+#rest_list input {
+	width: 95%;
+	border: none;
+}
+
+#rest_list>tbody td:nth-child(2n) {
+	width: 33%;
+}
+
+#rest_list>tbody td:nth-child(2n+1) {
+	width: 17%;
+}
+
+#btn_area {
+	text-align: center;
+}
+
+#btn_area>button {
+	margin-left: 20px;
+}
+
+#table_out {
+	width: 80%;
+	border: 1px solid black;
+}
+
+#table_out>* {
+	margin: 5%;
+}
+
+#rest_list2>thead {
+	background-color: #b8f8fb;
+	color: 1b315e;
+}
+#rest_list2>tbody>tr td{
+	padding: 5px;	
+}

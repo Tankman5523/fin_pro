@@ -9,7 +9,12 @@
 </head>
 <body>
 	<div class="wrap">
-    	<%@include file="../../common/professor_menubar.jsp" %> <%--알아서 수정해서 쓰기 --%> 
+    	<%@include file="../../common/professor_menubar.jsp" %> <%--알아서 수정해서 쓰기 --%>
+    	<c:if test="${check eq 'impossible' }">
+    		<script>
+	    		alert("성적입력 및 수정이 불가능합니다.");
+    		</script>
+    	</c:if>
         <div id="content">
             <div id="category">
                 <div id="cate_title">
@@ -37,8 +42,10 @@
                     <span>학기: </span> <select name="term" id="term"></select>
                     <span>교과목명: </span> <select name="classList" id="classList"></select>
                     <button type="button" class="btn btn-outline-primary btn-sm" id="selectList" onclick="selectStudentGradeList();">조회</button>
-                    <button type="button" class="btn btn-warning" id="possible" onclick="possibleInsert();" style="display:none;">성적 입력</button>
-                    <button type="button" class="btn btn-danger" id="impossible" onclick="impossibleInsert();" style="display:none;">입력 완료</button>
+                    <c:if test="${check eq 'possible' }">
+	                    <button type="button" class="btn btn-warning" id="possible" onclick="possibleInsert();">성적 입력</button>
+	                    <button type="button" class="btn btn-danger" id="impossible" onclick="impossibleInsert();">입력 완료</button>
+                    </c:if>
                 </div>
                 <div class="b_line"></div>
 
@@ -65,12 +72,16 @@
 	                var arr = ${classTerm};
 	                
 	                $(function() {
+// 	                	connect();
+	                	
 	                	$("select[name=year]").children().first().prop("selected", true).change();
 	                	selectClassList();
+	                	$("button[id*=possible]").prop("disabled", true);
 	                	$("button[id*=possible]").css("display", "none");
 	                    
 	                	$(".selectTerm").on("change", "#term", function() {
 	                		selectClassList();
+	                		$("button[id*=possible]").prop("disabled", true);
 	                		$("button[id*=possible]").css("display", "none");
 	                	});
 	                	
@@ -78,6 +89,7 @@
 	                		$(".student-count>span").css("border", "0");
 	                		$(".student-count>span").html("");
 	                		$(".student-table>tbody").html("");
+	                		$("button[id*=possible]").prop("disabled", true);
 	                		$("button[id*=possible]").css("display", "none");
 	                	});
 	                	
@@ -159,6 +171,19 @@
 		            			   
 		            			   if($("#possible").css("display") == "none" && $("#impossible").css("display") == "none") {
 		            				   $("#possible").css("display", "block");
+		            				   
+		            				   var date = new Date();
+
+		            				   var $year = date.getFullYear();
+		            				   var $month = date.getMonth() + 1;
+		            				   if($year == $("#year").val()) { // 년도 체크
+		            				   	   if($("#term").val()==1 && (3<=$month&&$month<=6)) {
+		            				   		$("#possible").prop("disabled", false);
+		            				   	   }
+		            				   	   else if($("#term").val()==2 && (9<=$month&&$month<=12)) {
+		            				   		$("#possible").prop("disabled", false);
+		            				   	   }
+		            				   }
 		            			   }
 		            			   
 		            			   $(".student-count>span").css("border", "1px solid black");
@@ -203,12 +228,22 @@
 	            	   
 	            	   $("#possible").css("display", "none");
 	            	   $("#impossible").css("display", "block");
+	            	   $("#impossible").prop("disabled", false);
+	            	   $(".student-table>tbody>tr").hover(function() {
+	            		   $(this).css("cursor", "pointer");
+	            	   });
+	            	   connect();
 	               }
 	               
 	               function impossibleInsert() {
 	            	   $(".student-table>tbody").off("click", "tr");
 	            	   $("#possible").css("display", "block");
+	            	   $("#possible").prop("disabled", false);
 	            	   $("#impossible").css("display", "none");
+	            	   $(".student-table>tbody>tr").hover(function() {
+	            		   $(this).css("cursor", "default");
+	            	   });
+	            	   disconnect();
 	               }
 	               
 	               function scoreInsert(e) {
@@ -276,6 +311,7 @@
 	               					alert("성적이 입력되었습니다.");
 	               					$("#myModal").modal("hide");
 	               					selectStudentGradeList();
+	               					socket.send("gradeInsert,"+$(".studentNo").val()+","+"${loginUser.professorName}");
 	               				}
 	               				else if(result=='N') {
 	               					alert("성적 입력 실패");
@@ -305,6 +341,7 @@
 	               					alert("성적이 수정되었습니다.");
 	               					$("#myModal").modal("hide");
 	               					selectStudentGradeList();
+	               					socket.send("gradeUpdate,"+$(".studentNo").val()+","+"${loginUser.professorName}");
 	               				}
 	               				else if(result=='N') {
 	               					alert("성적 수정 실패");
@@ -321,7 +358,7 @@
                 </script>
             </div>
             
-             <!-- The Modal -->
+            <!-- The Modal -->
 		    <div class="modal" id="myModal">
 		        <div class="modal-dialog modal-dialog-centered">
 		            <div class="modal-content">

@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.PageInfo;
 import com.univ.fin.main.model.vo.Notice;
 
@@ -115,6 +116,12 @@ public class MainDao {
 	public ArrayList<Notice> infoFaqList(SqlSessionTemplate sqlSession) {
 		 
 		return (ArrayList)sqlSession.selectList("mainMapper.infoFaqList");
+	}
+
+	//학사일정 캘린더 조회
+	public ArrayList<CalendarVo> selectHaksaCalendar(SqlSessionTemplate sqlSession) {
+		 
+		return (ArrayList)sqlSession.selectList("mainMapper.selectHaksaCalendar");
 	}
 
 	

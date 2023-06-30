@@ -5,22 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>반려 강의 수정</title>
-<style>
-	#class_enroll{
-        width: 90%;
-        margin: 5%;
-        border-collapse:separate;
-        border-spacing:10px;
-    }
-    #class_enroll>tr{
-        margin-top: 20px;
-    }
-    #classTerm,#classYear{  
-    -webkit-appearance:none; /* 크롬 화살표 없애기 */
-    -moz-appearance:none; /* 파이어폭스 화살표 없애기 */
-    appearance:none /* 화살표 없애기 */
-    }
-</style>
+<link rel="stylesheet" href="/fin/resources/css/classCreateView.css">
 </head>
 <body>
     <div class="wrap">
@@ -31,18 +16,18 @@
                     <span style="margin: 0 auto;">강의관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="classCreateSelect.pr">강의개설신청 내역</a>
+                    <a href="classCreateSelect.pr" style="color:#00aeff; font-weight: 550;">강의개설신청 내역</a>
                 </div>
                 <div class="child_title">
                     <a href="classCreateEnroll.pr">강의 개설 신청</a>
                 </div>
             </div>
             <div id="content_1">
-				<h3>강의개설 신청</h3>
-                <div style="border-top:1px solid black">
+				<span id="content_title">강의개설 신청</span>
+                <div style="border-top:2px solid lightblue">
                     <form action="classCreateUpdate.pr" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="classNo" value="${c.classNo}">
-                        <table id="class_enroll">
+                        <table id="class_enroll" class="table">
                             <tr>
                                 <td>개설학과 </td>
                                 <td><input type="text" value="${c.departmentNo }" disabled></td>
@@ -122,17 +107,27 @@
                                     </select>
                                 </td>
                                 <td>첨부파일</td>
-                                <td colspan="2">
-                                	<c:if test="${not empty a}">
-                        				<a href="${a.filePath}${a.changeName}" download="${a.changeName}">${a.originName}</a>
-                        				<input type="hidden" name="fileNo" value="${a.fileNo}">
-                        				<input type="hidden" name="originFileName" value="${a.changeName}">
-                        			</c:if>
-                                	<input type="file" name="reUpfile">
+                                <td colspan="2" style="padding:0px;">
+                        			<div class="filebox">
+                                	<c:choose>
+	                                	<c:when test="${not empty a}">
+	                                		<a href="${a.filePath}${a.changeName}" id="download" download="${a.originName}">
+	                        					<input class="upload-name" placeholder="강의계획서" style="width:58%" value="${a.originName}" required>
+	                        				</a>
+	                        				<input type="hidden" name="fileNo" value="${a.fileNo}">
+	                        				<input type="hidden" name="originFileName" value="${a.changeName}">
+	                                	</c:when>
+	                                	<c:otherwise>
+	                                		<input class="upload-name" placeholder="강의계획서" style="width:58%" value="" required>
+	                                	</c:otherwise>
+                                	</c:choose>
+								    	<label for="file">파일찾기</label> 
+								    	<input type="file" name="reUpfile" id="file" required>
+                        			</div>
                                 </td>
                             </tr>
                             <tr>
-                            	<td>반려사유</td>
+                            	<td><span id="explain">반려사유</span></td>
                             	<td colspan="5">
                             		<textarea rows="2" cols="115" style="resize:none;" readonly>${c.explain }</textarea>
                             	</td>
@@ -184,6 +179,12 @@
                 credit.options[credit.options.length]=new Option("1학점",1);
             }
         }
+        
+        $("#file").on('change',function(){//첨부파일 올리면
+        	var fileName = $("#file").val().split('/').pop().split('\\').pop();
+        	$(".upload-name").val(fileName);//첨부파일 이름 보여주는곳에 올림
+        	$("#download").prop("href","javascript:void(0);");//기존 파일 다운로드경로를 막음
+        });
         
         function changePeriod(target){//10교시 골랐을때 2시간 수업 없애기
             var p = target.value; //몇교시 골랐는지
