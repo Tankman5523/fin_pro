@@ -1509,47 +1509,47 @@
 		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO)
 		<if test="counselType.equals('allType')">
 			WHERE PROFESSOR_NO = #{professorNo}
-			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+			AND APPLICATION_DATE BETWEEN #{startDate} AND #{endDate}
 		</if>
 		<if test="counselType.equals('jinro')">
 			WHERE COUNSEL_AREA = '진로(취업)'
 			AND PROFESSOR_NO = #{professorNo}
-			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+			AND APPLICATION_DATE BETWEEN #{startDate} AND #{endDate}
 		</if>
 		<if test="counselType.equals('attendance')">
 			WHERE COUNSEL_AREA = '학사(출결)'
 			AND PROFESSOR_NO = #{professorNo}
-			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+			AND APPLICATION_DATE BETWEEN #{startDate} AND #{endDate}
 		</if>
 		<if test="counselType.equals('rest')">
 			WHERE COUNSEL_AREA = '학사(휴학)'
 			AND PROFESSOR_NO = #{professorNo}
-			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+			AND APPLICATION_DATE BETWEEN #{startDate} AND #{endDate}
 		</if>
 		<if test="counselType.equals('drop')">
 			WHERE COUNSEL_AREA = '학사(제적)'
 			AND PROFESSOR_NO = #{professorNo}
-			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+			AND APPLICATION_DATE BETWEEN #{startDate} AND #{endDate}
 		</if>
 		<if test="counselType.equals('admin')">
 			WHERE COUNSEL_AREA = '학사행정'
 			AND PROFESSOR_NO = #{professorNo}
-			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+			AND APPLICATION_DATE BETWEEN #{startDate} AND #{endDate}
 		</if>
 		<if test="counselType.equals('affect')">
 			WHERE COUNSEL_AREA = '심리정서'
 			AND PROFESSOR_NO = #{professorNo}
-			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+			AND APPLICATION_DATE BETWEEN #{startDate} AND #{endDate}
 		</if>
 		<if test="counselType.equals('collLife')">
 			WHERE COUNSEL_AREA = '학교생활'
 			AND PROFESSOR_NO = #{professorNo}
-			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+			AND APPLICATION_DATE BETWEEN #{startDate} AND #{endDate}
 		</if>
 		<if test="counselType.equals('etc')">
 			WHERE COUNSEL_AREA = '기타'
 			AND PROFESSOR_NO = #{professorNo}
-			AND REQUEST_DATE BETWEEN #{startDate} AND #{endDate}
+			AND APPLICATION_DATE BETWEEN #{startDate} AND #{endDate}
 		</if>
 		ORDER BY COUNSEL_NO DESC
   	</select>
@@ -1712,18 +1712,41 @@
 		</choose>
   	</select>
   	
+  	<!-- (관리자) 공지사항 관리 - 전체 삭제 -->
   	<update id="allDeleteNotice">
   		UPDATE NOTICE
 		SET STATUS = 'N'
   	</update>
   	
+  	<!-- (관리자) 공지사항 관리 - 선택 삭제 -->
   	<update id="selectDeleteNotice">
   		UPDATE NOTICE
   		SET STATUS = 'N'
 		WHERE NOTICE_NO IN
-  		<foreach collection="array" item="noticeNo"  open="(" close=")" separator=",">
+  		<foreach collection="array" index="index" item="noticeNo"  open="(" close=")" separator=",">
 			#{noticeNo }
   		</foreach>
   	</update>
+  	
+  	<!-- (관리자) 공지사항 관리 - 수정 게시글 조회 -->
+  	<select id="selectUpdateNotice" resultMap="noticeResultSet">
+  		SELECT NOTICE_CATEGORY, FIELD, NOTICE_TITLE, NOTICE_CONTENT, CREATE_DATE, ORIGIN_NAME
+		FROM NOTICE N
+		LEFT JOIN NOTICE_ATTACHMENT USING(NOTICE_NO)
+		WHERE NOTICE_NO = #{noticeNo }
+		AND N.STATUS = 'Y'
+  	</select>
+  	
+  	<!-- (교수) 전체 상담 신청 조회 -->
+  	<select id="selectAllCounseling" resultMap="counselingResultMap">
+  		SELECT COUNSEL_NO, STUDENT_NO, STUDENT_NAME, D.DEPARTMENT_NAME, CLASS_LEVEL, TO_CHAR(APPLICATION_DATE, 'YYYY-MM-DD') APPLICATION_DATE
+			,  TO_CHAR(REQUEST_DATE, 'YYYY-MM-DD') REQUEST_DATE, COUNSEL_AREA, C.STATUS
+		FROM COUNSELING C
+		JOIN STUDENT S USING(STUDENT_NO)
+		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO)
+		WHERE PROFESSOR_NO = #{user}
+		ORDER BY COUNSEL_NO DESC
+  	</select>
+  	
   </mapper>
 

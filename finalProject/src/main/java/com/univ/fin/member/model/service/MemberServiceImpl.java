@@ -934,6 +934,18 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.selectDeleteNotice(sqlSession, noticeNo);
 	}
 
+	// (관리자) 공지사항 관리 - 공지사항 수정 페이지 이동
+	@Override
+	public Notice selectUpdateNotice(String noticeNo) {
+		return memberDao.selectUpdateNotice(sqlSession, noticeNo);
+	}
+
+	// (교수) 전체 상담 신청 조회
+	@Override
+	public ArrayList<Counseling> selectAllCounseling(String user) {
+		return memberDao.selectAllCounseling(sqlSession, user);
+	}
+
 	
 
 
