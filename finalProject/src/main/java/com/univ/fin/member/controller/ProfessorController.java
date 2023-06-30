@@ -451,7 +451,8 @@ public class ProfessorController {
 	
 	@RequestMapping("updateCounselStatus")
 	public ModelAndView updateCounselStatus(@RequestParam("counsel-status") String counselStatus
-											,String cancelResult, String counselNo, ModelAndView mv) {
+											,String cancelResult, String counselNo, ModelAndView mv, HttpSession session) {
+		Professor p = (Professor)session.getAttribute("loginUser");
 		
 		if(cancelResult.isEmpty()) {
 			cancelResult = "null";
@@ -466,7 +467,17 @@ public class ProfessorController {
 		statusMap.put("cancelResult", cancelResult);
 		statusMap.put("counselNo", counselNo);
 		
-		int result = memberService.updateCounselStatus(statusMap);
+		HashMap<String, String> alarm = new HashMap<>();
+		if(statusMap.get("counselStatus").equals("C")) {
+			alarm.put("cmd", "counselUpdate");
+		} else {
+			alarm.put("cmd", "nothing");
+		}
+		Counseling c = memberService.selectCounselDetail(counselNo);
+		alarm.put("studentNo", c.getStudentNo());
+		alarm.put("professorName", p.getProfessorName());
+		
+		int result = memberService.updateCounselStatus(statusMap, alarm);
 		
 		String msg = "";
 		

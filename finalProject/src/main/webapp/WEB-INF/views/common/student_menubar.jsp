@@ -24,6 +24,15 @@
 		
 		$(function() {
 			connect();
+			
+			$('html').click(function(e){
+		    	if($(e.target).parents('#alarm-area').length < 1 && !$(e.target).is('#alarm-area') && !$(e.target).is('#alarmImg')){
+		    		if($("#alarmDiv").html() != "<span>새로운 알람이 없습니다.</span>") {
+			    		$("#alarmImg").attr("src", $("#alarmImg").data("animated"));
+		    		}
+		    		$("#alarm-area").addClass("alarm-remove");
+		    	}
+	        });
 		})
 		
 		function connect() {
@@ -51,27 +60,34 @@
 				if(obj.length != 0) {
 					console.log("메세지가 도착했습니다.");
 					var str = "<ul>";
-					if(obj.length != undefined) {
+					if(obj.length != undefined) { // 뒤늦게 메세지 받은거
 						for(var i=0;i<obj.length;i++) {
-							if(obj[i].cmd == 'gradeInsert') {
+							if(obj[i].cmd == 'gradeInsert') { // 성적 입력
 								str += "<li style='font-size: 14px; line-height: 14px;'><a href='classManagement.st'>" + obj[i].professorName + " 교수님이 성적을 입력하셨습니다.</a></li><br>";
 							}
-							else if(obj[i].cmd == 'gradeUpdate') {
-								str += "<li style='font-size: 14px; line-height: 14px;'>" + obj[i].professorName + " 교수님이 성적을 수정하셨습니다.</li><br>";
+							else if(obj[i].cmd == 'gradeUpdate') { // 성적 수정
+								str += "<li style='font-size: 14px; line-height: 14px;'><a href='classManagement.st'>" + obj[i].professorName + " 교수님이 성적을 수정하셨습니다.</a></li><br>";
+							}
+							else if(obj[i].cmd == 'counselUpdate') { // 상담신청 변동
+								str += "<li style='font-size: 14px; line-height: 14px;'><a href=''>" + obj[i].professorName + " 교수님이 상담신청을 거절하셨습니다.</a></li><br>";
 							}
 						}
 					}
-					else {
-						if(obj.cmd == 'gradeInsert') {
-							str += "<li style='font-size: 14px; line-height: 14px;'>" + obj.professorName + " 교수님이 성적을 입력하셨습니다.</li><br>";
+					else { // 실시간 메세지
+						if(obj.cmd == 'gradeInsert') { // 성적 입력
+							str += "<li style='font-size: 14px; line-height: 14px;'><a href='classManagement.st'>" + obj.professorName + " 교수님이 성적을 입력하셨습니다.</a></li><br>";
 						}
-						else if(obj.cmd == 'gradeUpdate') {
-							str += "<li style='font-size: 14px; line-height: 14px;'>" + obj.professorName + " 교수님이 성적을 수정하셨습니다.</li><br>";
+						else if(obj.cmd == 'gradeUpdate') { // 성적 수정
+							str += "<li style='font-size: 14px; line-height: 14px;'><a href='classManagement.st'>" + obj.professorName + " 교수님이 성적을 수정하셨습니다.</a></li><br>";
+						}
+						else if(obj.cmd == 'counselUpdate') { // 상담신청 변동
+							str += "<li style='font-size: 14px; line-height: 14px;'><a href=''>" + obj.professorName + " 교수님이 상담신청을 거절하셨습니다.</a></li><br>";
 						}
 					}
 					
 					str += "</ul>";
 					$("#alarmDiv").html(str);
+					$("#alarm-area>button").text("확인");
 					$("#alarmImg").attr("src", $("#alarmImg").data("animated"));
 				}
 			};
@@ -92,8 +108,8 @@
 		<div id="logo" style="width: 500px; height: 100%; margin: 0; float: left; display: flex; align-items: center; justify-content: center;">
 			<img src="resources/icon/blue_logo_text.png" onclick="location.href='mainPage.mp'" style="width:300px;">
 		</div>
-		<div id="alarm-area">
-			<button type="button" class="btn btn-warning btn-sm"onclick="closeAlarm();">&times;</button><br><br>
+		<div id="alarm-area" class="alarm-remove">
+			<button type="button" class="btn btn-warning btn-sm" onclick="closeAlarm();">닫기</button><br><br>
 			<div id="alarmDiv"><span>새로운 알람이 없습니다.</span></div>
 		</div>
 		<table id="user_log">
@@ -121,7 +137,7 @@
 	
 	<script>
 		function openAlarm() {
-			$("#alarm-area").css("display", "inline-block");
+			$("#alarm-area").removeClass("alarm-remove");
 			$("#alarmImg").attr("src", $("#alarmImg").data("static"));
 		}
 		
@@ -138,7 +154,8 @@
 				});
 			}
 			$("#alarmDiv").html("<span>새로운 알람이 없습니다.</span>");
-			$("#alarm-area").css("display", "none");
+			$("#alarm-area>button").text("닫기");
+			$("#alarm-area").addClass("alarm-remove");
 		}
 	</script>
 	<%@include file="chatBot.jsp" %>
