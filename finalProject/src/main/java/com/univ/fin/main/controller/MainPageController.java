@@ -1,7 +1,6 @@
 package com.univ.fin.main.controller;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +22,8 @@ import com.univ.fin.common.model.vo.PageInfo;
 import com.univ.fin.common.template.Pagination;
 import com.univ.fin.main.model.service.MainService;
 import com.univ.fin.main.model.vo.Notice;
+import com.univ.fin.member.model.vo.Professor;
+import com.univ.fin.member.model.vo.Student;
 
 @Controller
 public class MainPageController {
@@ -186,15 +187,32 @@ public class MainPageController {
 	}
 	
 	@GetMapping("infoSystem.mp")
-	public String infoSystemMain(Model model) {
+	public String infoSystemMain(Model model, HttpSession session) {
 		
-		ArrayList<Notice> list = mainService.infoNoticeList();
-		ArrayList<Notice> faq = mainService.infoFaqList();
+		if(session.getAttribute("loginUser") == null) { //세션값 판별
 		
-		model.addAttribute("infoList", list);
-		model.addAttribute("infoFaq", faq);
-		
-		return "main/infoSystemMain";
+			ArrayList<Notice> list = mainService.infoNoticeList();
+			ArrayList<Notice> faq = mainService.infoFaqList();
+			
+			model.addAttribute("infoList", list);
+			model.addAttribute("infoFaq", faq);
+			
+			return "main/infoSystemMain";
+		}else {
+			
+			String chk = session.getAttribute("loginUser").toString();
+			
+			if(chk.charAt(0) == 'S') { //학생일 경우
+				return "redirect:main.st";
+			}else { //임직원일 경우
+				Professor loginUser2 = (Professor)session.getAttribute("loginUser");
+				if(loginUser2.getAdmin() == 1) {
+					return "redirect:main.pr";
+				}else {
+					return "redirect:main.ad";
+				}
+			}
+		}
 	}
 }
 

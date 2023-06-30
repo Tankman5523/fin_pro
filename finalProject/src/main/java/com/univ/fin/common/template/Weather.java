@@ -35,7 +35,7 @@ import com.univ.fin.common.model.vo.WeatherVo;
 public class Weather {
 
 	@Autowired
-	CacheManager cacheManager;
+	private CacheManager cacheManager;
 	
 	/* ========== (캐시 삭제후 데이터 갱신 - 온도)========== */
 	@Scheduled(cron = "0 0/10 * * * *") // 매 10분마다 갱신
@@ -162,11 +162,10 @@ public class Weather {
 							if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
 								success = true;
 							}
-						} catch (SocketTimeoutException e) {//URL커넥션 timeout발생 시 소켓타임아웃 예외가 발생하므로 1.5초안에 200~300사이 코드를 반환하지 않을 시 소켓타임아웃 예외발생시킨후 재요청
+						} catch (SocketTimeoutException e) {//URL커넥션 timeout발생 시 소켓타임아웃 예외가 발생하므로 1초안에 200~300사이 코드를 반환하지 않을 시 소켓타임아웃 예외발생시킨후 재요청
 							System.out.println("shortTerm 타임아웃 발생");
 							success = false;
 							responseText = ""; // 초기화 시켜줌
-	//						shortTerm();
 						}
 						
 						BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
@@ -192,7 +191,6 @@ public class Weather {
 					} catch (InterruptedException e) {
 					}
 					responseText = ""; // 초기화 시켜줌
-//					shortTerm();
 				}else {
 					break; //04 while 탈출
 				}
@@ -208,7 +206,6 @@ public class Weather {
 				}
 				System.out.println("shortTerm 2.5초지연");
 				responseText = ""; // 초기화 시켜줌
-//				shortTerm();
 			}else {
 				break; //03 while 탈출
 			}
@@ -343,7 +340,6 @@ public class Weather {
 							}
 						} catch (SocketTimeoutException e) { 
 							System.out.println("ultraShortTerm 타임아웃 발생");
-	//						ultraShortTerm();
 							responseText = ""; // 초기화 시켜줌
 							success = false;
 						}
@@ -368,7 +364,6 @@ public class Weather {
 					} catch (InterruptedException e) {
 					}
 					responseText = ""; // 초기화 시켜줌
-	//				ultraShortTerm();
 				}else {
 					break; //04while 탈출
 				}
@@ -387,7 +382,6 @@ public class Weather {
 				}
 				System.out.println("ultraShortTerm 2.5초지연");
 				responseText = ""; // 초기화 시켜줌
-//				ultraShortTerm();
 			}else {
 				break; //03while 탈출
 			}
@@ -512,7 +506,6 @@ public class Weather {
 							System.out.println("ultraShortforecast 타임아웃 발생");
 							success = false;
 							responseText = ""; // 초기화 시켜줌
-		//					ultraShortforecast();
 						}
 					
 						BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
@@ -535,7 +528,6 @@ public class Weather {
 					} catch (InterruptedException e) {
 					}
 					responseText = ""; // 초기화 시켜줌
-	//				ultraShortforecast();
 				}else {
 					break; //04while 탈출
 				}
@@ -554,7 +546,6 @@ public class Weather {
 				}
 				System.out.println("ultraShortforecast 2.5초지연");
 				responseText = ""; // 초기화 시켜줌
-//				ultraShortforecast();
 			}else {
 				break; //03while 탈출
 			}
