@@ -5,129 +5,12 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<title>Insert title here</title>
-<!-- jQuery library -->
-<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
-<!-- Popper JS -->
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<!-- Latest compiled JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <!-- 주소API 다음(카카오) -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
 </head>
 <style>
-	div{
-	    box-sizing: border-box;
-	}
-	.wrap{
-	    width: 1400px;
-	    height: 1100px;
-	    margin: auto;
-	}
-	.wrap>div{
-	    width: 100%;
-	}
-	#header{
-	    height: 15%;
-	}
-	#menubar{
-	    height: 6%;
-	    background-color: #4fc7ff
-	}
-	#content{
-	    width: 100%;
-	    height: 78%;
-	}
-	#header_1{
-	    height: 65%;
-	}
-	#category{
-		border : 1px solid gray;
-	    width: 20%;
-	    height: 100%;
-	    float: left;
-	}
-	#content_1{
-		border : 1px solid gray;
-	    width: 80%;
-	    height: 100%;
-	    float: right;
-	}
-	/*=========메뉴바 영역===========*/
-    #nav{
-        margin: 0%;
-        padding: 0%;
-        list-style-type: none;
-		
-		
-    }
-    #nav>li{
-        width: 9.5%;
-        height: 100%;
-        display: inline-block;
-        line-height: 70px;
-        text-align: center;
-        vertical-align: top;
-    }
-    #menubar a{
-        width: 100%;
-        height: 100%;
-        display: block;
-        text-decoration: none;
-        font-size: 23px;
-        font-weight: bold;
-        color: whitesmoke;
-    }
-    /*===============로그인 유저============*/
-	#user_log{
-	    margin: 0 50px;
-	    float: right;
-	    line-height: 137px;
-	}
-	#user_log td{
-	    text-align: right;
-	}
-	#logout-btn{
-	    width: 80px;
-	    height: 30px;
-	    border: none;
-	    border-radius: 5px;
-	    background-color: #4fc7ff;
-	    /* color: white; */
-	    font-weight: bold;
-	}
-
-
-    /*===========카테고리 영역=============*/
-    #cate_title{
-        width: 100%;
-        height: 9%;
-        font-size: 25px;
-        border-bottom: 1px solid black;
-        position: relative;
-    }
-    #cate_title>h3{
-        margin: 0%;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-    }
-    .child_title{
-        display: flex;
-        align-items: center;
-        width: 100%;
-        height: 7%;
-        border-bottom: 1px solid black;
-        text-align: center;
-        font-size: 25px;
-    }
-    .child_title a{
-        margin-left: 50px;
-        text-decoration: none;
-        color: black;
-    }
 	/*======================수정======================*/
 	input:read-only{
 		background-color: #D3D3D3;
@@ -202,7 +85,7 @@
  	}
  	
  	/*!important 다무시하고 먼저실행*/
-	table {
+	#content_1 table {
 	border-collapse: separate !important;
 	}
  	
@@ -439,17 +322,17 @@
 </head>
 <body>
     <div class="wrap">
-		<%@include file="../../common/professor_menubar.jsp" %>
+		<%@include file="../../common/admin_menubar.jsp" %>
         <div id="content">
             <div id="category">
                 <div id="cate_title">
-                    <h3>학사관리</h3>
+                    <span style="margin: 0 auto;">학사관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="#">학생 관리</a>
+                    <a href="enrollStudent.ad">학생 관리</a>
                 </div>
 				<div class="child_title">
-                    <a href="#" style="color:#00aeff; font-weight: 550;">임직원 관리</a>
+                    <a href="enrollProfessor.ad" style="color:#00aeff; font-weight: 550;">임직원 관리</a>
                 </div>
                 <div class="child_title">
                     <a href="#">학사일정 관리</a>

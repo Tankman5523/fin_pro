@@ -195,7 +195,7 @@
 		font-weight: bold;
  	}
  	/*!important 다무시하고 먼저실행*/
-	table {
+	#content_1 table {
 	border-collapse: separate !important;
 	}
  	
@@ -256,7 +256,8 @@
 		 
 		 
 		 if(flag){
-			 $("#insertForm").submit();	 
+			 $("#insertForm").submit();
+			 alert("학생이 생성되었습니다");
 		 }else{
 			 return false;
 		 } 
@@ -341,49 +342,6 @@
  	        }).open();
  	    });
  	}
- 	
- 	
- 	// 특수문자 한글 입력 막기
- 	function characterCheck(obj) {
- 	    var regExp = /[^\w\d\s]/g;
- 	    if (regExp.test(obj.value)) {
- 	        alert("특수문자와 한글은 입력하실 수 없습니다.");
- 	        obj.value = obj.value.replace(regExp, ''); // 특수문자와 한글을 제거
- 	    }
- 	}
- 	
- 	 //영어, 특수문자, 한글 입력 막기
- 	function characterCheck2(obj) {
-     var regExp = /[^0-9]/g;
-     if (regExp.test(obj.value)) {
-         alert("영어, 특수문자, 한글은 입력하실 수 없습니다.");
-         obj.value = obj.value.replace(regExp, ''); // 숫자 이외의 문자를 제거
-     } 
- }
- 	function characterCheck3(obj) {
- 	    var regExp = /[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\s]/g;
- 	    if (regExp.test(obj.value)) {
- 	        alert("특수문자는 입력하실 수 없습니다.");
- 	        obj.value = obj.value.replace(regExp, ''); // 특수문자를 제거
- 	    }    
- }
- 	
- 	function characterCheck4(obj) {
- 	    var regExp = /[^a-zA-Z0-9\s\^\-_.!@#$%&*()+=]/g;
- 	    if (regExp.test(obj.value)) {
- 	        alert("한글은 입력하실 수 없습니다.");
- 	        obj.value = obj.value.replace(regExp, ''); // 한글을 제거
- 	    }    
- 	}
- 	
- 	function characterCheck5(obj) {
- 	    var regExp = /[^0-9\s\^\-_.!@#$%&*()+=]/g;
- 	    if (regExp.test(obj.value)) {
- 	        alert("한글과 영어는 입력하실 수 없습니다.");
- 	        obj.value = obj.value.replace(regExp, ''); // 한글과 영어를 제거
- 	    }    
- 	}
-	
 	
 	function randomPasswordBtn() {
 	    var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@";
@@ -403,6 +361,55 @@
 	    }
 	}
 	
+	// 특수문자 한글 입력 막기
+	function characterCheck(obj) {
+	    var regExp = /[^\w\d\s]/g;
+	    if (regExp.test(obj.value)) {
+	        alert("특수문자와 한글은 입력하실 수 없습니다.");
+	        obj.value = obj.value.replace(regExp, ''); // 특수문자와 한글을 제거
+	    }
+	}
+	
+	 //영어, 특수문자, 한글 입력 막기
+	function characterCheck2(obj) {
+    var regExp = /[^1-4]/g;
+    if (regExp.test(obj.value)) {
+        alert("1~4 학년만 입력가능합니다.");
+        obj.value = obj.value.replace(regExp, ''); // 숫자 이외의 문자를 제거
+    } 
+}
+	function characterCheck3(obj) {
+	    var regExp = /[^a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ\s]/g;
+	    if (regExp.test(obj.value)) {
+	        alert("특수문자와 숫자는 입력하실 수 없습니다.");
+	        obj.value = obj.value.replace(regExp, ''); // 특수문자를 제거
+	    }    
+}
+	
+	function characterCheck4(obj) {
+	    var regExp = /[^a-zA-Z0-9\s\^\-_.!@#$%&*()+=]/g;
+	    if (regExp.test(obj.value)) {
+	        alert("한글은 입력하실 수 없습니다.");
+	        obj.value = obj.value.replace(regExp, ''); // 한글을 제거
+	    }    
+	}
+	
+	function characterCheck5(obj) {
+	    var regExp = /[^0-9\s\^\-_.!@#$%&*()+=]/g;
+	    if (regExp.test(obj.value)) {
+	        alert("한글과 영어는 입력하실 수 없습니다.");
+	        obj.value = obj.value.replace(regExp, ''); // 한글과 영어를 제거
+	    }    
+	}
+	//영어, 특수문자, 한글 입력 막기
+	function characterCheck6(obj) {
+    var regExp = /[^0-9]/g;
+    if (regExp.test(obj.value)) {
+        alert("숫자만 입력 가능합니다.");
+        obj.value = obj.value.replace(regExp, ''); // 숫자 이외의 문자를 제거
+    } 
+}
+	
 	
 </script>
 </head>
@@ -412,13 +419,13 @@
         <div id="content">
             <div id="category">
                 <div id="cate_title">
-                    <h3>학사관리</h3>
+                    <span style="margin: 0 auto;">학사관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="#" style="color:#00aeff; font-weight: 550;">학생 관리</a>
+                    <a href="enrollStudent.ad" style="color:#00aeff; font-weight: 550;">학생 관리</a>
                 </div>
 				<div class="child_title">
-                    <a href="#">임직원 관리</a>
+                    <a href="enrollProfessor.ad">임직원 관리</a>
                 </div>
                 <div class="child_title">
                     <a href="#">학사일정 관리</a>
@@ -497,7 +504,7 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">전화번호 : </th>
-									<th><input type="text"  class="user_info3" id="phone" name="phone" placeholder="숫자만 입력하세요." maxlength="11" onkeyup="characterCheck2(this)" onkeydown="characterCheck2(this)" data-name="전화번호"/></th>
+									<th><input type="text"  class="user_info3" id="phone" name="phone" placeholder="숫자만 입력하세요." maxlength="11" onkeyup="characterCheck6(this)" onkeydown="characterCheck6(this)" data-name="전화번호"/></th>
 									<th width="100px" height="30px">E-MAIL : </th>
 									<th><input type="text" id="email" name="email" class="user_info3" placeholder="example@example.com" required="이메일을 입력해주세요" onkeyup="characterCheck4(this)" onkeydown="characterCheck4(this)" data-name="E-MAIL"></th>
 								</tr>
@@ -507,10 +514,10 @@
 						<table class="user_info2">
 							<thead>
 								<tr>
-									<th width="100px" height="30px">우편번호 : </th>
-									<th><input type="text" id="post" name="post" class="user_info3" readonly></th>
 									<th width="100px" height="30px">주소 : </th>
 									<th><input type="text" id="address" name="address" class="user_info3" data-name="주소"></th>
+									<th width="100px" height="30px">우편번호 : </th>
+									<th><input type="text" id="post" name="post" class="user_info3" readonly></th>
 								</tr>
 							</thead>
 						</table>

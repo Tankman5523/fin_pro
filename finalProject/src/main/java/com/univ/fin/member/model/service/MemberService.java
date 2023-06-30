@@ -11,6 +11,7 @@ import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
+import com.univ.fin.common.model.vo.Objection;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.member.model.vo.Professor;
@@ -207,7 +208,7 @@ public interface MemberService {
 
 
 	// 강의 이의제기 -> 학생 신청
-	ArrayList<Dissent> studentGradeReport(String studentNo);
+	ArrayList<Objection> studentGradeReport(String studentNo);
 
 	// 직원 생성하기
 	int insertProfessor(Professor pr);
@@ -267,6 +268,15 @@ public interface MemberService {
 	
 	// (관리자) 강의평가 문항별 평균 점수 조회
 	ClassRating classRatingAverage(ClassRating cr);
+
+	//이의 신청 넘기기
+	int studentGradeRequest(Objection obj);
+
+	//이의 신청 확인
+	ArrayList<Objection> studentGradeView(Objection obj);
+	
+	//이의 신청 패이지 검색
+	int searchGradeReport(Objection objc);
 
 
 }

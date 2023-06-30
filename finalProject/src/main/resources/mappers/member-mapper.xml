@@ -175,6 +175,28 @@
   		<result column="MAJOR_CLASS" property="majorClass"/>
   	</resultMap>
   	
+  	<resultMap type="objection" id="objectionResultMap">
+  		<result column="PROFESSOR_NAME" property="professorName"/>
+  		<result column="STUDENT_NO" property="studentNo"/>
+  		<result column="CLASS_NAME" property="className"/>
+  		<result column="CLASS_NO" property="classNo"/>
+  		<result column="CREDIT" property="credit"/>
+  		<result column="REASON" property="reason"/>
+  		<result column="STATUS" property="status"/>
+  		<result column="CLASS_YEAR" property="classYear"/>
+  		<result column="CLASS_TERM" property="classTerm"/>
+  	</resultMap>
+  	
+  	<resultMap type="dissent" id="dissentResultMap">
+  		<result column="DISSENT_NO" property="dissentNo"/>
+  		<result column="STUDENT_NO" property="studentNo"/>
+  		<result column="CLASS_NAME" property="className"/>
+  		<result column="CLASS_NO" property="classNo"/>
+  		<result column="PROFESSOR_NAME" property="professorName"/>
+  		<result column="OPINION" property="option"/>
+  		<result column="STATUS" property="status"/>
+  	</resultMap>
+  	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
   		SELECT STUDENT_NO,D.DEPARTMENT_NAME,C.COLLEGE_NAME,FILE_NO,STUDENT_NAME,STUDENT_PWD,
@@ -1102,15 +1124,43 @@
   	
   	<insert id="insertStudent">
   	INSERT INTO STUDENT (STUDENT_NO, DEPARTMENT_NO, COLLEGE_NO, ENTRANCE_DATE, STUDENT_NAME, STUDENT_PWD, PHONE, EMAIL, POST, ADDRESS,CLASS_LEVEL)
-	VALUES (('P'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_SNO.NEXTVAL,4,0)),(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
+	VALUES (('S'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_SNO.NEXTVAL,4,0)),(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
   	</insert>
   	
-  	<select id="studentGradeReport" resultType="Dissent"> 
-  	SELECT C.CLASS_NAME, C.CLASS_NO, P.PROFESSOR_NAME, C.CREDIT, D.REASON
+  	
+  	<select id="studentGradeReport" resultMap="objectionResultMap" parameterType="string"> 
+  	SELECT SC.STUDENT_NO, C.CLASS_NAME, P.PROFESSOR_NAME, C.CREDIT
+	FROM (SELECT CLASS_NO,STUDENT_NO,MAX(PERIOD) FROM SCHEDULE GROUP BY CLASS_NO,STUDENT_NO) "SC"
+	JOIN CLASS C ON SC.CLASS_NO = C.CLASS_NO
+	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
+	WHERE SC.STUDENT_NO = #{studentNo}
+  	</select>
+  	
+  	<!-- 이의신청 추가 -->
+  	<insert id="studentGradeRequest" >
+  		INSERT INTO DISSENT (DISSENT_NO, CLASS_NO, STUDENT_NO, CREDIT, REASON)
+		VALUES (SEQ_DISNO.NEXTVAL, (SELECT CLASS_NO FROM CLASS WHERE CLASS_NAME = #{className}), #{studentNo}, #{credit}, #{reason})
+  	</insert>
+  	
+  	<select id="studentGradeView" resultMap="objectionResultMap">
+  	SELECT D.STUDENT_NO, C.CLASS_NAME, P.PROFESSOR_NAME, D.OPINION, D.STATUS ,D.CREDIT
 	FROM DISSENT D
 	JOIN CLASS C ON D.CLASS_NO = C.CLASS_NO
 	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
-	WHERE D.STUDENT_NO = #{student_no}
+	WHERE D.STUDENT_NO = #{studentNo}
+  	</select>
+  	
+  	<select id="searchGradeReport" resultMap="objectionResultMap">
+  	SELECT SC.STUDENT_NO, C.CLASS_NAME, P.PROFESSOR_NAME, C.CREDIT
+	FROM (
+	  SELECT CLASS_NO, STUDENT_NO, MAX(PERIOD)
+	  FROM SCHEDULE
+	  GROUP BY CLASS_NO, STUDENT_NO
+	) "SC"
+	JOIN CLASS C ON SC.CLASS_NO = C.CLASS_NO
+	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
+	WHERE SC.STUDENT_NO = #{studentNo}
+	  AND (C.CLASS_YEAR = '2023' AND C.CLASS_TERM = '1' OR C.CLASS_TERM = '2')
   	</select>
   	
   	<insert id="insertProfessor">

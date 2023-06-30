@@ -53,7 +53,7 @@ public class AdminController {
 	}else {
 		model.addAttribute("msg","회원 생성 실패");
 	}
-	return "member/admin/enrollStudent";
+	return "redirect:enrollStudent.ad";
 		
 	}
 		
@@ -102,7 +102,7 @@ public class AdminController {
 	    } else {
 	        model.addAttribute("msg", "직원 생성 실패");
 	    }
-	    return "member/admin/enrollProfessor";
+	    return "redirect:enrollProfessor.ad";
 	}
 
 

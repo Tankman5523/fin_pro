@@ -53,7 +53,7 @@
  	}
  	
  	/*!important 다무시하고 먼저실행*/
-	table {
+	#content_1 table {
 	border-collapse: separate !important;
 	}
 
@@ -158,12 +158,10 @@
             </div>
             <div id="content_1">
 					<div>
-						<ul>
-							<img src="https://item.kakaocdn.net/do/1bc37545ead4d1b5ccf3af23d5bce5714022de826f725e10df604bf1b9725cfd" style="width:100px; height:100px;" alt="학생얼굴">
-						</ul>
 					</div>
 					<div id="basic_info">
 						<table class="basic_table">
+						<br>
 							<th>기본 정보</th>
 							<button id="crystalBtn" onclick="updateProfessor()">수정하기</button>
 						</table>
@@ -211,9 +209,9 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">전화번호 : </th>
-									<th><input type="text" name="phone" id="phone" class="user_info3" value="${loginUser.phone}" maxlength="11"></th>
+									<th><input type="text" name="phone" id="phone" class="user_info3" value="${loginUser.phone}" maxlength="11" onkeyup="characterCheck2(this)" onkeydown="characterCheck2(this)"></th>
 									<th width="100px" height="30px">E-MAIL : </th>
-									<th><input type="text" name="email" id="email" class="user_info3" value="${loginUser.email}"></th>
+									<th><input type="text" name="email" id="email" class="user_info3" value="${loginUser.email}" onkeyup="characterCheck4(this)" onkeydown="characterCheck4(this)"></th>
 								</tr>
 							</thead>
 						</table>
@@ -221,10 +219,10 @@
 						<table class="user_info2">
 							<thead>
 								<tr>
-									<th width="100px" height="30px">우편번호 : </th>
-									<th><input type="text" name="post" id="post"class="user_info3" value="${loginUser.post}"></th>
 									<th width="100px" height="30px">주소 : </th>
 									<th><input type="text" name="address" id="address"class="user_info3" value="${loginUser.address}"></th>
+									<th width="100px" height="30px">우편번호 : </th>
+									<th><input type="text" name="post" id="post"class="user_info3" value="${loginUser.post}" readonly></th>
 								</tr>
 							</thead>
 						</table>
