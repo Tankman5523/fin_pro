@@ -31,8 +31,6 @@ public class EchoHandler extends TextWebSocketHandler  {
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) {
 		users.add(session);
-		log.info("접속");
-		log.info("session: {}", session);
 		
 		Object loginUser = session.getAttributes().get("loginUser");
 		if(loginUser instanceof Student) {
@@ -47,10 +45,6 @@ public class EchoHandler extends TextWebSocketHandler  {
 	
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-		log.info("수신");
-		log.info("session: {}", session);
-		log.info("textMessage: {}", message);
-		
 		String msg = message.getPayload();
 		String[] strs = msg.split(",");
 		if(strs != null && strs.length==3) { // 교수가 보냈을 때
@@ -75,6 +69,13 @@ public class EchoHandler extends TextWebSocketHandler  {
 					
 					student.sendMessage(newMessage);
 				}
+				else if("counselUpdate".equals(cmd)) {
+					AlarmVo alarm = AlarmVo.builder().cmd(cmd).professorName(pName).build();
+					String text = new Gson().toJson(alarm);
+					TextMessage newMessage = new TextMessage(text);
+					
+					student.sendMessage(newMessage);
+				}
 			}
 			
 		}
@@ -92,15 +93,6 @@ public class EchoHandler extends TextWebSocketHandler  {
 	
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		log.info("종료");
-		log.info("session: {}", session);
-		log.info("CloseStatus: {}", status);
-//		Object loginUser = session.getAttributes().get("loginUser");
-//		if(loginUser instanceof Student) {
-//			Student s = (Student)loginUser;
-//			String studentNo = s.getStudentNo();
-//			userSessionsMap.remove(studentNo, session);
-//		}
 		userSessionsMap.remove(session.getId());
 		users.remove(session);
 	}

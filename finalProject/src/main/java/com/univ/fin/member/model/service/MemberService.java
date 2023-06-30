@@ -318,7 +318,7 @@ public interface MemberService {
 	ArrayList<Notice> selectMainNotice();
 
 	// (교수) 상담 상태 변경
-	int updateCounselStatus(HashMap<String, String> statusMap);
+	int updateCounselStatus(HashMap<String, String> statusMap, HashMap<String, String> alarm);
 
 	// (관리자) 학생 휴,복학 신청 리스트 조회
 	ArrayList<Counseling> selectCounAllStuList();
