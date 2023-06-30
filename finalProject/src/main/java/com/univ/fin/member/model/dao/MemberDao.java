@@ -610,6 +610,11 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectSearchStuRestList",set);
 	}
 	
+	// (관리자) 임직원 안식,퇴직 검색 리스트 조회
+	public ArrayList<ProfessorRest> selectSearchProRestList(SqlSessionTemplate sqlSession,HashMap<String, String> set) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectSearchProRestList",set);
+	}
+		
 	// (교수) 상담 상세 조회
 	public Counseling selectCounselDetail(SqlSessionTemplate sqlSession, String counselNo) {
 		 
@@ -679,6 +684,8 @@ public class MemberDao {
 
 		return sqlSession.update("memberMapper.selectDeleteNotice");
 	}
+
+	
 
 
 }

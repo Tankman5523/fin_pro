@@ -6,6 +6,11 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <link rel="stylesheet" href="/fin/resources/css/classManegeListView.css">
+<style>
+	#enrool_list{
+		
+	}
+</style>
 </head>
 <body>
 	<div class="wrap">
@@ -47,7 +52,7 @@
 	                        <option value="class">과목명</option>
 	                    </select>
 	                    <input type="text" name="keyword" id="keyword">
-	                    <button type="button" onclick="searchClassList();" class="btn btn-secondary btn-sm" style="margin-bottom:5px;">조회</button>
+	                    <button type="button" id="search_btn" onclick="searchClassList();" class="btn btn-secondary btn-sm" style="margin-bottom:5px;">조회</button>
 	                </div>
                 
                 <div style="margin-left:20px; margin-bottom:10px;">
@@ -65,12 +70,12 @@
                                 <th style="width:12%">강의명</th>
                                 <th style="width:7%">학년도</th>
                                 <th style="width:6%">학기</th>
-                                <th style="width:6%">강의실</th>
+                                <th style="width:7%">강의실</th>
                                 <th style="width:7%">강의시간</th>
                                 <th style="width:8%">수강대상</th>
                                 <th style="width:7%">수강인원</th>
                                 <th style="width:7%">이수학점</th>
-                                <th style="width:14%">개설여부</th>
+                                <th style="width:12%">개설여부</th>
                                 
                             </tr>
                         </thead>
@@ -91,7 +96,7 @@
 			                                <td>${c.className}</td>
 			                                <td>${c.classYear}년</td>
 			                                <td>${c.classTerm}학기</td>
-			                                <td>${c.classroom}</td>
+			                                <td style="white-space: nowrap;">${c.classroom}</td>
 			                                <td>
 			                                    ${c.period}<br>
 			                                   ( ${c.day} )
@@ -247,7 +252,7 @@
 	                        +"<td>"+list[i].className+"</td>"
 	                        +"<td>"+list[i].classYear+"년</td>"
 	                        +"<td>"+list[i].classTerm+"학기</td>"
-	                        +"<td>"+list[i].classroom+"</td>"
+	                        +"<td style='white-space: nowrap;'>"+list[i].classroom+"</td>"
 	                        +"<td>"
 	                           +list[i].period+"<br>"
 	                           +"( "+list[i].day+" )"
@@ -294,6 +299,14 @@
     		
     		location.href="rejectClassCreate.ad?classNo="+cno+"&explain="+explain;
     	}
+    	
+    	$("#keyword").keyup(function(e){
+    		if(e.code=='Enter'){
+    			$("#search_btn").click();
+    		}
+    	})
+    		
+    	
     	
     </script>
 </body>

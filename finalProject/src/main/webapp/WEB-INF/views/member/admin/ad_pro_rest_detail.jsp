@@ -33,7 +33,7 @@
             </div>
             <div id="content_1">
             	<c:choose>
-            		<c:when test="${pr.category eq 1}">
+            		<c:when test="${pr.category eq 1}"><!-- 안식 휴가 신청인지 퇴직 신청인지 -->
             			<span id="content_title">안식 정보</span>
             		</c:when>
             		<c:otherwise>
@@ -80,8 +80,15 @@
                     </div>
                     <br>
                     <div id="btn_area">
-                        <button type="reset" class="btn btn-danger btn-lg" onclick="updateProRest(N);">반려</button>
-                        <button type="submit" class="btn btn-primary btn-lg" onclick="updateProRest(Y);">승인</button>
+                    	<c:choose>
+                    	<c:when test="${pr.status eq 'B'}">
+	                        <button type="reset" class="btn btn-danger btn-lg" onclick="updateProRest('N');">반려</button>
+	                        <button type="submit" class="btn btn-primary btn-lg" onclick="updateProRest('Y');">승인</button>
+                    	</c:when>
+                    	<c:otherwise><!-- 이미 승인하거나 반려했다면 뒤로 돌아가는 버튼 보여줌 -->
+                    		<input type="button" value="돌아가기" class="btn btn-secondary btn-lg" onclick="history.back();" />
+                    	</c:otherwise>
+                    	</c:choose>
                     </div>
         	</div>
      	</div>
@@ -101,7 +108,8 @@
 	    
 	    function updateProRest(status){
 	  		var restNo = ${pr.restNo}; //상담번호
-	  		location.href="updateProRest.ad?restNo"+restNo+"&status="+status;
+	  		console.log(restNo);
+	  		location.href="updateProRest.ad?restNo="+restNo+"&status="+status;
 	  	}
 	    
   	</script>
