@@ -242,7 +242,7 @@
   		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO) 
         JOIN COLLEGE C ON (S.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE STUDENT_NO = #{studentNo}
-  		AND STUDENT_PWD = #{studentPwd}
+  		<!-- AND STUDENT_PWD = #{studentPwd} -->
   	</select>
   	
   	<!-- 임직원 로그인 -->
@@ -253,7 +253,7 @@
         JOIN DEPARTMENT D ON (P.DEPARTMENT_NO = D.DEPARTMENT_NO)
         JOIN COLLEGE C ON (P.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE PROFESSOR_NO = #{professorNo}
-  		AND PROFESSOR_PWD = #{professorPwd}
+  		<!-- AND PROFESSOR_PWD = #{professorPwd} -->
   	</select>
   
   	<!-- ID조회 - 학생 -->
@@ -779,7 +779,7 @@
   	<!-- 상담 상세보기 -->
   	<select id="selectCounseling" resultMap="counselingResultMap">
   		SELECT COUNSEL_NO,PROFESSOR_NO,PROFESSOR_NAME,TO_CHAR(APPLICATION_DATE,'YYYY-MM-DD') APPLICATION_DATE
-		 			,TO_CHAR(REQUEST_DATE,'YYYY-MM-DD') REQUEST_DATE,COUNSEL_CONTENT,COUNSEL_AREA,C.STATUS
+		 			,TO_CHAR(REQUEST_DATE,'YYYY-MM-DD') REQUEST_DATE,COUNSEL_CONTENT,COUNSEL_AREA,COUNSEL_RESULT,C.STATUS
 	  	FROM COUNSELING C
 	  	JOIN PROFESSOR P USING (PROFESSOR_NO)
   		WHERE COUNSEL_NO = #{counselNo}

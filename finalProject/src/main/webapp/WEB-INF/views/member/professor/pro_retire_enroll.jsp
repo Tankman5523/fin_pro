@@ -65,7 +65,7 @@
 	                                <td><input type="text" id="jobYear" placeholder="퇴직(예정)일 입력시 계산" readonly></td>
 	                                <td>*퇴직 (예정)일</td>
 	                                <td>
-	                                    <input type="text" name="startDate" id="datepicker1" onchange="retireDate()" required>                                 
+	                                    <input type="date" name="startDate" id="datepicker1" onchange="retireDate()" data-placeholder="날짜 선택" required>                                 
 	                                </td>
 	                            </tr>
 	                        </table>
