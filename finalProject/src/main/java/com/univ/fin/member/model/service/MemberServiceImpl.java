@@ -1,7 +1,6 @@
 package com.univ.fin.member.model.service;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -16,9 +15,9 @@ import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
-import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
+import com.univ.fin.common.model.vo.Objection;
 import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
@@ -588,8 +587,8 @@ public class MemberServiceImpl implements MemberService{
 
 
 	@Override
-	public ArrayList<Dissent> studentGradeReport(String studentNo) {
-		ArrayList<Dissent> list = memberDao.studentGradeReport(sqlSession,studentNo);
+	public ArrayList<Objection> studentGradeReport(String studentNo) {
+		ArrayList<Objection> list = memberDao.studentGradeReport(sqlSession,studentNo);
 		
 		return list;
 	}
@@ -891,9 +890,14 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	//(교수) 상담 상태 변경
+	@Transactional
 	@Override
-	public int updateCounselStatus(HashMap<String, String> statusMap) {
-		return memberDao.updateCounselStatus(sqlSession, statusMap);
+	public int updateCounselStatus(HashMap<String, String> statusMap, HashMap<String, String> alarm) {
+		int result1 = 0;
+		int result2 = 0;
+		result1 = memberDao.updateCounselStatus(sqlSession, statusMap);
+		result2 = memberDao.alarmInsert(sqlSession, alarm);
+		return result1*result2;
 	}
 
 	// 알람 수신
@@ -921,6 +925,24 @@ public class MemberServiceImpl implements MemberService{
 		
 		return memberDao.searchNotice(sqlSession, noticeMap);
 	}
+	
+	// (관리자) 메인 -> 강의 신청 목록 조회
+	@Override
+	public ArrayList<Classes> selectAdMainClasses() {
+		return memberDao.selectAdMainClasses(sqlSession);
+	}
+	
+	// (관리자) 메인 -> 학생 휴학 및 퇴학 신청 목록
+	@Override
+	public ArrayList<StudentRest> selectMainStudentRest() {
+		return memberDao.selectMainStudentRest(sqlSession);
+	}
+	
+	// (관리자) 메인 -> 교수 안식 및 퇴직 신청 목록
+	@Override
+	public ArrayList<ProfessorRest> selectMainProfessorRest() {
+		return memberDao.selectMainProfessorRest(sqlSession);
+	}
 
 	// (관리자) 공지사항 관리 - 공지사항 전체 삭제
 	@Override
@@ -933,7 +955,29 @@ public class MemberServiceImpl implements MemberService{
 	public int selectDeleteNotice(String[] noticeNo) {
 		return memberDao.selectDeleteNotice(sqlSession, noticeNo);
 	}
+	
+	@Override
+	public int studentGradeRequest(Objection obj) {
+		
+		int result = memberDao.studentGradeRequest(sqlSession, obj);
+		
+		return result;
+	}
+	
+	//이의신청 확인
+	@Override
+	public ArrayList<Objection> studentGradeView(Objection obj) {
+		
+		return memberDao.studentGradeView(sqlSession,obj);
+	}
 
+	//이의신청 년도 학기검색
+	@Override
+	public int searchGradeReport(Objection objc) {
+		
+		return memberDao.searchGradeReport(sqlSession, objc);
+	}
+		
 	// (관리자) 공지사항 관리 - 공지사항 수정 페이지 이동
 	@Override
 	public Notice selectUpdateNotice(String noticeNo) {

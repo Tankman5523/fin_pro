@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.dao.RegistDao;
+import com.univ.fin.money.model.dao.ScholarshipDao;
 import com.univ.fin.money.model.vo.RegistPay;
 
 @Service
@@ -47,8 +48,10 @@ public class RegistServiceImpl implements RegistService{
 	@Transactional
 	public int insertRegistPay(RegistPay r) {
 		int result1 = registDao.insertRegistPay(sqlSession,r);
-		int result2 = 0;
-		if(result1>0) {//등록금 입력 성공하면 해당학기 장학금 처리완료로 변경
+		int result2 = 1;
+		int schAmount = r.getSchAmount();
+		//장학금이 0보다 크면(있으면) 장학금 상태변경
+		if(schAmount>0&&result1>0) {//등록금 입력 성공하면 해당학기 장학금 처리완료로 변경
 			result2=registDao.finishScholarShip(sqlSession,r);
 		}
 		return result1*result2;
@@ -108,8 +111,9 @@ public class RegistServiceImpl implements RegistService{
 	@Transactional
 	public int deleteRegistPay(RegistPay r) {
 		int result1 = registDao.deleteRegistPay(sqlSession,r);
-		int result2 = 0;
-		if(result1>0) {
+		int schCount = registDao.countScholarship(sqlSession,r);
+		int result2 = 1;
+		if(schCount>0&&result1>0) {
 			result2 = registDao.returnScholarShip(sqlSession,r);
 		}
 		

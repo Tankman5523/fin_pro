@@ -38,7 +38,7 @@
 					</tr>
 					<tr>
 						<th>학번</th>
-						<td><input type="text" value="${c.studentNo }" readonly="readonly"></td>
+						<td><input id="sNo" type="text" value="${c.studentNo }" readonly="readonly"></td>
 						<th>상담분야</th>
 						<td><input type="text" value="${c.counselArea }" readonly="readonly"></td>
 					</tr>
@@ -112,7 +112,7 @@
 				
 		      <div class="btn-area">
 		        <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
-		        <button type="submit" class="btn btn-info">변경</button>
+		        <button type="submit" class="btn btn-info" onclick="msgSend();">변경</button>
 		      </div>
 	      	</form>
 	      </div>
@@ -125,6 +125,9 @@
 
 
 <script type="text/javascript">
+	$(function() {
+		connect();
+	})
 
 	var input = document.getElementById('status')
 	var status = '${c.status}'
@@ -162,6 +165,12 @@
 	
 	if(msg != ''){
 		alert(msg)	
+	}
+	
+	function msgSend() {
+		if($("#counselStatus").val() == 'C') {
+			socket.send("counselUpdate,"+$("#sNo").val()+","+"${loginUser.professorName}");
+		}
 	}
 	
 	

@@ -16,9 +16,9 @@ import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Department;
-import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
+import com.univ.fin.common.model.vo.Objection;
 import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
@@ -388,9 +388,9 @@ public class MemberDao {
 
 
 	//강의 이의제기 - 학생
-	public ArrayList<Dissent> studentGradeReport(SqlSessionTemplate sqlSession, String studentNo) {
+	public ArrayList<Objection> studentGradeReport(SqlSessionTemplate sqlSession, String studentNo) {
 
-		return (ArrayList)sqlSession.selectList("memberMapper.studentGradeReport");
+		return (ArrayList)sqlSession.selectList("memberMapper.studentGradeReport",studentNo);
 		
 	}
 	
@@ -529,6 +529,24 @@ public class MemberDao {
 	public ClassRating classRatingAverage(SqlSessionTemplate sqlSession, ClassRating cr) {
 		return sqlSession.selectOne("memberMapper.classRatingAverage", cr);
 	}
+	
+	// 강의 이의신청 리스트불러오기
+	public int studentGradeRequest(SqlSessionTemplate sqlSession, Objection obj) {
+		return sqlSession.insert("memberMapper.studentGradeRequest",obj);
+	}
+	
+	//강의 이의신청 확인리스트
+	public ArrayList<Objection> studentGradeView(SqlSessionTemplate sqlSession, Objection obj) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.studentGradeView",obj);
+	}
+
+	//이의신청 년도 검색
+	public int searchGradeReport(SqlSessionTemplate sqlSession, Objection objc) {
+		
+		return sqlSession.selectOne("memberMapper.searchGradeReport",objc);
+	}
+
 
 
 	//(교수) 안식,퇴직 신청 등록
@@ -712,6 +730,21 @@ public class MemberDao {
 	public ArrayList<Counseling> selectAllCounseling(SqlSessionTemplate sqlSession, String user) {
 		
 		return (ArrayList)sqlSession.selectList("memberMapper.selectAllCounseling", user);
+	}
+	
+	// (관리자) 메인페이지 -> 강의신청 목록 조회
+	public ArrayList<Classes> selectAdMainClasses(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectAdMainClasses");
+	}
+	
+	// (관리자) 메인페이지 -> 학생 휴학 및 퇴학 신청 목록 조회
+	public ArrayList<StudentRest> selectMainStudentRest(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectMainStudentRest");
+	}
+	
+	// (관리자) 메인페이지 -> 교수 안식 및 퇴직 신청 목록 조회
+	public ArrayList<ProfessorRest> selectMainProfessorRest(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectMainProfessorRest");
 	}
 
 	

@@ -1,8 +1,12 @@
 package com.univ.fin.common.template;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -10,6 +14,7 @@ import java.util.HashMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,7 +31,7 @@ import com.google.gson.Gson;
 public class FineDust {
 	
 	@Autowired
-	CacheManager cacheManager;
+	private CacheManager cacheManager;
 	
 	@Scheduled(cron = "0 0/30 * * * *")
 	public void updateDust() throws Exception {
@@ -37,50 +42,89 @@ public class FineDust {
 	@Cacheable("dust")
 	@ResponseBody
 	@RequestMapping(value="dust.api", produces="application/json; charset=UTF-8")
-	public String fineDust() throws Exception {
+	public String fineDust() throws UnsupportedEncodingException, MalformedURLException, ParseException{
 	
 		String url = "http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty";
 		url += "?serviceKey=JgXo3POe0a3b4pTvBw8rueVqJHCR9e88WngrWVqtFnFyJLCgxTMU7sHDmeMFiWmVEFsKZXxapPzBPgf8FVTeOA%3D%3D";
 		url += "&returnType=JSON";
-		url += "&numOfRows=1";
+		url += "&numOfRows=100";
 		url += "&pageNo=1";
 		url += "&sidoName=" + URLEncoder.encode("서울", "UTF-8");
 		url += "&ver=1.3";
 		
-		URL requestUrl = new URL(url);
-		
-		HttpURLConnection urlCon = (HttpURLConnection)requestUrl.openConnection();
-		
-		urlCon.setRequestMethod("GET");
-		urlCon.setRequestProperty("Accept", "application/json");
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
-		
 		String responseText = "";
-		String line;
-		
-		while((line = br.readLine()) != null) {
-			responseText += line;
+		boolean success = false;
+		while(success != true) {
+			URL requestUrl = new URL(url);
+			
+			HttpURLConnection urlCon;
+			try {
+				urlCon = (HttpURLConnection)requestUrl.openConnection();
+			
+				urlCon.setRequestMethod("GET");
+				urlCon.setRequestProperty("Content-type", "application/json");
+				urlCon.setRequestProperty("Accept", "application/json");
+				urlCon.setConnectTimeout(1000);
+				urlCon.setReadTimeout(1000);
+				
+				try {
+					if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
+						success = true;
+					}
+				} catch (SocketTimeoutException e) {
+					System.out.println("미세먼지 타임아웃 발생");
+					success = false;
+					responseText = "";
+				}
+				
+				BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
+				
+				String line;
+				
+				while((line = br.readLine()) != null) {
+					responseText += line;
+				}
+				
+				System.out.println("미세먼지 responseText : " + responseText);
+				
+				br.close();
+				urlCon.disconnect();
+			} catch (IOException e) {
+			}
 		}
-		
-		br.close();
-		urlCon.disconnect();
 		
 		JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
 		JSONObject bodyObj = (JSONObject) totalObj.get("response");
 		JSONObject body = (JSONObject) bodyObj.get("body");
 		JSONArray arr = (JSONArray) body.get("items");
-		JSONObject item = (JSONObject)arr.get(0);
 		
-		String setPm10 = (String)item.get("pm10Grade1h"); //미세먼지 1시간 등급
-		String setPm25 = (String)item.get("pm25Grade1h"); //초미세먼지 1시간 등급
+		String setPm10 = "";
+		String setPm25 = "";
+		for(int i=0; i<arr.size(); i++) {
+			JSONObject item = (JSONObject)arr.get(i);
+			if(item.get("stationName").equals("영등포구")) {
+				setPm10 = (String)item.get("pm10Grade1h"); //미세먼지 1시간 등급
+				setPm25 = (String)item.get("pm25Grade1h"); //초미세먼지 1시간 등급
+			}
+		}
 		
-		String pm10 = chkGrade(setPm10); //미세먼지 등급 변환
-		String pm25 = chkGrade(setPm25); //초미세먼지 등급 변환
+		/* 통신관련 상태 이상일때 */
+		String pm10 = "";
+		String pm25 = "";
+		String chkError = "YYYY";
+		if(setPm10 == null || setPm25 == null) { //비정상처리
+			pm10 = chkGrade("0");
+			pm25 = chkGrade("0");
+			chkError = "NNNN";
+		}else { //정상처리
+			pm10 = chkGrade(setPm10); //미세먼지 등급 변환
+			pm25 = chkGrade(setPm25); //초미세먼지 등급 변환
+		}
 		
 		HashMap<String, String> h = new HashMap<>();
 		h.put("pm10Grade1h", pm10);
 		h.put("pm25Grade1h", pm25);
+		h.put("chkError", chkError);
 		
 		return new Gson().toJson(h);
 	}
@@ -94,6 +138,8 @@ public class FineDust {
 		
 		/* 좋음 : 1, 보통 : 2, 나쁨 : 3, 매우나쁨 : 4 */
 		switch(pm2) {
+			case 0 : setPm = "<span><img id='dustErrorGif' src='resources/icon/dust_error.gif' data-animated='resources/icon/dust_error.gif'></span>";
+				break;
 			case 1 : setPm = "<span style='color : #32a1ff;'>좋음</span>";
 				break;
 			case 2 : setPm = "<span style='color : #00c73c;'>보통</span>";
@@ -105,6 +151,13 @@ public class FineDust {
 		}
 		
 		return setPm;
+	}
+	
+	/* 통신관련 상태이상일 경우 캐시 삭제 */
+	@ResponseBody
+	@RequestMapping(value="dustCache.api",produces = "application/json; charset=UTF-8")
+	public void dustCache() {
+		cacheManager.getCache("dust").clear();
 	}
 	
 }

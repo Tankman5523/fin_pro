@@ -151,7 +151,7 @@ public class ProfessorController {
 			//첨부파일에 담기
 			a.setOriginName(upfile.getOriginalFilename()); //파일 원래 이름
 			a.setChangeName(changeName); //파일 변경명
-			a.setFilePath(filePath); //파일 저장 경로
+			a.setFilePath(filePath+subPath); //파일 저장 경로
 			
 			int result = memberService.insertClassCreate(c,a);
 			
@@ -207,7 +207,7 @@ public class ProfessorController {
 			//첨부파일에 담기
 			a.setOriginName(reUpfile.getOriginalFilename()); //파일 원래 이름
 			a.setChangeName(changeName); //파일 변경명
-			a.setFilePath(filePath); //파일 저장 경로
+			a.setFilePath(filePath+subPath); //파일 저장 경로
 			
 			
 			if(c.getFileNo()!=null) {//기존 첨부파일이 있다면
@@ -460,7 +460,8 @@ public class ProfessorController {
 	
 	@RequestMapping("updateCounselStatus")
 	public ModelAndView updateCounselStatus(@RequestParam("counsel-status") String counselStatus
-											,String cancelResult, String counselNo, ModelAndView mv) {
+											,String cancelResult, String counselNo, ModelAndView mv, HttpSession session) {
+		Professor p = (Professor)session.getAttribute("loginUser");
 		
 		if(cancelResult.isEmpty()) {
 			cancelResult = "null";
@@ -475,7 +476,17 @@ public class ProfessorController {
 		statusMap.put("cancelResult", cancelResult);
 		statusMap.put("counselNo", counselNo);
 		
-		int result = memberService.updateCounselStatus(statusMap);
+		HashMap<String, String> alarm = new HashMap<>();
+		if(statusMap.get("counselStatus").equals("C")) {
+			alarm.put("cmd", "counselUpdate");
+		} else {
+			alarm.put("cmd", "nothing");
+		}
+		Counseling c = memberService.selectCounselDetail(counselNo);
+		alarm.put("studentNo", c.getStudentNo());
+		alarm.put("professorName", p.getProfessorName());
+		
+		int result = memberService.updateCounselStatus(statusMap, alarm);
 		
 		String msg = "";
 		

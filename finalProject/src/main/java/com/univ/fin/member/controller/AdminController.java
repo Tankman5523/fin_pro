@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -113,8 +114,9 @@ public class AdminController {
 	    } else {
 	        model.addAttribute("msg", "직원 생성 실패");
 	    }
-	    return "member/admin/enrollProfessor";
+	    return "redirect:enrollProfessor.ad";
 	}
+
 	
 	//강의 개설 일괄 승인
 	@RequestMapping("permitAllClassCreate.ad")
@@ -473,6 +475,21 @@ public class AdminController {
 		return new Gson().toJson(list);
 	}
 	
+	// (관리자)메인페이지
+	@RequestMapping(value="main.ad")
+	public ModelAndView mainPage(ModelAndView mv) {
+		
+		ArrayList<Classes> classList = memberService.selectAdMainClasses();
+		ArrayList<StudentRest> srList = memberService.selectMainStudentRest();
+		ArrayList<ProfessorRest> prList = memberService.selectMainProfessorRest();
+		ArrayList<HashMap<String, String>> calList = memberService.yearCalendarList(); // 학사일정 조회
+		ArrayList<Notice> nList = memberService.selectMainNotice(); // 공지사항 목록
+		
+		mv.addObject("classList", classList).addObject("srList", srList).addObject("prList",prList).addObject("calList", calList)
+		  .addObject("nList", nList).setViewName("member/admin/mainPage");
+		return mv;
+	}
+
 	//(관리자) 공지사항 관리 - 공지사항 선택 삭제
 	@ResponseBody
 	@PostMapping(value = "deleteNotice.ad", produces = "application/json; charset=UTF-8;")

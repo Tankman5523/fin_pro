@@ -10,9 +10,9 @@ import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
-import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
+import com.univ.fin.common.model.vo.Objection;
 import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
@@ -216,7 +216,7 @@ public interface MemberService {
 	int gradeUpdate(Grade g, HashMap<String, String> alarm);
 
 	// 강의 이의제기 -> 학생 신청
-	ArrayList<Dissent> studentGradeReport(String studentNo);
+	ArrayList<Objection> studentGradeReport(String studentNo);
 
 	// 직원 생성하기
 	int insertProfessor(Professor pr);
@@ -317,7 +317,7 @@ public interface MemberService {
 	ArrayList<Notice> selectMainNotice();
 
 	// (교수) 상담 상태 변경
-	int updateCounselStatus(HashMap<String, String> statusMap);
+	int updateCounselStatus(HashMap<String, String> statusMap, HashMap<String, String> alarm);
 
 	// (관리자) 학생 휴,복학 신청 리스트 조회
 	ArrayList<Counseling> selectCounAllStuList();
@@ -357,7 +357,16 @@ public interface MemberService {
 
 	// (관리자) 공지사항 관리 - 전체 공지사항 조회
 	ArrayList<Notice> selectNoticeAllList();
+	
+	// (관리자) 메인페이지 -> 강의신청 목록 조회
+	ArrayList<Classes> selectAdMainClasses();
 
+	// (관리자) 메인페이지 -> 학생 휴학 및 퇴학 신청 목록 조회
+	ArrayList<StudentRest> selectMainStudentRest();
+
+	// (관리자) 메인페이지 -> 교수 안식 및 퇴직 신청 목록 조회
+	ArrayList<ProfessorRest> selectMainProfessorRest();
+	
 	// (관리자) 공지사항 관리 - 공지사항 검색
 	ArrayList<Notice> searchNotice(HashMap<String, String> noticeMap);
 
@@ -366,7 +375,16 @@ public interface MemberService {
 
 	// (관리자) 공지사항 관리 - 공지사항 선택 삭제
 	int selectDeleteNotice(String[] noticeNo);
+	
+	//이의 신청 넘기기
+	int studentGradeRequest(Objection obj);
 
+	//이의 신청 확인
+	ArrayList<Objection> studentGradeView(Objection obj);
+		
+	//이의 신청 패이지 검색
+	int searchGradeReport(Objection objc);
+	
 	// (관리자) 공지사항 관리 - 공지사항 수정 페이지 이동
 	Notice selectUpdateNotice(String noticeNo);
 

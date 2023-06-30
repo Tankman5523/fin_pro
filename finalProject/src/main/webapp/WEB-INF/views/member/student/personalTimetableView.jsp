@@ -51,7 +51,7 @@
 
                 <div class="schedule-area">
                     <div class="area1">
-                    	<div class="day0" style="width: 187.5px; border-bottom: 1px solid lightgray;"></div>
+                    	<div class="day0" style="width: 187.3px; border-bottom: 1px solid lightgray;"></div>
 	                    <div class="day1">월</div>
 	                    <div class="day2">화</div>
 	                    <div class="day3">수</div>

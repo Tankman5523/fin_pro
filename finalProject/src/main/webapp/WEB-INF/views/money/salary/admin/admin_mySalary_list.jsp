@@ -6,88 +6,101 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>교수_급여조회</title>
+    <title>관리자_급여조회</title>
     <style>
-    	.readonly{
-    		background-color : lightgray;
-    	}
-    	.modal {
-        position: absolute;
-        top: 0;
-        left: 0;
-
-        width: 100%;
-        height: 100%;
-
-        display: none;
-
-        background-color: rgba(0, 0, 0, 0.4);
-        }
-      
-       .modal.show {
-         display: block;
-       }
-       .modalContent{
-		 position: absolute;
-		 top: 50%;
-		 left: 50%;
+		.readonly {
+			background-color: lightgray;
+		}
 		
-		 width: 550px;
-		 height: 600px;
+		.modal {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: none;
+			background-color: rgba(0, 0, 0, 0.4);
+		}
 		
-		 padding: 40px;
+		.modal.show {
+			display: block;
+		}
 		
-		 text-align: center;
+		.modalContent {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			width: 550px;
+			height: 600px;
+			padding: 40px;
+			text-align: center;
+			background-color: rgb(255, 255, 255);
+			border-radius: 10px;
+			box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+			transform: translateX(-50%) translateY(-50%);
+		}
 		
-		 background-color: rgb(255, 255, 255);
-		 border-radius: 10px;
-		 box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+		.payCol {
+			background-color: rgb(69, 190, 238);
+		}
 		
-		 transform: translateX(-50%) translateY(-50%);
-       }
-       .payCol{
-      	 background-color:rgb(69, 190, 238);
-       }
-       .taxCol{
-      	 background-color:lightcoral;
-       }
-       .realCol{
-      	 background-color:lightyellow;
-       }
-       .modalContent input{
-      	 text-align:center;
-       }
-       #payList>tbody>tr:hover{
-      	 background-color : lightgray;
-      	 cursor : pointer;
-       }
-    </style>
+		.taxCol {
+			background-color: lightcoral;
+		}
+		
+		.realCol {
+			background-color: lightyellow;
+		}
+		
+		.modalContent input {
+			text-align: center;
+		}
+		
+		#payList>tbody>tr:hover {
+			background-color: lightgray;
+			cursor: pointer;
+		}
+	</style>
 </head>
 <body>
     <div class="wrap">
     	<!--===============================메뉴바-===============================-->
-        <%@include file="../../../common/professor_menubar.jsp" %>
+        <%@include file="../../../common/admin_menubar.jsp" %>
         <!--===============================메뉴바-===============================-->
         <div id="content">
             <div id="category">
                 <div id="cate_title">
-                    <span style="margin: 0 auto;">급여관리</span>
+                    <span style="margin: 0 auto;">금전관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="mylist.sl" style="font-weight:bold;">급여조회</a>
+                    <a href="allList.rg">등록금 관리</a>
+                </div>
+                <div class="child_title">
+                    <a href="allList.sc">장학금 관리</a>
+                </div>
+                <div class="child_title" style="font-weight:bold;">
+                    <a href="allList.sl">급여 관리</a>
                 </div>
             </div>
             <!--내용 시작-->
             <div id="content_1">
                 <div style="width: 90%;height: 90%;margin: 5%;overflow-y: auto;">
+                	<div style="height:5%;">
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.sl'">급여내역조회</button> 
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.sl'">급여 입력</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='mylist.sl'">내 급여 조회</button>
+                        <hr>
+                        <h2>내 급여 조회</h2>
+                    </div>
                     <div>
+                    	<br><br><br>
                         <table border="1" style="width: 100%;">
                             <!--로그인유저 자동입력-->
                             <tr>
-                                <th>교수명</th>
+                                <th>직원명</th>
                                 <td><input type="text" name="professorName" value="${loginUser.professorName}" readonly class="readonly"></td>
                                 <th>소속</th>
-                                <!-- 값 나중에 departmet로 변경 -->
+                                <!-- 값 나중에 department로 변경 -->
                                 <td><input type="text" name="department" value="${loginUser.departmentNo}" readonly class="readonly"></td>
                                 
                             </tr>
@@ -101,7 +114,7 @@
                                 <!--기간 설정 후 조회 클릭-->
                                 <td colspan="4">조회기간 
                                 <input type="date" name="startDate" id="startDate" value="${loginUser.entranceDate}" required> ~ <input type="date" name="endDate" id="endDate" value="" required>
-                                <button onclick="searchSalary()">조회</button></td>
+                                <button onclick="searchSalary();">조회</button></td>
                             </tr>
                         </table>
                         
@@ -171,7 +184,7 @@
                         						}
                         						
                         						str +="<tr onclick='modalOpen("+payNo+")'>"
-                        							 +"<td>"+payNo+"</td>"
+                        							 +"<td>"+list[i].payNo+"</td>"
                         							 +"<td>"+list[i].paymentDate+"</td>"
                         							 +"<td>"+list[i].paymentTotal.toLocaleString()+" 원</td>"
                         							 +"<td>"+list[i].deductTotal.toLocaleString()+" 원</td>"
@@ -190,7 +203,6 @@
                         			}
                         		});
                         	}
-                        	
                         	function modalOpen(num){
                         		var payNo = num;
                         		$.ajax({
@@ -279,7 +291,7 @@
 	
 	                    	</div>
 			        	</div>
-			        </div>
+                    </div>
                 </div>
             </div>
             <!---->

@@ -65,9 +65,9 @@
 	                                <td><input type="text" id="jobYear" readonly></td>
 	                                <td>*안식 기간</td>
 	                                <td>
-	                                    <input type="text" name="startDate" id="datepicker1" class="" required>
+	                                    <input type="date" name="startDate" id="datepicker1" data-placeholder="날짜 선택" required>
 	                                    ~
-	                                    <input type="text" name="endDate" id="datepicker2" class="" required>
+	                                    <input type="date" name="endDate" id="datepicker2" data-placeholder="날짜 선택" required>
 	                                </td>
 	                            </tr>
 	                        </table>
