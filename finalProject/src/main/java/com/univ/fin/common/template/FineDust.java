@@ -1,8 +1,12 @@
 package com.univ.fin.common.template;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -10,6 +14,7 @@ import java.util.HashMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
@@ -37,36 +42,56 @@ public class FineDust {
 	@Cacheable("dust")
 	@ResponseBody
 	@RequestMapping(value="dust.api", produces="application/json; charset=UTF-8")
-	public String fineDust() throws Exception {
+	public String fineDust() throws UnsupportedEncodingException, MalformedURLException, ParseException{
 	
 		String url = "http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty";
 		url += "?serviceKey=JgXo3POe0a3b4pTvBw8rueVqJHCR9e88WngrWVqtFnFyJLCgxTMU7sHDmeMFiWmVEFsKZXxapPzBPgf8FVTeOA%3D%3D";
 		url += "&returnType=JSON";
-		url += "&numOfRows=1";
+		url += "&numOfRows=100";
 		url += "&pageNo=1";
 		url += "&sidoName=" + URLEncoder.encode("서울", "UTF-8");
 		url += "&ver=1.3";
 		
-		URL requestUrl = new URL(url);
-		
-		HttpURLConnection urlCon = (HttpURLConnection)requestUrl.openConnection();
-		
-		urlCon.setRequestMethod("GET");
-		urlCon.setRequestProperty("Accept", "application/json");
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
-		
 		String responseText = "";
-		String line;
-		
-		while((line = br.readLine()) != null) {
-			responseText += line;
+		boolean success = false;
+		while(success != true) {
+			URL requestUrl = new URL(url);
+			
+			HttpURLConnection urlCon;
+			try {
+				urlCon = (HttpURLConnection)requestUrl.openConnection();
+			
+				urlCon.setRequestMethod("GET");
+				urlCon.setRequestProperty("Content-type", "application/json");
+				urlCon.setRequestProperty("Accept", "application/json");
+				urlCon.setConnectTimeout(1000);
+				urlCon.setReadTimeout(1000);
+				
+				try {
+					if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
+						success = true;
+					}
+				} catch (SocketTimeoutException e) {
+					System.out.println("미세먼지 타임아웃 발생");
+					success = false;
+					responseText = "";
+				}
+				
+				BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
+				
+				String line;
+				
+				while((line = br.readLine()) != null) {
+					responseText += line;
+				}
+				
+				System.out.println("미세먼지 responseText : " + responseText);
+				
+				br.close();
+				urlCon.disconnect();
+			} catch (IOException e) {
+			}
 		}
-		
-		System.out.println("dust responseText : " + responseText);
-		
-		br.close();
-		urlCon.disconnect();
 		
 		JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
 		JSONObject bodyObj = (JSONObject) totalObj.get("response");

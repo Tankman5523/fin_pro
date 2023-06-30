@@ -162,11 +162,10 @@ public class Weather {
 							if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
 								success = true;
 							}
-						} catch (SocketTimeoutException e) {//URL커넥션 timeout발생 시 소켓타임아웃 예외가 발생하므로 1.5초안에 200~300사이 코드를 반환하지 않을 시 소켓타임아웃 예외발생시킨후 재요청
+						} catch (SocketTimeoutException e) {//URL커넥션 timeout발생 시 소켓타임아웃 예외가 발생하므로 1초안에 200~300사이 코드를 반환하지 않을 시 소켓타임아웃 예외발생시킨후 재요청
 							System.out.println("shortTerm 타임아웃 발생");
 							success = false;
 							responseText = ""; // 초기화 시켜줌
-	//						shortTerm();
 						}
 						
 						BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
