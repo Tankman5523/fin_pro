@@ -16,7 +16,7 @@
                     <span style="margin: 0 auto;">상담관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="counselHistory.pr" class="childBtn">상담이력조회</a>
+                    <a href="counselHistory.pr" class="childBtn" style="color:#00aeff; font-weight: 550;">상담이력조회</a>
                 </div>
             </div>
             <div id="content_1">
@@ -80,13 +80,61 @@
 	
 	<script type="text/javascript">
 		
-		const childTitle = document.querySelectorAll(".child_title")
-		const firstBtn = document.querySelectorAll(".childBtn")
-		
-		window.onload = function(){
-			firstBtn[0].style.color = "#13abec"
-			firstBtn[0].style.fontWeight = "bold"
-		}
+		$(document).ready(function(){
+			$.ajax({
+				url: "counselHistory.pr",
+				type: 'post',
+				data: {
+					"user" : "${loginUser.professorNo}"
+				},
+				success: function(data){
+					var result = "";
+					
+					$.each(data, function(index,data){
+						
+						result += "<tr>"
+							+"<input type='hidden' id='counselNo' value='"+data.counselNo+"'>"
+							+"<td>"+data.studentName+"</td>"
+							+"<td>"+data.departmentName+"</td>"
+							+"<td>"+data.classLevel+"학년"+"</td>"
+							+"<td>"+data.applicationDate+"</td>"
+							+"<td>"+data.requestDate+"</td>"
+							+"<td>"+data.counselArea+"</td>";
+							
+							switch (data.status) {
+							case 'N':
+								result+="<td style='color: orange; font-weight: bold;'>"+data.status+"</td>"
+										+"</tr>"		
+								break;
+							case 'Y':
+								result+="<td style='color: #0080ff; font-weight: bold;'>"+data.status+"</td>"
+										+"</tr>"		
+								break;
+							case 'C':
+								result+="<td style='color: red; font-weight: bold;'>"+data.status+"</td>"
+										+"</tr>"		
+								break;
+
+							}
+							
+					})
+					$("#record-table > tbody").html(result);
+					
+					var rows = document.querySelectorAll('#record-table > tbody > tr')
+					
+					rows.forEach(function(tr, index){
+						tr.addEventListener('click', function(){
+							cno = tr.children[0].value
+							
+							location.href = "counselDetail.pr?cno="+cno;
+						})
+					})
+				},
+				error: function(){
+					alert("현재 페이지를 로드할 수 없습니다.");
+				}
+			});
+		});
 		
 		
 		var cno = "";

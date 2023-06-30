@@ -6,11 +6,6 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <link rel="stylesheet" href="/fin/resources/css/classManegeListView.css">
-<style>
-	#enrool_list{
-		
-	}
-</style>
 </head>
 <body>
 	<div class="wrap">
@@ -112,7 +107,7 @@
 				                                	<td><span class="resultMsg" style="color:red;">학기끝</span></td>
 				                                </c:when>
 				                                <c:when test="${c.status eq 'C'}">
-				                                	<td><span class="resultMsg" style="color:yellow;">반려</span></td>
+				                                	<td><span class="resultMsg" style="color:#FFA500;">반려</span></td>
 				                                </c:when>
 				                                <c:otherwise>
 					                                <td>

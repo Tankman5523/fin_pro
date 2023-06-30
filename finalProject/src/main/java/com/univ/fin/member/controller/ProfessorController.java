@@ -151,7 +151,7 @@ public class ProfessorController {
 			//첨부파일에 담기
 			a.setOriginName(upfile.getOriginalFilename()); //파일 원래 이름
 			a.setChangeName(changeName); //파일 변경명
-			a.setFilePath(filePath); //파일 저장 경로
+			a.setFilePath(filePath+subPath); //파일 저장 경로
 			
 			int result = memberService.insertClassCreate(c,a);
 			
@@ -207,7 +207,7 @@ public class ProfessorController {
 			//첨부파일에 담기
 			a.setOriginName(reUpfile.getOriginalFilename()); //파일 원래 이름
 			a.setChangeName(changeName); //파일 변경명
-			a.setFilePath(filePath); //파일 저장 경로
+			a.setFilePath(filePath+subPath); //파일 저장 경로
 			
 			
 			if(c.getFileNo()!=null) {//기존 첨부파일이 있다면
@@ -370,6 +370,15 @@ public class ProfessorController {
 	public String counselHistory() {
 		
 		return "member/professor/counselHistory";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "counselHistory.pr", produces = "application/json; charset=UTF-8;")
+	public String counselHistory(String user) {
+		
+		ArrayList<Counseling> list = memberService.selectAllCounseling(user);
+		
+		return new Gson().toJson(list);
 	}
 	
 	// 학사관리 - 강의시간표

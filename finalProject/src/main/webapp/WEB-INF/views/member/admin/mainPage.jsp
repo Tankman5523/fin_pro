@@ -205,7 +205,7 @@
 					<div class="c_content_31">
 						<div class="c_content_311">
 							<span><i class="fa-regular fa-calendar fa-lg" style="color: #d184f5;"></i>&nbsp;&nbsp;이번 달 학사일정</span>
-							<a href="haksaSchedule.mp"><i class="fa-regular fa-plus fa-2xl" style="color: #686e78;"></i></a>
+							<a href="calendarView.ad"><i class="fa-regular fa-plus fa-2xl" style="color: #686e78;"></i></a>
 						</div>
 						<div class="c_content_312">
 							<div class="c_content_312_table-area">
@@ -246,7 +246,7 @@
 					<div class="c_content_33">
 						<div class="c_content_331">
 							<span><i class="fa-solid fa-check fa-lg" style="color: #ff5024;"></i>&nbsp;&nbsp;공지사항</span>
-							<a href="notice.mp" style="float:right;"><i class="fa-regular fa-plus fa-2xl" style="color: #686e78;"></i></a>
+							<a href="selectNotice.ad" style="float:right;"><i class="fa-regular fa-plus fa-2xl" style="color: #686e78;"></i></a>
 						</div>
 						<div class="c_content_332">
 							<div class="c_content_332_table-area">

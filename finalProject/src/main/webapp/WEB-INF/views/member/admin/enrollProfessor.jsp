@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <title>Insert title here</title>
 <!-- 주소API 다음(카카오) -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -85,7 +86,7 @@
  	}
  	
  	/*!important 다무시하고 먼저실행*/
-	table {
+	#content_1 table {
 	border-collapse: separate !important;
 	}
  	
@@ -322,11 +323,11 @@
 </head>
 <body>
     <div class="wrap">
-		<%@include file="../../common/professor_menubar.jsp" %>
+		<%@include file="../../common/admin_menubar.jsp" %>
         <div id="content">
             <div id="category">
                 <div id="cate_title">
-                    <span style="margin: 0 auto;">강의관리</span>
+                    <span style="margin: 0 auto;">학사관리</span>
                 </div>
                 <div class="child_title">
                     <a href="enrollStudent.ad">학생 관리</a>
