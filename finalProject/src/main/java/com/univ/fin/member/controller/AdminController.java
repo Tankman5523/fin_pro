@@ -473,6 +473,21 @@ public class AdminController {
 		return new Gson().toJson(list);
 	}
 	
+	// (관리자)메인페이지
+	@RequestMapping(value="main.ad")
+	public ModelAndView mainPage(ModelAndView mv) {
+		
+		ArrayList<Classes> classList = memberService.selectAdMainClasses();
+		ArrayList<StudentRest> srList = memberService.selectMainStudentRest();
+		ArrayList<ProfessorRest> prList = memberService.selectMainProfessorRest();
+		ArrayList<HashMap<String, String>> calList = memberService.yearCalendarList(); // 학사일정 조회
+		ArrayList<Notice> nList = memberService.selectMainNotice(); // 공지사항 목록
+		
+		mv.addObject("classList", classList).addObject("srList", srList).addObject("prList",prList).addObject("calList", calList)
+		  .addObject("nList", nList).setViewName("member/admin/mainPage");
+		return mv;
+	}
+
 	//(관리자) 공지사항 관리 - 공지사항 선택 삭제
 //	@ResponseBody
 //	@PostMapping(value = "deleteNotice.ad", produces = "application/json; charset=UTF-8;")
@@ -482,5 +497,6 @@ public class AdminController {
 //		
 //		return new Gson().toJson(null);
 //	}
+
 }
 

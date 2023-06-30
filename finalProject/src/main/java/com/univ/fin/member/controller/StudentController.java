@@ -782,29 +782,34 @@ public class StudentController {
 	//강의평가에 필요한 본인이 수강한 강의정보 셀렉트
 	@GetMapping("classRatingInfo.st")
 	public ModelAndView classInfoForRating(ModelAndView mv,HttpSession session) {
-		Student st = (Student)session.getAttribute("loginUser");
-		
-		//현재 날짜정보로 현재학기 , 년도 찾기
-		LocalDate now = LocalDate.now();
-		String classYear = Integer.toString(now.getYear());
-		int month = now.getMonthValue();
-		String classTerm = "";
-		
-		
-		if(month<2 && month>8) {
-			classTerm = "2";
-		}else{
-			classTerm = "1";
+		if(memberService.checkPeriod("강의 평가")>0) { //현재 날짜가 강의평가 기간이면 (캘린터 DB에 데이터가 1개 이상이면)
+			Student st = (Student)session.getAttribute("loginUser");
+			
+			//현재 날짜정보로 현재학기 , 년도 찾기
+			LocalDate now = LocalDate.now();
+			String classYear = Integer.toString(now.getYear());
+			int month = now.getMonthValue();
+			String classTerm = "";
+			
+			
+			if(month<2 && month>8) {
+				classTerm = "2";
+			}else{
+				classTerm = "1";
+			}
+			
+			ClassRating cr = ClassRating.builder()
+										.studentNo(st.getStudentNo())
+										.classTerm(classTerm)
+										.classYear(classYear)
+										.build();
+			
+			ArrayList<RegisterClass> list = memberService.classInfoForRating(cr);
+			mv.addObject("list", list).setViewName("member/student/classRating");
+		}else {//현재 날짜가 강의평가 기간이 아니면
+			session.setAttribute("alertMsg", "강의평가 기간이 아닙니다.");
+			mv.setViewName("redirect:classManagement.st");
 		}
-		
-		ClassRating cr = ClassRating.builder()
-									.studentNo(st.getStudentNo())
-									.classTerm(classTerm)
-									.classYear(classYear)
-									.build();
-		
-		ArrayList<RegisterClass> list = memberService.classInfoForRating(cr);
-		mv.addObject("list", list).setViewName("member/student/classRating");
 		return mv;
 	}
 	

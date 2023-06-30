@@ -168,7 +168,7 @@
 	<select id="selectMySalary" resultMap="salaryResultSet">
 		SELECT PAY_NO
 			  ,PROFESSOR_NO
-			  ,PAYMENT_DATE
+			  ,TO_CHAR(PAYMENT_DATE,'YYYY-MM-DD')"PAYMENT_DATE"
 			  ,BASE_PAY
 			  ,POSITION_PAY
 			  ,EXTENSION_PAY
@@ -192,7 +192,7 @@
 	<select id="selectMySalaryList" resultMap="salaryResultSet">
 		SELECT PAY_NO
 			  ,PROFESSOR_NO
-			  ,PAYMENT_DATE
+			  ,TO_CHAR(PAYMENT_DATE,'YYYY-MM-DD')"PAYMENT_DATE"
 			  ,BASE_PAY
 			  ,POSITION_PAY
 			  ,EXTENSION_PAY
@@ -263,7 +263,7 @@
 	<select id="selectAllSalaryList" resultMap="salaryResultSet">
 		SELECT PAY_NO
 			  ,PROFESSOR_NO
-			  ,PAYMENT_DATE
+			  ,TO_CHAR(PAYMENT_DATE,'YYYY-MM-DD')"PAYMENT_DATE"
 			  ,RESEARCH_PAY
 			  ,PAYMENT_TOTAL
 			  ,DEDUCT_TOTAL
@@ -351,12 +351,13 @@
 			  ,CLASS_YEAR
 			  ,CLASS_TERM
 			  ,RG.PAY_ACCOUNT_NO
-			  ,PAY_DATE
+			  ,TO_CHAR(PAY_DATE,'YYYY-MM-DD')"PAY_DATE"
 			  ,START_DATE
 			  ,END_DATE
 			  ,PAY_STATUS
 			  ,STUDENT_NAME
 			  ,TO_CHAR(PAY_DATE,'HH:mm:ss') "PAYTIME"
+			  ,RG.STATUS
 		FROM REG_ACC RG
 		JOIN STUDENT ST USING(STUDENT_NO)
 		WHERE STUDENT_NO = #{studentNo}
@@ -381,12 +382,13 @@
 			  ,CLASS_YEAR
 			  ,CLASS_TERM
 			  ,RG.PAY_ACCOUNT_NO
-			  ,PAY_DATE
+			  ,TO_CHAR(PAY_DATE,'YYYY-MM-DD')"PAY_DATE"
 			  ,START_DATE
 			  ,END_DATE
 			  ,PAY_STATUS
 			  ,STUDENT_NAME
 			  ,TO_CHAR(PAY_DATE,'HH:mm:ss') "PAYTIME"
+			  ,RG.STATUS
 		FROM REG_ACC RG
 		JOIN STUDENT ST USING(STUDENT_NO)
 		WHERE STUDENT_NO = #{studentNo}
@@ -399,15 +401,15 @@
 		UPDATE REG_ACC
 		SET INPUT_PAY = #{inputPay}
 		   ,PAY_ACCOUNT_NO = #{payAccountNo}
-		   ,PAY_DATE = #{payDate}
+		   ,PAY_DATE = SYSDATE
 	    <choose>
 	    	<when test="inputPay eq mustPay">
 	    		,PAY_STATUS = 'Y'
 	    	</when>
-	    	<when test="inputPay lt mustPay">
+	    	<when test="inputPay gt mustPay">
 	    		,PAY_STATUS = 'O'
 	    	</when>
-	    	<when test="inputPay ge mustPay">
+	    	<when test="inputPay lt mustPay">
 	    		,PAY_STATUS = 'D'
 	    	</when>
 	    </choose>
@@ -548,9 +550,7 @@
 	<update id="refundOverPaid">
 		UPDATE REG_ACC
 		SET INPUT_PAY = #{inputPay}
-		<if test="inputPay eq MUST_PAY">
 		   ,PAY_STATUS = 'Y' 		  
-		</if>
 		WHERE REG_NO = #{regNo}   
 	</update>
 	
@@ -558,8 +558,10 @@
 	<update id="activateRegistPay" parameterType="date">
 		UPDATE REG_ACC
 		SET STATUS = 'Y'
-		WHERE #{date} BETWEEN START_DATE AND END_DATE
-		AND STATUS = 'N'
+		<!-- 
+		WHERE #{date} BETWEEN START_DATE AND END_DATE 
+		AND STATUS = 'N' -->
+		WHERE STATUS = 'N'
 	</update>
 	
 	<!-- (관리자) 등록기간 비활성화 -->
@@ -620,6 +622,7 @@
   	<update id="finishScholarShip">
   		UPDATE SCHOLARSHIP
   		SET STATUS = 'Y'
+  		,PRO_DATE = SYSDATE
   		WHERE STUDENT_NO = #{studentNo}
   		AND CLASS_YEAR = #{classYear}
   		AND CLASS_TERM = #{classTerm}
@@ -642,5 +645,14 @@
   		AND CLASS_YEAR = #{classYear}
   		AND CLASS_TERM = #{classTerm}
   	</update>
+  	<!-- (관리자) 등록금 삭제 전 장학금 유무 판단 -->
+  	<select id="countScholarship" resultSets="_int">
+  		SELECT COUNT(*)
+  		FROM SCHOLARSHIP
+  		WHERE STATUS = 'Y'
+  		AND STUDENT_NO = #{studentNo}
+  		AND CLASS_YEAR = #{classYear}
+  		AND CLASS_TERM = #{classTerm}
+  	</select>
   	
 </mapper>

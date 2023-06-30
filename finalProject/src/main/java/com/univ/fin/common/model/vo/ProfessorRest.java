@@ -21,4 +21,5 @@ public class ProfessorRest {
 	private String reason;//REASON	VARCHAR2(600 BYTE)
 	private String status;//STATUS	VARCHAR2(2 BYTE)
 	private String professorName;
+
 }

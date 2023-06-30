@@ -45,7 +45,9 @@
             <div id="content_1">
 				<div style="width: 90%;height: 90%;margin: 5%;">
                     <div style="height:15%;">
-                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.sl'">급여내역조회</button> <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.sl'">급여 입력</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='allList.sl'">급여내역조회</button> 
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='insert.sl'">급여 입력</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.href='mylist.sl'">내 급여 조회</button>
                         <hr>
                         <h2>급여 입력</h2>
                     </div>
@@ -122,6 +124,7 @@
 	                    		</tr>
 	                    	</table>
 	                    	<br>
+	                    	<button class="btn btn-outline-warning btn-sm" type="button" onclick="reCalBtn();">변경값 계산</button>
 	                    	<button class="btn btn-outline-primary btn-sm" type="submit">입력</button>
 	                    	</form>
 	                    </div>	
@@ -241,9 +244,19 @@
                     		
                     		
                     		var today = new Date();
+                    		today.setMonth(today.getMonth()+1); //작성하는 다음 달
+                    		today.setDate(10);
+                    		
                     		var year = today.getFullYear();
-                    		var month = today.getMonth()+2 ; //작성하는 다음 달
-                    		var day = 10;
+                    		var month = today.getMonth()+1; //월이 0~11 로 리턴되기 때문에 여기서 +1처리 
+                    		var day = today.getDate();
+                    		
+                    		var weekDay = today.getDay();
+                    		if(weekDay==7){ //해당 요일이 일요일일시
+                    			day = day - 2;
+                    		}else if(weekDay==6){
+                    			day = day - 1;
+                    		}
                     		var payDay = year+'/'+month+'/'+day;
                     		
                     		$("#paymentDate").val(payDay);
@@ -327,11 +340,16 @@
                 		$("#deductTotal").val(deductTotal);
                 	}
                 	
-                	function calReal(){
+                	function calReal(){//실수령액 계산
                 		var realPay = $("#paymentTotal").val() - parseInt($("#deductTotal").val()); 
                 		$("#realPay").val(realPay);
                 	}
                 	
+                	function reCalBtn(){//직접 수정 후 다시 계산버튼
+                		calPay();
+                		calDeduct();
+                		calReal();
+                	}
                 </script>
                 
             </div>

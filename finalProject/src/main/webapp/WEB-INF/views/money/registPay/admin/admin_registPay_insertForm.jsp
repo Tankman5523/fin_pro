@@ -240,6 +240,8 @@
 				var startDate = $("#startDate").val();
 				var endDate = $("#endDate").val();
 				
+				var schAmount = $(this).parent().siblings().eq(4).text().replace(/,/g,"");
+				
 				$.ajax({
 					url : "insert.rg",
 					data : {
@@ -248,7 +250,8 @@
 						classYear : classYear,
 						classTerm : classTerm,
 						startDate : startDate,
-						endDate : endDate
+						endDate : endDate,
+						schAmount : schAmount	
 					},
 					method: "POST",
 					success : function(result){

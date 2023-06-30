@@ -359,6 +359,18 @@ public interface MemberService {
 	// (관리자) 공지사항 관리 - 전체 공지사항 조회
 	ArrayList<Notice> selectNoticeAllList();
 
+	
+
+	
+	// (관리자) 메인페이지 -> 강의신청 목록 조회
+	ArrayList<Classes> selectAdMainClasses();
+
+	// (관리자) 메인페이지 -> 학생 휴학 및 퇴학 신청 목록 조회
+	ArrayList<StudentRest> selectMainStudentRest();
+
+	// (관리자) 메인페이지 -> 교수 안식 및 퇴직 신청 목록 조회
+	ArrayList<ProfessorRest> selectMainProfessorRest();
+	
 	// (관리자) 공지사항 관리 - 공지사항 검색
 	ArrayList<Notice> searchNotice(HashMap<String, String> noticeMap);
 
@@ -367,6 +379,7 @@ public interface MemberService {
 
 	// (관리자) 공지사항 관리 - 공지사항 선택 삭제
 	int selectDeleteNotice(String[] noticeNo);
+
 
 
 
