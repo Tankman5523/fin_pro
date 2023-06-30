@@ -112,6 +112,7 @@
   		<result column="START_DATE" property="startDate"/>
   		<result column="END_DATE" property="endDate"/>
   		<result column="STATUS" property="status"/>
+  		<result column="STUDENT_NAME" property="studentName"/>
   	</resultMap>
   	
   	<resultMap type="registPay" id="registPayResultSet">

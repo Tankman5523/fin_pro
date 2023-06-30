@@ -131,15 +131,13 @@
 		                        </td>
 	                    	</c:when>
 	                    	<c:otherwise>
-	                    		<td class="litle_title">상담반려이유</td>
+	                    		<td class="litle_title" style="color:red;">상담반려이유</td>
 		                        <td colspan="3">
 		                            <textarea name="counselContent" id="counselContent" cols="88" rows="10" style="resize: none;">${c.counselResult }</textarea>
 		                        </td>
 	                    	</c:otherwise>
 	                    	</c:choose>
 	                    </tr>
-	            
-	                
 	                </table>
 	                <div style="margin-top: 5%;">
 	                    <button type="reset" class="btn btn-secondary">이전</button>

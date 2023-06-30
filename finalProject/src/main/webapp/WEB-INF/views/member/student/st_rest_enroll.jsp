@@ -93,9 +93,9 @@
 									<c:when test="${empty sr}">
 										<tr>
 											<td>*휴학 시작일</td>
-											<td><input type="text" name="startDate" id="datepicker1" maxlength="10" required></td>
+											<td><input type="date" name="startDate" id="datepicker1" maxlength="10" data-placeholder="날짜 선택" required></td>
 											<td>*복학 예정</td>
-											<td><input type="text" name="endDate" id="datepicker2" maxlength="10" required></td>
+											<td><input type="date" name="endDate" id="datepicker2" maxlength="10" data-placeholder="날짜 선택" required></td>
 										</tr>
 
 									</c:when>
@@ -108,9 +108,9 @@
 										</tr>
 										<tr id="newDate">
 											<td>*휴학 연장 시작일</td>
-											<td><input type="text" name="startDate" id="datepicker1" maxlength="10" required></td>
+											<td><input type="date" name="startDate" id="datepicker1" maxlength="10" data-placeholder="날짜 선택" required></td>
 											<td>*연장 복학 예정</td>
-											<td><input type="text" name="endDate" id="datepicker2" maxlength="10" required></td>
+											<td><input type="date" name="endDate" id="datepicker2" maxlength="10" data-placeholder="날짜 선택" required></td>
 										</tr>
 									</c:otherwise>
 								</c:choose>

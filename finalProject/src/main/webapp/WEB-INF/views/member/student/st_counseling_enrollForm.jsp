@@ -61,7 +61,7 @@
                         </tr>
                         <tr>
                             <td class="litle_title">상담희망일자</td>
-                            <td><input type="text" name="requestDate" class="datepicker" readonly></td>
+                            <td><input type="date" name="requestDate" class="datepicker" data-placeholder="날짜 선택" required></td>
                             <td class="litle_title">상담신청일자</td>
                             <td><input type="text"  id="today" readonly></td>
                         </tr>
