@@ -75,7 +75,7 @@
 	                    <textarea name="reason" id="" cols="100" rows="5" style="resize: none;"></textarea>
 	                    <br>
 	                    <div id="btn_area">
-	                        <button type="reset" class="btn btn-secondary btn-lg">이전</button>
+	                        <button type="reset" class="btn btn-secondary btn-lg">초기화</button>
 	                        <button type="submit" class="btn btn-primary btn-lg">신청</button>
 	                    </div>
 	                </form>

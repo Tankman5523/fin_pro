@@ -254,9 +254,9 @@
 								$(".reg").remove(); //기존 등록금 정보 창 지우기(안하면 셀렉트 고를때마다 늘어남)
 								$("#enrollTable>tbody").append(result); //등록금 정보 창 테이블에 붙이기
 								if (regCheck == "no") {//미등록휴학을 골라놓고 휴학 시작날짜를 고른경우
-									$(".reg").css("display", "none");
+									$(".reg").css("display", "none"); 
 								}
-								if (rp.inputPay >= rp.mustPay|| regCheck == "no") {
+								if (rp.inputPay >= rp.mustPay|| regCheck == "no") {//등록금을 냈거나 미등록휴학을 골랐을때
 									$("#sm_btn").attr("disabled", false);
 								} else {
 									$("#sm_btn").attr("disabled", true);

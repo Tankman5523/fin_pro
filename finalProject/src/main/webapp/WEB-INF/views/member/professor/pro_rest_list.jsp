@@ -61,7 +61,19 @@
                             			<td>${r.professorNo }</td>
                             			<td>${r.startDate }</td>
                             			<td>${r.endDate eq null ?'퇴직': r.endDate}</td>
-                            			<td>${r.status eq 'B'? '승인대기중':r.status eq 'Y'? '승인완료':'비승인'}</td>
+                            			<td>
+                            				<c:choose>
+		                            			<c:when test="${r.status eq 'B'}">
+		                            				<span style="color:blue;">승인대기중</span>
+		                            			</c:when>
+		                            			<c:when test="${r.status eq 'Y'}">
+		                            				<span style="color:green;">승인완료</span>
+		                            			</c:when>
+		                            			<c:otherwise>
+		                            				<span style="color:red;">비승인</span>
+		                            			</c:otherwise>
+		                            		</c:choose>
+                            			</td>
                             		</tr>
                             		</c:forEach>
                             	</c:otherwise>
