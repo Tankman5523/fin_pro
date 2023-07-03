@@ -817,7 +817,7 @@ public class StudentController {
 	// 강의평가에 필요한 본인이 수강한 강의정보 셀렉트
 	@GetMapping("classRatingInfo.st")
 	public ModelAndView classInfoForRating(ModelAndView mv,HttpSession session) {
-		if(memberService.checkPeriod("강의 평가")>0) { //현재 날짜가 강의평가 기간이면 (캘린터 DB에 데이터가 1개 이상이면)
+		if(memberService.checkPeriod("강의평가")>0) { //현재 날짜가 강의평가 기간이면 (캘린터 DB에 데이터가 1개 이상이면)
 			Student st = (Student)session.getAttribute("loginUser");
 			
 			//현재 날짜정보로 현재학기 , 년도 찾기
