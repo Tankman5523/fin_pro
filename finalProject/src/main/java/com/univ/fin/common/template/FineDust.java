@@ -33,10 +33,13 @@ public class FineDust {
 	@Autowired
 	private CacheManager cacheManager;
 	
+	@Autowired
+	private FineDust fineDustIoc;
+	
 	@Scheduled(cron = "0 0/30 * * * *")
 	public void updateDust() throws Exception {
 		cacheManager.getCache("dust").clear();
-		fineDust();
+		fineDustIoc.fineDust();
 	}
 	
 	@Cacheable("dust")
@@ -64,17 +67,11 @@ public class FineDust {
 				urlCon.setRequestMethod("GET");
 				urlCon.setRequestProperty("Content-type", "application/json");
 				urlCon.setRequestProperty("Accept", "application/json");
-				urlCon.setConnectTimeout(1000);
-				urlCon.setReadTimeout(1000);
+				urlCon.setConnectTimeout(1500);
+				urlCon.setReadTimeout(1500);
 				
-				try {
-					if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
-						success = true;
-					}
-				} catch (SocketTimeoutException e) {
-					System.out.println("미세먼지 타임아웃 발생");
-					success = false;
-					responseText = "";
+				if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
+					success = true;
 				}
 				
 				BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
@@ -85,11 +82,16 @@ public class FineDust {
 					responseText += line;
 				}
 				
-				System.out.println("미세먼지 responseText : " + responseText);
+				System.out.println("FineDust : " + responseText);
 				
 				br.close();
 				urlCon.disconnect();
+			} catch (SocketTimeoutException e) {
+				System.out.println("미세먼지 타임아웃 발생");
+				success = false;
+				responseText = "";
 			} catch (IOException e) {
+				System.out.println("미세먼지 IOE");
 			}
 		}
 		
