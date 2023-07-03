@@ -15,6 +15,10 @@ td>input, textarea {
 	border: 0px;
 }
 
+input[type="text"]{
+	outline: none;
+}
+
 #content_title {
 	display: flex;
 	align-items: center;
@@ -44,6 +48,7 @@ td>input, textarea {
 	margin: 0 auto;
 	border: 1px solid #777;
 	background-color: #fff;
+	overflow: auto;
 }
 
 #closeBtn {
@@ -80,6 +85,8 @@ td>input, textarea {
 #coun_list>tbody>tr>td {
 	vertical-align: middle;
 }
+
+
 
 #content_top {
 	width: 100%;

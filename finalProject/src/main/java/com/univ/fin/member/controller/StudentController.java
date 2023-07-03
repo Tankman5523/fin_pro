@@ -350,7 +350,7 @@ public class StudentController {
 
 		
 		m.addAttribute("list",list);
-		System.out.println(list);
+		
 		return "member/student/st_counseling_list";
 	}
 
@@ -364,6 +364,7 @@ public class StudentController {
 	@ResponseBody
 	@RequestMapping(value = "departmentProList.st", produces = "application/json; charset = UTF-8")
 	public String selectDepartProList(String departmentNo) {
+
 
 		ArrayList<Professor> list = memberService.selectDepartProList(departmentNo);// 학과별 교수 조회해서 가져가기
 
@@ -534,18 +535,17 @@ public class StudentController {
 		String counselArea = con.get("counselArea").getAsString();
 		String startDate = con.get("startDate").getAsString();
 		String endDate = con.get("endDate").getAsString();
-
-		map.put("studentNo", studentNo);
-		map.put("year", '%' + year + '%');
-		map.put("counselArea", '%' + counselArea + '%');
-		// map.put("startDate",startDate!=""?startDate:"1900-01-01");
-		map.put("startDate", startDate);
-		// map.put("endDate",endDate!=null?endDate:"2999-12-31");
-		map.put("endDate", endDate);
-
+		
+		map.put("studentNo",studentNo);
+		map.put("year",'%'+year+'%' );
+		map.put("counselArea", '%'+counselArea+'%');
+		map.put("startDate",startDate);
+		map.put("endDate",endDate);
+			
 		ArrayList<Counseling> list = memberService.selectSearchCounseling(map);
-		System.out.println(list);
+		
 		return new Gson().toJson(list);
+		
 
 	}
 

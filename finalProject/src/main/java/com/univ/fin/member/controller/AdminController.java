@@ -77,7 +77,18 @@ public class AdminController {
 		
 		//ArrayList<Attachment> alist = memberService.selectClassAttachment();
 		
+		ArrayList<String> ylist= new ArrayList<>(); //학년도 담아갈 리스트
+		String year; //학년도 담을 변수
+		
+		for(Classes b : list) {
+			year = b.getClassYear();
+			if(!ylist.contains(year)) { //학년도가 중복되지 않는다면
+				ylist.add(year); //학년도 리스트에 넣기
+			}
+		}
+		
 		model.addAttribute("list",list);
+		model.addAttribute("ylist",ylist);
 		//model.addAttribute("alist",alist);
 		
 		return "member/admin/ad_class_list";
@@ -169,7 +180,6 @@ public class AdminController {
 		}
 		
 		ArrayList<Classes> list = memberService.selectClassListSearch(c);
-		
 		
 		return new Gson().toJson(list);
 	}

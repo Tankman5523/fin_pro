@@ -21,11 +21,11 @@
                 <div class="child_title">
                     <a href="personalTimetable.st">개인 시간표</a>
                 </div>
-                <div class="child_title">
-                    <a href="#">휴/복학 신청</a>
+               	<div class="child_title">
+                    <a href="studentRestEnroll.st">휴/복학 신청</a>
                 </div>
-                <div class="child_title">
-                    <a href="#">휴/복학 조회</a>
+				<div class="child_title">
+                    <a href="studentRestList.st">휴/복학 조회</a>
                 </div>
                 <div class="child_title">
                     <a href="graduationInfoForm.st" style="color:#00aeff; font-weight: 550;">졸업 사정표</a>

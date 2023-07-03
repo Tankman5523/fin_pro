@@ -107,9 +107,17 @@
 	color: #ffffff;
 }
 
+#class_list>thead th{
+	padding:5px;
+}
+
 #class_list td {
-	padding: 5px;
 	border-bottom: 1px solid black !important;
+}
+#class_list td,th{
+	padding:1px;
+	vertical-align: middle;
+	
 }
 
 #class_list>tbody tr:nth-child(2n) {
@@ -118,4 +126,9 @@
 
 #class_list>tbody tr:nth-child(2n+1) {
 	background-color: #e3f2fd;
+}
+
+.resultMsg {
+	font-size: 20px;
+	font-weight: bold;
 }

@@ -104,8 +104,6 @@ public class ProfessorController {
 									,HttpSession session
 									,ModelAndView mv) {
 		
-		Attachment a = null;
-		
 		Professor p = (Professor)session.getAttribute("loginUser");
 		
 		c.setProfessorNo(p.getProfessorNo()); //교수 직번 담기
@@ -115,12 +113,13 @@ public class ProfessorController {
 			String subPath = "classes/"; //강의관련 세부경로
 			String changeName = new SaveFile().saveFile(upfile, session, subPath); //파일 이름 바꾸고, 저장하고 옴
 			String filePath = "resources/uploadFiles/"; 
-			a = new Attachment();
 			
 			//첨부파일에 담기
-			a.setOriginName(upfile.getOriginalFilename()); //파일 원래 이름
-			a.setChangeName(changeName); //파일 변경명
-			a.setFilePath(filePath+subPath); //파일 저장 경로
+			Attachment a = Attachment.builder()
+									.originName(upfile.getOriginalFilename()) //파일 원래 이름
+									.changeName(changeName) //파일 변경명
+									.filePath(filePath+subPath) //파일 저장 경로
+									.build();
 			
 			int result = memberService.insertClassCreate(c,a);
 			
@@ -171,13 +170,12 @@ public class ProfessorController {
 			String changeName = new SaveFile().saveFile(reUpfile, session, subPath); //파일 이름 바꾸고, 저장하고 옴
 			String filePath = "resources/uploadFiles/"+subPath; //저장경로
 			
-			a = new Attachment();
-			
 			//첨부파일에 담기
-			a.setOriginName(reUpfile.getOriginalFilename()); //파일 원래 이름
-			a.setChangeName(changeName); //파일 변경명
-			a.setFilePath(filePath+subPath); //파일 저장 경로
-			
+			a= Attachment.builder()
+							.originName(reUpfile.getOriginalFilename()) //파일 원래 이름
+							.changeName(changeName) //파일 변경명
+							.filePath(filePath+subPath) //파일 저장 경로
+							.build();
 			
 			if(c.getFileNo()!=null) {//기존 첨부파일이 있다면
 				a.setFileNo(Integer.parseInt(c.getFileNo()));//첨부파일에 기존 파일번호 담고
@@ -199,7 +197,6 @@ public class ProfessorController {
 									Model model,
 									HttpSession session) {
 		int result = memberService.updateProfessor(pr);
-		
 		
 		if(result>0) {
 			//유저 정보갱신

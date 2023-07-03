@@ -30,6 +30,9 @@
 				<div class="child_title">
 					<a href="proRestList.ad">안식/퇴직 관리</a>
 				</div>
+				<div class="child_title">
+				    <a href="selectNotice.ad">공지사항 관리</a>
+				</div>
 			</div>
 			<div id="content_1" align="center">
 				<span id="content_title">휴학/복학 정보</span>
