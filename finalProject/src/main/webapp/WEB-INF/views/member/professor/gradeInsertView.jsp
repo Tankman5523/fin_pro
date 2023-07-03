@@ -72,8 +72,6 @@
 	                var arr = ${classTerm};
 	                
 	                $(function() {
-// 	                	connect();
-	                	
 	                	$("select[name=year]").children().first().prop("selected", true).change();
 	                	selectClassList();
 	                	$("button[id*=possible]").prop("disabled", true);
@@ -177,7 +175,7 @@
 		            				   var $year = date.getFullYear();
 		            				   var $month = date.getMonth() + 1;
 		            				   if($year == $("#year").val()) { // 년도 체크
-		            				   	   if($("#term").val()==1 && (3<=$month&&$month<=6)) {
+		            				   	   if($("#term").val()==1 && (3<=$month&&$month<=7)) {
 		            				   		$("#possible").prop("disabled", false);
 		            				   	   }
 		            				   	   else if($("#term").val()==2 && (9<=$month&&$month<=12)) {

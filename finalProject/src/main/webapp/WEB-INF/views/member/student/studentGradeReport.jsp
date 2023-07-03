@@ -250,7 +250,7 @@
 	</div>
 
 	<script>
-		var arr = ${classTerm};
+		/* var arr = ${classTerm};
 		
 		$(function() {
 			$("select[name=classYear]").children().first().prop("selected", true).change();
@@ -261,7 +261,7 @@
         		clear();
         	});
 		})
-		
+		 */
 		function changeYear(e) {
         	var $year = e.value;
         	var str = "";

@@ -115,6 +115,7 @@ public class MemberController {
 					} //로그아웃 시 해당 쿠키 삭제하므로 else처리 x
 					
 					session.setAttribute("loginUser", loginUser);
+					session.setAttribute("alarmCheck", 1);
 					mv.setViewName("redirect:main.st");
 				}
 				

@@ -21,6 +21,7 @@
 <body>
 	<script>
 		var socket;
+		var $check=0;
 		
 		$(function() {
 			connect();
@@ -28,7 +29,7 @@
 			$('html').click(function(e){
 		    	if($(e.target).parents('#alarm-area').length < 1 && !$(e.target).is('#alarm-area') && !$(e.target).is('#alarmImg')){
 		    		if($("#alarmDiv").html() != "<span>새로운 알람이 없습니다.</span>") {
-			    		$("#alarmImg").attr("src", $("#alarmImg").data("animated"));
+			    		$("#alarmImg").attr("src", $("#alarmImg").data("static"));
 		    		}
 		    		$("#alarm-area").addClass("alarm-remove");
 		    	}
@@ -44,6 +45,11 @@
 			socket.onopen = function() {
 				console.log("서버와 연결되었습니다.");
 				socket.send("${loginUser.studentNo}");
+				
+				<c:if test="${not empty alarmCheck}">
+					$check += ${alarmCheck};
+					<c:remove var="alarmCheck" scope="session"/>
+				</c:if>
 			};
 			
 			socket.onclose = function() {
@@ -63,18 +69,31 @@
 						var str = "<ul>";
 						for(var i=0;i<obj.length;i++) {
 							if(obj[i].cmd == 'gradeInsert') { // 성적 입력
-								str += "<li style='font-size: 14px; line-height: 14px;'><input type='hidden' value='" + obj[i].alarmNo + "'><a href='classManagement.st'>" + obj[i].professorName + " 교수님이 성적을 입력하셨습니다.</a>&nbsp;&nbsp;<button type='button' class='btn btn-light btn-sm' onclick='alarmCheck(this);'>확인</button></li><br>";
+								str += "<li style='font-size: 14px; line-height: 14px;'><input type='hidden' value='" + obj[i].alarmNo + "'><a href='classManagement.st' onclick='alarmCheck(this);'>" + obj[i].professorName + " 교수님이 성적을 입력하셨습니다.</a>&nbsp;&nbsp;<button type='button' class='btn btn-light btn-sm' onclick='alarmCheck(this);'>지우기</button></li><br>";
 							}
 							else if(obj[i].cmd == 'gradeUpdate') { // 성적 수정
-								str += "<li style='font-size: 14px; line-height: 14px;'><input type='hidden' value='" + obj[i].alarmNo + "'><a href='classManagement.st'>" + obj[i].professorName + " 교수님이 성적을 수정하셨습니다.</a>&nbsp;&nbsp;<button type='button' class='btn btn-light btn-sm' onclick='alarmCheck(this);'>확인</button></li><br>";
+								str += "<li style='font-size: 14px; line-height: 14px;'><input type='hidden' value='" + obj[i].alarmNo + "'><a href='classManagement.st' onclick='alarmCheck(this);'>" + obj[i].professorName + " 교수님이 성적을 수정하셨습니다.</a>&nbsp;&nbsp;<button type='button' class='btn btn-light btn-sm' onclick='alarmCheck(this);'>지우기</button></li><br>";
 							}
 							else if(obj[i].cmd == 'counselUpdate') { // 상담신청 변동
-								str += "<li style='font-size: 14px; line-height: 14px;'><input type='hidden' value='" + obj[i].alarmNo + "'><a href='counselingList.st'>" + obj[i].professorName + " 교수님이 상담신청에 응하셨습니다.</a>&nbsp;&nbsp;<button type='button' class='btn btn-light btn-sm' onclick='alarmCheck(this);'>확인</button></li><br>";
+								str += "<li style='font-size: 14px; line-height: 14px;'><input type='hidden' value='" + obj[i].alarmNo + "'><a href='counselingList.st' onclick='alarmCheck(this);'>" + obj[i].professorName + " 교수님이 상담신청에 응하셨습니다.</a>&nbsp;&nbsp;<button type='button' class='btn btn-light btn-sm' onclick='alarmCheck(this);'>지우기</button></li><br>";
 							}
 						}
 						str += "</ul>";
 						$("#alarmDiv").html(str);
-						$("#alarm-area>button").text("전체 확인");
+						$("#alarm-area>button").text("모두 지우기");
+						if($("#alarmDiv").html() != "<span>새로운 알람이 없습니다.</span>") { // 알람있으면
+							$("#alarmImg").css("filter", "grayscale(0%)");
+						}
+						
+						if($check==1) {
+							$("#alarm-area").removeClass("alarm-remove");
+							$("#alarmImg").attr("src", $("#alarmImg").data("animated"));
+							
+							setTimeout(function() {
+								$("#alarm-area").addClass("alarm-remove");
+								$("#alarmImg").attr("src", $("#alarmImg").data("static"));
+							}, 10000);
+						}
 					}
 					else { // 실시간 메세지
 						var str = "<span>";
@@ -88,10 +107,30 @@
 							str += "<a href='counselingList.st'>" + obj.professorName + " 교수님이 상담신청에 응하셨습니다.</a>";
 						}
 						str += "</span>";
-						$("#alarmDiv").append(str);
+						$("#alarm-area2").html(str);
+						
+						setTimeout(function() {
+							$("#alarm-area2").removeClass("alarm-remove");
+						}, 500);
+						
+						if(!$("#alarm-area").hasClass("alarm-remove")) { // 알람창 띄워져있으면 없애기
+							$("#alarm-area").addClass("alarm-remove");
+						}
+						
+						setTimeout(function() {
+							$("#alarm-area2").addClass("alarm-remove");
+							if($("#alarmDiv").html() == "<span>새로운 알람이 없습니다.</span>") {
+								$("#alarmImg").css("filter", "grayscale(100%)");
+							}
+							$("#alarmImg").attr("src", $("#alarmImg").data("static"));
+							
+						}, 10000); // 10초동안 보여줌
+						
+						$("#alarmImg").css("filter", "grayscale(0%)");
+						$("#alarmImg").attr("src", $("#alarmImg").data("animated"));
 					}
 					
-					$("#alarmImg").attr("src", $("#alarmImg").data("animated"));
+					$check=2;
 				}
 			};
 		}
@@ -115,10 +154,10 @@
 			<button type="button" class="btn btn-warning btn-sm" onclick="closeAlarm();">닫기</button><br><br>
 			<div id="alarmDiv"><span>새로운 알람이 없습니다.</span></div>
 		</div>
-		<div id="alarm-area2"></div>
+		<div id="alarm-area2" class="alarm-remove"></div>
 		<table id="user_log">
 	        <tr>
-	        	<td><img id="alarmImg" src="resources/icon/bell_static.png" data-animated="resources/icon/bell_animated.gif" data-static="resources/icon/bell_static.png" onclick="openAlarm();"></td>
+	        	<td><img id="alarmImg" src="resources/icon/bell_static.png" style="filter: grayscale(100%);" data-animated="resources/icon/bell_animated.gif" data-static="resources/icon/bell_static.png" onclick="openAlarm();"></td>
 	            <td>
 					${loginUser.studentName}님 환영합니다.
 	            </td>
@@ -141,18 +180,45 @@
 	
 	<script>
 		function alarmCheck(e) {
-			console.log($(e).siblings("input").val());
+			var $aNo = $(e).siblings("input").val();
+			$.ajax({
+				url: "alarmCheck.me",
+				data: { aNo: $aNo },
+				success: function(result) {
+					console.log("업데이트 여부: " + result);
+				},
+				error: function() {
+					console.log("업데이트 통신 오류");
+				}
+			});
+			
+			$(e).parents("li").remove();
+			
+			if($("#alarmDiv").text() == "") {
+				$("#alarmDiv").html("<span>새로운 알람이 없습니다.</span>");
+				$("#alarmImg").css("filter", "grayscale(100%)");
+				$("#alarmImg").attr("src", $("#alarmImg").data("static"));
+			}
 		}
 	
 		function openAlarm() {
-			$("#alarm-area").removeClass("alarm-remove");
-			$("#alarmImg").attr("src", $("#alarmImg").data("static"));
+			if($("#alarm-area").hasClass("alarm-remove")) {
+				if(!$("#alarm-area2").hasClass("alarm-remove")) {
+					$("#alarm-area2").addClass("alarm-remove");
+				}
+				
+				socket.send("${loginUser.studentNo}");
+				$("#alarm-area").removeClass("alarm-remove");
+				if($("#alarmDiv").html() != "<span>새로운 알람이 없습니다.</span>") {
+					$("#alarmImg").attr("src", $("#alarmImg").data("animated"));
+				}
+			}
 		}
 		
 		function closeAlarm() {
 			if($("#alarmDiv").html() != "<span>새로운 알람이 없습니다.</span>") {
 				$.ajax({
-					url: "alarmCheck.me",
+					url: "alarmAllCheck.me",
 					success: function(result) {
 						console.log("업데이트 여부: " + result);
 					},
@@ -163,6 +229,8 @@
 			}
 			$("#alarmDiv").html("<span>새로운 알람이 없습니다.</span>");
 			$("#alarm-area>button").text("닫기");
+			$("#alarmImg").css("filter", "grayscale(100%)");
+			$("#alarmImg").attr("src", $("#alarmImg").data("static"));
 			$("#alarm-area").addClass("alarm-remove");
 		}
 	</script>

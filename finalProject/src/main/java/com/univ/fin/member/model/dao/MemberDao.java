@@ -655,6 +655,16 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.selectProfile", map);
 	}
 	
+	// 메인 -> 학생 시간표 조회
+	public ArrayList<Classes> selectStudentAllClasses(SqlSessionTemplate sqlSession, String studentNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectStudentAllClasses", studentNo);
+	}
+	
+	// 메인 -> 교수 시간표 조회
+	public ArrayList<Classes> selectProfessorAllClasses(SqlSessionTemplate sqlSession, String professorNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectProfessorAllClasses", professorNo);
+	}
+	
 	// 메인 -> 등록금 납부 조회
 	public ArrayList<HashMap<String, String>> selectReg(SqlSessionTemplate sqlSession, String studentNo) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectReg", studentNo);
@@ -690,9 +700,14 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.alarmReceive", studentNo);
 	}
 
+	// 알람 전체확인
+	public int alarmAllCheck(SqlSessionTemplate sqlSession, String studentNo) {
+		return sqlSession.update("memberMapper.alarmAllCheck", studentNo);
+	}
+	
 	// 알람 확인
-	public int alarmCheck(SqlSessionTemplate sqlSession, String studentNo) {
-		return sqlSession.update("memberMapper.alarmCheck", studentNo);
+	public int alarmCheck(SqlSessionTemplate sqlSession, int alarmNo) {
+		return sqlSession.update("memberMapper.alarmCheck", alarmNo);
 	}
 
 	// (관리자) 공지사항 관리 - 전체 공지사항 조회
