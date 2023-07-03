@@ -29,7 +29,7 @@
                 <div class="child_title">
                     <a href="allList.sc">장학금 관리</a>
                 </div>
-                <div class="child_title" style="font-weight:bold;">
+                <div class="child_title" style="font-weight:bold;color:#00aeff;">
                     <a href="allList.sl">급여 관리</a>
                 </div>
             </div>
@@ -73,31 +73,31 @@
 	                    	<table border="1" style="text-align: center;width: 80%;" align="center">
 	                    		<tr>
 	                    			<th>기본급</th>
-	                    			<td><input type="number" id="basePay" name="basePay" value="${sal.basePay}"></td>
+	                    			<td><input type="number" id="basePay" name="basePay" value="${sal.basePay}" onchange="submitDisable();"></td>
 	                    			<th>국민연금</th>
-	                    			<td><input type="number" id="nationalTax" name="nationalTax" value="${sal.nationalTax}"></td>
+	                    			<td><input type="number" id="nationalTax" name="nationalTax" value="${sal.nationalTax}" onchange="submitDisable();"></td>
 	                    		</tr>
 	                    		<tr>
 	                    			<th>직책수당</th>
-	                    			<td><input type="number" id="positionPay" name="positionPay" value="${sal.positionPay}"></td>
+	                    			<td><input type="number" id="positionPay" name="positionPay" value="${sal.positionPay}" onchange="submitDisable();"></td>
 	                    			<th>건강보험</th>
-	                    			<td><input type="number" id="healthTax" name="healthTax" value="${sal.healthTax}"></td>
+	                    			<td><input type="number" id="healthTax" name="healthTax" value="${sal.healthTax}" onchange="submitDisable();"></td>
 	                    		</tr>
 	                    		<tr>
 	                    			<th>연장근로수당</th>
-	                    			<td><input type="number" id="extensionPay" name="extensionPay" value="${sal.extensionPay}"></td>
+	                    			<td><input type="number" id="extensionPay" name="extensionPay" value="${sal.extensionPay}" onchange="submitDisable();"></td>
 	                    			<th>고용보험</th>
-	                    			<td><input type="number" id="employTax" name="employTax" value="${sal.employTax}"></td>
+	                    			<td><input type="number" id="employTax" name="employTax" value="${sal.employTax}" onchange="submitDisable();"></td>
 	                    		</tr>
 	                    		<tr>
 	                    			<th>휴일근로수당</th>
-	                    			<td><input type="number" id="holidayPay" name="holidayPay" value="${sal.holidayPay}"></td>
+	                    			<td><input type="number" id="holidayPay" name="holidayPay" value="${sal.holidayPay}" onchange="submitDisable();"></td>
 	                    			<th>소득세</th>
-	                    			<td><input type="number" id="incomeTax" name="incomeTax" value="${sal.incomeTax}"></td>
+	                    			<td><input type="number" id="incomeTax" name="incomeTax" value="${sal.incomeTax}" onchange="submitDisable();"></td>
 	                    		</tr>
 	                    		<tr>
 	                    			<th>연구비</th>
-	                    			<td><input type="number" id="researchPay" name="researchPay" value="${sal.researchPay}"></td>
+	                    			<td><input type="number" id="researchPay" name="researchPay" value="${sal.researchPay}" onchange="submitDisable();"></td>
 	                    			<th></th>
 	                    			<td></td>
 	                    		</tr>
@@ -105,16 +105,17 @@
 	                    			<th></th>
 	                    			<td></td>
 	                    			<th>공제액계</th>
-	                    			<td><input type="number" id="deductTotal" name="deductTotal" value="${sal.deductTotal}"></td>
+	                    			<td><input type="number" id="deductTotal" name="deductTotal" value="${sal.deductTotal}" readonly onchange="submitDisable();"></td>
 	                    		</tr>
 	                    		<tr>
 	                    			<th>지급액계</th>
-	                    			<td><input type="number" id="paymentTotal" name="paymentTotal" value="${sal.paymentTotal}"></td>
+	                    			<td><input type="number" id="paymentTotal" name="paymentTotal" value="${sal.paymentTotal}" readonly onchange="submitDisable();"></td>
 	                    			<th>실수령액</th>
-	                    			<td><input type="number" id="realPay" name="realPay" value="${sal.realPay}"></td>
+	                    			<td><input type="number" id="realPay" name="realPay" value="${sal.realPay}" readonly onchange="submitDisable();"></td>
 	                    		</tr>
 	                    	</table>
 	                    	<br>
+	                    	<button class="btn btn-outline-warning btn-sm" type="button" onclick="reCalBtn();">변경값 계산</button>
 	                    	<button class="btn btn-outline-primary btn-sm" type="submit">입력</button>
 	                    	</form>
 	                    </div>	
@@ -230,6 +231,7 @@
                     		calPay();
                     		calDeduct();
                     		calReal();
+                    		submitAble();
                     	});
                 	});
                 	
@@ -297,6 +299,26 @@
                 	function calReal(){ //실급여 계산
                 		var realPay = $("#paymentTotal").val() - parseInt($("#deductTotal").val()); 
                 		$("#realPay").val(realPay);
+                	}
+                	
+                	function reCalBtn(){//직접 수정 후 다시 계산버튼
+                		calPay();
+                		calDeduct();
+                		calReal();
+                		submitAble();
+                	}
+                	
+                	//입력버튼 비활성화
+                	function submitDisable(){
+                		$("#submitBtn").attr("disabled",true);
+                		$("#submitBtn").attr("class","btn btn-outline-danger btn-sm");
+                		$("#submitBtn").text("입력불가");
+                	}
+                	//입력버튼 활성화
+                	function submitAble(){
+                		$("#submitBtn").attr("disabled",false);
+                		$("#submitBtn").attr("class","btn btn-outline-primary btn-sm");
+                		$("#submitBtn").text("입력");
                 	}
                 	
                 </script>

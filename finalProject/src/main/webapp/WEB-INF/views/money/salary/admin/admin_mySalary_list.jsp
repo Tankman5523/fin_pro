@@ -78,7 +78,7 @@
                 <div class="child_title">
                     <a href="allList.sc">장학금 관리</a>
                 </div>
-                <div class="child_title" style="font-weight:bold;">
+                <div class="child_title" style="font-weight:bold;color:#00aeff;">
                     <a href="allList.sl">급여 관리</a>
                 </div>
             </div>

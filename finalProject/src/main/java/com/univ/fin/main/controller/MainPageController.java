@@ -1,11 +1,9 @@
 package com.univ.fin.main.controller;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +27,9 @@ public class MainPageController {
 
 	@Autowired
 	private MainService mainService;
+	
+	//@Autowired
+	//private BusTime busTime;
 	
 	@GetMapping("mainPage.mp")
 	public String mainPage() {

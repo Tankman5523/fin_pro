@@ -26,7 +26,7 @@
                <div class="child_title">
                     <a href="onelist.rg">등록금 납부조회</a>
                 </div>
-                <div class="child_title" style="font-weight:bold;">
+                <div class="child_title" style="font-weight:bold;color:#00aeff;">
                     <a href="listPage.rg">등록금납입 이력</a>
                 </div>
                 <div class="child_title">

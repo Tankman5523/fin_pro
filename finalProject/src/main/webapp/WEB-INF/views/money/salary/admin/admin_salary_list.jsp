@@ -63,7 +63,9 @@
       	background-color : lightgray;
       	cursor : pointer;
       }
-      
+      #closeBtn:hover{
+        cursor : pointer;			
+      }
     </style>
 </head>
 <body>
@@ -82,7 +84,7 @@
                 <div class="child_title">
                     <a href="allList.sc">장학금 관리</a>
                 </div>
-                <div class="child_title" style="font-weight:bold;">
+                <div class="child_title" style="font-weight:bold;color:#00aeff;">
                     <a href="allList.sl">급여 관리</a>
                 </div>
             </div>
@@ -140,7 +142,7 @@
 			        </div>
 			        <div class="modal">
 			        	<div class="modalContent">
-			        		<span style="float:right;curser:pointer;" onclick="closeModal();"><b>X</b></span>
+			        		<span id="closeBtn" style="float:right;curser:pointer;" onclick="closeModal();"><i class="fa-solid fa-xmark"></i></span>
 			        		<h4><b>급여명세서</b></h4>
 			        		<br>
 			        		<table border="1" style="text-align:center;width: 100%;height: 60%;">
@@ -329,35 +331,35 @@
 									var str = "";
 									str +="<tr>"
 										 +"<th class='payCol'>기본급</th>"
-										 +"<td><span class='showVal'>"+result.basePay.toLocaleString()+"</span><input type='number' id='modal_basePay' class='hiddenInput' name='basePay' value="+result.basePay+">"+"</td>"
+										 +"<td><span class='showVal'>"+result.basePay.toLocaleString()+"</span><input type='number' id='modal_basePay' class='hiddenInput' name='basePay' value="+result.basePay+" onchange='submitDisable();'>"+"</td>"
 										 +"<th class='taxCol'>국민연금</th>"
-										 +"<td><span class='showVal'>"+result.nationalTax.toLocaleString()+"</span><input type='number' id='modal_nationalTax' class='hiddenInput' name='nationalTax' value="+result.nationalTax+">"+"</td>"
+										 +"<td><span class='showVal'>"+result.nationalTax.toLocaleString()+"</span><input type='number' id='modal_nationalTax' class='hiddenInput' name='nationalTax' value="+result.nationalTax+" onchange='submitDisable();'>"+"</td>"
 										 +"</tr>"
 										 
 										 +"<tr>"
 										 +"<th class='payCol'>직책수당</th>"
-										 +"<td><span class='showVal'>"+result.positionPay.toLocaleString()+"</span><input type='number' id='modal_positionPay' class='hiddenInput' name='positionPay' value="+result.positionPay+">"+"</td>"
+										 +"<td><span class='showVal'>"+result.positionPay.toLocaleString()+"</span><input type='number' id='modal_positionPay' class='hiddenInput' name='positionPay' value="+result.positionPay+" onchange='submitDisable();'>"+"</td>"
 										 +"<th class='taxCol'>건강보험</th>"
-										 +"<td><span class='showVal'>"+result.healthTax.toLocaleString()+"</span><input type='number' id='modal_healthTax' class='hiddenInput' name='healthTax' value="+result.healthTax+">"+"</td>"
+										 +"<td><span class='showVal'>"+result.healthTax.toLocaleString()+"</span><input type='number' id='modal_healthTax' class='hiddenInput' name='healthTax' value="+result.healthTax+" onchange='submitDisable();'>"+"</td>"
 										 +"</tr>"
 										 
 										 +"<tr>"
 										 +"<th class='payCol'>연장근로수당</th>"
-										 +"<td><span class='showVal'>"+result.extensionPay.toLocaleString()+"</span><input type='number' id='modal_extensionPay' class='hiddenInput' name='extensionPay' value="+result.extensionPay+">"+"</td>"
+										 +"<td><span class='showVal'>"+result.extensionPay.toLocaleString()+"</span><input type='number' id='modal_extensionPay' class='hiddenInput' name='extensionPay' value="+result.extensionPay+" onchange='submitDisable();'>"+"</td>"
 										 +"<th class='taxCol'>고용보험</th>"
-										 +"<td><span class='showVal'>"+result.employTax.toLocaleString()+"</span><input type='number' id='modal_employTax' class='hiddenInput' name='employTax' value="+result.employTax+">"+"</td>"
+										 +"<td><span class='showVal'>"+result.employTax.toLocaleString()+"</span><input type='number' id='modal_employTax' class='hiddenInput' name='employTax' value="+result.employTax+" onchange='submitDisable();'>"+"</td>"
 										 +"</tr>"
 										 
 										 +"<tr>"
 										 +"<th class='payCol'>휴일근로수당</th>"
-										 +"<td><span class='showVal'>"+result.holidayPay.toLocaleString()+"</span><input type='number' id='modal_holidayPay' class='hiddenInput' name='holidayPay' value="+result.holidayPay+">"+"</td>"
+										 +"<td><span class='showVal'>"+result.holidayPay.toLocaleString()+"</span><input type='number' id='modal_holidayPay' class='hiddenInput' name='holidayPay' value="+result.holidayPay+" onchange='submitDisable();'>"+"</td>"
 										 +"<th class='taxCol'>소득세</th>"
-										 +"<td><span class='showVal'>"+result.incomeTax.toLocaleString()+"</span><input type='number' id='modal_incomeTax' class='hiddenInput' name='incomeTax' value="+result.incomeTax+">"+"</td>"
+										 +"<td><span class='showVal'>"+result.incomeTax.toLocaleString()+"</span><input type='number' id='modal_incomeTax' class='hiddenInput' name='incomeTax' value="+result.incomeTax+" onchange='submitDisable();'>"+"</td>"
 										 +"</tr>"
 										 
 										 +"<tr>"
 										 +"<th class='payCol'>연구비</th>"
-										 +"<td><span class='showVal'>"+result.researchPay.toLocaleString()+"</span><input type='number' id='modal_researchPay' class='hiddenInput' name='researchPay' value="+result.researchPay+">"+"</td>"
+										 +"<td><span class='showVal'>"+result.researchPay.toLocaleString()+"</span><input type='number' id='modal_researchPay' class='hiddenInput' name='researchPay' value="+result.researchPay+" onchange='submitDisable();'>"+"</td>"
 										 +"<th></th>"
 										 +"<td>"+"</td>"
 										 +"</tr>"
@@ -366,14 +368,14 @@
 										 +"<th></th>"
 										 +"<td>"+"<input type='hidden' id='modal_payNo' name='payNo' value="+payNo+">"+"</td>"
 										 +"<th class='taxCol'>공제액계</th>"
-										 +"<td><span class='showVal'>"+result.deductTotal.toLocaleString()+"</span><input type='number' id='modal_deductTotal' class='hiddenInput' name='deductTotal' value="+result.deductTotal+" readonly>"+"</td>"
+										 +"<td><span class='showVal'>"+result.deductTotal.toLocaleString()+"</span><input type='number' id='modal_deductTotal' class='hiddenInput' name='deductTotal' value="+result.deductTotal+" readonly onchange='submitDisable();'>"+"</td>"
 										 +"</tr>"
 										 
 										 +"<tr>"
 										 +"<th class='payCol'>지급액계</th>"
-										 +"<td><span class='showVal'>"+result.paymentTotal.toLocaleString()+"</span><input type='number' id='modal_paymentTotal' class='hiddenInput' name='paymentTotal' value="+result.paymentTotal+" readonly>"+"</td>"
+										 +"<td><span class='showVal'>"+result.paymentTotal.toLocaleString()+"</span><input type='number' id='modal_paymentTotal' class='hiddenInput' name='paymentTotal' value="+result.paymentTotal+" readonly onchange='submitDisable();'>"+"</td>"
 										 +"<th class='realCol'>실수령액</th>"
-										 +"<td><span class='showVal'>"+result.realPay.toLocaleString()+"</span><input type='number' id='modal_realPay' class='hiddenInput' name='realPay' value="+result.realPay+" readonly>"+"</td>"
+										 +"<td><span class='showVal'>"+result.realPay.toLocaleString()+"</span><input type='number' id='modal_realPay' class='hiddenInput' name='realPay' value="+result.realPay+" readonly onchange='submitDisable();'>"+"</td>"
 										 +"</tr>";
 										 
 									$(".modalContent>table").html(str);	
@@ -383,7 +385,7 @@
 		                    		
 			                    	if(status!='지급완료'){ //이미 지급완료된 건에 대해서는 수정/송금 불가 
 		                    		str2+="<button class='hiddenBtn btn btn-outline-warning btn-sm' onclick='calPay();'>변경값계산</button> "
-			                    		 +"<button class='hiddenBtn btn btn-outline-primary btn-sm' onclick='updateSubmit();'>적용</button> "
+			                    		 +"<button class='hiddenBtn btn btn-outline-primary btn-sm' id='submitBtn' onclick='updateSubmit();'>적용</button> "
 			                    		 +"<button class='showBtn btn btn-outline-warning btn-sm' onclick='updateMode();'>수정</button> "
 			                    		 +"<button class='showBtn btn btn-outline-primary btn-sm' onclick='sendSalary();'>송금</button>";	 
 			                    	}
@@ -429,6 +431,7 @@
                 		$("#modal_paymentTotal").val(total);
 						
                 		calDeduct();
+                		submitAble(); //적용버튼 활성화
                 	}
                 	
                 	function calDeduct(){//공제액 계산 + 총합계산
@@ -517,35 +520,35 @@
 								var str = "";
 								str +="<tr>"
 									 +"<th class='payCol'>기본급</th>"
-									 +"<td><span class='showVal'>"+result.basePay.toLocaleString()+"</span><input type='number' id='modal_basePay' class='hiddenInput' name='basePay' value="+result.basePay+">"+"</td>"
+									 +"<td><span class='showVal'>"+result.basePay.toLocaleString()+"</span><input type='number' id='modal_basePay' class='hiddenInput' name='basePay' value="+result.basePay+" onchange='submitDisable();'>"+"</td>"
 									 +"<th class='taxCol'>국민연금</th>"
-									 +"<td><span class='showVal'>"+result.nationalTax.toLocaleString()+"</span><input type='number' id='modal_nationalTax' class='hiddenInput' name='nationalTax' value="+result.nationalTax+">"+"</td>"
+									 +"<td><span class='showVal'>"+result.nationalTax.toLocaleString()+"</span><input type='number' id='modal_nationalTax' class='hiddenInput' name='nationalTax' value="+result.nationalTax+" onchange='submitDisable();'>"+"</td>"
 									 +"</tr>"
 									 
 									 +"<tr>"
 									 +"<th class='payCol'>직책수당</th>"
-									 +"<td><span class='showVal'>"+result.positionPay.toLocaleString()+"</span><input type='number' id='modal_positionPay' class='hiddenInput' name='positionPay' value="+result.positionPay+">"+"</td>"
+									 +"<td><span class='showVal'>"+result.positionPay.toLocaleString()+"</span><input type='number' id='modal_positionPay' class='hiddenInput' name='positionPay' value="+result.positionPay+" onchange='submitDisable();'>"+"</td>"
 									 +"<th class='taxCol'>건강보험</th>"
-									 +"<td><span class='showVal'>"+result.healthTax.toLocaleString()+"</span><input type='number' id='modal_healthTax' class='hiddenInput' name='healthTax' value="+result.healthTax+">"+"</td>"
+									 +"<td><span class='showVal'>"+result.healthTax.toLocaleString()+"</span><input type='number' id='modal_healthTax' class='hiddenInput' name='healthTax' value="+result.healthTax+" onchange='submitDisable();'>"+"</td>"
 									 +"</tr>"
 									 
 									 +"<tr>"
 									 +"<th class='payCol'>연장근로수당</th>"
-									 +"<td><span class='showVal'>"+result.extensionPay.toLocaleString()+"</span><input type='number' id='modal_extensionPay' class='hiddenInput' name='extensionPay' value="+result.extensionPay+">"+"</td>"
+									 +"<td><span class='showVal'>"+result.extensionPay.toLocaleString()+"</span><input type='number' id='modal_extensionPay' class='hiddenInput' name='extensionPay' value="+result.extensionPay+" onchange='submitDisable();'>"+"</td>"
 									 +"<th class='taxCol'>고용보험</th>"
-									 +"<td><span class='showVal'>"+result.employTax.toLocaleString()+"</span><input type='number' id='modal_employTax' class='hiddenInput' name='employTax' value="+result.employTax+">"+"</td>"
+									 +"<td><span class='showVal'>"+result.employTax.toLocaleString()+"</span><input type='number' id='modal_employTax' class='hiddenInput' name='employTax' value="+result.employTax+" onchange='submitDisable();'>"+"</td>"
 									 +"</tr>"
 									 
 									 +"<tr>"
 									 +"<th class='payCol'>휴일근로수당</th>"
-									 +"<td><span class='showVal'>"+result.holidayPay.toLocaleString()+"</span><input type='number' id='modal_holidayPay' class='hiddenInput' name='holidayPay' value="+result.holidayPay+">"+"</td>"
+									 +"<td><span class='showVal'>"+result.holidayPay.toLocaleString()+"</span><input type='number' id='modal_holidayPay' class='hiddenInput' name='holidayPay' value="+result.holidayPay+" onchange='submitDisable();'>"+"</td>"
 									 +"<th class='taxCol'>소득세</th>"
-									 +"<td><span class='showVal'>"+result.incomeTax.toLocaleString()+"</span><input type='number' id='modal_incomeTax' class='hiddenInput' name='incomeTax' value="+result.incomeTax+">"+"</td>"
+									 +"<td><span class='showVal'>"+result.incomeTax.toLocaleString()+"</span><input type='number' id='modal_incomeTax' class='hiddenInput' name='incomeTax' value="+result.incomeTax+" onchange='submitDisable();'>"+"</td>"
 									 +"</tr>"
 									 
 									 +"<tr>"
 									 +"<th class='payCol'>연구비</th>"
-									 +"<td><span class='showVal'>"+result.researchPay.toLocaleString()+"</span><input type='number' id='modal_researchPay' class='hiddenInput' name='researchPay' value="+result.researchPay+">"+"</td>"
+									 +"<td><span class='showVal'>"+result.researchPay.toLocaleString()+"</span><input type='number' id='modal_researchPay' class='hiddenInput' name='researchPay' value="+result.researchPay+" onchange='submitDisable();'>"+"</td>"
 									 +"<th></th>"
 									 +"<td>"+"</td>"
 									 +"</tr>"
@@ -554,14 +557,14 @@
 									 +"<th></th>"
 									 +"<td>"+"<input type='hidden' id='modal_payNo' name='payNo' value="+payNo+">"+"</td>"
 									 +"<th class='taxCol'>공제액계</th>"
-									 +"<td><span class='showVal'>"+result.deductTotal.toLocaleString()+"</span><input type='number' id='modal_deductTotal' class='hiddenInput' name='deductTotal' value="+result.deductTotal+" readonly>"+"</td>"
+									 +"<td><span class='showVal'>"+result.deductTotal.toLocaleString()+"</span><input type='number' id='modal_deductTotal' class='hiddenInput' name='deductTotal' value="+result.deductTotal+" readonly onchange='submitDisable();'>"+"</td>"
 									 +"</tr>"
 									 
 									 +"<tr>"
 									 +"<th class='payCol'>지급액계</th>"
-									 +"<td><span class='showVal'>"+result.paymentTotal.toLocaleString()+"</span><input type='number' id='modal_paymentTotal' class='hiddenInput' name='paymentTotal' value="+result.paymentTotal+" readonly>"+"</td>"
+									 +"<td><span class='showVal'>"+result.paymentTotal.toLocaleString()+"</span><input type='number' id='modal_paymentTotal' class='hiddenInput' name='paymentTotal' value="+result.paymentTotal+" readonly onchange='submitDisable();'>"+"</td>"
 									 +"<th class='realCol'>실수령액</th>"
-									 +"<td><span class='showVal'>"+result.realPay.toLocaleString()+"</span><input type='number' id='modal_realPay' class='hiddenInput' name='realPay' value="+result.realPay+" readonly>"+"</td>"
+									 +"<td><span class='showVal'>"+result.realPay.toLocaleString()+"</span><input type='number' id='modal_realPay' class='hiddenInput' name='realPay' value="+result.realPay+" readonly onchange='submitDisable();'>"+"</td>"
 									 +"</tr>";
 									 
 								$(".modalContent>table").html(str);	
@@ -607,7 +610,7 @@
        			        	});  
                 		}
                 	}
-                	
+                	//급여정보 삭제
                 	function deleteSalary(payNo){
                 		var control = confirm("해당 급여정보를 삭제하시겠습니까?");
    						
@@ -633,6 +636,19 @@
        			        	}); 
                 		}
    						
+                	}
+                	
+                	//입력버튼 비활성화
+                	function submitDisable(){
+                		$("#submitBtn").attr("disabled",true);
+                		$("#submitBtn").attr("class","hiddenBtn btn btn-outline-danger btn-sm");
+                		$("#submitBtn").text("입력불가");
+                	}
+                	//입력버튼 활성화
+                	function submitAble(){
+                		$("#submitBtn").attr("disabled",false);
+                		$("#submitBtn").attr("class","hiddenBtn btn btn-outline-primary btn-sm");
+                		$("#submitBtn").text("입력");
                 	}
                 	
                 </script>

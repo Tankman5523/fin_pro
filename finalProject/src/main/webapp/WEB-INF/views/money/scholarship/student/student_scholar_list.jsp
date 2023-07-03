@@ -25,7 +25,7 @@
                 <div class="child_title">
                     <a href="listPage.rg">등록금납입 이력</a>
                 </div>
-                <div class="child_title" style="font-weight:bold;">
+                <div class="child_title" style="font-weight:bold;color:#00aeff;">
                     <a href="listPage.sc">장학금 수혜내역</a>
                 </div>
             </div>
