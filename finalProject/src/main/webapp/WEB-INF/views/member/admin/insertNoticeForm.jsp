@@ -17,36 +17,36 @@
 
 </head>
 <body>
-<div class="wrap">
+<div class="wrap" style="height: auto;">
 	<%@include file="../../common/admin_menubar.jsp" %> <%--알아서 수정해서 쓰기 --%> 
-	<div id="content">
+	<div id="content" style="height: 1100px;">
 		<div id="category">
-			<div id="cate_title">
+			<div id="cate_title" style="height: 94px;">
 				<span style="margin: 0 auto;">학사관리</span>
 			</div>
-			<div class="child_title">
+			<div class="child_title" style="height: 77px;">
 			    <a href="enrollStudent.ad">학생관리</a>
 			</div>
-			<div class="child_title">
+			<div class="child_title" style="height: 77px;">
 			    <a href="enrollProfessor.ad">임직원 관리</a>
 			</div>
-			<div class="child_title">
+			<div class="child_title" style="height: 77px;">
 			    <a href="calendarView.ad">학사일정 관리</a>
 			</div>
-			<div class="child_title">
+			<div class="child_title" style="height: 77px;">
 				<a href="stuRestList.ad">휴/복학 신청 관리</a>
 			</div>
-			<div class="child_title">
+			<div class="child_title" style="height: 77px;">
 				<a href="proRestList.ad">안식/퇴직 관리</a>
 			</div>
-			<div class="child_title">
+			<div class="child_title" style="height: 77px;">
 			    <a href="selectNotice.ad" style="color:#00aeff; font-weight: 550;">공지사항 관리</a>
 			</div>
 	    </div>
 		<div id="content_1">
 		
-			<h3 style="width: 95%; margin: 50px auto; text-align: center;">공지사항 등록</h3>
-			<div id="editor-container">
+			<p id="sub-title">공지사항 등록</p>
+			<div id="editor-container">			
 				<input type="hidden" name="user" value="${loginUser.professorNo }">
 				<table id="select-area">
 					<tbody>
@@ -71,13 +71,18 @@
 						</tr>
 					</tbody>						
 				</table>
+<!-- 				<form id="file-form" method="post" enctype="multipart/form-data"> -->
+					<input type="file" name="upfile" id="files" class="files" onchange="uploadFiles()" multiple="multiple">
+					<label for="files" id="upFile-button">파일찾기</label>
+					<div id="files-info"></div>
+<!-- 				</form> -->
+				<input type="text" id="notice-title" placeholder="제목을 입력하세요.">
 				<div id="summernote"></div>
 				<div id="btn-area">
 					<button type="button" id="back" onclick="history.back();">이전</button>
 					<button type="button" id="submit" onclick="insert();">등록</button>
 				</div>
 			</div>
-			
 		</div>
 	</div>
 </div>
@@ -87,45 +92,48 @@
 	        placeholder: '내용을 작성하세요',
 	        width: '100%',
 	        height: 500,
-	        maxHeight: 500,
-			callbacks: {
-				onImageUpload: function(files, editor, welEditable){
-					// 파일 업로드(다중업로드를 위해 반복문 사용)
-					for (var i = files.length - 1; i >= 0; i--) {
-						uploadSummernoteImageFile(files[i], this);
-					}
-				}
-			} 
+	        maxHeight: 500
 	    });
+        jb('.note-insert').css('display', 'none')
+        jb('.note-table').css('display', 'none')
+        jb('.note-view').css('display', 'none')
 	});
 	
-	function uploadSummernoteImageFile(file, el) {
-        var data = new FormData();	
-        data.append("file",file);
-        $.ajax({
-			url: '/../summer_image.do',
-         	type: "POST",
-			enctype: 'multipart/form-data',
-			data: data,
-			cache: false,
-			contentType : false,
-			processData : false,
-			success : function(data) {
-		       var json = JSON.parse(data);
-		       $(el).summernote('editor.insertImage',json["url"]);
-	           jsonArray.push(json["url"]);
-	           jsonFn(jsonArray);
-			},
-			error : function(e) {
-			    console.log(e);
+	const dataTransfer = new DataTransfer();
+	
+	function uploadFiles(){
+		const fileArr = document.getElementById('files').files;
+		
+		const fileInfo = document.getElementById('files-info')
+		
+
+		if(fileArr != null && fileArr.length>0){
+			for(var i=0; i<fileArr.length; i++){
+				const pTag = document.createElement('p')
+				const btn = document.createElement('button')
+				
+				pTag.innerHTML += fileArr[i].name
+				pTag.setAttribute('class', 'select-file')
+				btn.setAttribute('class', 'delete-btn')
+				btn.innerHTML = "<i class='fa-solid fa-xmark'></i>"
+				pTag.appendChild(btn)
+				fileInfo.append(pTag)
+				
+				dataTransfer.items.add(fileArr[i])
 			}
-		});
+			document.getElementById('files').files = dataTransfer.files;
+		}
+		
+		const delBtn = document.querySelectorAll('.delete-btn')
+		const file = document.querySelectorAll('.select-file')
+		
+		delBtn.forEach(function(btn, idx){
+			btn.addEventListener('click', function(){
+				dataTransfer.items.remove(idx)
+				file[idx].remove()
+			})
+		})
 	}
-	
-	function jsonFn(jsonArray){
-		console.log(jsonArray);
-	}
-	
 	
 	function insert(){
 		const fieldSelect = document.getElementById('field-select');
@@ -136,7 +144,40 @@
 		
 		const user = "${loginUser.professorNo}";
 
-		const note = document.querySelector('.note-editable').innerHTML
+		const title = document.getElementById('notice-title').value
+		const content = document.querySelector('.note-editable').innerHTML
+
+// 		var data = {   
+// 			"fiels" :field,
+// 		    "category" : category,
+// 		    "user" : user,
+// 		    "title" : title,
+// 		    "content" : content
+// 		}
+		
+// 		var formData = new FormData($('#file-form')[0]);
+		
+// 		const fileInput = document.getElementsByClassName('	files')
+// 		for (var i = 0; i < fileInput.length; i++) {
+// 			if (fileInput[i].files.length > 0) {
+// 				for (var j = 0; j < fileInput[i].files.length; j++) {
+// 					formData.append('upfile', $('.files')[i].files[j]);
+// 				}
+// 			}
+// 		}
+
+// 		formData.append('key', new Blob([ JSON.stringify(data) ], {type : "application/json"}));
+		
+// 		const upfile = document.getElementById('files').files
+// 		console.log(upfile)
+		
+		const formData = new FormData();
+		var inputFile = $("input[name='upfile']");
+		var files = inputFile[0].files;
+	
+		for(var i=0; i<files.length; i++){
+			formData.append("upfile", files[i])
+		}
 		
 		$.ajax({
 			url: "insertNoticeForm.ad",
@@ -144,8 +185,14 @@
 				field : field,
 				category : category,
 				user : user,
-				note : note
+				title : title,
+				content : content,
+// 				upfile :  upfile
+				formData : formData
 			},
+			contentType: false,
+			processData: false,
+// 			enctype : 'multipart/form-data',
 			type: "post",
 			success: function(){
 				
@@ -154,6 +201,7 @@
 				
 			}
 		})
+		
 	}
 </script>
 </body>

@@ -139,46 +139,52 @@
 			var type = searchType.options[searchType.selectedIndex].value;
 			var keyword = document.getElementById('keyword').value;
 			
-			$.ajax({
-				url: "searchNotice.ad",
-				type: "post",
-				data: {
-					field : field,
-					category : category,
-					keyword : keyword,
-					type : type
-				},
-				success: function(data){
-					var str = "";
-					
-					data.forEach(function(data){
-						str += "<tr>"
-							+"<td>"+"<input type='checkBox' class='chkRows' name='chkRows'>"+"</td>"
-							+"<td>"+data.noticeNo+"</td>"
-							+"<td>"+data.field+"</td>"
-							+"<td>"+data.categoryName+"</td>"
-							+"<td>"+data.noticeTitle+"</td>";
-							
-							if (data.originName != null) {
-								str += "<td style='width: 80px;'>"+"<i class='fa-solid fa-paperclip'></i>"+"</td>"
-								+"<td>"+data.createDate+"</td>"
-								+"</tr>"
-							}else{
-								str += "<td></td>"
-								+"<td>"+data.createDate+"</td>"
-								+"</tr>"
-							}
+			if(keyword == ''){
+				alert("검색어를 입력해주세요.");
+				location.reload();
+			}else{
+				$.ajax({
+					url: "searchNotice.ad",
+					type: "post",
+					data: {
+						field : field,
+						category : category,
+						keyword : keyword,
+						type : type
+					},
+					success: function(data){
+						var str = "";
 						
-					})
-					
-					alert("검색 결과는 총 "+data.length+" 건 입니다.");
-					$('#result-table > tbody').html(str);
-				},
-				error: function(){
-					console.log("통신오류");
-				}
-			})		
+						data.forEach(function(data){
+							str += "<tr>"
+								+"<td>"+"<input type='checkBox' class='chkRows' name='chkRows'>"+"</td>"
+								+"<td>"+data.noticeNo+"</td>"
+								+"<td>"+data.field+"</td>"
+								+"<td>"+data.categoryName+"</td>"
+								+"<td>"+data.noticeTitle+"</td>";
+								
+								if (data.originName != null) {
+									str += "<td style='width: 80px;'>"+"<i class='fa-solid fa-paperclip'></i>"+"</td>"
+									+"<td>"+data.createDate+"</td>"
+									+"</tr>"
+								}else{
+									str += "<td></td>"
+									+"<td>"+data.createDate+"</td>"
+									+"</tr>"
+								}
+							
+						})
+						
+						alert("검색 결과는 총 "+data.length+" 건 입니다.");
+						$('#result-table > tbody').html(str);
+					},
+					error: function(){
+						console.log("통신오류");
+					}
+				})		
+			}
 		})
+			
 	}
 	
 	function selectAll(selectAll){

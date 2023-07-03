@@ -76,6 +76,9 @@
   <!-- 웹소켓 설정 -->
   <beans:bean id="echoHandler" class="com.univ.fin.member.EchoHandler" />
   
+  <!-- 다중 파일 업로드 -->
+  <beans:bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"/>
+  
   <websocket:handlers>
   	<websocket:mapping handler="echoHandler" path="/echo"/>
   	
