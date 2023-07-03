@@ -98,3 +98,14 @@ h2, h3{
     letter-spacing: 2px;
     line-height: 30px;
 }
+
+.showMark, .hideMark:hover{
+	cursor:pointer;	
+}
+
+#bus_time_table{
+	text-align: center;
+	border-collapse : collapse;
+	width:100%;
+	border:lightgray;
+}

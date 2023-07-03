@@ -615,7 +615,8 @@
 	<select id="selectStudentForSc" resultType="string" parameterType="string" >
   		SELECT STUDENT_NAME
 		FROM STUDENT  			   
-		WHERE STUDENT_NO = #{studentNo}  			   
+		WHERE STUDENT_NO = #{studentNo}
+		AND STATUS = '재학'  			   
   	</select>
   	
   	<!-- (관리자) 장학금 처리완료로 변경 -->

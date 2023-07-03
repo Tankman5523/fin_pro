@@ -142,7 +142,6 @@ public class ScholarshipController {
 									 .classTerm(classTerm)
 									 .build();
 		RegistPay r = registService.selectNewRegistInfo(rp); 
-		System.out.println(r);
 		if(r==null) {//해당학기 등록금이 이미 입력되어있지 않을 때.
 			String studentName = scholarshipService.selectStudentForSc(studentNo); //
 			return studentName; //
