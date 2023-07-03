@@ -58,45 +58,14 @@ public class ProfessorController {
 		return mv;
 	}
 	
-	// 메인 -> 강의 조회
+	// 메인 -> 교수 시간표 조회
 	@ResponseBody
 	@RequestMapping(value = "getClasses.pr", produces = "application/json; charset=UTF-8")
-	public String getClasses(String day, HttpSession session) {
+	public String getClasses(HttpSession session) {
 		Professor pr = (Professor)session.getAttribute("loginUser");
 		String professorNo = pr.getProfessorNo();
 		
-		Calendar calendar = Calendar.getInstance();
-		String year = String.valueOf(calendar.get(calendar.YEAR)); // 년도
-		int month = calendar.get(calendar.MONTH)+1; // 월
-		String term = "";
-		if(3<=month && month<=6) { // 1학기
-			term = "1";
-		}
-		else if(9<=month && month<=12) { // 2학기
-			term = "2";
-		}
-		else {
-			term = "0";
-		}
-		
-		HashMap<String, String> map = new HashMap<>();
-		map.put("year", year);
-		map.put("term", term);
-		map.put("professorNo", professorNo);
-		ArrayList<Classes> cList = memberService.selectProfessorTimetable(map); // 해당 학기 모든 개인시간표 추출
-		Collections.sort(cList, new Comparator<Classes>() { // 요일별로 정렬
-			public int compare(Classes c1, Classes c2) {
-				int dayCompare = Integer.parseInt(c1.getDay()) - Integer.parseInt(c2.getDay());
-				
-				if(dayCompare == 0) { // 요일같으면 교시별로 정렬
-					return Integer.parseInt(c1.getPeriod()) - Integer.parseInt(c2.getPeriod());
-				}
-				else {
-					return dayCompare;
-				}
-			}
-		});
-		
+		ArrayList<Classes> cList = memberService.selectProfessorAllClasses(professorNo); // 모든 신청강의 조회
 		return new Gson().toJson(cList);
 	}
 	
@@ -135,8 +104,6 @@ public class ProfessorController {
 									,HttpSession session
 									,ModelAndView mv) {
 		
-		Attachment a = null;
-		
 		Professor p = (Professor)session.getAttribute("loginUser");
 		
 		c.setProfessorNo(p.getProfessorNo()); //교수 직번 담기
@@ -146,12 +113,13 @@ public class ProfessorController {
 			String subPath = "classes/"; //강의관련 세부경로
 			String changeName = new SaveFile().saveFile(upfile, session, subPath); //파일 이름 바꾸고, 저장하고 옴
 			String filePath = "resources/uploadFiles/"; 
-			a = new Attachment();
 			
 			//첨부파일에 담기
-			a.setOriginName(upfile.getOriginalFilename()); //파일 원래 이름
-			a.setChangeName(changeName); //파일 변경명
-			a.setFilePath(filePath+subPath); //파일 저장 경로
+			Attachment a = Attachment.builder()
+									.originName(upfile.getOriginalFilename()) //파일 원래 이름
+									.changeName(changeName) //파일 변경명
+									.filePath(filePath+subPath) //파일 저장 경로
+									.build();
 			
 			int result = memberService.insertClassCreate(c,a);
 			
@@ -202,13 +170,12 @@ public class ProfessorController {
 			String changeName = new SaveFile().saveFile(reUpfile, session, subPath); //파일 이름 바꾸고, 저장하고 옴
 			String filePath = "resources/uploadFiles/"+subPath; //저장경로
 			
-			a = new Attachment();
-			
 			//첨부파일에 담기
-			a.setOriginName(reUpfile.getOriginalFilename()); //파일 원래 이름
-			a.setChangeName(changeName); //파일 변경명
-			a.setFilePath(filePath+subPath); //파일 저장 경로
-			
+			a= Attachment.builder()
+							.originName(reUpfile.getOriginalFilename()) //파일 원래 이름
+							.changeName(changeName) //파일 변경명
+							.filePath(filePath+subPath) //파일 저장 경로
+							.build();
 			
 			if(c.getFileNo()!=null) {//기존 첨부파일이 있다면
 				a.setFileNo(Integer.parseInt(c.getFileNo()));//첨부파일에 기존 파일번호 담고
@@ -230,7 +197,6 @@ public class ProfessorController {
 									Model model,
 									HttpSession session) {
 		int result = memberService.updateProfessor(pr);
-		
 		
 		if(result>0) {
 			//유저 정보갱신
@@ -477,12 +443,8 @@ public class ProfessorController {
 		statusMap.put("counselNo", counselNo);
 		
 		HashMap<String, String> alarm = new HashMap<>();
-		if(statusMap.get("counselStatus").equals("C")) {
-			alarm.put("cmd", "counselUpdate");
-		} else {
-			alarm.put("cmd", "nothing");
-		}
 		Counseling c = memberService.selectCounselDetail(counselNo);
+		alarm.put("cmd", "counselUpdate");
 		alarm.put("studentNo", c.getStudentNo());
 		alarm.put("professorName", p.getProfessorName());
 		

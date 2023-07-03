@@ -32,7 +32,7 @@
                     <input type="hidden" name="studentNo" value="${loginUser.studentNo}">
                     <table 	id="coun_list" style="" class="table">
                         <tr>
-                            <td class="litle_title">상담교직원</td>
+                            <td class="litle_title">*상담교직원</td>
                             <td align="right" style="padding:5px;">
                                 <input type="text" name="professor" id="pro_name" style="border:0px; margin-left: 7%;" required >
                                 <button type="button" id="pro_modal"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -42,31 +42,31 @@
                             <td><input type="text" value="${loginUser.studentName}" readonly></td>
                         </tr>
                         <tr>
-                            <td class="litle_title">학과</td>
+                            <td class="litle_title">*학과</td>
                             <td><input type="text" id="pro_depa" readonly ></td>
                             <td class="litle_title">학과</td>
                             <td><input type="text" value="${loginUser.departmentNo }" readonly></td>
                         </tr>
                         <tr>
-                            <td class="litle_title">직책</td>
+                            <td class="litle_title">*직책</td>
                             <td><input type="text" id="pro_posi" readonly></td>
                             <td class="litle_title">학생번호</td>
                             <td><input type="text" value="${loginUser.studentNo}" readonly></td>
                         </tr>
                         <tr>
-                            <td class="litle_title">이메일</td>
+                            <td class="litle_title">*이메일</td>
                             <td><input type="text" id="pro_email" readonly></td>
                             <td class="litle_title">학생 전화번호</td>
                             <td><input type="text" value="${loginUser.phone}" readonly></td>
                         </tr>
                         <tr>
-                            <td class="litle_title">상담희망일자</td>
+                            <td class="litle_title">*상담희망일자</td>
                             <td><input type="date" name="requestDate" class="datepicker" data-placeholder="날짜 선택" required></td>
                             <td class="litle_title">상담신청일자</td>
                             <td><input type="text"  id="today" readonly></td>
                         </tr>
                         <tr>
-                            <td rowspan="2" class="litle_title">상담요청영역</td>
+                            <td rowspan="2" class="litle_title">*상담요청영역</td>
                             <td colspan="3">
                                 <ul class="counselingCategory">
                                     <li>
@@ -127,15 +127,15 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="litle_title">상담요청내용</td>
+                            <td class="litle_title">*상담요청내용</td>
                             <td colspan="3">
                                 <textarea name="counselContent" cols="88" rows="10" style="resize: none;" required></textarea>
                             </td>
                         </tr>
                     </table>
                     <div style="margin-top: 5%;">
-                        <button type="reset" class="btn btn-secondary">이전</button>
-                        <button type="submit" class="btn btn-primary" style="margin-left: 2%;">전송</button>
+                        <button type="reset" class="btn btn-secondary btn-lg">이전</button>
+                        <button type="submit" class="btn btn-primary btn-lg" style="margin-left: 2%;">전송</button>
                     </div>
                 </form>
                 </div>
@@ -145,9 +145,9 @@
     <div id="modalWrap" style="display: none;">
         <div id="modalContent">
             <div id="modalBody">
-            <h4>상담 교수님을 선택해주세요.</h4>
+            <h4>상담 교수님을 선택(클릭)해주세요.</h4>
             <span id="closeBtn">&times;</span> 
-                <table border="1" class="table" style="width: 100%;text-align: center;" id="pro_list">
+                <table border="1" class="table" style="width: 100%;text-align: center;  white-space:nowrap" id="pro_list">
                 	<thead class="thead-dark">
                 		<tr>
                             <th>교수명</th>

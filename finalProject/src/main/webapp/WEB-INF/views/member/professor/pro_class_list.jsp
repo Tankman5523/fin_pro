@@ -24,8 +24,8 @@
             </div>
             <div id="content_1">
                 <span id="content_title">강의 개설 내역</span>
-                <div align="center"  style="width:100%;height:650; border-top:2px solid lightblue">
-                    <table border="1" id="class_list" class="table-responsive">
+                <div align="center" class="table-responsive"  style="width:100%;height:650; padding:1px; border-top:2px solid lightblue">
+                    <table border="1" id="class_list" class="table">
                         <thead>
                             <tr>
                                 <th style="width:8%">강의번호</th>
@@ -66,14 +66,22 @@
 	                        			<td>${c.classLevel eq 0?'전':c.classLevel }학년</td>
 	                        			<td>${c.classNos }</td>
 	                        			<td>${c.credit }</td>
+	                        			<td>
 	                        			<c:choose>
+	                        			<c:when test="${c.status eq 'Y'}">
+				                        	<span class="resultMsg" style="color:blue;">개설</span>
+				                        </c:when>
+				                        <c:when test="${c.status eq 'B'}">
+				                        	<span class="resultMsg" style="color:black;">승인대기중</span>
+				                        </c:when>
 	                        			<c:when test="${c.status eq 'C'}">
-	                        				<td><button type="button" onclick="location.href='updateClassCreate.pr?classNo=${c.classNo}'" class="btn btn-warning btn-sm">반려</button></td>
+	                        				<button type="button" onclick="location.href='updateClassCreate.pr?classNo=${c.classNo}'" class="btn btn-warning btn-sm">반려</button>
 	                        			</c:when>
 	                        			<c:otherwise>
-	                        				<td>${c.status eq 'Y'?'개설완료': c.status eq 'B'?'승인대기중':'학기종료'}</td>
+	                        				<span class="resultMsg" style="color:red;">학기끝</span>
 	                        			</c:otherwise>
 	                        			</c:choose>
+	                        			</td>
 	                        		</tr>
 	                        	</c:forEach>
                         	</c:otherwise>

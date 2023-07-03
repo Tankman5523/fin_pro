@@ -31,6 +31,9 @@
                 <div class="child_title">
                     <a href="proRestList.ad" style="color:#00aeff; font-weight: 550;">안식/퇴직 관리</a>
                 </div>
+                <div class="child_title">
+				    <a href="selectNotice.ad">공지사항 관리</a>
+				</div>
             </div>
             <div id="content_1">
             <span id="content_title">안식/퇴직 조회</span>
@@ -97,7 +100,19 @@
                             			<td>${r.category eq 0 ?'퇴직신청':'안식휴가' }</td>
                             			<td>${r.startDate }</td>
                             			<td>${r.endDate eq null ?'퇴직': r.endDate}</td>
-                            			<td>${r.status eq 'B'? '승인대기중':r.status eq 'Y'? '승인완료':'비승인'}</td>
+                            			<td>
+                            			<c:choose>
+		                            			<c:when test="${r.status eq 'B'}">
+		                            				<span style="color:blue;">승인대기중</span>
+		                            			</c:when>
+		                            			<c:when test="${r.status eq 'Y'}">
+		                            				<span style="color:green;">승인완료</span>
+		                            			</c:when>
+		                            			<c:otherwise>
+		                            				<span style="color:red;">반려</span>
+		                            			</c:otherwise>
+		                            		</c:choose>
+                            			</td>
                             		</tr>
                             		</c:forEach>
                             	</c:otherwise>
@@ -118,7 +133,7 @@
     	function stuRestDetailView(){
     		$("#rest_list>tbody>tr").click(function(){
     			var restNo = $(this).children().eq(0).text();
-    			if(restNo!='조회된 신청 내역이 없습니다.'){
+    			if(restNo>0){
     				location.href="proRestDetail.ad?restNo="+restNo;
     			}
     		})
@@ -171,13 +186,17 @@
     						}		
     						if(list[i].endDate === undefined){ //복귀일이 없다면
     							result +="<td>퇴직</td>" //퇴직
-	    							    +"<td>"+list[i].status+"</td>"
-	    							    +"</tr>"
     						}else{ //복귀일이 있다면
     							result +="<td>"+list[i].endDate+"</td>" //복귀일 넣어줌
-		    						    +"<td>"+list[i].status+"</td>"
-									    +"</tr>"
     						}
+    						if(list[i].status=='승인대기중'){//상태값에 색깔 적용
+								result+="<td><span style='color:blue;'>"+list[i].status+"</span></td>"
+							}else if(list[i].status=='승인완료'){
+								result+="<td><span style='color:green;'>"+list[i].status+"</span></td>"
+							}else{
+								result+="<td><span style='color:red;'>"+list[i].status+"</span></td>"
+							}
+					result+="</tr>";
     					}
     				}else{
     					result = "<tr><td colspan='9'>검색된 신청이 없습니다.</td></tr>"

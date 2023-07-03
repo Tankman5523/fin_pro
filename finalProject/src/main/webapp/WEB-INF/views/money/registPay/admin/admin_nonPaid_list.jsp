@@ -19,8 +19,8 @@
                 <div id="cate_title">
                     <span style="margin: 0 auto;">금전관리</span>
                 </div>
-                <div class="child_title" style="font-weight:bold;">
-                    <a href="allList.rg">등록금 관리</a>
+                <div class="child_title">
+                    <a href="allList.rg" style="font-weight:bold;color:#00aeff;">등록금 관리</a>
                 </div>
                 <div class="child_title">
                     <a href="allList.sc">장학금 관리</a>

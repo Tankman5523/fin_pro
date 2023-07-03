@@ -145,7 +145,6 @@
 			
 			/* 로그인 상태 유지 확인 Text처리 */
 			var autoLogin = decodeURIComponent("${cookie.autoLoginInfo.value}");
-			console.log(autoLogin);
 			if(autoLogin != ""){
 				$("#autoLoginStatus").text("로그인 상태 유지중");
 			}

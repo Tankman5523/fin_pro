@@ -264,7 +264,7 @@
   		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO) 
         JOIN COLLEGE C ON (S.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE STUDENT_NO = #{studentNo}
-  		AND STUDENT_PWD = #{studentPwd}
+  		<!-- AND STUDENT_PWD = #{studentPwd} -->
   	</select>
   	
   	<!-- 임직원 로그인 -->
@@ -275,7 +275,7 @@
         JOIN DEPARTMENT D ON (P.DEPARTMENT_NO = D.DEPARTMENT_NO)
         JOIN COLLEGE C ON (P.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE PROFESSOR_NO = #{professorNo}
-  		AND PROFESSOR_PWD = #{professorPwd}
+  		<!-- AND PROFESSOR_PWD = #{professorPwd} -->
   	</select>
   
   	<!-- ID조회 - 학생 -->
@@ -635,7 +635,7 @@
 		WHERE C.DEPARTMENT_NO = (SELECT DEPARTMENT_NO
 		                        FROM DEPARTMENT
 		                        WHERE DEPARTMENT_NAME = #{department})
-		      AND CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND C.STATUS = 'Y'
+		      AND CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND C.STATUS IN ('Y', 'N')
 		ORDER BY CLASS_LEVEL, CLASS_NAME
   	</select>
   	
@@ -760,19 +760,19 @@
   		FROM COUNSELING C
   		JOIN PROFESSOR P USING (PROFESSOR_NO)
   		WHERE STUDENT_NO = #{studentNo}
-  		ORDER BY APPLICATION_DATE DESC
+  		ORDER BY COUNSEL_NO DESC
 	 </select>
 	 
 	 <!-- (학생)상담신청 내역 검색해서 가져오기 -->
 	 <select id="selectSearchCounList" resultMap="counselingResultMap">
 		 	SELECT COUNSEL_NO,PROFESSOR_NO,PROFESSOR_NAME,TO_CHAR(APPLICATION_DATE,'YYYY-MM-DD') APPLICATION_DATE
-		 			,TO_CHAR(REQUEST_DATE,'YYYY-MM-DD') REQUEST_DATE,COUNSEL_CONTENT,COUNSEL_AREA,C.STATUS
+		 			,TO_CHAR(REQUEST_DATE,'YYYY-MM-DD') REQUEST_DATE,COUNSEL_CONTENT,COUNSEL_AREA,DECODE(C.STATUS,'Y','상담완료','N','상담전','C','상담취소') STATUS
 	  		FROM COUNSELING C
 	  		JOIN PROFESSOR P USING (PROFESSOR_NO)
 	  		WHERE STUDENT_NO = #{studentNo}
 	        AND   COUNSEL_AREA LIKE #{counselArea}
 	        AND   TO_CHAR(APPLICATION_DATE,'YYYY') LIKE #{year}
-	        AND   APPLICATION_DATE BETWEEN TO_DATE(#{startDate},'YYYY-MM-DD') AND TO_DATE(#{endDate},'YYYY-MM-DD')
+	        AND   TO_CHAR(APPLICATION_DATE,'YYYY-MM-DD') BETWEEN #{startDate} AND #{endDate}
 	  		ORDER BY COUNSEL_NO DESC
 	 </select>
   	
@@ -887,7 +887,7 @@
 		LEFT JOIN ATTACHMENT A ON(C.FILE_NO = A.FILE_NO)
 		JOIN PROFESSOR P USING(PROFESSOR_NO)
 		JOIN DEPARTMENT D ON(C.DEPARTMENT_NO = D.DEPARTMENT_NO)
-		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND C.STATUS = 'Y'
+		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND C.STATUS IN ('Y', 'N')
 		<if test="condition == 'professor'">
 			AND PROFESSOR_NAME
 		</if>
@@ -986,10 +986,9 @@
   	
   	<!-- 교수 개인시간표 -> 학기 선택 후 시간표 조회 -->
   	<select id="selectProfessorTimetable" parameterType="hashmap" resultMap="classResultMap">
-  		SELECT CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DAY, PERIOD, CLASS_HOUR, CLASSROOM
+  		SELECT CLASS_NO, CLASS_NAME, DAY, PERIOD, CLASS_HOUR, CLASSROOM
 		FROM CLASS C
-		JOIN PROFESSOR P USING(PROFESSOR_NO)
-		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND PROFESSOR_NO = #{professorNo}
+		WHERE CLASS_YEAR = #{year} AND CLASS_TERM = #{term} AND PROFESSOR_NO = #{professorNo} AND C.STATUS != 'C'
   	</select>
   	
   	<!-- 기간 확인 -->
@@ -1132,6 +1131,9 @@
         AND CL.STATUS IN 
         
         <choose>
+        	<when test="status==''">
+        		('B','C','Y','N')
+        	</when>
         	<when test="status=='B,C'">
         		('B','C')
         	</when>
@@ -1139,7 +1141,7 @@
         		('Y','N')
         	</when>
         	<otherwise>
-        		('B','C','Y','N')
+        		(#{status})
         	</otherwise>
         </choose>
         
@@ -1154,6 +1156,8 @@
         </choose>
         AND CLASS_NAME LIKE '%'||#{className}||'%'
         AND DEPARTMENT_NAME LIKE '%'||#{departmentNo}||'%'
+        AND CLASS_YEAR LIKE '%'||#{classYear}||'%'
+        AND CLASS_TERM LIKE '%'||#{classTerm}||'%'
 		ORDER BY CLASS_NO DESC
   	</select>
   	
@@ -1225,7 +1229,7 @@
   	</insert>
   	
   	<select id="studentGradeView" resultMap="objectionResultMap">
-  	SELECT D.STUDENT_NO, C.CLASS_NAME, P.PROFESSOR_NAME, D.OPINION, D.STATUS ,D.CREDIT
+  	SELECT D.STUDENT_NO, C.CLASS_NAME, P.PROFESSOR_NAME, D.OPINION, D.STATUS ,C.CREDIT
 	FROM DISSENT D
 	JOIN CLASS C ON D.CLASS_NO = C.CLASS_NO
 	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
@@ -1506,7 +1510,7 @@
   		JOIN STUDENT S USING (STUDENT_NO)
   		WHERE STUDENT_NO LIKE '%'||#{studentNo}||'%'
   		AND CATEGORY LIKE '%'||#{category}||'%'
-  		AND REQUEST_DATE BETWEEN TO_DATE(#{start},'YYYY-MM-DD') AND TO_DATE(#{end},'YYYY-MM-DD')
+  		AND TO_CHAR(REQUEST_DATE,'YYYY-MM-DD') BETWEEN #{start} AND #{end}
   		AND STUDENT_NAME  LIKE '%'||#{studentName}||'%'
   		AND R.STATUS LIKE '%'||#{status}||'%'
   		ORDER BY REST_NO DESC 
@@ -1544,7 +1548,7 @@
   		JOIN PROFESSOR P USING (PROFESSOR_NO)
   		WHERE PROFESSOR_NO LIKE '%'||#{professorNo}||'%'
   		AND CATEGORY LIKE '%'||#{category}||'%'
-  		AND REQUEST_DATE BETWEEN TO_DATE(#{start},'YYYY-MM-DD') AND TO_DATE(#{end},'YYYY-MM-DD')
+  		AND TO_CHAR(REQUEST_DATE,'YYYY-MM-DD') BETWEEN #{start} AND #{end}
   		AND PROFESSOR_NAME  LIKE '%'||#{professorName}||'%'
   		AND R.STATUS LIKE '%'||#{status}||'%'
   		ORDER BY REST_NO DESC 
@@ -1645,6 +1649,23 @@
 		</if>
   	</select>
   	
+  	<!-- 메인 -> 학생 시간표 조회 -->
+  	<select id="selectStudentAllClasses" parameterType="string" resultMap="classResultMap">
+  		SELECT CLASS_NO, CLASS_NAME, CLASS_YEAR, CLASS_TERM, S.DAY, DECODE(S.PERIOD, 1, '09:00', 2, '10:00', 3, '11:00', 4, '12:00', 5, '13:00', 6, '14:00', 7, '15:00', 8, '16:00', 9, '17:00', 10, '18:00') AS PERIOD, CLASS_HOUR, CLASSROOM
+		FROM CLASS C
+		JOIN SCHEDULE S USING(CLASS_NO)
+		WHERE S.STUDENT_NO = #{studentNo} AND C.STATUS IN ('Y', 'N')
+		ORDER BY CLASS_YEAR DESC, CLASS_TERM DESC, DAY, PERIOD
+  	</select>
+  	
+  	<!-- 메인 -> 교수 시간표 조회 -->
+  	<select id="selectProfessorAllClasses" parameterType="string" resultMap="classResultMap">
+  		SELECT CLASS_NO, CLASS_NAME, CLASS_YEAR, CLASS_TERM, DAY, DECODE(PERIOD, 1, '09:00', 2, '10:00', 3, '11:00', 4, '12:00', 5, '13:00', 6, '14:00', 7, '15:00', 8, '16:00', 9, '17:00', 10, '18:00') AS PERIOD, CLASS_HOUR, CLASSROOM
+		FROM CLASS C
+		WHERE PROFESSOR_NO = #{professorNo} AND C.STATUS != 'C'
+        ORDER BY CLASS_YEAR DESC, CLASS_TERM DESC, DAY, PERIOD
+  	</select>
+  	
   	<!-- 메인 -> 등록금 납부 조회 -->
   	<select id="selectReg" parameterType="string" resultMap="regResultMap">
   		SELECT *
@@ -1704,11 +1725,18 @@
   		WHERE STUDENT_NO = #{studentNo} AND STATUS = 'N'
   	</select>
   	
+  	<!-- 알람 전체확인 -->
+  	<update id="alarmAllCheck">
+  		UPDATE ALARM
+  		SET STATUS = 'Y'
+  		WHERE STUDENT_NO = #{studentNo} AND STATUS = 'N'
+  	</update>
+  	
   	<!-- 알람 확인 -->
   	<update id="alarmCheck">
   		UPDATE ALARM
   		SET STATUS = 'Y'
-  		WHERE STUDENT_NO = #{studentNo} AND STATUS = 'N'
+  		WHERE ALARM_NO = #{alarmNo} AND STATUS = 'N'
   	</update>
   	
   	<!-- (관리자) 공지사항 관리 - 전체 리스트 조회 -->

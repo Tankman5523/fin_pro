@@ -28,15 +28,34 @@
             <div id="content_1">
                     <span id="content_title">개설 신청된 강의</span>
 					<div id="class_type" style="border-top:2px solid lightblue">
+	                    	전공/교양 : 
 	                    <select name="division" id="division">
-	                       <option value="2">전공/교양</option>
+	                       <option value="2">==전체==</option>
 	                       <option value="0">전공</option>
 	                       <option value="1" >교양</option>
 	                    </select>
+	                    	학년도 : 
+	                    <select name="classYear">
+	                    	<option value="">==전체==</option>
+		                    <c:forEach var="y" items="${ylist}">
+		                    	<option value="${y}">${y}년</option>
+		                    </c:forEach>
+	                    </select>
+	                    	학기 : 
+	                    <select name="classTerm">
+	                    	<option value="">==전체==</option>
+	                    	<option value="1">1학기</option>
+	                    	<option value="2">2학기</option>
+	                    </select>
+	                    	개설 여부 : 
 	                    <select name="status" id="status">
+	                       <option value="">=====전체=====</option>
+	                       <option value="B">개설처리중</option>
+	                       <option value="C">반려</option>
+	                       <option value="Y">개설</option>
+	                       <option value="N">학기종료</option>
 	                       <option value="B,C">개설처리중/반려</option>
 	                       <option value="Y,N">개설완료/학기종료</option>
-	                       <option value="B,C,Y,N">전체 조회</option>
 	                    </select>
 	                </div>
 	                <br>
@@ -44,7 +63,7 @@
 	                    <select name="category" style="margin-top:5px;">
 	                        <option value="department">학과</option>
 	                        <option value="professor">교수명</option>
-	                        <option value="class">과목명</option>
+	                        <option value="class">강의명</option>
 	                    </select>
 	                    <input type="text" name="keyword" id="keyword">
 	                    <button type="button" id="search_btn" onclick="searchClassList();" class="btn btn-secondary btn-sm" style="margin-bottom:5px;">조회</button>
@@ -53,24 +72,23 @@
                 <div style="margin-left:20px; margin-bottom:10px;">
                 	<button type="button" class="btn btn-primary" id="allPermit">일괄 개설</button>
                 </div>
-                <div style="width:100%; height:650px; overflow:auto">
-                    <table id="board_list" class="table-responsive" border="1" style="text-align: center;">
+                <div id="table_div" class="table-response">
+                    <table id="board_list" class="table" border="1" style="text-align: center;">
                         <thead>
-                            
                             <tr>
-                                <th style="width:3%"><input type="checkbox" id="allCheck"></th>
-                                <th style="width:8%">신청교수</th>
-                                <th style="width:5%">종류</th>
-                                <th style="width:10%">학과</th>
-                                <th style="width:12%">강의명</th>
-                                <th style="width:7%">학년도</th>
-                                <th style="width:6%">학기</th>
-                                <th style="width:7%">강의실</th>
-                                <th style="width:7%">강의시간</th>
-                                <th style="width:8%">수강대상</th>
-                                <th style="width:7%">수강인원</th>
-                                <th style="width:7%">이수학점</th>
-                                <th style="width:12%">개설여부</th>
+                                <th class="stiky" style="width:3%"><input type="checkbox" id="allCheck"></th>
+                                <th class="stiky" style="width:5%">종류</th>
+                                <th class="stiky" style="width:10%">학과</th>
+                                <th class="stiky" style="width:6.9%">신청교수</th>
+                                <th class="stiky" style="width:11.8%">강의명</th>
+                                <th class="stiky" style="width:6.9%">학년도</th>
+                                <th class="stiky" style="width:5.9%">학기</th>
+                                <th class="stiky" style="width:10.8%">강의실</th>
+                                <th class="stiky" style="width:7%">강의시간</th>
+                                <th class="stiky" style="width:6.9%">수강대상</th>
+                                <th class="stiky" style="width:6.9%">수강인원</th>
+                                <th class="stiky" style="width:6.9%">이수학점</th>
+                                <th class="stiky" style="width:12%">개설여부</th>
                                 
                             </tr>
                         </thead>
@@ -85,9 +103,9 @@
 			                        <c:forEach var="c" items="${list}">
 			                        	<tr>
 			                                <td><input type="checkbox" name="check" value="${c.classNo}"></td>
-			                                <td>${c.professorNo}</td>
 			                                <td>${c.division eq 0 ? '전공':'교양'}</td>
 			                                <td>${c.departmentNo}</td>
+			                                <td>${c.professorNo}</td>
 			                                <td>${c.className}</td>
 			                                <td>${c.classYear}년</td>
 			                                <td>${c.classTerm}학기</td>
@@ -99,23 +117,23 @@
 			                                <td>${c.classLevel eq 0 ? '전':c.classLevel}학년</td>
 			                                <td>${c.classNos}명</td>
 			                                <td>${c.credit}학점</td>
+			                                <td>
 			                                <c:choose>
 				                                <c:when test="${c.status eq 'Y'}">
-				                                	<td><span class="resultMsg" style="color:blue;">개설</span></td>
+				                                	<span class="resultMsg" style="color:blue;">개설</span>
 				                                </c:when>
 				                                <c:when test="${c.status eq 'N'}">
-				                                	<td><span class="resultMsg" style="color:red;">학기끝</span></td>
+				                                	<span class="resultMsg" style="color:red;">학기끝</span>
 				                                </c:when>
 				                                <c:when test="${c.status eq 'C'}">
-				                                	<td><span class="resultMsg" style="color:#FFA500;">반려</span></td>
+				                                	<span class="resultMsg" style="color:#FFA500;">반려</span>
 				                                </c:when>
 				                                <c:otherwise>
-					                                <td>
 					                                    <button type="button" class="btn btn-primary" onclick="updateClassPermit(${c.classNo});">개설</button>
 					                                    <button type="button" class="btn btn-warning"  data-toggle="modal" data-target="#exampleModal">반려</button>
-					                                </td>
 				                                </c:otherwise>
 			                                </c:choose>
+			                                </td>
 			                            </tr>
 			                        </c:forEach>
 	                        	</c:otherwise>
@@ -151,7 +169,32 @@
     <script>
     	$(function(){
 	    	checkbox(); //전체 체크박스 기능 실행함수
+	    	trcheck();
     	})
+    	
+    	function allCheckbox(){
+    		var is_checked = true; //나중에 넣을 변수
+		    
+		    $("#board_list input[name=check]").each(function(){
+		        is_checked = is_checked && $(this).is(":checked"); //내가 누른 버튼이 true인지
+		    });
+		    
+		    $("#allCheck").prop("checked", is_checked); //전체선택 변화
+    	}
+    	
+    	function trcheck(){//테이블 tr클릭시 체크박스 체크 또는 해제
+    		 $('#board_list>tbody').on('click', 'tr td:not(:first-child,:nth-child(13))',function () {
+    			var checkbox = $(this).parent().children().eq(0).children();
+    			
+    			if(checkbox.is(':checked')){
+    				checkbox.prop("checked",false);
+    				allCheckbox();
+    			}else{
+	    			checkbox.prop("checked",true);
+	    			allCheckbox();
+    			}
+    		})
+    	}
     	
     	function checkbox(){
 	    		var allCheck = $("#allCheck"); //강의 전체 선택
@@ -167,28 +210,28 @@
 	    		});
 	    		
 	    		$("#board_list").on("click","input[name=check]",function(){//개별 체크 했을때 전체선택 반응
-	    			var is_checked = true; //나중에 넣을 변수
-	    		    
-	    		    $("#board_list input[name=check]").each(function(){
-	    		        is_checked = is_checked && $(this).is(":checked"); //내가 누른 버튼이 true인지
-	    		    });
-	    		    
-	    		    $("#allCheck").prop("checked", is_checked); //전체선택 변화
+	    			allCheckbox();
 	    		})
 	    		
 	    		$("#allPermit").click(function(){//일괄개설 눌렀을때
-	    			chkArr = []; //배열 초기화
+	    			var chkArr = []; //배열 초기화
+	    			var count = 0; //카운트
 	    			check.each(function(){
-	    				if($(this).is(":checked")){
-	    					var val = $(this).val(); //선택된 강의번호
-	    					chkArr.push(val); //배열에 담기
-	    				}
+	    				var already = $(this).parent().parent().children().eq(12).children().text();
+	    				if(already=='개설반려'){//이미 개설되었거나 반려된 강의가 체크 안되어있는지
+		    				if($(this).is(":checked")){
+		    					var val = $(this).val(); //선택된 강의번호
+		    					chkArr.push(val); //배열에 담기
+		    				}
+	    				}else{
+	    					count++;//이미 처리된 강의를 체크했다는 판별을 위해
+	    				}	
 	    			})
 	    			if(chkArr.length == 0){//아무것도 선택안하고 일괄개선 눌렀을때
 	    				alert("개설할 강의를 선택해주세요");
 	    			}else{//선택된 강의가 있을때
-		    			if(confirm('선택하신 강의들을 일괄 개설하시겠습니까?')){//확인 누르면
-			    			location.href="permitAllClassCreate.ad?cArr="+chkArr;
+	    				if(count>0&&confirm('개설처리중인 강의들만 개설 됩니다.\n선택하신 강의들을 일괄 개설하시겠습니까?')){
+	    					location.href="permitAllClassCreate.ad?cArr="+chkArr;
 		    			}else{//취소 눌렀을때
 		    				alert("일괄 개설을 취소하셨습니다.");
 		    				return false;
@@ -223,6 +266,10 @@
     	function searchClassList(){//검색했을때 리스트 가져와서 붙이기
     		//$("#allCheck").prop("checked",false);
     		var division = $("#division").val();
+    		var classYear = $("select[name=classYear]").val();
+    		//console.log(typeof classYear);
+    		var classTerm = $("select[name=classTerm]").val();
+    		//console.log(typeof classTerm);
     		var status = $("#status").val();
     		var category = $("select[name=category]").val();
     		var keyword = $("#keyword").val();
@@ -230,6 +277,8 @@
     			url:"classSearchList.ad",
     			data:{
     				division:division,
+    				classYear:classYear,
+    				classTerm:classTerm,
     				status:status,
     				category:category,
     				keyword:keyword
@@ -241,9 +290,9 @@
 	    				for(var i=0; i<list.length; i++){
 	    					result += "<tr>"
 	                        +"<td><input type='checkbox' name='check' value="+list[i].classNo+"></td>"
-	                        +"<td>"+list[i].professorNo+"</td>"
 	                        +"<td>"+(list[i].division == 0 ? "전공":"교양")+"</td>"
 	                        +"<td>"+list[i].departmentNo+"</td>"
+	                        +"<td>"+list[i].professorNo+"</td>"
 	                        +"<td>"+list[i].className+"</td>"
 	                        +"<td>"+list[i].classYear+"년</td>"
 	                        +"<td>"+list[i].classTerm+"학기</td>"
@@ -256,11 +305,11 @@
 	                        +"<td>"+list[i].classNos+"명</td>"
 	                        +"<td>"+list[i].credit+"학점</td>"
 	                        switch(list[i].status){
-	                    	case "Y" : result+="<td>개설완료</td>"
+	                    	case "Y" : result+="<td><span class='resultMsg' style='color:blue;'>개설</span></td>"
 	                    	break;
-	                    	case "N" : result+="<td>학기끝</td>"
+	                    	case "N" : result+="<td><span class='resultMsg' style='color:red;'>학기끝</span></td>"
 	                    	break;
-	                    	case "C" : result+="<td>반려</td>"
+	                    	case "C" : result+="<td><span class='resultMsg' style='color:#FFA500;'>반려</span></td>"
 	                    	break;
 	                    	case "B" : result+="<td>"
 	                    					+"<button type='button' class='btn btn-primary' onclick='updateClassPermit("+list[i].classNo+");'>개설</button>"

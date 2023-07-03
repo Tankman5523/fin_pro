@@ -15,13 +15,13 @@
                     <span style="margin: 0 auto;">수업관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="">학기별 성적 조회</a>
+                    <a href="classManagement.st">학기별 성적 조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="studentGradeReport">성적 이의신청</a>
+                    <a href="studentGradeReport.st">성적 이의신청</a>
                 </div>
                 <div class="child_title">
-                    <a href="classRatingInfo.st">강의평가</a>
+                    <a href="classRatingInfo.st" style="font-weight:bold;color:#00aeff;">강의평가</a>
                 </div>
             </div>
             <div id="content_1">

@@ -31,6 +31,9 @@
                 <div class="child_title">
                     <a href="proRestList.ad">안식/퇴직 관리</a>
                 </div>
+                <div class="child_title">
+				    <a href="selectNotice.ad">공지사항 관리</a>
+				</div>
             </div>
             <div id="content_1">
 				<span id="content_title">휴복학 목록</span>
@@ -99,7 +102,19 @@
 			                                <td>${c.reason }</td>
 			                                <td>${c.startDate }</td>
 			                                <td>${c.endDate }</td>
-			                                <td>${c.status eq 'Y'?'승인':c.status eq 'B'?'승인대기중':'반려'}</td>
+			                                <td>
+			                                	<c:choose>
+		                            				<c:when test="${c.status eq 'B'}">
+		                            					<span style="color:blue;">승인대기중</span>
+		                            				</c:when>
+		                            				<c:when test="${c.status eq 'Y'}">
+		                            					<span style="color:green;">승인완료</span>
+		                            				</c:when>
+		                            				<c:otherwise>
+		                            					<span style="color:red;">반려</span>
+		                            				</c:otherwise>
+		                            			</c:choose>
+			                                </td>
 			                            </tr>
 		                        	</c:forEach>
                         		</c:when>
@@ -124,9 +139,10 @@
     	function stuRestDetailView(){ //휴,복학 신청 상세보기
     		$("#rest_list>tbody>tr").click(function(){
     			var rno = $(this).children().eq(0).html();
-    			if(rno!='신청 내역이 없습니다.'){
+    			if(rno>0){//숫자가 아니면 false
 		    		location.href="stuRestDetailView.ad?rno="+rno;
     			}
+    			
     		})
     	}
     	
@@ -168,8 +184,14 @@
     								+"<td>"+list[i].reason+"</td>"
     								+"<td>"+list[i].startDate+"</td>"
     								+"<td>"+list[i].endDate+"</td>"
-    								+"<td>"+list[i].status+"</td>"
-    								+"</tr>"
+    								if(list[i].status=='승인대기중'){
+    									result+="<td><span style='color:blue;'>"+list[i].status+"</span></td>"
+    								}else if(list[i].status=='승인완료'){
+    									result+="<td><span style='color:green;'>"+list[i].status+"</span></td>"
+    								}else{
+    									result+="<td><span style='color:red;'>"+list[i].status+"</span></td>"
+    								}
+    						result+="</tr>";
     					}
     				}else{
     					result = "<tr><td colspan='9'>검색된 신청이 없습니다.</td></tr>"

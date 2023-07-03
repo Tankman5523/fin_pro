@@ -24,6 +24,9 @@
 input[type='date']{
 	text-align:center;
 }
+input[type="text"]{
+	outline: none;
+}
 
 #rest_list input {
 	width: 95%;
@@ -62,3 +65,4 @@ input[type='date']{
 #rest_list2>tbody>tr td{
 	padding: 5px;	
 }
+

@@ -163,11 +163,7 @@
     			$("#counselContent").attr("disabled",true);
     			$("#subBtn").attr("disabled",true);
     		}
-    		
     	})
-    	
-    	
-    	
     </script>
 </body>
 </html>

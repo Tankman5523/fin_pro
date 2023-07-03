@@ -31,6 +31,9 @@ public class MainPageController {
 	@Autowired
 	private MainService mainService;
 	
+	//@Autowired
+	//private BusTime busTime;
+	
 	@GetMapping("mainPage.mp")
 	public String mainPage() {
 		return "main/mainPage";

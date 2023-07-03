@@ -26,8 +26,8 @@
                <div class="child_title">
                     <a href="onelist.rg">등록금 납부조회</a>
                 </div>
-                <div class="child_title" style="font-weight:bold;">
-                    <a href="listPage.rg">등록금납입 이력</a>
+                <div class="child_title">
+                    <a href="listPage.rg" style="font-weight:bold;color:#00aeff;">등록금납입 이력</a>
                 </div>
                 <div class="child_title">
                     <a href="listPage.sc">장학금 수혜내역</a>

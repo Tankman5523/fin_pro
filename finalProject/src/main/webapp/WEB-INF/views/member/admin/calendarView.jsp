@@ -150,7 +150,7 @@
 			                </div>
 			        
 			                <!-- Modal body -->
-			                <div class="modal-body">
+			                <div id="calModal" class="modal-body">
 			                	<form action="manageCalendar.ad" method="post">
 			                		<input type="hidden" id="calendarNo" name="calendarNo">
 			                		<input type="hidden" id="check" name="check">

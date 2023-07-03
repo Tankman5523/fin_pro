@@ -126,11 +126,13 @@
                         			</tbody>
                         		</table>
                         		<br>
+                        		<div id="etc_area" style="overflow-y: auto;height:35%;">
                         		<table class="modal_table" border="1" style="width: 100%;text-align: center;">
                         			<tbody>
                         				
                         			</tbody>
                         		</table>
+                        		</div>
                         	</div>
                         </div>
                         

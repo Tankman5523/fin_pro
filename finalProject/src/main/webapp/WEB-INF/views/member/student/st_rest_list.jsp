@@ -58,7 +58,19 @@
 			                                <td>${c.reason }</td>
 			                                <td>${c.startDate }</td>
 			                                <td>${c.endDate }</td>
-			                                <td>${c.status eq 'B'? '처리중':c.status eq 'Y'?'승인':'비승인'}</td>
+			                                <td>
+			                                	<c:choose>
+		                            				<c:when test="${c.status eq 'B'}">
+		                            					<span style="color:blue;">승인대기중</span>
+		                            				</c:when>
+		                            				<c:when test="${c.status eq 'Y'}">
+		                            					<span style="color:green;">승인완료</span>
+		                            				</c:when>
+		                            				<c:otherwise>
+		                            					<span style="color:red;">비승인</span>
+		                            				</c:otherwise>
+		                            			</c:choose>
+			                                </td>
 			                            </tr>
 		                        	</c:forEach>
                         		</c:when>

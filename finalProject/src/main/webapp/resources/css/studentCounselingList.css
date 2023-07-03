@@ -66,6 +66,11 @@
 	color: 1b315e;
 }
 
+#board_list>tbody tr:hover{
+	background-color: #E2E2E2;
+	font-weight: 550;
+}
+
 #board_list td {
 	padding: 5px;
 	border-bottom: 1px thin black;

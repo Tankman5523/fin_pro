@@ -80,6 +80,15 @@
                     </div>
                     <div align="center">
                         <table border="1" id="board_list" class="table table-bordered">
+                            <colgroup>
+                            	<!-- 테이블 fixed해서 일반적으로 width가 안먹어서 크기 정해주기 -->
+                            		<col width="15%">
+                            		<col width="15%">
+                            		<col width="33%">
+                            		<col width="13%">
+                            		<col width="14%">
+                            		<col width="10%">
+							</colgroup>                            		
                             <thead>
                                 <tr>
                                 	<th>상담신청일자</th>
@@ -90,13 +99,6 @@
                                     <th>완료여부</th>
                                 </tr>
                             </thead>
-                            	<!-- 테이블 fixed해서 일반적으로 width가 안먹어서 크기 정해주기 -->
-                            		<col width="15%">
-                            		<col width="15%">
-                            		<col width="33%">
-                            		<col width="13%">
-                            		<col width="14%">
-                            		<col width="10%">
                             <tbody>
                             	<c:choose>
                             		<c:when test="${empty list }">
@@ -113,7 +115,19 @@
 		                            			<td class="con">${b.counselContent}</td>
 		                            			<td>${b.professorName}</td>
 		                            			<td>${b.counselArea}</td>
-		                            			<td>${b.status eq 'N'?'상담전':b.status eq 'Y'?'상담완료':'상담취소'}</td>
+		                            			<td>
+		                            				<c:choose>
+		                            					<c:when test="${b.status eq 'N'}">
+		                            						<span style="color:blue;">상담전</span>
+		                            					</c:when>
+		                            					<c:when test="${b.status eq 'Y'}">
+		                            						<span style="color:green;">상담완료</span>
+		                            					</c:when>
+		                            					<c:otherwise>
+		                            						<span style="color:red;">상담취소</span>
+		                            					</c:otherwise>
+		                            				</c:choose>
+		                            			</td>
 		                            		</tr>
 		                            	</c:forEach>
                             		</c:otherwise>
@@ -138,13 +152,17 @@
 		
 		//리스트 누르면 상세보기 페이지 이동 구문
 		$(function(){
+			clickDetail();
+		});
+		
+		function clickDetail(){
 			$("#board_list>tbody>tr").click(function(){
 				var cno = $(this).children().eq(0).text();
 				if(cno!='상담내역이 없습니다.'){
 					location.href="stuCounDetail.st?counselNo="+cno;
 				}
 			});
-		});
+		}
 		
 		function searchCounseling(){ //상담 내역 검색 함수
 			var studentNo = '${loginUser.studentNo}'; //학생번호
@@ -176,13 +194,19 @@
 									+"<td class='con'>"+list[i].counselContent+"</td>"
 									+"<td>"+list[i].professorName+"</td>"
 									+"<td>"+list[i].counselArea+"</td>"
-									+"<td>"+list[i].status+"</td>"
-									+"</tr>"
+									if(list[i].status=='상담전'){
+    									result+="<td><span style='color:blue;'>"+list[i].status+"</span></td>"
+    								}else if(list[i].status=='상담완료'){
+    									result+="<td><span style='color:green;'>"+list[i].status+"</span></td>"
+    								}else{
+    									result+="<td><span style='color:red;'>"+list[i].status+"</span></td>"
+    								}
+    						result+="</tr>";
 						}
 						
 					}
 					$("#board_list tbody").html(result);
-					
+					clickDetail();
 				},
 				error :function(){
 					alert("통신실패");

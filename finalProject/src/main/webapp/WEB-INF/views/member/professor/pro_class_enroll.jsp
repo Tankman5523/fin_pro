@@ -51,7 +51,7 @@
                                     </select>
                                 </td>
                                 <td>*수강인원</td>
-                                <td><input type="text" name="classNos"  maxlength="2" placeholder="ex)20 숫자만 입력" required></td>
+                                <td><input type="number" name="classNos"  maxlength="2" placeholder="ex)20 숫자만 입력" required></td>
                             </tr>
                             <tr>
                                 <td>학년도</td>
@@ -121,7 +121,7 @@
                         </table>
                         </div>
                         <div style="text-align:center">
-                        	<button type="submit" class="btn btn-primary" id="submitbtn">신청</button>
+                        	<button type="submit" class="btn btn-primary btn-lg" id="submitbtn">신청</button>
                         </div>
                     </form>
                 </div>
@@ -134,7 +134,7 @@
             var now = new Date(today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate()); //오늘기준 월-일
             var year = today.getFullYear();//학년도에 붙일 연도 가져옴
             //var one = new Date("1-1");  
-            var two = new Date(today.getFullYear()+"-"+"6-30"); //2학기 신청기준, 학사일정 생기면 대체 가능
+            var two = new Date(today.getFullYear()+"-"+"7-31"); //2학기 신청기준, 학사일정 생기면 대체 가능
             var select = document.querySelector("#classTerm");//학기 가져옴
             var classYear = document.querySelector("#classYear");//학년도 가져옴
         
