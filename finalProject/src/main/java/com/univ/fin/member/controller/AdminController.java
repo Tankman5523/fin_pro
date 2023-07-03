@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -17,9 +19,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -542,15 +546,39 @@ public class AdminController {
 		return "member/admin/insertNoticeForm";
 	}
 	
-	//(관리자) 공지사항 관리 - 공지사항 등록 페이지 이동
+	//(관리자) 공지사항 관리 - 공지사항 등록
+//	@ResponseBody
+//	@PostMapping(value = "insertNoticeForm.ad", produces = "application/json; charset=UTF-8;")
+//	public String insertNoticeForm(String field, String category, String user
+//								 , String title, String content
+//								 , MultipartFile upfile) {
+//		
+//		System.out.println("+++++++++++++++++++++++++++++++++++++"+field);
+//		System.out.println("+++++++++++++++++++++++++++++++++++++"+category);
+//		System.out.println("+++++++++++++++++++++++++++++++++++++"+user);
+//		System.out.println("+++++++++++++++++++++++++++++++++++++"+title);
+//		System.out.println("+++++++++++++++++++++++++++++++++++++"+content);
+//		System.out.println("+++++++++++++++++++++++++++++++++++++"+upfile);
+//		
+//		return null;
+//	}
 	@ResponseBody
 	@PostMapping(value = "insertNoticeForm.ad", produces = "application/json; charset=UTF-8;")
-	public String insertNoticeForm(String field, String category, String user, String note) {
+	public String insertNoticeForm(@RequestParam(value="upfile",required = false)MultipartFile upfile
+								  , String field, String category, String user
+							  	  , String title, String content) {
 		
-		System.out.println("+++++++++++++++++++++++++++++++++++++"+field);
-		System.out.println("+++++++++++++++++++++++++++++++++++++"+category);
-		System.out.println("+++++++++++++++++++++++++++++++++++++"+user);
-		System.out.println("+++++++++++++++++++++++++++++++++++++"+note);
+		if(upfile == null) {
+			System.out.println("+++++++++++++++++++++++++++++++++++++"+null);
+		}else{
+			System.out.println("+++++++++++++++++++++++++++++++++++++"+upfile.getSize());
+		}
+//		System.out.println("+++++++++++++++++++++++++++++++++++++"+field);
+//		System.out.println("+++++++++++++++++++++++++++++++++++++"+category);
+//		System.out.println("+++++++++++++++++++++++++++++++++++++"+user);
+//		System.out.println("+++++++++++++++++++++++++++++++++++++"+title);
+//		System.out.println("+++++++++++++++++++++++++++++++++++++"+content);
+//		System.out.println("+++++++++++++++++++++++++++++++++++++"+upfile);
 		
 		return null;
 	}
