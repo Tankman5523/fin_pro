@@ -30,7 +30,7 @@ public class ChatBot {
 			h.put(8, "장학금수혜내역");
 			h.put(9, "학사관리");
 			h.put(10, "학적정보조회");
-			h.put(11, "개인 시간표");
+			h.put(11, "개인시간표");
 			h.put(12, "휴학복학신청");
 			h.put(13, "휴학복학조회");
 			h.put(14, "졸업사정표");
@@ -146,9 +146,9 @@ public class ChatBot {
 					break;
 				case "학기별성적조회" : result += "<button onclick="+"location.href='classManagement.st'"+">학기별 성적 조회</button><br>";
 					break;
-				case "성적이의신청" : result += "<button onclick="+"location.href='#'"+">성적 이의신청</button><br>";
+				case "성적이의신청" : result += "<button onclick="+"location.href='studentGradeReport'"+">성적 이의신청</button><br>";
 					break;
-				case "강의평가" : result += "<button onclick="+"location.href='#'"+">강의평가</button><br>";
+				case "강의평가" : result += "<button onclick="+"location.href='classRatingInfo.st'"+">강의평가</button><br>";
 					break;
 				case "전체" : result += "<button onclick="+"location.href='mainPage.mp'"+">메인 페이지로</button><br>"
 									+ "<button onclick='questionBtn(1)'>등록/장학</button>"
@@ -202,8 +202,8 @@ public class ChatBot {
 							+ "<button onclick="+"location.href='preRegisterClassForm.st'"+">예비수강신청</button><br>";
 				break;
 			case 5 : result += "<button onclick="+"location.href='classManagement.st'"+">학기별 성적 조회</button><br>"
-							+ "<button onclick="+"location.href='#'"+">성적 이의신청</button><br>"
-							+ "<button onclick="+"location.href='#'"+">강의평가</button><br>";
+							+ "<button onclick="+"location.href='studentGradeReport'"+">성적 이의신청</button><br>"
+							+ "<button onclick="+"location.href='classRatingInfo.st'"+">강의평가</button><br>";
 				break;
 		}
 		
