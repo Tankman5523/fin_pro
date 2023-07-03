@@ -63,7 +63,7 @@
 			</div>
 			
 			<div style="width: 90%; margin: auto;">
-				<button class="btn" id="insert" onclick="location.href='insertNotice.ad'">등록</button>
+				<button id="insert" onclick="insert();">등록</button>
 			</div>
 			
 			<div id="result-area">
@@ -83,8 +83,8 @@
 				</table>
 			</div>
 			<div id="btn-area">
-				<button class="btn" id="delete" onclick="deleteVal()">삭제</button>
-				<button class="btn" id="update" onclick="update()">수정</button>
+				<button id="delete" onclick="deleteVal()">삭제</button>
+				<button id="update" onclick="update()">수정</button>
 			</div>
 
 		</div>
@@ -189,6 +189,11 @@
 		})
 	}
 	
+	function insert(){
+// 		const professorNo = "${loginUser.professorNo}";
+		location.href = 'insertNotice.ad';
+	}
+	
 	function update(){
 		const query = 'input[name="chkRows"]:checked';
 		const selectBox = document.querySelectorAll(query);
@@ -221,8 +226,7 @@
 		var noticeNo = new Array();
 		
 		if(allChk == true){
-			noticeNo.length = 0;
-// 			location.href = 'deleteNotice.ad?noticeNo='+noticeNo;
+			noticeNo = [];
 		}else{
 			tr.forEach(function(tr, idx){
 				const checkBox = tr.children[0].children[0];
@@ -232,7 +236,7 @@
 				}
 			})
 		}
-		
+		console.log(noticeNo)
 		$.ajax({
 			url: "deleteNotice.ad",
 			data: {
@@ -241,11 +245,11 @@
 			traditional: true,
 			type: "post",
 			success: function(data){
-				alert(msg);
+				alert(data);
 				location.reload();
 			},
-			error: function(){
-				console.log("오류")
+			error: function(data){
+				alert(data);
 			}
 		})
 	}

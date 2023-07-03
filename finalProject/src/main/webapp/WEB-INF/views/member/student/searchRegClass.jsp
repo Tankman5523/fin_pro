@@ -46,8 +46,8 @@
 		            		</select>
 		            		<label for="searchRegTerm">학기 : </label>
 		            		<select class="selectReset" name="searchRegTerm" id="searchRegTerm">
-								<option>2</option>
 								<option>1</option>
+								<option>2</option>
 		            		</select>
 		            		<button class="contentBtn" onclick="searchReg()">검색</button>
 		            		<span id="sumCredit_span">
@@ -96,12 +96,12 @@
 		           					$("#searchRegYear option").each(function(){
 		           						if(parseInt($(this).val()) === parseInt(year)-1){
 		           							$(this).prop("selected",true); //이전년도로 변경
-				           					$("#searchRegTerm").children().eq(0).prop("selected",true); //2학기로 변경
+				           					$("#searchRegTerm").children().eq(1).prop("selected",true); //1학기로 변경
 				           					searchReg();
 		           						}
 		           					});
 	           					}else{
-		           					$("#searchRegTerm").children().eq(1).prop("selected",true); //1학기로 변경
+		           					$("#searchRegTerm").children().eq(0).prop("selected",true); //2학기로 변경
 		           					searchReg();
 	           					}
            					}else{ /* 다음버튼 */
@@ -109,12 +109,12 @@
 		           					$("#searchRegYear option").each(function(){
 		           						if(parseInt($(this).val()) === parseInt(year)+1){
 		           							$(this).prop("selected",true); //다음년도로 변경
-				           					$("#searchRegTerm").children().eq(1).prop("selected",true); //1학기로 변경
+				           					$("#searchRegTerm").children().eq(0).prop("selected",true); //2학기로 변경
 				           					searchReg();
 		           						}
 		           					});
 	           					}else{
-		           					$("#searchRegTerm").children().eq(0).prop("selected",true); //2학기로 변경
+		           					$("#searchRegTerm").children().eq(1).prop("selected",true); //1학기로 변경
 		           					searchReg();
 	           					}
            					}

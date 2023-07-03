@@ -15,6 +15,8 @@ public class Dissent {
 	private String fileNo;
 	private String studentNo;
 	private String classNo;
+	private String className;
+	private String professorName;
 	private String reason;
 	private String option;
 	private String status;

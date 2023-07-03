@@ -58,6 +58,8 @@
         color: whitesmoke;
 		float: right;
 		font-weight: bold;
+		position: absolute;
+		left: 78%;
  	}
 
 	/*!important 다무시하고 먼저실행*/
@@ -138,7 +140,24 @@
 	            }
 	        }).open();
 	    });
+	    
 	}
+	
+	function characterCheck2(obj) {
+	     var regExp = /[^0-9]/g;
+	     if (regExp.test(obj.value)) {
+	         alert("영어, 특수문자, 한글은 입력하실 수 없습니다.");
+	         obj.value = obj.value.replace(regExp, ''); // 숫자 이외의 문자를 제거
+	     } 
+	 }
+	
+	function characterCheck4(obj) {
+ 	    var regExp = /[^a-zA-Z0-9\s\^\-_.!@#$%&*()+=]/g;
+ 	    if (regExp.test(obj.value)) {
+ 	        alert("한글은 입력하실 수 없습니다.");
+ 	        obj.value = obj.value.replace(regExp, ''); // 한글을 제거
+ 	    }    
+ 	}
 	
 </script>
 </head>
@@ -171,6 +190,7 @@
 					<div id="basic_info">
 						<table class="basic_table">
 						<tr>
+						<br>
 							<th>기본 정보</th>
 							<th><button id="crystalBtn" onclick="updateStudent()">수정하기</button></th>
 						</tr>
@@ -230,9 +250,9 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">전화번호 : </th>
-									<th><input type="text" id="phone" name="phone" class="user_info3" value="${loginUser.phone}"></th>
+									<th><input type="text" id="phone" name="phone" class="user_info3" value="${loginUser.phone}" maxlength="11" onkeyup="characterCheck2(this)" onkeydown="characterCheck2(this)"></th>
 									<th width="100px" height="30px">E-MAIL : </th>
-									<th><input type="text" id="email" name="email" class="user_info3" value="${loginUser.email}"></th>
+									<th><input type="text" id="email" name="email" class="user_info3" value="${loginUser.email}" onkeyup="characterCheck4(this)" onkeydown="characterCheck4(this)"></th>
 								</tr>
 							</thead>
 						</table>
@@ -241,7 +261,7 @@
 							<thead>
 								<tr>
 									<th width="100px" height="30px">우편번호 : </th>
-									<th><input type="text" id="post" name="post" class="user_info3" value="${loginUser.post}"></th>
+									<th><input type="text" id="post" name="post" class="user_info3" value="${loginUser.post}" readonly></th>
 									<th width="100px" height="30px">주소 : </th>
 									<th><input type="text" id="address" name="address" class="user_info3" value="${loginUser.address}" ></th>
 								</tr>
