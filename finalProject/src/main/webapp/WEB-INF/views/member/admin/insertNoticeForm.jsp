@@ -47,41 +47,44 @@
 		
 			<p id="sub-title">공지사항 등록</p>
 			<div id="editor-container">			
-				<input type="hidden" name="user" value="${loginUser.professorNo }">
-				<table id="select-area">
-					<tbody>
-						<tr>
-							<th>게시판 선택</th>
-							<td>
-								<select id="field-select">
-									<option  value="0">공지사항</option>
-									<option value="1">FAQ</option>
-								</select>
-							</td>
-							<th>카테고리 선택</th>
-							<td>
-								<select id="category-select">
-									<option value="1">학사</option>
-									<option value="2">장학</option>
-									<option value="3">입학</option>
-									<option value="4">채용</option>
-									<option value="5">기타</option>
-								</select>
-							</td>
-						</tr>
-					</tbody>						
-				</table>
-<!-- 				<form id="file-form" method="post" enctype="multipart/form-data"> -->
-					<input type="file" name="upfile" id="files" class="files" onchange="uploadFiles()" multiple="multiple">
+				<form action="insertNoticeForm.ad" id="file-form" method="post" onsubmit="return insertForm()" enctype="multipart/form-data">
+					<input type="hidden" name="professorNo" value="${loginUser.professorNo }">
+					<table id="select-area">
+						<tbody>
+							<tr>
+								<th>게시판 선택</th>
+								<td>
+									<select id="field-select" name="field">
+										<option  value="0">공지사항</option>
+										<option value="1">FAQ</option>
+									</select>
+								</td>
+								<th>카테고리 선택</th>
+								<td>
+									<select id="category-select" name="noticeCategory">
+										<option value="1">학사</option>
+										<option value="2">장학</option>
+										<option value="3">입학</option>
+										<option value="4">채용</option>
+										<option value="5">기타</option>
+									</select>
+								</td>
+							</tr>
+						</tbody>						
+					</table>
+					<input type="file" name="upfile" id="files" class="files" multiple="multiple">
 					<label for="files" id="upFile-button">파일찾기</label>
 					<div id="files-info"></div>
-<!-- 				</form> -->
-				<input type="text" id="notice-title" placeholder="제목을 입력하세요.">
-				<div id="summernote"></div>
-				<div id="btn-area">
-					<button type="button" id="back" onclick="history.back();">이전</button>
-					<button type="button" id="submit" onclick="insert();">등록</button>
-				</div>
+					
+					<input type="text" id="notice-title" name="noticeTitle" placeholder="제목을 입력하세요." required="required">
+					<textarea name="noticeContent" id="noticeContent" style="display:none;"></textarea>
+					<div id="summernote"></div>
+					<div id="btn-area">
+						<button type="button" id="back" onclick="history.back();">이전</button>
+						<button type="submit" id="submit">등록</button>
+						<button type="button" id="submit" onclick="check()">확인</button>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>
@@ -101,12 +104,12 @@
 	
 	const dataTransfer = new DataTransfer();
 	
-	function uploadFiles(){
+	const uploadTag = document.getElementById('files');
+	
+	uploadTag.addEventListener('change', function(){
 		const fileArr = document.getElementById('files').files;
-		
 		const fileInfo = document.getElementById('files-info')
 		
-
 		if(fileArr != null && fileArr.length>0){
 			for(var i=0; i<fileArr.length; i++){
 				const pTag = document.createElement('p')
@@ -114,6 +117,7 @@
 				
 				pTag.innerHTML += fileArr[i].name
 				pTag.setAttribute('class', 'select-file')
+				btn.setAttribute('onclick', 'deleteFiles()')
 				btn.setAttribute('class', 'delete-btn')
 				btn.innerHTML = "<i class='fa-solid fa-xmark'></i>"
 				pTag.appendChild(btn)
@@ -124,85 +128,110 @@
 			document.getElementById('files').files = dataTransfer.files;
 		}
 		
-		const delBtn = document.querySelectorAll('.delete-btn')
-		const file = document.querySelectorAll('.select-file')
 		
-		delBtn.forEach(function(btn, idx){
-			btn.addEventListener('click', function(){
-				dataTransfer.items.remove(idx)
-				file[idx].remove()
-			})
-		})
-	}
+	});
 	
-	function insert(){
-		const fieldSelect = document.getElementById('field-select');
-		const categorySelect = document.getElementById('category-select');
+	
+	
+	// 파일 업로드 및 삭제
+// 	function uploadFiles(){
 		
-		const field = fieldSelect.options[fieldSelect.selectedIndex].value;
-		const category = categorySelect.options[categorySelect.selectedIndex].value;
+// 		const fileArr = document.getElementById('files').files;
 		
-		const user = "${loginUser.professorNo}";
+// 		const fileInfo = document.getElementById('files-info')
+// 		var fileSize = 0;
 
-		const title = document.getElementById('notice-title').value
-		const content = document.querySelector('.note-editable').innerHTML
-
-// 		var data = {   
-// 			"fiels" :field,
-// 		    "category" : category,
-// 		    "user" : user,
-// 		    "title" : title,
-// 		    "content" : content
-// 		}
-		
-// 		var formData = new FormData($('#file-form')[0]);
-		
-// 		const fileInput = document.getElementsByClassName('	files')
-// 		for (var i = 0; i < fileInput.length; i++) {
-// 			if (fileInput[i].files.length > 0) {
-// 				for (var j = 0; j < fileInput[i].files.length; j++) {
-// 					formData.append('upfile', $('.files')[i].files[j]);
-// 				}
+// 		if(fileArr != null && fileArr.length>0){
+// 			for(var i=0; i<fileArr.length; i++){
+// 				console.log(fileArr[i].lastModified)
+				
+// 				const pTag = document.createElement('p')
+// 				const btn = document.createElement('button')
+				
+// 				pTag.innerHTML += fileArr[i].name
+// 				pTag.setAttribute('class', 'select-file')
+// 				btn.setAttribute('class', 'delete-btn')
+// 				btn.setAttribute('onclick', 'deleteFiles()')
+// 				btn.innerHTML = "<i class='fa-solid fa-xmark'></i>"
+// 				pTag.appendChild(btn)
+// 				fileInfo.append(pTag)
+				
+// 				dataTransfer.items.add(fileArr[i])
 // 			}
+// 			document.getElementById('files').files = dataTransfer.files;
 // 		}
-
-// 		formData.append('key', new Blob([ JSON.stringify(data) ], {type : "application/json"}));
+// 		console.log(fileArr)
+// 		const delBtn = document.querySelectorAll('.delete-btn')
+// 		const file = document.querySelectorAll('.select-file')
+// 		delBtn.forEach(function(btn, idx){
+// 			btn.addEventListener('click', function(){
+// 				if(dataTransfer.files[idx].lastModified==fileArr[idx].lastModified){
+// 					// 총용량에서 삭제
+// 					total_file_size-=dataTransfer.files[i].size
+					
+// 					dataTransfer.items.remove(idx)
+// 					console.log(dataTransfer.files[idx])
+// 					file[idx].remove()
+// 					console.log(fileArr.length)
+// 				}
+				
+				
+				
+				
+// 				console.log(fileArr[idx].val)
+// 				fileArr[idx] = '';
+// 				dataTransfer.items.remove(idx)
+// 				file[idx].remove()
+// 			})
+// 		})
 		
-// 		const upfile = document.getElementById('files').files
-// 		console.log(upfile)
-		
-		const formData = new FormData();
-		var inputFile = $("input[name='upfile']");
-		var files = inputFile[0].files;
+// 	}
 	
-		for(var i=0; i<files.length; i++){
-			formData.append("upfile", files[i])
-		}
+	function deleteFiles(){
+		const files = document.getElementById('files').files;
+		const fileArr = Array.from(files);
+		const p = document.querySelectorAll('.select-file')
 		
-		$.ajax({
-			url: "insertNoticeForm.ad",
-			data: {
-				field : field,
-				category : category,
-				user : user,
-				title : title,
-				content : content,
-// 				upfile :  upfile
-				formData : formData
-			},
-			contentType: false,
-			processData: false,
-// 			enctype : 'multipart/form-data',
-			type: "post",
-			success: function(){
-				
-			},
-			error: function(){
-				
-			}
-		})
+		fileArr.forEach(function(file, idx){
+			p[idx].remove()
+			console.log(p[idx])
+// 			fileArr.splice(idx, 1);
+// 			console.log(fileArr)
+// 			dataTransfer.items.add(file)
+		});
+// 		fileArr.splice(i, 1);
+// 		console.log(fileArr)
+// 		const fileArr = $("#files")[0].files;
+// 		const file = document.querySelectorAll('.select-file')
+// 		delBtn.forEach(function(btn, idx){
+// 			btn.addEventListener('click', function(){
+// 				console.log('삭제')
+// 				fileArr[idx] = '';
+// 				dataTransfer.items.remove(idx)
+// 				file[idx].remove()
+// 			})
+// 		})
+
 		
 	}
+	
+	function insertForm(){
+		const txtarea = document.getElementById('noticeContent')
+		const note = document.querySelector('.note-editable').innerHTML
+		txtarea.value = note			
+		
+		if(note == '<p><br></p>'){
+			alert("내용을 입력해주세요.")
+			return false;
+		}
+	}
+	
+	function check(){
+		const upfile = document.querySelectorAll('.files')
+		
+		console.log(upfile)
+	}
+	
 </script>
 </body>
 </html>

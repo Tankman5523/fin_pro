@@ -26,10 +26,13 @@ body {
 	left: 0;
 	right: 0;
 	border-bottom: 2px solid rgb(59, 193, 255);
+	z-index: 1;
 }
 #content{
     width: 100%;
     height: auto;
+    position: relative;
+    z-index: -1;
 }
 
 /*=================content 세부 영역 설정=================*/
@@ -108,4 +111,14 @@ h2, h3{
 	border-collapse : collapse;
 	width:100%;
 	border:lightgray;
+}
+
+#bus_time_table th {
+	height: 40px;
+}
+#bus_time_table td {
+	height: 30px;
+}
+#bus_time_table i {
+	margin: 0 10px;
 }

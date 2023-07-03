@@ -547,41 +547,19 @@ public class AdminController {
 	}
 	
 	//(관리자) 공지사항 관리 - 공지사항 등록
-//	@ResponseBody
-//	@PostMapping(value = "insertNoticeForm.ad", produces = "application/json; charset=UTF-8;")
-//	public String insertNoticeForm(String field, String category, String user
-//								 , String title, String content
-//								 , MultipartFile upfile) {
-//		
-//		System.out.println("+++++++++++++++++++++++++++++++++++++"+field);
-//		System.out.println("+++++++++++++++++++++++++++++++++++++"+category);
-//		System.out.println("+++++++++++++++++++++++++++++++++++++"+user);
-//		System.out.println("+++++++++++++++++++++++++++++++++++++"+title);
-//		System.out.println("+++++++++++++++++++++++++++++++++++++"+content);
-//		System.out.println("+++++++++++++++++++++++++++++++++++++"+upfile);
-//		
-//		return null;
-//	}
-	@ResponseBody
-	@PostMapping(value = "insertNoticeForm.ad", produces = "application/json; charset=UTF-8;")
-	public String insertNoticeForm(@RequestParam(value="upfile",required = false)MultipartFile upfile
-								  , String field, String category, String user
-							  	  , String title, String content) {
+	@PostMapping("insertNoticeForm.ad")
+	public String insertNoticeFrom(Notice n, MultipartHttpServletRequest multi) {
 		
-		if(upfile == null) {
-			System.out.println("+++++++++++++++++++++++++++++++++++++"+null);
-		}else{
-			System.out.println("+++++++++++++++++++++++++++++++++++++"+upfile.getSize());
-		}
-//		System.out.println("+++++++++++++++++++++++++++++++++++++"+field);
-//		System.out.println("+++++++++++++++++++++++++++++++++++++"+category);
-//		System.out.println("+++++++++++++++++++++++++++++++++++++"+user);
-//		System.out.println("+++++++++++++++++++++++++++++++++++++"+title);
-//		System.out.println("+++++++++++++++++++++++++++++++++++++"+content);
-//		System.out.println("+++++++++++++++++++++++++++++++++++++"+upfile);
+		List<MultipartFile> upfile = multi.getFiles("upfile");
+
+		System.out.println(upfile.size());
+		System.out.println(upfile.get(0).getOriginalFilename());
+		System.out.println(upfile.get(0).getSize());
+//		if(!upfile.isEmpty()) {
+//		}
 		
 		return null;
 	}
-
+	
 }
 
