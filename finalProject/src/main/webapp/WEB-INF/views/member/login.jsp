@@ -48,6 +48,7 @@
 						$(".wrap").hide();
 						$("#loginForm").submit();
 					}
+					
 				});
 			</script> 
 			
@@ -75,7 +76,7 @@
                     <label for="save_userNo">아이디 저장</label>
                     <div id="auto_login_area">
 						<input type="checkbox" name="autoLogin" id="autoLogin">
-	                    <label for="autoLogin">자동 로그인</label>
+	                    <label for="autoLogin">로그인 상태 유지</label>
                     </div>
                 </div>
 

@@ -42,9 +42,10 @@
 
 #result-area{
 	width: 90%;
-	height: 300px;
+	height: 500px;
 	overflow-y: scroll;
 	margin: auto;
+	margin-bottom: 20px;
 	border: 1px solid #ddd;
 }
 
@@ -76,8 +77,53 @@
 	width: 90%;
 	margin: auto;
 }
-#insert, #delete, #update{
-	width: 200px;
+#insert{
+	width: 100px;
 	height: 40px;
-	background-color: orange;
+	background-color: #51a8ff;
+	float: right;
+	margin-bottom: 10px;
+	cursor: pointer;
+	border: none;
+	border-radius: 5px;
+	color: white;
+	font-weight: bold;
+}
+#insert:hover{
+	background-color: #0080c0;
+	transition: all 0.1s ease-out;
+}
+
+#delete{
+	width: 100px;
+	height: 40px;
+	background-color: #ff0000;
+	float: left;
+	margin-bottom: 10px;
+	cursor: pointer;
+	border: none;
+	border-radius: 5px;
+	color: white;
+	font-weight: bold;
+}
+#delete:hover{
+	background-color: #db0000;
+	transition: all 0.1s ease-out;
+}
+
+#update{
+	width: 100px;
+	height: 40px;
+	background-color: #ffa702;
+	float: right;
+	margin-bottom: 10px;
+	cursor: pointer;
+	border: none;
+	border-radius: 5px;
+	color: white;
+	font-weight: bold;
+}
+#update:hover{
+	background-color: #e39400;
+	transition: all 0.1s ease-out;
 }

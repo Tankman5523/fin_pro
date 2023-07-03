@@ -1,0 +1,55 @@
+@charset "UTF-8";
+
+#editor-container{
+	width: 95%;
+	margin: auto;
+}
+
+#btn-area{
+	width: 95%;
+	margin: 20px auto;
+	text-align: center;
+}
+#btn-area button{
+	width: 100px;
+	height: 40px;
+	margin: 0 20px;
+	border: none;
+	border-radius: 5px;
+	font-weight: bold;
+}
+
+#select-area{
+	margin-bottom: 20px;
+	text-align: center;
+}
+#select-area select{
+	width: 200px;
+	height: 30px;
+	text-align: center;
+	margin: 0 20px;
+	border-radius: 5px;
+}
+#select-area select:focus{
+	outline: none;
+}
+
+#back{
+	background-color: #d7d7d7;
+}
+#back:hover{
+	background-color: #c0c0c0;
+	transition: all 0.1s ease-out;
+}
+#submit{
+	background-color: #51a8ff;
+	color: white;
+}
+#submit:hover{
+	background-color: #0080c0;
+	transition: all 0.1s ease-out;
+}
+
+.note-modal-content{
+	height: 350px;
+}

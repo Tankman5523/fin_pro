@@ -1,14 +1,11 @@
 #weather_area{
     border: 1px solid rgb(59, 193, 255);
     border-radius: 30px;
-    position: absolute;
+    margin: auto;
     width: 300px;
-    /* height: 172px; */
     height: 200px;
-    top: 620px;
-    left: 285px;
+    left: 275px;
     padding: 10px;
-    display: flex;
 }
 
 #weather_icon{
@@ -22,8 +19,8 @@
     position: relative;
     width: 120px;
     height: 60px;
-    top: 25px;
-    margin-left: 15px;
+    bottom: 100px;
+    margin-left: 150px;
     text-align: center;
     display: flex;
     align-items: center;
@@ -34,11 +31,11 @@
 }
 
 #weather_sky{
-    position: absolute;
+    position: relative;
     width: 120px;
     height: 30px;
-    left: 145px;
-    top: 100px;
+    margin-left: 142px;
+    bottom: 95px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -48,10 +45,10 @@
 }
 
 #weather_minMax{
-    position: absolute;
+    position: relative;
     width: 275px;
     height: 40px;
-    top: 127px;
+    bottom: 98px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -64,10 +61,10 @@
 }
 
 #dustInfo{
-    position: absolute;
+    position: relative;
     width: 275px;
     height: 40px;
-    top: 154px;
+    bottom: 110px;
     display: flex;
     align-items: center;
     justify-content: center;

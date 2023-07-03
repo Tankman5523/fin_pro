@@ -77,6 +77,43 @@ div{
 	border: 2px solid black; 
 	background-color: white; 
 	border-radius: 15px;
+	z-index: 3;
+}
+
+#alarm-area2 {
+	position: absolute;
+	width: 300px;
+	height: 30px;
+	top: 120px;
+	left: 800px;
+	background-color: #bfebff;
+	border-radius: 10px;
+}
+
+#alarm-area2:after {
+	position: absolute;
+	content: "";
+	border-top: 0px solid transparent;
+	border-left: 8px solid transparent;
+	border-right: 8px solid transparent;
+	border-bottom: 8px solid #bfebff;
+	top: -8px;
+	left: 223px;
+}
+
+#alarm-area2>span {
+	margin-left: 10px;
+	line-height: 30px;
+}
+
+#alarm-area2>span>a {
+	text-decoration: none;
+	color: black;
+	font-size: 14px;
+}
+
+#alarm-area2>span>a:hover {
+	font-weight: bold;
 }
 
 .alarm-remove {
@@ -107,8 +144,8 @@ div{
 }
 
 #alarmDiv>ul>li>a:hover {
-	font-size: 15px;
-	line-height: 15px;
+/* 	font-size: 15px; */
+/* 	line-height: 15px; */
 	text-decoration: none;
 	color: black;
 }

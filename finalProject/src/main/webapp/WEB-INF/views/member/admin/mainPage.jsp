@@ -20,7 +20,7 @@
 								<a href="classManagePage.ad"><i class="fa-regular fa-plus fa-2xl" style="color: #686e78;"></i></a>
 							</div>
 							<div class="c_content_1122">
-								<div class="c_content_1122_table-area">
+								<div class="c_content_1122_table-area" style="width:97.5%">
 									<table border="1" style="table-layout:fixed;">
 										<thead>
 							                <tr>
@@ -48,7 +48,7 @@
 															<td class="text-limit">${classes.className}</td>
 															<td>${classes.professorNo}</td>
 															
-															<c:if test="${classes.status eq 'N' }">
+															<c:if test="${classes.status eq 'B' }">
 																<td style='color: orange; font-weight: bold;'>검토중</td>
 															</c:if>
 															<c:if test="${classes.status eq 'Y' }">
@@ -56,6 +56,9 @@
 															</c:if>
 															<c:if test="${classes.status eq 'C' }">
 																<td style='color: red; font-weight: bold;'>개설반려</td>
+															</c:if>
+															<c:if test="${classes.status eq 'N' }">
+																<td style='color: gray; font-weight: bold;'>학기종료</td>
 															</c:if>
 															
 														</tr>
@@ -85,7 +88,7 @@
 							<div class="c_content_132">
 								<div class="c_content_1321">
 									<div class="c_content_1321_table-area">
-										<table border="1" id="stdTable" style="width:95%;">
+										<table border="1" id="stdTable" style="width:100%;">
 								            <thead>
 								                <tr>
 								                    <th>신청날짜</th>
@@ -141,7 +144,7 @@
 							<div class="c_content_132">
 								<div class="c_content_1321">
 									<div class="c_content_1321_table-area">
-										<table border="1" id="profTable" style="width:95%;" >
+										<table border="1" id="profTable" style="width:100%;" >
 								            <thead>
 								                <tr>
 								                    <th>신청날짜</th>

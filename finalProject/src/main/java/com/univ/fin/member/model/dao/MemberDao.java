@@ -16,9 +16,9 @@ import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Department;
-import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
+import com.univ.fin.common.model.vo.Objection;
 import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
@@ -388,9 +388,9 @@ public class MemberDao {
 
 
 	//강의 이의제기 - 학생
-	public ArrayList<Dissent> studentGradeReport(SqlSessionTemplate sqlSession, String studentNo) {
+	public ArrayList<Objection> studentGradeReport(SqlSessionTemplate sqlSession, String studentNo) {
 
-		return (ArrayList)sqlSession.selectList("memberMapper.studentGradeReport");
+		return (ArrayList)sqlSession.selectList("memberMapper.studentGradeReport",studentNo);
 		
 	}
 	
@@ -529,6 +529,24 @@ public class MemberDao {
 	public ClassRating classRatingAverage(SqlSessionTemplate sqlSession, ClassRating cr) {
 		return sqlSession.selectOne("memberMapper.classRatingAverage", cr);
 	}
+	
+	// 강의 이의신청 리스트불러오기
+	public int studentGradeRequest(SqlSessionTemplate sqlSession, Objection obj) {
+		return sqlSession.insert("memberMapper.studentGradeRequest",obj);
+	}
+	
+	//강의 이의신청 확인리스트
+	public ArrayList<Objection> studentGradeView(SqlSessionTemplate sqlSession, Objection obj) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.studentGradeView",obj);
+	}
+
+	//이의신청 년도 검색
+	public int searchGradeReport(SqlSessionTemplate sqlSession, Objection objc) {
+		
+		return sqlSession.selectOne("memberMapper.searchGradeReport",objc);
+	}
+
 
 
 	//(교수) 안식,퇴직 신청 등록
@@ -637,6 +655,16 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.selectProfile", map);
 	}
 	
+	// 메인 -> 학생 시간표 조회
+	public ArrayList<Classes> selectStudentAllClasses(SqlSessionTemplate sqlSession, String studentNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectStudentAllClasses", studentNo);
+	}
+	
+	// 메인 -> 교수 시간표 조회
+	public ArrayList<Classes> selectProfessorAllClasses(SqlSessionTemplate sqlSession, String professorNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectProfessorAllClasses", professorNo);
+	}
+	
 	// 메인 -> 등록금 납부 조회
 	public ArrayList<HashMap<String, String>> selectReg(SqlSessionTemplate sqlSession, String studentNo) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectReg", studentNo);
@@ -672,9 +700,14 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.alarmReceive", studentNo);
 	}
 
+	// 알람 전체확인
+	public int alarmAllCheck(SqlSessionTemplate sqlSession, String studentNo) {
+		return sqlSession.update("memberMapper.alarmAllCheck", studentNo);
+	}
+	
 	// 알람 확인
-	public int alarmCheck(SqlSessionTemplate sqlSession, String studentNo) {
-		return sqlSession.update("memberMapper.alarmCheck", studentNo);
+	public int alarmCheck(SqlSessionTemplate sqlSession, int alarmNo) {
+		return sqlSession.update("memberMapper.alarmCheck", alarmNo);
 	}
 
 	// (관리자) 공지사항 관리 - 전체 공지사항 조회
@@ -698,7 +731,20 @@ public class MemberDao {
 	// (관리자) 공지사항 관리 - 공지사항 선택 삭제
 	public int selectDeleteNotice(SqlSessionTemplate sqlSession, String[] noticeNo) {
 
-		return sqlSession.update("memberMapper.selectDeleteNotice");
+		return sqlSession.update("memberMapper.selectDeleteNotice", noticeNo);
+	}
+
+	
+	// (관리자) 공지사항 관리 - 공지사항 수정 페이지 이동
+	public Notice selectUpdateNotice(SqlSessionTemplate sqlSession, String noticeNo) {
+
+		return sqlSession.selectOne("memberMapper.selectUpdateNotice", noticeNo);
+	}
+
+	// (교수) 전체 상담 신청 조회
+	public ArrayList<Counseling> selectAllCounseling(SqlSessionTemplate sqlSession, String user) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.selectAllCounseling", user);
 	}
 	
 	// (관리자) 메인페이지 -> 강의신청 목록 조회
