@@ -185,6 +185,8 @@
 					</div>
 					
 					<script>
+						var $classes = new Array();	
+					
 						$(function() {
 							//==========상담 내역==========
 							$(".c_content_1122_table-area>table>tbody>tr").hover(function() {
@@ -200,7 +202,20 @@
 								location.href = "counselDetail.pr?cno=" + cno;
 							})
 
-							//==========학사 일정==========
+							//==========개인 시간표==========
+							$.ajax({
+								url: "getClasses.pr",
+								data: {},
+								success: function(cList) {
+									for(var i=0;i<cList.length;i++) {
+										$classes[i] = cList[i];
+									}
+								},
+								error: function() {
+									console.log("통신 오류");
+								}
+							})
+							
 							var today = new Date();
 							var year = today.getFullYear();
 							
@@ -220,7 +235,7 @@
 							var $today = year + "-" + month + "-" + date + " (" + day + ")";
 							$("#today-date").text($today);
 							
-							getClasses(today.getDay());
+							getClasses(today);
 						})
 						
 						function previousDay() {
@@ -255,64 +270,31 @@
 							
 							var $today = year + "-" + month + "-" + date + " (" + day + ")";
 							$("#today-date").text($today);
-							getClasses(theDay.getDay());
+							getClasses(theDay);
 						}
 						
-						function getClasses($day) {
-							$.ajax({
-								url: "getClasses.pr",
-								success: function(cList) {
-									var str = "";
-									for(var i=0;i<cList.length;i++) {
-										if(cList[i].day == $day) {
-											switch(cList[i].period) {
-												case '1':
-													str += '09:00';
-													break;
-												case '2':
-													str += '10:00';
-													break;
-												case '2':
-													str += '11:00';
-													break;
-												case '3':
-													str += '12:00';
-													break;
-												case '4':
-													str += '13:00';
-													break;
-												case '5':
-													str += '14:00';
-													break;
-												case '6':
-													str += '15:00';
-													break;
-												case '7':
-													str += '16:00';
-													break;
-												case '8':
-													str += '17:00';
-													break;
-												case '9':
-													str += '18:00';
-													break;
-												case '10':
-													str += '19:00';
-													break;
-											}
-											str += "&nbsp;&nbsp;" + cList[i].className + "<br>";
+						function getClasses(theDay) {
+							var str = "";
+							
+							for(var i=0;i<$classes.length;i++) {
+								if($classes[i].classYear == theDay.getFullYear()) { // 년도
+									if(3<=(theDay.getMonth()+1) && (theDay.getMonth()+1)<=6) { // 학기
+										if($classes[i].classTerm==1 && $classes[i].day == theDay.getDay()) {
+											str += $classes[i].period + "&nbsp;&nbsp;" + $classes[i].className + "<br>";
 										}
 									}
-									
-									if(str == "") {
-										str = "수업이 없습니다.";
+									else if(9<=(theDay.getMonth()+1) && (theDay.getMonth()+1)<=12) {
+										if($classes[i].classTerm==2 && $classes[i].day == theDay.getDay()) {
+											str += $classes[i].period + "&nbsp;&nbsp;" + $classes[i].className + "<br>";
+										}
 									}
-									$("#today-class").html(str);
-								},
-								error: function() {
-									console.log("통신 오류");
 								}
-							})
+							}
+							
+							if(str == "") {
+								str = "수업이 없습니다.";
+							}
+							$("#today-class").html(str);
 						}
 					</script>
 				</div>

@@ -168,9 +168,7 @@
 	}
 	
 	function msgSend() {
-		if($("#counselStatus").val() == 'C') {
-			socket.send("counselUpdate,"+$("#sNo").val()+","+"${loginUser.professorName}");
-		}
+		socket.send("counselUpdate,"+$("#sNo").val()+","+"${loginUser.professorName}");
 	}
 	
 	

@@ -304,6 +304,12 @@ public interface MemberService {
 	// 메인 -> 프로필 사진 조회
 	String selectProfile(HashMap<String, String> map);
 	
+	// 메인 -> 학생 시간표 조회
+	ArrayList<Classes> selectStudentAllClasses(String studentNo);
+	
+	// 메인 -> 교수 시간표 조회
+	ArrayList<Classes> selectProfessorAllClasses(String professorNo);
+	
 	// 메인 -> 등록금 납부 조회
 	ArrayList<HashMap<String, String>> selectReg(String studentNo);
 	
@@ -352,8 +358,11 @@ public interface MemberService {
 	// 알람 수신
 	ArrayList<AlarmVo> alarmReceive(String studentNo);
 
+	// 알람 전체확인
+	int alarmAllCheck(String studentNo);
+	
 	// 알람 확인
-	int alarmCheck(String studentNo);
+	int alarmCheck(int alarmNo);
 
 	// (관리자) 공지사항 관리 - 전체 공지사항 조회
 	ArrayList<Notice> selectNoticeAllList();
