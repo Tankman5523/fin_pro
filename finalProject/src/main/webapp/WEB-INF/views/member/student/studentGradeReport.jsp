@@ -260,8 +260,8 @@
         	$(".basic_table>tbody>th").on("change", "#classTerm", function() {
         		clear();
         	});
-		})
-		 */
+		}) */
+		
 		function changeYear(e) {
         	var $year = e.value;
         	var str = "";

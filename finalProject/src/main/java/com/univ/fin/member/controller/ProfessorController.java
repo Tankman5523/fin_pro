@@ -26,12 +26,15 @@ import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.template.SaveFile;
 import com.univ.fin.main.model.vo.Notice;
 import com.univ.fin.common.model.vo.Grade;
+import com.univ.fin.common.model.vo.Objection;
 import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
+import com.univ.fin.member.model.vo.Student;
 
 @Controller
 public class ProfessorController {
@@ -465,5 +468,35 @@ public class ProfessorController {
 		
 		return mv;
 	}
+	
+	//교수 이의신청 페이지
+	@RequestMapping(value = "professorGradeReport.pr", method = RequestMethod.GET)
+	public String professorGradeReport(HttpSession session,Model model) {
+		
+		Professor loginUser = (Professor)session.getAttribute("loginUser");
+		String professorNo = loginUser.getProfessorNo();
+		
+		ArrayList<Objection> list = memberService.professorGradeReport(professorNo);
+		
+		model.addAttribute("list", list);
+		
+		return "member/professor/professorGradeReport";
+	}
+	
+	//교수 이의신청 회신
+	@ResponseBody
+	@RequestMapping(value = "professorGradeRequest.pr")
+	public String professorGradeRequest(Objection obj) {
+	 	
+		int result = memberService.professorGradeRequest(obj);
+		
+		if(result>0) {
+			return "Y";
+		}else {
+			return "N";
+		}
+		
+	}
+	
 
 }
