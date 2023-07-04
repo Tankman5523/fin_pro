@@ -255,8 +255,8 @@
 	<resultMap type="alarm" id="alarmResultMap">
 		<result column="ALARM_NO" property="alarmNo"/>
 		<result column="CMD" property="cmd"/>
-		<result column="STUDENT_NO" property="studentNo"/>
-		<result column="PROFESSOR_NAME" property="professorName"/>
+		<result column="RECEIVER_NO" property="receiverNo"/>
+		<result column="SENDER_NAME" property="senderName"/>
 	</resultMap>
   	
   	<!-- 학생 로그인 -->
@@ -1718,21 +1718,21 @@
   	
   	<!-- 알람 발신 -->
   	<insert id="alarmInsert" parameterType="hashmap">
-  		INSERT INTO ALARM VALUES(SEQ_ALNO.NEXTVAL, #{cmd}, #{studentNo}, #{professorName}, 'N')
+  		INSERT INTO ALARM VALUES(SEQ_ALNO.NEXTVAL, #{cmd}, #{receiverNo}, #{senderName}, 'N')
   	</insert>
   	
   	<!-- 알람 수신 -->
   	<select id="alarmReceive" parameterType="string" resultMap="alarmResultMap">
   		SELECT *
   		FROM ALARM
-  		WHERE STUDENT_NO = #{studentNo} AND STATUS = 'N'
+  		WHERE RECEIVER_NO = #{receiverNo} AND STATUS = 'N'
   	</select>
   	
   	<!-- 알람 전체확인 -->
   	<update id="alarmAllCheck">
   		UPDATE ALARM
   		SET STATUS = 'Y'
-  		WHERE STUDENT_NO = #{studentNo} AND STATUS = 'N'
+  		WHERE RECEIVER_NO = #{receiverNo} AND STATUS = 'N'
   	</update>
   	
   	<!-- 알람 확인 -->

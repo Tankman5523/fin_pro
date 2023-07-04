@@ -70,19 +70,25 @@
 						for(var i=0;i<obj.length;i++) {
 							if(obj[i].cmd == 'gradeInsert') { // 성적 입력
 								str += "<li style='font-size: 14px; line-height: 14px;'><input type='hidden' value='" + obj[i].alarmNo+ "'>"
-									 + "<a href='classManagement.st' onclick='alarmCheck(this);'>" + obj[i].professorName + " 교수님이 성적을 입력하셨습니다.</a>"
+									 + "<a href='classManagement.st' onclick='alarmCheck(this);'>" + obj[i].senderName + " 교수님이 성적을 입력하셨습니다.</a>"
 									 + "<a style='margin-left: 10px;' onclick='alarmCheck(this);'><i class='fa-solid fa-trash' style='color: #c7c7c7;'></i></a>"
 									 + "</li><br>";
 							}
 							else if(obj[i].cmd == 'gradeUpdate') { // 성적 수정
 								str += "<li style='font-size: 14px; line-height: 14px;'><input type='hidden' value='" + obj[i].alarmNo + "'>"
-									 + "<a href='classManagement.st' onclick='alarmCheck(this);'>" + obj[i].professorName + " 교수님이 성적을 수정하셨습니다.</a>"
+									 + "<a href='classManagement.st' onclick='alarmCheck(this);'>" + obj[i].senderName + " 교수님이 성적을 수정하셨습니다.</a>"
 									 + "<a style='margin-left: 10px;' onclick='alarmCheck(this);'><i class='fa-solid fa-trash' style='color: #c7c7c7;'></i></a>"
 									 + "</li><br>";
 							}
 							else if(obj[i].cmd == 'counselUpdate') { // 상담신청 변동
 								str += "<li style='font-size: 14px; line-height: 14px;'><input type='hidden' value='" + obj[i].alarmNo + "'>"
-									 + "<a href='counselingList.st' onclick='alarmCheck(this);'>" + obj[i].professorName + " 교수님이 상담신청에 응하셨습니다.</a>"
+									 + "<a href='counselingList.st' onclick='alarmCheck(this);'>" + obj[i].senderName + " 교수님이 상담신청에 응하셨습니다.</a>"
+									 + "<a style='margin-left: 10px;' onclick='alarmCheck(this);'><i class='fa-solid fa-trash' style='color: #c7c7c7;'></i></a>"
+									 + "</li><br>";
+							}
+							else if(obj[i].cmd == 'reportUpdate') { // 성적 이의신청 변동
+								str += "<li style='font-size: 14px; line-height: 14px;'><input type='hidden' value='" + obj[i].alarmNo + "'>"
+									 + "<a href='studentGradeReport.st' onclick='alarmCheck(this);'>" + obj[i].senderName + " 교수님이 성적 이의신청에 응하셨습니다.</a>"
 									 + "<a style='margin-left: 10px;' onclick='alarmCheck(this);'><i class='fa-solid fa-trash' style='color: #c7c7c7;'></i></a>"
 									 + "</li><br>";
 							}
@@ -107,13 +113,16 @@
 					else { // 실시간 메세지
 						var str = "<span>";
 						if(obj.cmd == 'gradeInsert') { // 성적 입력
-							str += obj.professorName + " 교수님이 성적을 입력하셨습니다.";
+							str += obj.senderName + " 교수님이 성적을 입력하셨습니다.";
 						}
 						else if(obj.cmd == 'gradeUpdate') { // 성적 수정
-							str += obj.professorName + " 교수님이 성적을 수정하셨습니다.";
+							str += obj.senderName + " 교수님이 성적을 수정하셨습니다.";
 						}
 						else if(obj.cmd == 'counselUpdate') { // 상담신청 변동
-							str += obj.professorName + " 교수님이 상담신청에 응하셨습니다.";
+							str += obj.senderName + " 교수님이 상담신청에 응하셨습니다.";
+						}
+						else if(obj.cmd == 'reportUpdate') { // 성적 이의신청 변동
+							str += obj.senderName + " 교수님이 성적 이의신청에 응하셨습니다.";
 						}
 						str += "</span>";
 						$("#alarm-area2").html(str);

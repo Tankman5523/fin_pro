@@ -291,11 +291,13 @@ public class MemberServiceImpl implements MemberService{
 
 	//상담신청 - 상담신청 작성
 	@Override
-	public int insertCounseling(Counseling c) {
-		
-		int result = memberDao.insertCounseling(sqlSession,c);
-		
-		return result;
+	@Transactional
+	public int insertCounseling(Counseling c, HashMap<String, String> alarm) {
+		int result1 = 0;
+		int result2 = 0;
+		result1 = memberDao.insertCounseling(sqlSession,c);
+		result2 = memberDao.alarmInsert(sqlSession, alarm);
+		return result1*result2;
 	}
 
 	//상담관리 - 상담내역 조회
@@ -1003,9 +1005,13 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public int professorGradeRequest(Objection obj) {
-		
-		return memberDao.professorGradeRequest(sqlSession,obj);
+	@Transactional
+	public int professorGradeRequest(Objection obj, HashMap<String, String> alarm) {
+		int result1 = 0;
+		int result2 = 0;
+		result1 = memberDao.professorGradeRequest(sqlSession,obj);
+		result2 = memberDao.alarmInsert(sqlSession, alarm);
+		return result1*result2;
 	}
 
 		

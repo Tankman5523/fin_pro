@@ -74,10 +74,18 @@ public class ProfessorController {
 	
 	//교수 학적정보 조회
 	@RequestMapping("infoProfessor.pr")
-	public String infoProfessor() {
+	public ModelAndView infoProfessor(ModelAndView mv, HttpSession session) {
+		Professor p = (Professor)session.getAttribute("loginUser");
+		String professorNo = p.getProfessorNo();
+		
+		HashMap<String, String> map = new HashMap<>();
+		map.put("person", "professor");
+		map.put("personNo", professorNo);
+		String filePath = memberService.selectProfile(map);
+		
+		mv.addObject("filePath", filePath).setViewName("member/professor/infoProfessor");
 
-			
-		return "member/professor/infoProfessor";
+		return mv;
 	}
 	
 	//강의 개설 내역 페이지로 이동
@@ -280,8 +288,8 @@ public class ProfessorController {
 		
 		HashMap<String, String> alarm = new HashMap<>();
 		alarm.put("cmd", "gradeInsert");
-		alarm.put("studentNo", g.getStudentNo());
-		alarm.put("professorName", p.getProfessorName());
+		alarm.put("receiverNo", g.getStudentNo());
+		alarm.put("senderName", p.getProfessorName());
 		
 		// A: 30%, A+B: 70% 이내
 		if(map.get("gradeLevel").equals("A") || map.get("gradeLevel").equals("B")) {
@@ -313,8 +321,8 @@ public class ProfessorController {
 		
 		HashMap<String, String> alarm = new HashMap<>();
 		alarm.put("cmd", "gradeUpdate");
-		alarm.put("studentNo", g.getStudentNo());
-		alarm.put("professorName", p.getProfessorName());
+		alarm.put("receiverNo", g.getStudentNo());
+		alarm.put("senderName", p.getProfessorName());
 		
 		// A: 30%, A+B: 70% 이내
 		if(map.get("gradeLevel").equals("A") || map.get("gradeLevel").equals("B")) {
@@ -448,8 +456,8 @@ public class ProfessorController {
 		HashMap<String, String> alarm = new HashMap<>();
 		Counseling c = memberService.selectCounselDetail(counselNo);
 		alarm.put("cmd", "counselUpdate");
-		alarm.put("studentNo", c.getStudentNo());
-		alarm.put("professorName", p.getProfessorName());
+		alarm.put("receiverNo", c.getStudentNo());
+		alarm.put("senderName", p.getProfessorName());
 		
 		int result = memberService.updateCounselStatus(statusMap, alarm);
 		
@@ -486,9 +494,15 @@ public class ProfessorController {
 	//교수 이의신청 회신
 	@ResponseBody
 	@RequestMapping(value = "professorGradeRequest.pr")
-	public String professorGradeRequest(Objection obj) {
+	public String professorGradeRequest(Objection obj, HttpSession session) {
+		Professor p = (Professor)session.getAttribute("loginUser");
+		
+		HashMap<String, String> alarm = new HashMap<>();
+		alarm.put("cmd", "reportUpdate");
+		alarm.put("studentNo", obj.getStudentNo());
+		alarm.put("professorName", p.getProfessorName());
 	 	
-		int result = memberService.professorGradeRequest(obj);
+		int result = memberService.professorGradeRequest(obj, alarm);
 		
 		if(result>0) {
 			return "Y";

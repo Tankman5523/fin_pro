@@ -135,7 +135,7 @@
                     </table>
                     <div style="margin-top: 5%;">
                         <button type="reset" class="btn btn-secondary btn-lg">이전</button>
-                        <button type="submit" class="btn btn-primary btn-lg" style="margin-left: 2%;">전송</button>
+                        <button type="submit" class="btn btn-primary btn-lg" style="margin-left: 2%;" onclick="msgSend();">전송</button>
                     </div>
                 </form>
                 </div>
@@ -257,6 +257,10 @@
                 modal.style.display = "none";
             }
         }
+        
+        function msgSend() {
+    		socket.send("counselRequest,${loginUser.studentName},"+$("#pro_name").val());
+    	}
 		
     </script>
 </body>

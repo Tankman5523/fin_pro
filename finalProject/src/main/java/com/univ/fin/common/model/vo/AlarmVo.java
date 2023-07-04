@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class AlarmVo {
 	private int alarmNo;
 	private String cmd;
-	private String studentNo;
-	private String professorName;
+	private String receiverNo;
+	private String senderName;
 	private String status;
 }

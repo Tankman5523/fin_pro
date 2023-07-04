@@ -373,9 +373,15 @@ public class StudentController {
 
 	// 상담신청 - 상담신청 작성
 	@RequestMapping(value = "insertCounseling.st", method = RequestMethod.POST)
-	public ModelAndView insertCounseling(Counseling c, ModelAndView mv) {
+	public ModelAndView insertCounseling(Counseling c, ModelAndView mv, HttpSession session) {
+		Student s = (Student)session.getAttribute("loginUser");
+		
+		HashMap<String, String> alarm = new HashMap<>();
+		alarm.put("cmd", "counselRequest");
+		alarm.put("receiverNo", c.getProfessorNo());
+		alarm.put("senderName", s.getStudentName());
 
-		int result = memberService.insertCounseling(c);
+		int result = memberService.insertCounseling(c, alarm);
 
 		if (result > 0) {
 			mv.addObject("alertMsg", "상담신청 성공");
@@ -420,9 +426,18 @@ public class StudentController {
 
 	// 학적 정보조회 - 학생
 	@RequestMapping("infoStudent.st")
-	public String infoStudent() {
+	public ModelAndView infoStudent(ModelAndView mv, HttpSession session) {
+		Student s = (Student)session.getAttribute("loginUser");
+		String studentNo = s.getStudentNo();
+		
+		HashMap<String, String> map = new HashMap<>();
+		map.put("person", "student");
+		map.put("personNo", studentNo);
+		String filePath = memberService.selectProfile(map);
+		
+		mv.addObject("filePath", filePath).setViewName("member/student/infoStudent");
 
-		return "member/student/infoStudent";
+		return mv;
 	}
 
 	// 학적 정보수정 - 학생
