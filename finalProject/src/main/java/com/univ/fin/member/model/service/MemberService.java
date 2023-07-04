@@ -111,7 +111,7 @@ public interface MemberService {
 	ArrayList<Professor> selectDepartProList(String departmentNo);
 
 	//상담신청 - 상담신청 작성
-	int insertCounseling(Counseling c);
+	int insertCounseling(Counseling c, HashMap<String, String> alarm);
 	
 	//상담관리 - 상담 상세보기(학생)
 	Counseling selectCounseling(int counselNo);
@@ -401,7 +401,7 @@ public interface MemberService {
 	ArrayList<Objection> professorGradeReport(String professorNo);
 		
 	//교수 이의신청 회신
-	int professorGradeRequest(Objection obj);
+	int professorGradeRequest(Objection obj, HashMap<String, String> alarm);
 
 	// (관리자) 강의 일괄 학기종료
 	int updateClassTermFinish(int[] cArr);

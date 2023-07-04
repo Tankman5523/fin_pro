@@ -226,11 +226,11 @@
 									/* top: 66.7*(period-1), left: 186*(day-1) */
 									if(cList[i].classNo == tmp) { // 2시간 강의
 										str += "<div class='stClass_class" + $index + "' style='top:" + 70*(cList[i-1].period-1) + "px; left:" + 186*(cList[i].day-1)
-										+ "px; width:185px; height:139px;'><span style='margin: 20px auto; line-height: 200%;'>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
+										+ "px; width:185px; height:139px;'><span style='margin: 20px auto;'>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
 									}
 									else { // 1시간 강의
 										str += "<div class='stClass_class" + $index + "' style='top:" + 70*(cList[i].period-1) + "px; left:" + 186*(cList[i].day-1)
-												+ "px; width:185px; height:69px;'><span style='margin: 5px auto;'>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
+												+ "px; width:185px; height:69px;'><span style='margin: 5px auto; line-height: 130%;'>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
 									}
 									tmp = cList[i].classNo;
 								}
