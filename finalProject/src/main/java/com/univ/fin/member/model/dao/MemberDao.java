@@ -782,6 +782,11 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.professorGradeRequest",obj);
 	}
 
+	// (관리자) 강의 일괄 학기종료
+	public int updateClassTermFinish(SqlSessionTemplate sqlSession, int[] cArr) {
+		return sqlSession.update("memberMapper.updateClassTermFinish",cArr);
+	}
+
 	
 
 

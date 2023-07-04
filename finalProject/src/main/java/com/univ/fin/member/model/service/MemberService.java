@@ -409,5 +409,8 @@ public interface MemberService {
 	//교수 이의신청 회신
 	int professorGradeRequest(Objection obj);
 
+	// (관리자) 강의 일괄 학기종료
+	int updateClassTermFinish(int[] cArr);
+
 
 }

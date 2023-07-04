@@ -1027,5 +1027,11 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.selectCheckReg(sqlSession,studentNo);
 	}
 
+	// (관리자) 강의 일괄 학기종료
+	@Override
+	public int updateClassTermFinish(int[] cArr) {
+		return memberDao.updateClassTermFinish(sqlSession,cArr);
+	}
+
 }
 

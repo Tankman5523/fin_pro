@@ -178,6 +178,20 @@ public class AdminController {
 		return "redirect:classManagePage.ad";
 	}
 	
+	//강의 일괄 학기종료
+	@RequestMapping("classTermFinish.ad")
+	public String updateClassTermFinish(int cArr[],Model model) {
+		int result = memberService.updateClassTermFinish(cArr);
+		
+		if(result>0) {//업데이트(학기종료) 성공
+			model.addAttribute("alertMsg","일괄 개설을 성공 했습니다.");
+		}else {//업데이트(학기종료) 실패
+			model.addAttribute("alertMsg","일괄 개설 오류");
+		}
+			
+		return "redirect:classManagePage.ad";
+	}
+	
 	//강의 관리 검색
 	@ResponseBody
 	@RequestMapping(value="classSearchList.ad",produces="application/json; charset = UTF-8")
@@ -432,14 +446,13 @@ public class AdminController {
 	
 	//임직원 안식,퇴직 업데이트
 	@RequestMapping("updateProRest.ad")
-	public String updateProfessorRest(ProfessorRest pr) {
-		System.out.println(pr);
-		int result = memberService.updateProfessorRest(pr);
+	public String updateProfessorRest(ProfessorRest pr,Model model) {
+		int result = memberService.updateProfessorRest(pr);//
 		
 		if(result>0) {
-			System.out.println("성공");
+			model.addAttribute("alertMsg","반려 했습니다.");
 		}else {
-			System.out.println("실패");
+			model.addAttribute("alertMsg","반려 했습니다.");
 		}
 		
 		return "redirect:proRestList.ad";
