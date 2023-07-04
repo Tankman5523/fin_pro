@@ -96,3 +96,8 @@ input[type="text"]{
 #pro_list td{
 	padding:5px;
 }
+
+#pro_list>tbody>tr:hover{
+	background-color: #E2E2E2;
+	cursor: pointer;
+}

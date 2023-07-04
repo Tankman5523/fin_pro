@@ -205,29 +205,24 @@ public class MemberServiceImpl implements MemberService{
 		return result2;
 	}
 	
-	//수강신청 - 수강신청
+	//수강신청 - 수강신청(판별 트렌젝션 처리)
+	@Transactional
 	@Override
-	public int postRegisterClass(RegisterClass rc3) {
+	public int tranRegClass(RegisterClass rc2) {
 		
-		int result = memberDao.postRegisterClass(sqlSession,rc3);
+		int result = 0;
 		
-		return result;
-	}
-	
-	//수강신청 - 수강신청(해당 과목 장바구니에서 지워주기)
-	@Override
-	public int postRegDelBucket(RegisterClass rc2) {
+		//수강신청
+		result = memberDao.postRegisterClass(sqlSession,rc2);
+
+		if (result > 0) {
+			// 해당 과목 장바구니에서 지워주기
+			result += memberDao.postRegDelBucket(sqlSession,rc2);
+		}
 		
-		int result = memberDao.postRegDelBucket(sqlSession,rc2);
-		
-		return result;
-	}
-	
-	//수강신청 - 수강신청(2시간짜리 강의)
-	@Override
-	public int postRegisterClass2(RegisterClass rc3) {
-		
-		int result = memberDao.postRegisterClass2(sqlSession,rc3);
+		if (rc2.getClassHour() == 2) { // 2시간짜리 강의일 경우
+			result *= memberDao.postRegisterClass2(sqlSession,rc2);
+		}
 		
 		return result;
 	}
@@ -1027,9 +1022,16 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.selectAllCounseling(sqlSession, user);
 	}
 
+	// (학생) 휴학생 휴학할때 등록금 냈었는지
+	@Override
+	public int selectCheckReg(String studentNo) {
+		return memberDao.selectCheckReg(sqlSession,studentNo);
+	}
 
-	
-
+	// (관리자) 강의 일괄 학기종료
+	@Override
+	public int updateClassTermFinish(int[] cArr) {
+		return memberDao.updateClassTermFinish(sqlSession,cArr);
+	}
 
 }
-

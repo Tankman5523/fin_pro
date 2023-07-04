@@ -34,7 +34,7 @@
                         <tr>
                             <td class="litle_title">*상담교직원</td>
                             <td align="right" style="padding:5px;">
-                                <input type="text" name="professor" id="pro_name" style="border:0px; margin-left: 7%;" required >
+                                <input type="text" name="professor" id="pro_name" style="border:0px; margin-left: 7%;" readonly >
                                 <button type="button" id="pro_modal"><i class="fa-solid fa-magnifying-glass"></i></button>
                                 
                             </td>
@@ -207,10 +207,10 @@
         }
         
         $("#counselingForm").submit(function(){
-        	var requestDate = $("input[name=requestDate]");
-        	
-        	if(requestDate.val()==''){
-        		console.log(requestDate.offset());
+        	var pName = $("#pro_name").val();
+        	if(pName==""){
+        		alert("상담교직원을 골라주세요");
+        		return false;
         	}
         })
         

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -256,7 +257,7 @@ public class StudentController {
 	// 수강신청 - 수강신청
 	@ResponseBody
 	@RequestMapping("postRegisterClass.st")
-	public String postRegisterClass(RegisterClass rc) {
+	public String postRegisterClass(RegisterClass rc){
 
 		int result = 0; // 최종 성공여부 변수
 		RegisterClass rc2 = null;
@@ -276,16 +277,7 @@ public class StudentController {
 
 			// 수강신청 가능 여부 판별
 			if (check == 0) {
-				result = memberService.postRegisterClass(rc2);
-
-				if (result > 0) {
-					// 해당 과목 장바구니에서 지워주기
-					result += memberService.postRegDelBucket(rc2);
-				}
-
-				if (rc2.getClassHour() == 2) { // 2시간짜리 강의일 경우
-					result *= memberService.postRegisterClass2(rc2);
-				}
+				result = memberService.tranRegClass(rc2);
 			}
 		}
 
@@ -699,12 +691,12 @@ public class StudentController {
 	@RequestMapping("studentRestList.st")
 	public String selectStuRestList (HttpSession session,Model model) {
 		
+		
 		String studentNo = ((Student)session.getAttribute("loginUser")).getStudentNo();
 		
 		ArrayList<StudentRest> list = memberService.selectStuRestList(studentNo);
-
+		
 		model.addAttribute("list", list);
-
 		return "member/student/st_rest_list";
 	}
 
@@ -712,6 +704,9 @@ public class StudentController {
 	@RequestMapping("studentRestEnroll.st")
 	public String StuRestForm(HttpSession session, Model model) {
 
+		//int result =memberService.checkPeriod("휴,복학 신청"); //학사일정에서 신청기간인지 판별
+		int result = 1; //임시
+		
 		Student loginUser = (Student) session.getAttribute("loginUser");
 
 		String studentNo = loginUser.getStudentNo();
@@ -721,11 +716,24 @@ public class StudentController {
 		// 현재 휴학중인지 알기위해 상태가져옴
 		String status = loginUser.getStatus();
 
-		if (status.equals("휴학")) {// 만약 휴학중이면 복학or휴학연장이기 때문에 휴학 정보 가져감
-			StudentRest sr = memberService.selectRestInfo(studentNo);
+		if(status.equals("휴학")) {// 만약 휴학중이면 복학or휴학연장이기 때문에 휴학 정보 가져감
+			if(result<=0) {//휴,복학 기간이 아니라면
+				model.addAttribute("alertMsg","복학 신청 기간이 아닙니다. 휴학연장만 가능합니다.");
+			}
+			StudentRest sr = memberService.selectRestInfo(studentNo);//가장 최근 상담정보
+			int checkReg = memberService.selectCheckReg(studentNo);//가장 최근 등록금 납부여부
 			model.addAttribute("sr", sr);
+			model.addAttribute("reg",checkReg);
+		}else if(status.equals("재학") ){//재학상태라면 
+			if(result<=0) {//휴,복학 기간이 아니라면 
+				model.addAttribute("alertMsg","휴,복학 신청 기간이 아닙니다. 특별휴학만 가능합니다.");
+			}
+		}else{//졸업 or 중퇴 인 사람
+			model.addAttribute("alertMsg","재,휴학생만 신청 가능합니다.");
+			return "member/student/st_rest_list";
 		}
-
+		
+		model.addAttribute("result",result);
 		model.addAttribute("rcount", restCount);
 
 		return "member/student/st_rest_enroll";

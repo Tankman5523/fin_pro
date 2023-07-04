@@ -267,7 +267,6 @@
   		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO) 
         JOIN COLLEGE C ON (S.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE STUDENT_NO = #{studentNo}
-  		AND STUDENT_PWD = #{studentPwd}
   	</select>
   	
   	<!-- 임직원 로그인 -->
@@ -278,7 +277,6 @@
         JOIN DEPARTMENT D ON (P.DEPARTMENT_NO = D.DEPARTMENT_NO)
         JOIN COLLEGE C ON (P.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE PROFESSOR_NO = #{professorNo}
-  		AND PROFESSOR_PWD = #{professorPwd}
   	</select>
   
   	<!-- ID조회 - 학생 -->
@@ -865,6 +863,17 @@
 		AND   CLASS_TERM = #{classTerm}
   	</select>
   	
+  	<!-- 휴학생 휴학때 등록금 납부 여부(학생) -->
+  	<select id="selectCheckReg" resultType="_int">
+  		SELECT COUNT(*)
+		FROM(SELECT  A.*
+			 FROM(SELECT ROWNUM RNUM,MUST_PAY,INPUT_PAY
+				  FROM REG_ACC
+				  WHERE STUDENT_NO = #{studentNo}) A
+			 WHERE RNUM = 1) R
+		WHERE R.MUST_PAY=R.INPUT_PAY
+  	</select>
+  	
   	<!-- 휴,복학 신청 인서트(학생) -->
   	<insert id="insertStuRest">
   		INSERT INTO STUDENT_REST(REST_NO,STUDENT_NO,CATEGORY,REASON,START_DATE,END_DATE)
@@ -1101,6 +1110,17 @@
  			#{arr}
 		</foreach>
 		AND STATUS = 'B'
+  	</update>
+  	
+  	<!-- 강의 일괄 학기종료(관리자) -->
+  	<update id="updateClassTermFinish">
+  		UPDATE CLASS
+  		SET STATUS = 'N'
+  		WHERE CLASS_NO IN 
+  		<foreach collection="array" item="arr" open="(" close=")" separator=",">
+ 			#{arr}
+		</foreach>
+		AND STATUS IN ('Y','B','C')
   	</update>
   	
   	<!-- 강의개설 개별승인(관리자) -->
