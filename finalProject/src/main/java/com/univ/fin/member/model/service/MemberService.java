@@ -400,6 +400,11 @@ public interface MemberService {
 	// (교수) 전체 상담 신청 조회
 	ArrayList<Counseling> selectAllCounseling(String user);
 
+	//교수 이의신청 페이지
+	ArrayList<Objection> professorGradeReport(String professorNo);
+		
+	//교수 이의신청 회신
+	int professorGradeRequest(Objection obj);
 
 
 }

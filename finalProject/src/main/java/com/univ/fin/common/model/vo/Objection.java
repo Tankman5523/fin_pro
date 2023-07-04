@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 public class Objection {
 	
 	private String studentNo;		// 학번
+	private String studentName;		// 학생이름
+	private String professorNo;		// 교번
 	private String gradeNo; 		// 성적번호
 	private String professorName;	// 교수명	
 	private String className;		// 강의명

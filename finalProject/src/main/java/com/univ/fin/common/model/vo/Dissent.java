@@ -20,5 +20,6 @@ public class Dissent {
 	private String reason;
 	private String option;
 	private String status;
+	private String professorNo;
+	}
 
-}
