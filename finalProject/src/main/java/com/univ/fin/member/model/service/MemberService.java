@@ -80,14 +80,8 @@ public interface MemberService {
 	//수강신청 - 수강신청 (강의 시간 체크)
 	int checkPostReg2(RegisterClass rc2);
 	
-	//수강신청 - 수강신청
-	int postRegisterClass(RegisterClass rc3);
-	
-	//수강신청 - 수강신청(해당 과목 장바구니에서 지워주기)
-	int postRegDelBucket(RegisterClass rc2);
-	
-	//수강신청 - 수강신청(2시간짜리 강의)
-	int postRegisterClass2(RegisterClass rc3);
+	//수강신청 - 수강신청(판별 트렌젝션 처리)
+	int tranRegClass(RegisterClass rc2);
 	
 	//수강신청 - 수강신청 (수강신청내역 조회)
 	ArrayList<RegisterClass> postRegList(RegisterClass rc2);
@@ -411,6 +405,5 @@ public interface MemberService {
 
 	// (관리자) 강의 일괄 학기종료
 	int updateClassTermFinish(int[] cArr);
-
 
 }
