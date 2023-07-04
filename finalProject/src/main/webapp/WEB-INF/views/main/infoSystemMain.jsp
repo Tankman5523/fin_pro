@@ -149,13 +149,19 @@
 				$("#autoLoginStatus").text("로그인 상태 유지중");
 			}
 			
+			var errorImg = "<span><img id='dustErrorGif' src='resources/icon/dust_error.gif' data-animated='resources/icon/dust_error.gif'></span>";
+			
 			/* 현재 온도 (10분마다 갱신) */
 			$.ajax({
 				
 				url : "weather.api",
 				
 				success : function(result){
-					$("#weather_temp").html(result.T1H + 'º');
+					if(result == null){
+						$("#weather_temp").html(errorImg);
+					}else{
+						$("#weather_temp").html(result.T1H + 'º');
+					}
 				}
 			});
 			
@@ -165,16 +171,25 @@
 				url : "skyPty.api",
 				
 				success : function(result){
-					$("#weather_icon").html(result.IMG);
-					$("#weather_sky").html(result.SKY);
+					if(result == null){
+						$("#weather_icon").html(errorImg);
+						$("#weather_sky").html(errorImg);
+					}else{
+						$("#weather_icon").html(result.IMG);
+						$("#weather_sky").html(result.SKY);
+					}
 				}
 			});
 			
-			/* 최저,최고기온  정보 추출 (하루 한번 23시30분에 갱신) */
+			/* 최저,최고기온  정보 추출 (하루 한번 23시에 갱신) */
 			$.ajax({
 				url : "tmnTmx.api",
 				success : function(result){
-					$("#weather_minMax").html("<span style='color:#5b8fed;'>"+ result.TMN +"º</span>" + "<span style='color : #d3d5d7;'>/</span>"+"<span style='color:#f55f5e;'>"+ result.TMX +"º</span>");
+					if(result == null){
+						$("#weather_minMax").html(errorImg);
+					}else{
+						$("#weather_minMax").html("<span style='color:#5b8fed;'>"+ result.TMN +"º</span>" + "<span style='color : #d3d5d7;'>/</span>"+"<span style='color:#f55f5e;'>"+ result.TMX +"º</span>");
+					}
 				}
 				
 			});
