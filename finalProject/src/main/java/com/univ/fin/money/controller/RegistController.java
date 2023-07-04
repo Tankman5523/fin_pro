@@ -54,7 +54,6 @@ public class RegistController {
 		else {
 			log.info("inputPay failed) SchoolAccount : "+r.getRegAccountNo());
 		}
-		
 		return "redirect:/onelist.rg";
 	}
 	
@@ -90,7 +89,6 @@ public class RegistController {
 		}
 		
 		String classYear2 = Integer.toString(classYear);
-		
 		
 		ClassRating cr = ClassRating.builder()
 									.studentNo(st.getStudentNo())
@@ -170,7 +168,6 @@ public class RegistController {
 	@ResponseBody
 	@PostMapping("dunning.rg")
 	public String dunningToNonPaid(String studentName,int nonPaidAmount ,String phone,String email) throws MessagingException {//독촉문자,이메일 발송
-		
 		//등록금 독촉 이메일
 		String setFrom = ""; //보내는 계정
 		String toMail = "ksh940813@naver.com"; //받는계정  /* email */
@@ -209,17 +206,12 @@ public class RegistController {
 	@ResponseBody
 	@PostMapping(value="refund.rg" , produces = "text/html;charset=UTF-8")
 	public String refundOverPaid(RegistPay r) { //초과금 환급
-		//payAccountNo로 (inputPay - mustPay) 만큼을 반환했다고 가정. 
-		//int returnPay = r.getInputPay() - r.getMustPay();
-		
-		System.out.println(r);
 		int result = registService.refundOverPaid(r);
 		if(result>0) {
 			return "Y";
 		}else {
 			return "N";
 		}
-		
 	}
 	
 	
@@ -287,7 +279,6 @@ public class RegistController {
 				flag = registService.accountCheck(regAccountNo);
 			}
 		}
-		
 		return regAccountNo;
 	}  
 	
@@ -295,9 +286,7 @@ public class RegistController {
 	@ResponseBody
 	@GetMapping("delete.rg")
 	public String deleteRegistPay(RegistPay r) {
-		
 		int result = registService.deleteRegistPay(r);
-				
 		if(result>0) {
 			return "Y";
 		}else {

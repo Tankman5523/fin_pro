@@ -20,6 +20,11 @@
     	.total{
     		background-color:lightyellow;
     	}
+    	#searchMemberList>table>tbody tr:hover{
+    		background-color:lightgray;
+    		cursor : pointer;
+    	}
+    	
     </style>
 </head>
 <body>

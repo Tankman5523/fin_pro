@@ -6,65 +6,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/fin/resources/css/professorSalaryList.css">
     <title>교수_급여조회</title>
-    <style>
-    	.readonly{
-    		background-color : lightgray;
-    	}
-    	.modal {
-        position: absolute;
-        top: 0;
-        left: 0;
-
-        width: 100%;
-        height: 100%;
-
-        display: none;
-
-        background-color: rgba(0, 0, 0, 0.4);
-        }
-      
-       .modal.show {
-         display: block;
-       }
-       .modalContent{
-		 position: absolute;
-		 top: 50%;
-		 left: 50%;
-		
-		 width: 550px;
-		 height: 600px;
-		
-		 padding: 40px;
-		
-		 text-align: center;
-		
-		 background-color: rgb(255, 255, 255);
-		 border-radius: 10px;
-		 box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
-		
-		 transform: translateX(-50%) translateY(-50%);
-       }
-       .payCol{
-      	 background-color:rgb(69, 190, 238);
-       }
-       .taxCol{
-      	 background-color:lightcoral;
-       }
-       .realCol{
-      	 background-color:lightyellow;
-       }
-       .modalContent input{
-      	 text-align:center;
-       }
-       #payList>tbody>tr:hover{
-      	 background-color : lightgray;
-      	 cursor : pointer;
-       }
-       #closeBtn:hover{
-         cursor : pointer;			
-       }
-    </style>
 </head>
 <body>
     <div class="wrap">
