@@ -70,10 +70,10 @@ div{
 /*===============알람창============*/
 #alarm-area {
 	position: absolute; 
-	width: 400px; 
+	width: 500px; 
 	height: 180px; 
 	top: 115px; 
-	left: 840px; 
+	left: 750px; 
 	border: 2px solid black; 
 	background-color: white; 
 	border-radius: 15px;
@@ -82,12 +82,15 @@ div{
 
 #alarm-area2 {
 	position: absolute;
-	width: 300px;
+	width: 400px;
 	height: 30px;
 	top: 120px;
 	left: 800px;
 	background-color: #bfebff;
 	border-radius: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 #alarm-area2:after {
@@ -102,17 +105,8 @@ div{
 }
 
 #alarm-area2>span {
-	margin-left: 10px;
 	line-height: 30px;
-}
-
-#alarm-area2>span>a {
-	text-decoration: none;
-	color: black;
-	font-size: 14px;
-}
-
-#alarm-area2>span>a:hover {
+	font-size: 16px;
 	font-weight: bold;
 }
 
@@ -127,7 +121,7 @@ div{
 }
 
 #alarmDiv {
-	width: 380px;
+	width: 480px;
 	height: 110px;
 	padding-left: 15px;
 	overflow: auto;
@@ -135,22 +129,28 @@ div{
 }
 
 #alarmDiv>ul {
-	margin-bottom: 1px; 
+	margin-bottom: 0px; 
 	padding-left: 15px;
+	line-height: 120%; /*li 간격 조정*/
+}
+
+#alarmDiv>ul>li {
+	padding: 
 }
 
 #alarmDiv>ul>li>a {
 	color: black;
+	line-height: 100%;
+	font-size: 14px;
 }
 
 #alarmDiv>ul>li>a:hover {
-/* 	font-size: 15px; */
-/* 	line-height: 15px; */
 	text-decoration: none;
 	color: black;
+	font-weight: bold;
 }
 
-#alarmImg:hover {
+#alarmImg:hover, #alarmDiv>ul>li>a>i:hover {
 	cursor: pointer;
 }
    

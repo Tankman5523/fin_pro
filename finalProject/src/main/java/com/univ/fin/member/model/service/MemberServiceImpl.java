@@ -995,6 +995,19 @@ public class MemberServiceImpl implements MemberService{
 		
 		return memberDao.searchGradeReport(sqlSession, objc);
 	}
+
+	@Override
+	public ArrayList<Objection> professorGradeReport(String professorNo) {
+		
+		return memberDao.professorGradeReport(sqlSession,professorNo );
+	}
+
+	@Override
+	public int professorGradeRequest(Objection obj) {
+		
+		return memberDao.professorGradeRequest(sqlSession,obj);
+	}
+
 		
 	// (관리자) 공지사항 관리 - 공지사항 수정 페이지 이동
 	@Override
@@ -1007,6 +1020,7 @@ public class MemberServiceImpl implements MemberService{
 	public ArrayList<Counseling> selectAllCounseling(String user) {
 		return memberDao.selectAllCounseling(sqlSession, user);
 	}
+
 
 	
 

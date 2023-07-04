@@ -73,7 +73,7 @@
 			 }else{
 				 return false;
 			 }
-			  }
+			 }
 		
 		 function convertReadonly(){
 			 $("#crystalBtn").attr("onclick", "updateProfessor()");
