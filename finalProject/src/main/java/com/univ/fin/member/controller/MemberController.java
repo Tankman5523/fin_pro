@@ -89,10 +89,13 @@ public class MemberController {
 			
 			if(mno.equals("S")) { //학생 로그인
 				
-				Student st = Student.builder().studentNo(memberNo).studentPwd(userPwd).build();
+				Student st = Student.builder().studentNo(memberNo).build();
 				
 				Student loginUser = memberService.loginStudent(st);
-				if(loginUser == null) {
+				
+				boolean chkPwd = bcryptPasswordEncoder.matches(userPwd, loginUser.getStudentPwd());
+				
+				if(loginUser == null || chkPwd == false) {
 					session.setAttribute("alertMsg", "아이디 또는 비밀번호를 잘못 입력했습니다.");
 					mv.setViewName("member/login");
 				}else { //로그인 되었을때만 쿠키 생성 및 저장
@@ -121,11 +124,13 @@ public class MemberController {
 				
 			}else if(mno.equals("P")){ //임직원 로그인
 				
-				Professor pr = Professor.builder().professorNo(memberNo).professorPwd(userPwd).build();
+				Professor pr = Professor.builder().professorNo(memberNo).build();
 				
 				Professor loginUser = memberService.loginProfessor(pr);
 				
-				if(loginUser == null) {
+				boolean chkPwd = bcryptPasswordEncoder.matches(userPwd, loginUser.getProfessorPwd());
+				
+				if(loginUser == null || chkPwd == false) {
 					session.setAttribute("alertMsg", "아이디 또는 비밀번호를 잘못 입력했습니다.");
 					mv.setViewName("member/login");
 				}else { //로그인 되었을때만 쿠키 생성 및 저장
@@ -150,6 +155,7 @@ public class MemberController {
 					if(loginUser.getAdmin() == 1) { // 교수 로그인
 						
 						session.setAttribute("loginUser", loginUser);
+						session.setAttribute("alarmCheck", 1);
 						mv.setViewName("redirect:main.pr");
 						
 					}else { // 관리자 로그인
@@ -232,7 +238,8 @@ public class MemberController {
 			String setFrom = "jungwoo343@naver.com"; //발송자의 이메일 
 			String toMail = "jungwoo343@naver.com"; //받는사용자의 이메일(resultEmail 변수 들어갈 곳)
 			String title = "[FEASIBLE UNIVERSITY] 로그인ID조회 - 이메일 인증 번호 ";
-			String content = "귀하의 이메일 인증 번호는 다음과 같습니다."
+			String content = "<img src=\'http://localhost:8888/fin/resources/icon/email_logo.png\'><br><br>"
+							+"귀하의 이메일 인증 번호는 다음과 같습니다."
 							+"<br>"
 							+"<h3>인증번호 : "+ ranNum +"</h3>"
 							+"<br>"
@@ -363,7 +370,8 @@ public class MemberController {
 			String setFrom = "jungwoo343@naver.com"; //발송자의 이메일 
 			String toMail = "jungwoo343@naver.com"; //받는사용자의 이메일(resultEmail 변수 들어갈 곳)
 			String title = "[FEASIBLE UNIVERSITY] 로그인ID조회 - 이메일 인증 번호 ";
-			String content = "귀하의 이메일 인증 번호는 다음과 같습니다."
+			String content = "<img src=\'http://localhost:8888/fin/resources/icon/email_logo.png\'><br><br>"
+							+"귀하의 이메일 인증 번호는 다음과 같습니다."
 							+"<br>"
 							+"<h3>인증번호 : "+ ranNum +"</h3>"
 							+"<br>"

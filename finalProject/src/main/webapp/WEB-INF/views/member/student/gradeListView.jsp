@@ -19,7 +19,7 @@
                     <a href="classManagement.st" style="color:#00aeff; font-weight: 550;">학기별 성적 조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">성적 이의신청</a>
+                    <a href="studentGradeReport.st">성적 이의신청</a>
                 </div>
                 <div class="child_title">
                     <a href="classRatingInfo.st">강의평가</a>
@@ -34,7 +34,7 @@
                     <table class="wholeGrade-table">
                         <thead>
                             <tr height="40">
-                                <th width="15%" style="border-left: 1px solid #76D2FF;">학년도</th>
+                                <th width="15%" style="border-left: 1px solid #88C1E3;">학년도</th>
                                 <th width="15%">학기</th>
                                 <th width="10%">신청학점</th>
                                 <th width="10%">취득학점</th>

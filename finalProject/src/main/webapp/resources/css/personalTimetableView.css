@@ -88,7 +88,7 @@ div[class*=period] {
 
 div[class*=period]>span, div[class*=stClass]>span {
  	display: inline-block;
- 	line-height: 130%;
+ 	line-height: 200%;
 }
 
 .stClass-real {

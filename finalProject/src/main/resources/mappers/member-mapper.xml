@@ -182,7 +182,9 @@
   	
   	<resultMap type="objection" id="objectionResultMap">
   		<result column="PROFESSOR_NAME" property="professorName"/>
+  		<result column="STUDENT_NAME" property="studentName"/>
   		<result column="STUDENT_NO" property="studentNo"/>
+  		<result column="PROFESSOR_NO" property="professorNo"/>
   		<result column="CLASS_NAME" property="className"/>
   		<result column="CLASS_NO" property="classNo"/>
   		<result column="CREDIT" property="credit"/>
@@ -195,6 +197,7 @@
   	<resultMap type="dissent" id="dissentResultMap">
   		<result column="DISSENT_NO" property="dissentNo"/>
   		<result column="STUDENT_NO" property="studentNo"/>
+  		<result column="PROFESSOR_NO" property="professorNo"/>
   		<result column="CLASS_NAME" property="className"/>
   		<result column="CLASS_NO" property="classNo"/>
   		<result column="PROFESSOR_NAME" property="professorName"/>
@@ -252,8 +255,8 @@
 	<resultMap type="alarm" id="alarmResultMap">
 		<result column="ALARM_NO" property="alarmNo"/>
 		<result column="CMD" property="cmd"/>
-		<result column="STUDENT_NO" property="studentNo"/>
-		<result column="PROFESSOR_NAME" property="professorName"/>
+		<result column="RECEIVER_NO" property="receiverNo"/>
+		<result column="SENDER_NAME" property="senderName"/>
 	</resultMap>
   	
   	<!-- 학생 로그인 -->
@@ -264,7 +267,6 @@
   		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO) 
         JOIN COLLEGE C ON (S.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE STUDENT_NO = #{studentNo}
-  		AND STUDENT_PWD = #{studentPwd}
   	</select>
   	
   	<!-- 임직원 로그인 -->
@@ -275,7 +277,6 @@
         JOIN DEPARTMENT D ON (P.DEPARTMENT_NO = D.DEPARTMENT_NO)
         JOIN COLLEGE C ON (P.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE PROFESSOR_NO = #{professorNo}
-  		AND PROFESSOR_PWD = #{professorPwd}
   	</select>
   
   	<!-- ID조회 - 학생 -->
@@ -862,6 +863,17 @@
 		AND   CLASS_TERM = #{classTerm}
   	</select>
   	
+  	<!-- 휴학생 휴학때 등록금 납부 여부(학생) -->
+  	<select id="selectCheckReg" resultType="_int">
+  		SELECT COUNT(*)
+		FROM(SELECT  A.*
+			 FROM(SELECT ROWNUM RNUM,MUST_PAY,INPUT_PAY
+				  FROM REG_ACC
+				  WHERE STUDENT_NO = #{studentNo}) A
+			 WHERE RNUM = 1) R
+		WHERE R.MUST_PAY=R.INPUT_PAY
+  	</select>
+  	
   	<!-- 휴,복학 신청 인서트(학생) -->
   	<insert id="insertStuRest">
   		INSERT INTO STUDENT_REST(REST_NO,STUDENT_NO,CATEGORY,REASON,START_DATE,END_DATE)
@@ -967,7 +979,7 @@
   	</insert>
   	
   	<!-- (관리자)강의개설 첨부파일 리스트 -->
-  	<select id="selectClassAttList" resultType="_int" resultMap="attachmentResultSet">
+  	<select id="selectClassAttList" resultMap="attachmentResultSet">
   		SELECT FILE_NO,ORIGIN_NAME,CHANGE_NAME,FILE_PATH,UPLOAD_DATE
 		FROM ATTACHMENT
 		WHERE FILE_NO IN (SELECT FILE_NO FROM CLASS)
@@ -1098,6 +1110,17 @@
  			#{arr}
 		</foreach>
 		AND STATUS = 'B'
+  	</update>
+  	
+  	<!-- 강의 일괄 학기종료(관리자) -->
+  	<update id="updateClassTermFinish">
+  		UPDATE CLASS
+  		SET STATUS = 'N'
+  		WHERE CLASS_NO IN 
+  		<foreach collection="array" item="arr" open="(" close=")" separator=",">
+ 			#{arr}
+		</foreach>
+		AND STATUS IN ('Y','B','C')
   	</update>
   	
   	<!-- 강의개설 개별승인(관리자) -->
@@ -1715,21 +1738,21 @@
   	
   	<!-- 알람 발신 -->
   	<insert id="alarmInsert" parameterType="hashmap">
-  		INSERT INTO ALARM VALUES(SEQ_ALNO.NEXTVAL, #{cmd}, #{studentNo}, #{professorName}, 'N')
+  		INSERT INTO ALARM VALUES(SEQ_ALNO.NEXTVAL, #{cmd}, #{receiverNo}, #{senderName}, 'N')
   	</insert>
   	
   	<!-- 알람 수신 -->
   	<select id="alarmReceive" parameterType="string" resultMap="alarmResultMap">
   		SELECT *
   		FROM ALARM
-  		WHERE STUDENT_NO = #{studentNo} AND STATUS = 'N'
+  		WHERE RECEIVER_NO = #{receiverNo} AND STATUS = 'N'
   	</select>
   	
   	<!-- 알람 전체확인 -->
   	<update id="alarmAllCheck">
   		UPDATE ALARM
   		SET STATUS = 'Y'
-  		WHERE STUDENT_NO = #{studentNo} AND STATUS = 'N'
+  		WHERE RECEIVER_NO = #{receiverNo} AND STATUS = 'N'
   	</update>
   	
   	<!-- 알람 확인 -->
@@ -1841,6 +1864,21 @@
   		</foreach>
   	</update>
   	
+  	<select id ="professorGradeReport" resultMap="objectionResultMap">
+  		SELECT C.CLASS_NAME,D.CLASS_NO,C.CLASS_NAME,D.STUDENT_NO,D.REASON,D.STATUS,S.STUDENT_NAME
+		FROM DISSENT D
+		JOIN CLASS C ON D.CLASS_NO = C.CLASS_NO
+		JOIN STUDENT S ON D.STUDENT_NO = S.STUDENT_NO
+		WHERE C.PROFESSOR_NO = #{professorNo}
+  	</select>
+  	
+  	<update id="professorGradeRequest">
+	UPDATE DISSENT
+		SET STATUS = #{status},
+		OPINION = #{opinion}
+	WHERE STUDENT_NO = #{studentNo}
+	AND CLASS_NO = #{classNo}
+</update>
   	<!-- (관리자) 공지사항 관리 - 수정 게시글 조회 -->
   	<select id="selectUpdateNotice" resultMap="noticeResultSet">
   		SELECT NOTICE_CATEGORY, FIELD, NOTICE_TITLE, NOTICE_CONTENT, CREATE_DATE, ORIGIN_NAME

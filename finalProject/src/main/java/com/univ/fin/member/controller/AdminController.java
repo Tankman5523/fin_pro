@@ -138,34 +138,59 @@ public class AdminController {
 	
 	//강의 개설 일괄 승인
 	@RequestMapping("permitAllClassCreate.ad")
-	public String updateClassPermitAll(int cArr[]) {
+	public String updateClassPermitAll(int cArr[],Model model) {
 			
 		int result = memberService.updateClassPermitAll(cArr);
 			
 		if(result>0) {//업데이트(개설승인) 성공
-				
+			model.addAttribute("alertMsg","일괄 개설을 성공 했습니다.");
 		}else {//업데이트(개설승인) 실패
-				
+			model.addAttribute("alertMsg","일괄 개설 오류");
 		}
 			
 		return "redirect:classManagePage.ad";
 	}
 		
 	//강의 개설 개별 승인
-	@ResponseBody
-	@RequestMapping(value="permitClassCreate.ad")
-	public int updateClassPermit(int cno) {
+	@RequestMapping("permitClassCreate.ad")
+	public String updateClassPermit(int cno,Model model) {
 		
 		int result = memberService.updateClassPermit(cno);
 		
-		return result;
+		if(result>0) {
+			model.addAttribute("alertMsg","개설 성공 했습니다.");
+		}else {
+			model.addAttribute("alertMsg","개설 오류");	
+		}
+		
+		return "redirect:classManagePage.ad";
 	}
 		
 	//강의 개설 반려
 	@RequestMapping("rejectClassCreate.ad")
-	public String updateClassReject(Classes c) {
+	public String updateClassReject(Classes c,Model model) {
 			
 		int result = memberService.updateClassReject(c);
+		
+		if(result>0) {
+			model.addAttribute("alertMsg","반려 했습니다.");
+		}else {
+			model.addAttribute("alertMsg","반려 오류");	
+		}
+			
+		return "redirect:classManagePage.ad";
+	}
+	
+	//강의 일괄 학기종료
+	@RequestMapping("classTermFinish.ad")
+	public String updateClassTermFinish(int cArr[],Model model) {
+		int result = memberService.updateClassTermFinish(cArr);
+		
+		if(result>0) {//업데이트(학기종료) 성공
+			model.addAttribute("alertMsg","일괄 개설을 성공 했습니다.");
+		}else {//업데이트(학기종료) 실패
+			model.addAttribute("alertMsg","일괄 개설 오류");
+		}
 			
 		return "redirect:classManagePage.ad";
 	}
@@ -345,14 +370,14 @@ public class AdminController {
 	
 	//학생 휴,복학 승인
 	@RequestMapping("updateRestPermit.ad")
-	public String updateStuRestPermit(StudentRest sr) {
+	public String updateStuRestPermit(StudentRest sr,Model model) {
 		
 		int result = memberService.updateStuRestPermit(sr);
 		
 		if(result>0) {
-			
+			model.addAttribute("alertMsg","신청 승인 했습니다.");
 		}else {
-			
+			model.addAttribute("alertMsg","승인 오류 발생");
 		}
 		
 		return "redirect:stuRestList.ad";
@@ -360,14 +385,14 @@ public class AdminController {
 	
 	//학생 휴,복학 반려
 	@RequestMapping("updateRestRetire.ad")
-	public String updateStuRestRetire(int restNo) {
+	public String updateStuRestRetire(int restNo,Model model) {
 		
 		int result = memberService.updateStuRestRetire(restNo);
 			
 		if(result>0) {
-			
+			model.addAttribute("alertMsg","반려 했습니다.");
 		}else {
-			
+			model.addAttribute("alertMsg","반려 오류 발생");
 		}
 		return "redirect:stuRestList.ad";
 	}
@@ -424,14 +449,13 @@ public class AdminController {
 	
 	//임직원 안식,퇴직 업데이트
 	@RequestMapping("updateProRest.ad")
-	public String updateProfessorRest(ProfessorRest pr) {
-		System.out.println(pr);
-		int result = memberService.updateProfessorRest(pr);
+	public String updateProfessorRest(ProfessorRest pr,Model model) {
+		int result = memberService.updateProfessorRest(pr);//
 		
 		if(result>0) {
-			System.out.println("성공");
+			model.addAttribute("alertMsg","반려 했습니다.");
 		}else {
-			System.out.println("실패");
+			model.addAttribute("alertMsg","반려 했습니다.");
 		}
 		
 		return "redirect:proRestList.ad";

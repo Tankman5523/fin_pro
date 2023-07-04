@@ -21,7 +21,7 @@
                     <span style="margin: 0 auto;">수업관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="#">성적 이의신청 조회</a>
+                    <a href="professorGradeReport.pr">성적 이의신청 조회</a>
                 </div>
                 <div class="child_title">
                     <a href="gradeInsert.pr" style="color:#00aeff; font-weight: 550;">성적 관리</a>
@@ -230,7 +230,6 @@
 	            	   $(".student-table>tbody>tr").hover(function() {
 	            		   $(this).css("cursor", "pointer");
 	            	   });
-	            	   connect();
 	               }
 	               
 	               function impossibleInsert() {
@@ -241,7 +240,6 @@
 	            	   $(".student-table>tbody>tr").hover(function() {
 	            		   $(this).css("cursor", "default");
 	            	   });
-	            	   disconnect();
 	               }
 	               
 	               function scoreInsert(e) {

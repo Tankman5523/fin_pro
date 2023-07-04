@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,15 +31,6 @@ public class FineDust {
 	
 	@Autowired
 	private CacheManager cacheManager;
-	
-	@Autowired
-	private FineDust fineDustIoc;
-	
-	@Scheduled(cron = "0 0/30 * * * *")
-	public void updateDust() throws Exception {
-		cacheManager.getCache("dust").clear();
-		fineDustIoc.fineDust();
-	}
 	
 	@Cacheable("dust")
 	@ResponseBody
@@ -91,7 +81,6 @@ public class FineDust {
 				success = false;
 				responseText = "";
 			} catch (IOException e) {
-				System.out.println("미세먼지 IOE");
 			}
 		}
 		

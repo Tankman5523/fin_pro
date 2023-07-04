@@ -10,7 +10,6 @@
 <body>
 	<div class="wrap">
 		<%@include file="../../common/student_menubar.jsp"%>
-		<%--알아서 수정해서 쓰기 --%>
 		<%@include file="../../common/datepicker.jsp"%>
 		<div id="content">
 			<div id="category">
@@ -97,7 +96,6 @@
 											<td>*복학 예정</td>
 											<td><input type="date" name="endDate" id="datepicker2" maxlength="10" data-placeholder="날짜 선택" required></td>
 										</tr>
-
 									</c:when>
 									<c:otherwise>
 										<tr>
@@ -118,10 +116,12 @@
 									<td>휴학 횟수</td>
 									<td><input type="text" value="${rcount}" readonly></td>
 									<td>*등록여부</td>
-									<td><select id="regCheck">
+									<td>
+										<select id="regCheck">
 											<option value="yes">등록휴학</option>
 											<option value="no">미등록휴학</option>
-									</select></td>
+										</select>
+									</td>
 								</tr>
 							</table>
 					</div>
@@ -155,15 +155,39 @@
 					$("#sm_btn").attr("disabled", false); //전송 누를수 있게 함
 				}
 			});
+			
+			var result = ${result}; //휴,복학 기간이 아니라면 
+			var status = '${loginUser.status}';//현재 재학상태인지 휴학상태인지
+			
+			if(status=='휴학'){//등록휴학이었는지 미등록휴학이었는지 판별
+				var reg = '${reg}'; //휴학때 등록휴학이었는지 
+				if(reg>0){//휴학때 등록휴학이었음
+					$("#regCheck option[value='yes']").prop("selected",true);
+					$("#regCheck").prop("disabled",true); //등록휴학 못바꾸게
+				}else{//휴학때 미등록휴학이었음
+					$("#regCheck option[value='no']").prop("selected",true);
+					
+				}
+			}
+			
+			if(status=='재학' && result<=0){//휴학하고싶은데 휴학신청기간이 아닐때
+				$("#reason option[value='일반휴학']").remove(); //일반휴학 못하게
+				$("#reason").trigger("change"); //특별휴학 사유 띄우기
+			}else if(status=='휴학' && result<=0){//복학,휴학 연장 하고 싶은데 복학 신청 기간이 아닐때
+				$("#reason option[value='복학']").remove(); //복학신청 못하게
+				$("#reason").trigger("change"); //휴학연장 사유 띄우기
+			}
 		})
+		
 		var select = document.querySelector("#reason"); //카테고리 셀렉트 가져오기
+		
 		select.onchange = function() { //카테고리 셀렉트가 바뀔때마다
 			var reason = document.querySelector("#reason2"); //사유 셀렉트 가져오기
 			var mainReason = select.options[select.selectedIndex].innerText; //카테고리 셀렉트 고른 옵션 값 가져오기
 			var newDateArea = document.getElementById("newDate"); //휴학연장 골랐을때 나오는 연장기간 선택창
 			var oldDateArea = document.getElementById("oldDate"); //복학,휴학연장했을때 기존 휴학기간 보여주는창 가져오기
 			var returnDate = document.getElementById("returnDate"); //복학,휴학연장했을때 기존 복학날짜 가져오기
-			//console.log(returnDate.value);
+
 			//휴학연장할때 새로 날짜를 받아야 해서 기존 기간설정 name을 바꿔야함
 			var sDate = $("#startedDate"); //기존 startDate 시작날짜
 			var eDate = $("#returnDate"); //기존 endDate 복학날짜
@@ -258,6 +282,9 @@
 								}
 								if (rp.inputPay >= rp.mustPay|| regCheck == "no") {//등록금을 냈거나 미등록휴학을 골랐을때
 									$("#sm_btn").attr("disabled", false);
+									if(rp.inputPay >= rp.mustPay && regCheck == "yes"){
+										$("#regCheck").prop("disabled",true);
+									}
 								} else {
 									$("#sm_btn").attr("disabled", true);
 								}

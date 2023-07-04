@@ -22,23 +22,27 @@
 		right: 15%;
 		position: relative;
 	}
-	
-	#user_info{
-		padding: 10px;
-		border : 1px solid gray;
-		border-radius : 6px;
-		margin-left: 30px;
-	}
 	.user_info3{
 		border-radius: 6px;
-		width: 400px;
+		width: 330px;
+		height: 30px;
+	}
+	.user_info4{
+		border-radius: 6px;
+		width: 280px;
+		height: 30px;
+	}
+	.user_info5{
+		border-radius: 6px;
+		width: 450px;
 		height: 30px;
 	}
 	.user_info2{
-		padding: 10px;
-		border : 1px solid gray;
+		padding: 20px;
 		margin-left: 30px;
 		border-radius: 8px;
+		box-shadow: 0 0 0 1px #000;
+		border-collapse : collapse;
 	}
 	#crystalBtn{
 		border: 0;
@@ -57,6 +61,13 @@
 	border-collapse: separate !important;
 	}
 
+	#profile {
+		border: 1px solid black; 
+		border-radius: 15px; 
+		margin: 13px 0 0 15px;  
+		width: 150px; 
+		height: 150px;
+	}
 
 </style>
 
@@ -73,7 +84,7 @@
 			 }else{
 				 return false;
 			 }
-			  }
+			 }
 		
 		 function convertReadonly(){
 			 $("#crystalBtn").attr("onclick", "updateProfessor()");
@@ -171,35 +182,45 @@
 					<form id="updateForm" action="updateProfessor.pr" method="post">
 					<input type="hidden" id="professorNo" name="professorNo" value="${loginUser.professorNo }">
 					<div id="user_infomation">
-						<table class="user_info2">
-							<thead>
-								<tr>
-									<th width="100px" height="30px">입사 년도 : </th>
-									<th><input type="text"  class="user_info3" value="${loginUser.entranceDate}" readonly></th>
-									<th width="100px" height="30px">대학(원) : </th>
-									<th><input type="text" class="user_info3" value="${professorNo.collegeName}" readonly></th>
-								</tr>
-							</thead>
-						</table>
-						<br>
-						<table class="user_info2">
-							<thead>
-								<tr>
-									<th width="100px" height="30px">교번 : </th>
-									<th><input type="text" class="user_info3" value="${loginUser.professorNo}" readonly></th>
-									<th width="100px" height="30px">학과(부) : </th>
-									<th><input type="text" class="user_info3" value="${professorNo.departmentName}" readonly></th>
-								</tr>
-							</thead>
-						</table>
-						<br>
+						<div style="width: 80%; float: left;">
+							<table class="user_info2">
+								<thead>
+									<tr>
+										<th width="100px" height="30px">입사 년도 : </th>
+										<th><input type="text"  class="user_info3" value="${loginUser.entranceDate}" readonly></th>
+										<th style="padding-left: 10px;" width="100px" height="30px">대학(원) : </th>
+										<th><input type="text" class="user_info4" value="${professorNo.collegeName}" readonly></th>
+									</tr>
+								</thead>
+							</table>
+							<br>
+							<table class="user_info2">
+								<thead>
+									<tr>
+										<th width="100px" height="30px">교번 : </th>
+										<th><input type="text" class="user_info3" value="${loginUser.professorNo}" readonly></th>
+										<th style="padding-left: 10px;" width="100px" height="30px">학과(부) : </th>
+										<th><input type="text" class="user_info4" value="${professorNo.departmentName}" readonly></th>
+									</tr>
+								</thead>
+							</table>
+							<br>
+						</div>
+						<c:choose>
+							<c:when test="${!empty filePath }">
+								<img id="profile" alt="프로필사진" src="${filePath }">
+							</c:when>
+							<c:otherwise>
+								<img id="profile" alt="프로필사진" src="resources/icon/profileImg.png">
+							</c:otherwise>
+						</c:choose>
 						<table class="user_info2">
 							<thead>
 								<tr>
 									<th width="100px" height="30px">이름 : </th>
 									<th><input type="text" class="user_info3" value="${loginUser.professorName}" readonly></th>
-									<th width="100px" height="30px">직급 : </th>
-									<th><input type="text" id="position" class="user_info3" value="${loginUser.position}" readonly></th>
+									<th style="padding-left: 10px;" width="100px" height="30px">직급 : </th>
+									<th><input type="text" id="position" class="user_info5" value="${loginUser.position}" readonly></th>
 									
 								</tr>
 							</thead>
@@ -210,8 +231,8 @@
 								<tr>
 									<th width="100px" height="30px">전화번호 : </th>
 									<th><input type="text" name="phone" id="phone" class="user_info3" value="${loginUser.phone}" maxlength="11" onkeyup="characterCheck2(this)" onkeydown="characterCheck2(this)"></th>
-									<th width="100px" height="30px">E-MAIL : </th>
-									<th><input type="text" name="email" id="email" class="user_info3" value="${loginUser.email}" onkeyup="characterCheck4(this)" onkeydown="characterCheck4(this)"></th>
+									<th style="padding-left: 10px;" width="100px" height="30px">E-MAIL : </th>
+									<th><input type="text" name="email" id="email" class="user_info5" value="${loginUser.email}" onkeyup="characterCheck4(this)" onkeydown="characterCheck4(this)"></th>
 								</tr>
 							</thead>
 						</table>
@@ -221,13 +242,14 @@
 								<tr>
 									<th width="100px" height="30px">주소 : </th>
 									<th><input type="text" name="address" id="address"class="user_info3" value="${loginUser.address}"></th>
-									<th width="100px" height="30px">우편번호 : </th>
-									<th><input type="text" name="post" id="post"class="user_info3" value="${loginUser.post}" readonly></th>
+									<th style="padding-left: 10px;" width="100px" height="30px">우편번호 : </th>
+									<th><input type="text" name="post" id="post"class="user_info5" value="${loginUser.post}" readonly></th>
 								</tr>
 							</thead>
 						</table>
 					</form>
 					</div>
+				</div>
             </div>
         </div>
     </div>
