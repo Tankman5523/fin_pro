@@ -74,10 +74,10 @@
 	                    <div>
 	                        	기타 참고사항:
 	                    </div>
-	                    <textarea name="reason" id="" cols="100" rows="5" style="resize: none;"></textarea>
+	                    <textarea name="reason" cols="100" rows="5" style="resize: none;"></textarea>
 	                    <br>
 	                    <div id="btn_area">
-	                        <button type="reset" class="btn btn-secondary btn-lg">이전</button>
+	                        <button type="button" onclick="resetDate();" class="btn btn-secondary btn-lg">초기화</button>
 	                        <button type="submit" class="btn btn-primary btn-lg">신청</button>
 	                    </div>
 	                </form>
@@ -96,6 +96,11 @@
     		
     		$("#jobYear").val(jobYear+"년"+"("+diff+"일)");
     	})
+    	
+    	function resetDate(){//리셋버튼 누르면 날짜,기타사항 비우기
+    		$("#rest_list input[type='date']").val("");
+    		$("textarea[name='reason']").val("");
+    	}
     	
     
 	    $("#datepicker1").datepicker({

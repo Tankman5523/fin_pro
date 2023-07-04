@@ -63,7 +63,7 @@
 			</div>
 			
 			<div style="width: 90%; margin: auto;">
-				<button class="btn" id="insert" onclick="location.href='insertNotice.ad'">등록</button>
+				<button id="insert" onclick="insert();">등록</button>
 			</div>
 			
 			<div id="result-area">
@@ -83,8 +83,8 @@
 				</table>
 			</div>
 			<div id="btn-area">
-				<button class="btn" id="delete" onclick="deleteVal()">삭제</button>
-				<button class="btn" id="update" onclick="update()">수정</button>
+				<button id="delete" onclick="deleteVal()">삭제</button>
+				<button id="update" onclick="update()">수정</button>
 			</div>
 
 		</div>
@@ -139,46 +139,52 @@
 			var type = searchType.options[searchType.selectedIndex].value;
 			var keyword = document.getElementById('keyword').value;
 			
-			$.ajax({
-				url: "searchNotice.ad",
-				type: "post",
-				data: {
-					field : field,
-					category : category,
-					keyword : keyword,
-					type : type
-				},
-				success: function(data){
-					var str = "";
-					
-					data.forEach(function(data){
-						str += "<tr>"
-							+"<td>"+"<input type='checkBox' class='chkRows' name='chkRows'>"+"</td>"
-							+"<td>"+data.noticeNo+"</td>"
-							+"<td>"+data.field+"</td>"
-							+"<td>"+data.categoryName+"</td>"
-							+"<td>"+data.noticeTitle+"</td>";
-							
-							if (data.originName != null) {
-								str += "<td style='width: 80px;'>"+"<i class='fa-solid fa-paperclip'></i>"+"</td>"
-								+"<td>"+data.createDate+"</td>"
-								+"</tr>"
-							}else{
-								str += "<td></td>"
-								+"<td>"+data.createDate+"</td>"
-								+"</tr>"
-							}
+			if(keyword == ''){
+				alert("검색어를 입력해주세요.");
+				location.reload();
+			}else{
+				$.ajax({
+					url: "searchNotice.ad",
+					type: "post",
+					data: {
+						field : field,
+						category : category,
+						keyword : keyword,
+						type : type
+					},
+					success: function(data){
+						var str = "";
 						
-					})
-					
-					alert("검색 결과는 총 "+data.length+" 건 입니다.");
-					$('#result-table > tbody').html(str);
-				},
-				error: function(){
-					console.log("통신오류");
-				}
-			})		
+						data.forEach(function(data){
+							str += "<tr>"
+								+"<td>"+"<input type='checkBox' class='chkRows' name='chkRows'>"+"</td>"
+								+"<td>"+data.noticeNo+"</td>"
+								+"<td>"+data.field+"</td>"
+								+"<td>"+data.categoryName+"</td>"
+								+"<td>"+data.noticeTitle+"</td>";
+								
+								if (data.originName != null) {
+									str += "<td style='width: 80px;'>"+"<i class='fa-solid fa-paperclip'></i>"+"</td>"
+									+"<td>"+data.createDate+"</td>"
+									+"</tr>"
+								}else{
+									str += "<td></td>"
+									+"<td>"+data.createDate+"</td>"
+									+"</tr>"
+								}
+							
+						})
+						
+						alert("검색 결과는 총 "+data.length+" 건 입니다.");
+						$('#result-table > tbody').html(str);
+					},
+					error: function(){
+						console.log("통신오류");
+					}
+				})		
+			}
 		})
+			
 	}
 	
 	function selectAll(selectAll){
@@ -187,6 +193,11 @@
 		checkBoxes.forEach(function(checkBox){
 			checkBox.checked = selectAll.checked
 		})
+	}
+	
+	function insert(){
+// 		const professorNo = "${loginUser.professorNo}";
+		location.href = 'insertNotice.ad';
 	}
 	
 	function update(){
@@ -221,8 +232,7 @@
 		var noticeNo = new Array();
 		
 		if(allChk == true){
-			noticeNo.length = 0;
-// 			location.href = 'deleteNotice.ad?noticeNo='+noticeNo;
+			noticeNo = [];
 		}else{
 			tr.forEach(function(tr, idx){
 				const checkBox = tr.children[0].children[0];
@@ -232,7 +242,7 @@
 				}
 			})
 		}
-		
+		console.log(noticeNo)
 		$.ajax({
 			url: "deleteNotice.ad",
 			data: {
@@ -241,11 +251,11 @@
 			traditional: true,
 			type: "post",
 			success: function(data){
-				alert(msg);
+				alert(data);
 				location.reload();
 			},
-			error: function(){
-				console.log("오류")
+			error: function(data){
+				alert(data);
 			}
 		})
 	}

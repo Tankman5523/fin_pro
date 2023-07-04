@@ -30,7 +30,7 @@
 		
 	</c:if>
 	
-	<div id="header">
+	<div id="header" style="height: 164.69px;">
 		<div id="logo" style="width: 500px; height: 100%; margin: 0; float: left; display: flex; align-items: center; justify-content: center;">
 			<img src="resources/icon/blue_logo_text.png" onclick="location.href='mainPage.mp'" style="width:300px;">
 		</div>
@@ -45,7 +45,7 @@
 	    	</tr>
 		</table>
 	</div>
-	<div id="menubar">
+	<div id="menubar" style="height: 76.86px;">
 	    <ul id="nav">
             <li><a href="main.ad">홈</a></li>
             <li><a href="allList.rg">금전관리</a></li>

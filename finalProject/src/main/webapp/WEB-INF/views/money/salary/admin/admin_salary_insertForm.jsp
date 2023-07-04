@@ -38,8 +38,8 @@
                 <div class="child_title">
                     <a href="allList.sc">장학금 관리</a>
                 </div>
-                <div class="child_title" style="font-weight:bold;">
-                    <a href="allList.sl">급여 관리</a>
+                <div class="child_title">
+                    <a href="allList.sl" style="font-weight:bold;color:#00aeff;">급여 관리</a>
                 </div>
             </div>
             <div id="content_1">
@@ -55,7 +55,7 @@
                     <div style="height:80%;" id="pay_content">
                         <table align="center">
                             <tr>
-                                <td><label for="professorName">교수명</label></td>
+                                <td><label for="professorName">임직원명</label></td>
                                 <td><input type="text" name="professorName" id="professorName"></td>
                                 <td><label for="professorNo">직번</label></td>
                                 <td><input type="text" name="professorNo" id="professorNo"> <button class="btn btn-outline-primary btn-sm" onclick="search();">조회</button></td>
@@ -82,31 +82,31 @@
 	                    	<table id="pay_stub_list" border="1" style="text-align: center;width: 80%;" align="center">
 	                    		<tr>
 	                    			<th class="pay">기본급</th>
-	                    			<td><input type="number" id="basePay" name="basePay"></td>
+	                    			<td><input type="number" id="basePay" name="basePay" onchange="submitDisable();"></td>
 	                    			<th class="deduct">국민연금</th>
-	                    			<td><input type="number" id="nationalTax" name="nationalTax"></td>
+	                    			<td><input type="number" id="nationalTax" name="nationalTax" onchange="submitDisable();"></td>
 	                    		</tr>
 	                    		<tr>
 	                    			<th class="pay">직책수당</th>
-	                    			<td><input type="number" id="positionPay" name="positionPay"></td>
+	                    			<td><input type="number" id="positionPay" name="positionPay" onchange="submitDisable();"></td>
 	                    			<th class="deduct">건강보험</th>
-	                    			<td><input type="number" id="healthTax" name="healthTax"></td>
+	                    			<td><input type="number" id="healthTax" name="healthTax" onchange="submitDisable();"></td>
 	                    		</tr>
 	                    		<tr>
 	                    			<th class="pay">연장근로수당</th>
-	                    			<td><input type="number" id="extensionPay" name="extensionPay"></td>
+	                    			<td><input type="number" id="extensionPay" name="extensionPay" onchange="submitDisable();"></td>
 	                    			<th class="deduct">고용보험</th>
-	                    			<td><input type="number" id="employTax" name="employTax"></td>
+	                    			<td><input type="number" id="employTax" name="employTax" onchange="submitDisable();"></td>
 	                    		</tr>
 	                    		<tr>
 	                    			<th class="pay">휴일근로수당</th>
-	                    			<td><input type="number" id="holidayPay" name="holidayPay"></td>
+	                    			<td><input type="number" id="holidayPay" name="holidayPay" onchange="submitDisable();"></td>
 	                    			<th class="deduct">소득세</th>
-	                    			<td><input type="number" id="incomeTax" name="incomeTax"></td>
+	                    			<td><input type="number" id="incomeTax" name="incomeTax" onchange="submitDisable();"></td>
 	                    		</tr>
 	                    		<tr>
 	                    			<th class="pay">연구비</th>
-	                    			<td><input type="number" id="researchPay" name="researchPay"></td>
+	                    			<td><input type="number" id="researchPay" name="researchPay" onchange="submitDisable();"></td>
 	                    			<th></th>
 	                    			<td></td>
 	                    		</tr>
@@ -114,18 +114,18 @@
 	                    			<th></th>
 	                    			<td></td>
 	                    			<th class="deduct">공제액계</th>
-	                    			<td><input type="number" id="deductTotal" name="deductTotal"></td>
+	                    			<td><input type="number" id="deductTotal" class="readonly" name="deductTotal" onchange="submitDisable();" readonly></td>
 	                    		</tr>
 	                    		<tr>
 	                    			<th class="pay">지급액계</th>
-	                    			<td><input type="number" id="paymentTotal" name="paymentTotal"></td>
+	                    			<td><input type="number" id="paymentTotal" class="readonly" name="paymentTotal" onchange="submitDisable();" readonly></td>
 	                    			<th class="total">실수령액</th>
-	                    			<td><input type="number" id="realPay" name="realPay"></td>
+	                    			<td><input type="number" id="realPay" class="readonly" name="realPay" onchange="submitDisable();" readonly></td>
 	                    		</tr>
 	                    	</table>
 	                    	<br>
 	                    	<button class="btn btn-outline-warning btn-sm" type="button" onclick="reCalBtn();">변경값 계산</button>
-	                    	<button class="btn btn-outline-primary btn-sm" type="submit">입력</button>
+	                    	<button id="submitBtn" class="btn btn-outline-primary btn-sm" type="submit">입력</button>
 	                    	</form>
 	                    </div>	
 	                    
@@ -272,6 +272,7 @@
                     		calPay();
                     		calDeduct();
                     		calReal();
+                    		submitAble();
                     	});
                 	});
                 	
@@ -301,7 +302,6 @@
                 		
                 		$("#holidayPay").val(0);  //일단 0시간근무
                 		$("#extensionPay").val(0); //일단 0시간근무
-                		
                 	}
                 	
                 	
@@ -349,6 +349,19 @@
                 		calPay();
                 		calDeduct();
                 		calReal();
+                		submitAble();
+                	}
+                	//입력버튼 비활성화
+                	function submitDisable(){
+                		$("#submitBtn").attr("disabled",true);
+                		$("#submitBtn").attr("class","btn btn-outline-danger btn-sm");
+                		$("#submitBtn").text("입력불가");
+                	}
+                	//입력버튼 활성화
+                	function submitAble(){
+                		$("#submitBtn").attr("disabled",false);
+                		$("#submitBtn").attr("class","btn btn-outline-primary btn-sm");
+                		$("#submitBtn").text("입력");
                 	}
                 </script>
                 

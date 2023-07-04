@@ -61,6 +61,9 @@
       	 background-color : lightgray;
       	 cursor : pointer;
        }
+       #closeBtn:hover{
+         cursor : pointer;			
+       }
     </style>
 </head>
 <body>
@@ -74,7 +77,7 @@
                     <span style="margin: 0 auto;">급여관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="mylist.sl" style="font-weight:bold;">급여조회</a>
+                    <a href="mylist.sl" style="font-weight:bold;color:#00aeff;">급여조회</a>
                 </div>
             </div>
             <!--내용 시작-->
@@ -268,7 +271,7 @@
                     </div>
                     <div class="modal">
 			        	<div class="modalContent">
-			        		<span style="float:right;curser:pointer;" onclick="closeModal();"><b>X</b></span>
+			        		<span id="closeBtn" style="float:right;curser:pointer;" onclick="closeModal();"><i class="fa-solid fa-xmark"></i></span>
 			        		<h4><b>급여명세서</b></h4>
 			        		<br>
 			        		<table border="1" style="text-align:center;width: 100%;height: 60%;">

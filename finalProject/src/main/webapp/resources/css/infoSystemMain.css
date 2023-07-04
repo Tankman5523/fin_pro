@@ -68,6 +68,7 @@
     border: 1px solid rgb(59, 193, 255);
     border-radius: 10px;
     color: rgb(59, 193, 255);
+    background-color: white;
 }
 #login_btn:hover{
     color: white;
@@ -167,4 +168,10 @@
 #notice_section button:hover,
 #faq_section button:hover{
 	cursor: pointer;
+}
+
+#autoLoginStatus{
+    font-size: 12px;
+    padding: 10px 0px 0px 0px;
+    color : #00c73c;
 }

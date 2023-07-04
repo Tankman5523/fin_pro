@@ -35,27 +35,30 @@ import com.univ.fin.common.model.vo.WeatherVo;
 public class Weather {
 
 	@Autowired
-	CacheManager cacheManager;
+	private CacheManager cacheManager;
+	
+	@Autowired
+	private Weather weatherIoc;
 	
 	/* ========== (캐시 삭제후 데이터 갱신 - 온도)========== */
 	@Scheduled(cron = "0 0/10 * * * *") // 매 10분마다 갱신
 	public void updateUltraShortTerm() throws Exception {
 		cacheManager.getCache("weather").clear(); //전 캐쉬 삭제
-		weather(); //갱신
+		weatherIoc.weather();
 	}
 	
 	/* ========== (캐시 삭제후 데이터 갱신 - 강수형태,하늘상태)========== */
 	@Scheduled(cron = "0 0/10 * * * *") // 매 10분마다 갱신
 	public void updateUltraShortTerm2() throws Exception {
 		cacheManager.getCache("skyPty").clear(); //전 캐쉬 삭제
-		skyPty();
+		weatherIoc.skyPty();
 	}
 	
 	/* ========== (캐시 삭제후 데이터 갱신 - 최저,최고온도)========== */
 	@Scheduled(cron = "0 30 23 * * *") //매 23시 30분마다 갱신
 	public void updateShortTerm() throws Exception {
 		cacheManager.getCache("tmnTmx").clear(); //전 캐쉬 삭제
-		tmnTmx();
+		weatherIoc.tmnTmx();
 	}
 	
 	/* ========== 실시간 온도 ========== */
@@ -118,7 +121,7 @@ public class Weather {
 	}
 	
 	/* ========== 단기 예보 ========== */
-	public HashMap<String, String> shortTerm() throws ParseException, MalformedURLException{
+	public HashMap<String, String> shortTerm() throws ParseException, MalformedURLException, InterruptedException{
 		
 		String yesterday = null;
 		try {
@@ -139,6 +142,7 @@ public class Weather {
 		String responseText = "";
 		JSONObject bodyObj = null;
 		
+		
 		while(true) { //03에러 while문
 			while(true) { //04에러  while문
 				boolean success = false;
@@ -148,25 +152,17 @@ public class Weather {
 					
 					HttpURLConnection urlCon;
 					try {
+						
 						urlCon = (HttpURLConnection)requestUrl.openConnection();
 					
 						urlCon.setRequestMethod("GET");
 						urlCon.setRequestProperty("Content-type", "application/json");
 						urlCon.setRequestProperty("Accept", "application/json");
-						urlCon.setConnectTimeout(1000);
-						urlCon.setReadTimeout(1000);
+						urlCon.setConnectTimeout(1500);
+						urlCon.setReadTimeout(1500);
 						
-						System.out.println("리스폰스 코드 : " + urlCon.getResponseCode());
-						
-						try {
-							if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
-								success = true;
-							}
-						} catch (SocketTimeoutException e) {//URL커넥션 timeout발생 시 소켓타임아웃 예외가 발생하므로 1.5초안에 200~300사이 코드를 반환하지 않을 시 소켓타임아웃 예외발생시킨후 재요청
-							System.out.println("shortTerm 타임아웃 발생");
-							success = false;
-							responseText = ""; // 초기화 시켜줌
-	//						shortTerm();
+						if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
+							success = true;
 						}
 						
 						BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
@@ -179,20 +175,20 @@ public class Weather {
 						
 						br.close();
 						urlCon.disconnect();
+						
+					} catch (SocketTimeoutException e) {//URL커넥션 timeout발생 시 소켓타임아웃 예외가 발생하므로 1.5초안에 200~300사이 코드를 반환하지 않을 시 소켓타임아웃 예외발생시킨후 재요청
+						System.out.println("shortTerm 타임아웃 발생");
+						success = false;
+						responseText = ""; // 초기화 시켜줌
 					} catch (IOException e1) {
 					}
 				}
 				
-				System.out.println("리스폰스텍스트 : " + responseText);
-				System.out.println("리스폰스텍스트 문자비교 : " + responseText.equals("[]"));
+				System.out.println("shortTerm : " + responseText);
 				
 				if(responseText.charAt(0) == '<') { //error code = 04뜰 경우  (HTTP_ERROR)
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {
-					}
+					Thread.sleep(2500);
 					responseText = ""; // 초기화 시켜줌
-//					shortTerm();
 				}else {
 					break; //04 while 탈출
 				}
@@ -202,13 +198,9 @@ public class Weather {
 			
 			JSONObject head = (JSONObject) bodyObj.get("header");
 			if(head.get("resultCode").equals("03")) { //error code = 03뜰 경우 (NO DATA)
-				try {
-					Thread.sleep(2500);
-				} catch (InterruptedException e) {
-				}
+				Thread.sleep(2500);
 				System.out.println("shortTerm 2.5초지연");
 				responseText = ""; // 초기화 시켜줌
-//				shortTerm();
 			}else {
 				break; //03 while 탈출
 			}
@@ -265,7 +257,7 @@ public class Weather {
 	}
 	
 	/* ========== 초단기 실황 ========== */
-	public HashMap<String, String> ultraShortTerm() throws ParseException, MalformedURLException {
+	public HashMap<String, String> ultraShortTerm() throws ParseException, MalformedURLException, InterruptedException {
 		
 		String d = new SimpleDateFormat("HHmm").format(new Date());
 		String d2 = d.substring(2,4);
@@ -315,7 +307,7 @@ public class Weather {
 		url += "&nx=58";
 		url += "&ny=126";
 		
-		String responseText = ""; //================================================
+		String responseText = "";
 		JSONObject bodyObj = null;
 		
 		while(true) { //03에러 while문
@@ -327,26 +319,19 @@ public class Weather {
 					
 					HttpURLConnection urlCon;
 					try {
+						
 						urlCon = (HttpURLConnection)requestUrl.openConnection();
 					
 						urlCon.setRequestMethod("GET");
 						urlCon.setRequestProperty("Content-type", "application/json");
 						urlCon.setRequestProperty("Accept", "application/json");
-						urlCon.setConnectTimeout(1000);
-						urlCon.setReadTimeout(1000);
+						urlCon.setConnectTimeout(1500);
+						urlCon.setReadTimeout(1500);
 						
-						System.out.println("리스폰스 코드 : " + urlCon.getResponseCode());
-						
-						try {
-							if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
-								success = true;
-							}
-						} catch (SocketTimeoutException e) { 
-							System.out.println("ultraShortTerm 타임아웃 발생");
-	//						ultraShortTerm();
-							responseText = ""; // 초기화 시켜줌
-							success = false;
+						if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
+							success = true;
 						}
+
 						
 						BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
 						
@@ -358,36 +343,31 @@ public class Weather {
 						
 						br.close();
 						urlCon.disconnect();
+					} catch (SocketTimeoutException e) { 
+						System.out.println("ultraShortTerm 타임아웃 발생");
+						responseText = ""; // 초기화 시켜줌
+						success = false;
 					} catch (IOException e1) {
 					}
 				}
 				
 				if(responseText.charAt(0) == '<') { //error code = 04뜰 경우  (HTTP_ERROR)
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {
-					}
+					Thread.sleep(500);
 					responseText = ""; // 초기화 시켜줌
-	//				ultraShortTerm();
 				}else {
 					break; //04while 탈출
 				}
 			}
-			System.out.println("리스폰스텍스트 : " + responseText);
-			System.out.println("리스폰스텍스트 문자비교 : " + responseText.equals("[]"));
+			System.out.println("ultraShortTerm : " + responseText);
 			
 			JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
 			bodyObj = (JSONObject) totalObj.get("response");
 			
 			JSONObject head = (JSONObject) bodyObj.get("header");
 			if(head.get("resultCode").equals("03")) { //error code = 03뜰 경우 (NO DATA)
-				try {
-					Thread.sleep(2500);
-				} catch (InterruptedException e) {
-				}
+				Thread.sleep(2500);
 				System.out.println("ultraShortTerm 2.5초지연");
 				responseText = ""; // 초기화 시켜줌
-//				ultraShortTerm();
 			}else {
 				break; //03while 탈출
 			}
@@ -501,18 +481,11 @@ public class Weather {
 						urlCon.setRequestMethod("GET");
 						urlCon.setRequestProperty("Content-type", "application/json");
 						urlCon.setRequestProperty("Accept", "application/json");
-						urlCon.setConnectTimeout(1000);
-						urlCon.setReadTimeout(1000);
-						System.out.println("리스폰스 코드 : " + urlCon.getResponseCode());
-						try {
-							if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
-								success = true;
-							}
-						} catch (SocketTimeoutException e) {
-							System.out.println("ultraShortforecast 타임아웃 발생");
-							success = false;
-							responseText = ""; // 초기화 시켜줌
-		//					ultraShortforecast();
+						urlCon.setConnectTimeout(1500);
+						urlCon.setReadTimeout(1500);
+						
+						if(urlCon.getResponseCode() >= 200 && urlCon.getResponseCode() <= 300) {
+							success = true;
 						}
 					
 						BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
@@ -525,6 +498,10 @@ public class Weather {
 						
 						br.close();
 						urlCon.disconnect();
+					} catch (SocketTimeoutException e) {
+						System.out.println("ultraShortforecast 타임아웃 발생");
+						success = false;
+						responseText = ""; // 초기화 시켜줌
 					} catch (IOException e1) {
 					}
 				}
@@ -535,13 +512,11 @@ public class Weather {
 					} catch (InterruptedException e) {
 					}
 					responseText = ""; // 초기화 시켜줌
-	//				ultraShortforecast();
 				}else {
 					break; //04while 탈출
 				}
 			}
-			System.out.println("리스폰스텍스트 : " + responseText);
-			System.out.println("리스폰스텍스트 문자비교 : " + responseText.equals("[]"));
+			System.out.println("ultraShortforecast : " + responseText);
 			
 			JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
 			bodyObj = (JSONObject) totalObj.get("response");
@@ -554,7 +529,6 @@ public class Weather {
 				}
 				System.out.println("ultraShortforecast 2.5초지연");
 				responseText = ""; // 초기화 시켜줌
-//				ultraShortforecast();
 			}else {
 				break; //03while 탈출
 			}

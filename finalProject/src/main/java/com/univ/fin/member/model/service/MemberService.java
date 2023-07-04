@@ -2,6 +2,7 @@ package com.univ.fin.member.model.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import com.univ.fin.common.model.vo.AlarmVo;
 import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.Bucket;
@@ -9,7 +10,6 @@ import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
-import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.Objection;
@@ -304,6 +304,12 @@ public interface MemberService {
 	// 메인 -> 프로필 사진 조회
 	String selectProfile(HashMap<String, String> map);
 	
+	// 메인 -> 학생 시간표 조회
+	ArrayList<Classes> selectStudentAllClasses(String studentNo);
+	
+	// 메인 -> 교수 시간표 조회
+	ArrayList<Classes> selectProfessorAllClasses(String professorNo);
+	
 	// 메인 -> 등록금 납부 조회
 	ArrayList<HashMap<String, String>> selectReg(String studentNo);
 	
@@ -352,8 +358,11 @@ public interface MemberService {
 	// 알람 수신
 	ArrayList<AlarmVo> alarmReceive(String studentNo);
 
+	// 알람 전체확인
+	int alarmAllCheck(String studentNo);
+	
 	// 알람 확인
-	int alarmCheck(String studentNo);
+	int alarmCheck(int alarmNo);
 
 	// (관리자) 공지사항 관리 - 전체 공지사항 조회
 	ArrayList<Notice> selectNoticeAllList();
@@ -385,10 +394,17 @@ public interface MemberService {
 	//이의 신청 패이지 검색
 	int searchGradeReport(Objection objc);
 	
+	// (관리자) 공지사항 관리 - 공지사항 수정 페이지 이동
+	Notice selectUpdateNotice(String noticeNo);
+
+	// (교수) 전체 상담 신청 조회
+	ArrayList<Counseling> selectAllCounseling(String user);
+
 	//교수 이의신청 페이지
 	ArrayList<Objection> professorGradeReport(String professorNo);
-	
+		
 	//교수 이의신청 회신
 	int professorGradeRequest(Objection obj);
+
 
 }

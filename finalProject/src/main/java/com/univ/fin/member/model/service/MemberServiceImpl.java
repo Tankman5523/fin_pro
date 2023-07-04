@@ -15,7 +15,6 @@ import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
-import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.Objection;
@@ -866,6 +865,18 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.selectProfile(sqlSession, map);
 	}
 	
+	// 메인 -> 학생 시간표 조회
+	@Override
+	public ArrayList<Classes> selectStudentAllClasses(String studentNo) {
+		return memberDao.selectStudentAllClasses(sqlSession, studentNo);
+	}
+	
+	// 메인 -> 교수 시간표 조회
+	@Override
+	public ArrayList<Classes> selectProfessorAllClasses(String professorNo) {
+		return memberDao.selectProfessorAllClasses(sqlSession, professorNo);
+	}
+	
 	// 메인 -> 등록금 납부 조회
 	@Override
 	public ArrayList<HashMap<String, String>> selectReg(String studentNo) {
@@ -907,10 +918,16 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.alarmReceive(sqlSession, studentNo);
 	}
 
+	// 알람 전체확인
+	@Override
+	public int alarmAllCheck(String studentNo) {
+		return memberDao.alarmAllCheck(sqlSession, studentNo);
+	}
+	
 	// 알람 확인
 	@Override
-	public int alarmCheck(String studentNo) {
-		return memberDao.alarmCheck(sqlSession, studentNo);
+	public int alarmCheck(int alarmNo) {
+		return memberDao.alarmCheck(sqlSession, alarmNo);
 	}
 
 	//공지사항 관리 - 전체 공지사항 조회
@@ -990,6 +1007,21 @@ public class MemberServiceImpl implements MemberService{
 		
 		return memberDao.professorGradeRequest(sqlSession,obj);
 	}
+
+		
+	// (관리자) 공지사항 관리 - 공지사항 수정 페이지 이동
+	@Override
+	public Notice selectUpdateNotice(String noticeNo) {
+		return memberDao.selectUpdateNotice(sqlSession, noticeNo);
+	}
+
+	// (교수) 전체 상담 신청 조회
+	@Override
+	public ArrayList<Counseling> selectAllCounseling(String user) {
+		return memberDao.selectAllCounseling(sqlSession, user);
+	}
+
+
 	
 
 

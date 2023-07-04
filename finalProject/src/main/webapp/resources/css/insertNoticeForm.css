@@ -1,0 +1,116 @@
+@charset "UTF-8";
+
+
+#sub-title{
+	width: 95%;
+	margin: auto;
+	margin-top: 40px;
+	margin-bottom: 50px;
+	font-size: 40px;
+	border-bottom: 1px solid black;
+}
+#editor-container{
+	width: 95%;
+	margin: auto;
+}
+
+#btn-area{
+	width: 95%;
+	margin: 30px auto;
+	text-align: center;
+}
+#btn-area button{
+	width: 100px;
+	height: 40px;
+	margin: 0 20px;
+	border: none;
+	border-radius: 5px;
+	font-weight: bold;
+}
+
+#select-area{
+	margin-bottom: 20px;
+	text-align: center;
+}
+#select-area select{
+	width: 200px;
+	height: 30px;
+	text-align: center;
+	margin: 0 20px;
+	border-radius: 5px;
+}
+#select-area select:focus{
+	outline: none;
+}
+
+#back{
+	background-color: #d7d7d7;
+}
+#back:hover{
+	background-color: #c0c0c0;
+	transition: all 0.1s ease-out;
+}
+#submit{
+	background-color: #51a8ff;
+	color: white;
+}
+#submit:hover{
+	background-color: #0080c0;
+	transition: all 0.1s ease-out;
+}
+
+.note-modal-content{
+	height: 350px;
+}
+
+#files{
+	 display: none;
+}
+#upFile-button{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 110px;
+	height: 35px;
+	background-color: #ddd;
+}
+#upFile-button:hover{
+	background-color: #c0c0c0;
+}
+
+#files-info{
+	width: 100%;
+	height: 100px;
+	border: 1px solid #c0c0c0;
+	padding: 5px 10px;
+	margin-bottom: 10px;
+	overflow-y: scroll;
+}
+#files-info p{
+	font-size: 15px;
+}
+#files-info button{
+	width: 30px;
+	height: 100%;
+	border: none;
+	background-color: #ddd;
+	font-size: 20px;
+	margin-left: 20px;
+}
+#files-info button:hover{
+	background-color: #c0c0c0;
+	color: red;
+}
+
+#notice-title{
+	width: 100%;
+	height: 50px;
+	margin: 20px 0 10px 0;
+	border: 1px solid #c0c0c0;
+	border-radius: 5px;
+	padding: 0 10px;
+	font-weight: bold;
+}
+#notice-title:focus{
+	outline: none;
+}

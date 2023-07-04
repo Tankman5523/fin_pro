@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -17,9 +19,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -77,7 +81,18 @@ public class AdminController {
 		
 		//ArrayList<Attachment> alist = memberService.selectClassAttachment();
 		
+		ArrayList<String> ylist= new ArrayList<>(); //학년도 담아갈 리스트
+		String year; //학년도 담을 변수
+		
+		for(Classes b : list) {
+			year = b.getClassYear();
+			if(!ylist.contains(year)) { //학년도가 중복되지 않는다면
+				ylist.add(year); //학년도 리스트에 넣기
+			}
+		}
+		
 		model.addAttribute("list",list);
+		model.addAttribute("ylist",ylist);
 		//model.addAttribute("alist",alist);
 		
 		return "member/admin/ad_class_list";
@@ -169,7 +184,6 @@ public class AdminController {
 		}
 		
 		ArrayList<Classes> list = memberService.selectClassListSearch(c);
-		
 		
 		return new Gson().toJson(list);
 	}
@@ -491,14 +505,61 @@ public class AdminController {
 	}
 
 	//(관리자) 공지사항 관리 - 공지사항 선택 삭제
-//	@ResponseBody
-//	@PostMapping(value = "deleteNotice.ad", produces = "application/json; charset=UTF-8;")
-//	public String deleteNotice(String[] noticeNo) {
-//		
-//		
-//		
-//		return new Gson().toJson(null);
-//	}
+	@ResponseBody
+	@PostMapping(value = "deleteNotice.ad", produces = "application/json; charset=UTF-8;")
+	public String deleteNotice(String[] noticeNo) {
+		
+		int result = 0;
+		String msg = "";
+		
+		if(noticeNo == null) {			
+			result = memberService.allDeleteNotice();	
+		}else {
+			result = memberService.selectDeleteNotice(noticeNo);
+		}
+		
+		if(result > 0) {
+			msg = "선택한 게시글이 삭제되었습니다.";
+		}else {
+			msg = "게시글 삭제 실패";
+		}
+		
+		
+		return new Gson().toJson(msg);
+	}
+	
+	//(관리자) 공지사항 관리 - 공지사항 수정 페이지 이동
+	@RequestMapping(value = "updateNotice.ad")
+	public ModelAndView selectUpdateNotice(String noticeNo, ModelAndView mv) {
+		
+		Notice n = memberService.selectUpdateNotice(noticeNo);
+		
+		mv.addObject(n).setViewName("member/admin/updateNoticeForm");
+		
+		return mv;
+	}
+	
+	//(관리자) 공지사항 관리 - 공지사항 등록 페이지 이동
+	@RequestMapping(value = "insertNotice.ad")
+	public String insertNotice(String user) {
+		
+		return "member/admin/insertNoticeForm";
+	}
+	
+	//(관리자) 공지사항 관리 - 공지사항 등록
+	@PostMapping("insertNoticeForm.ad")
+	public String insertNoticeFrom(Notice n, MultipartHttpServletRequest multi) {
+		
+		List<MultipartFile> upfile = multi.getFiles("upfile");
 
+		System.out.println(upfile.size());
+		System.out.println(upfile.get(0).getOriginalFilename());
+		System.out.println(upfile.get(0).getSize());
+//		if(!upfile.isEmpty()) {
+//		}
+		
+		return null;
+	}
+	
 }
 

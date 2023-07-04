@@ -43,3 +43,7 @@
 .board_list>tbody td:nth-child(2n+1) {
 	background-color: #d3d3d3;
 }
+
+input[type=text]{
+	outline: none;
+}

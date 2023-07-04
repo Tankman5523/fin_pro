@@ -26,8 +26,8 @@
                 <div class="child_title">
                     <a href="allList.rg">등록금 관리</a>
                 </div>
-                <div class="child_title" style="font-weight:bold;">
-                    <a href="allList.sc">장학금 관리</a>
+                <div class="child_title">
+                    <a href="allList.sc" style="font-weight:bold;color:#00aeff;">장학금 관리</a>
                 </div>
                 <div class="child_title">
                     <a href="allList.sl">급여 관리</a>
@@ -155,7 +155,7 @@
 	                    				$("#classTerm").val(classTerm);
 	                    				$("#message").html("회원 검색 완료").css("color","blue");
                     				}else{
-                    					$("#message").html("올바른 학번을 입력해주세요.").css("color","red");
+                    					$("#message").html("올바른 학번이 아니거나 휴학중인 학생입니다.").css("color","red");
                     					$("#studentName").val("");
 	                    				$("#classYear").val("");
 	                    				$("#classTerm").val("");
