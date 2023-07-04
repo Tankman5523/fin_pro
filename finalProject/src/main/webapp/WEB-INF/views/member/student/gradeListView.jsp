@@ -19,7 +19,7 @@
                     <a href="classManagement.st" style="color:#00aeff; font-weight: 550;">학기별 성적 조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="#">성적 이의신청</a>
+                    <a href="studentGradeReport.st">성적 이의신청</a>
                 </div>
                 <div class="child_title">
                     <a href="classRatingInfo.st">강의평가</a>

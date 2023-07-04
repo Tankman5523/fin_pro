@@ -125,7 +125,7 @@
 					<span style="margin: 0 auto;">수업관리</span>
 				</div>
 				<div class="child_title">
-					<a href="">학기별 성적 조회</a>
+					<a href="classManagement.st">학기별 성적 조회</a>
 				</div>
 				<div class="child_title">
 					<a href="studentGradeReport">성적 이의신청</a>
@@ -250,17 +250,16 @@
 	</div>
 
 	<script>
-		/* var arr = ${classTerm};
+		 var arr = ${classTerm};
 		
 		$(function() {
 			$("select[name=classYear]").children().first().prop("selected", true).change();
-			clear();
 			gradeCheck();
             
         	$(".basic_table>tbody>th").on("change", "#classTerm", function() {
         		clear();
         	});
-		}) */
+		}) 
 		
 		function changeYear(e) {
         	var $year = e.value;
@@ -282,7 +281,7 @@
         	$("#classTerm").empty();
         	$("#classTerm").append(str);
         	$("#classTerm").children().first().prop("selected", true).change();
-        	clear();
+//         	clear();
         }
 		
 		function clear() {
@@ -384,7 +383,7 @@
 
 		}
 		
-		/* function gradeCheck() {
+		 function gradeCheck() {
 			  var classYear = document.getElementById("classYear").value;
 			  var classTerm = document.getElementById("classTerm").value;
 			
@@ -396,7 +395,7 @@
 			  if (classYear === "2023" && (classTerm === "1" || classTerm === "2")) {
 			    console.log("조회하기 기능 수행");
 			  }
-			} */
+			}
 	</script>
 </body>
 </html>
