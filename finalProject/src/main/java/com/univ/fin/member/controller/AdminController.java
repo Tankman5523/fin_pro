@@ -485,20 +485,15 @@ public class AdminController {
 	
 	// (관리자) 공지사항 관리 이동
 	@RequestMapping("selectNotice.ad")
-	public String selectNoticeList() {
-		
-		return "member/admin/ad_selectNotice";
-	}
-	
-	// (관리자) 공지사항 관리 - 전체 공지사항 조회
-	@ResponseBody
-	@PostMapping(value = "selectNoticeList.ad", produces = "application/json; charset=UTF-8;")
-	public String selectNoticeAllList() {
+	public ModelAndView selectNoticeList(ModelAndView mv) {
 		
 		ArrayList<Notice> list = memberService.selectNoticeAllList();
 		
-		return new Gson().toJson(list);
+		mv.addObject("list", list).setViewName("member/admin/ad_selectNotice");
+		
+		return mv;
 	}
+	
 	
 	//(관리자) 공지사항 관리 - 공지사항 검색
 	@ResponseBody
@@ -560,8 +555,8 @@ public class AdminController {
 	public ModelAndView selectUpdateNotice(String noticeNo, ModelAndView mv) {
 		
 		Notice n = memberService.selectUpdateNotice(noticeNo);
-		
-		mv.addObject(n).setViewName("member/admin/updateNoticeForm");
+		System.out.println(n);
+		mv.addObject("n", n).setViewName("member/admin/updateNoticeForm");
 		
 		return mv;
 	}
@@ -575,7 +570,7 @@ public class AdminController {
 	
 	//(관리자) 공지사항 관리 - 공지사항 등록
 	@PostMapping("insertNoticeForm.ad")
-	public String insertNoticeFrom(Notice n, MultipartHttpServletRequest multi, HttpSession session) {
+	public ModelAndView insertNoticeFrom(Notice n, MultipartHttpServletRequest multi, HttpSession session, ModelAndView mv) {
 		
 		List<MultipartFile> files = multi.getFiles("upfile");
 		String originName = "";
@@ -585,9 +580,12 @@ public class AdminController {
 		NoticeAttachment na = new NoticeAttachment();
 		ArrayList<NoticeAttachment> list = new ArrayList<NoticeAttachment>();
 		
-		int result = memberService.insertNoticeForm(n);
+		String msg = "";
 		
 		if(!(files.size() == 1 && files.get(0).getOriginalFilename().equals(""))) {
+			
+			int result = memberService.insertNoticeForm(n);
+			
 			for(MultipartFile upfile : files) {
 				originName = upfile.getOriginalFilename();
 				String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
@@ -596,7 +594,7 @@ public class AdminController {
 				
 				changeName = currentTime+ranNum+ext;
 				
-				savePath = session.getServletContext().getRealPath("/resources/uploadFiles/notice/");
+				savePath = session.getServletContext().getRealPath("resources/uploadFiles/notice/");
 				
 				try {
 					upfile.transferTo(new File(savePath+changeName));
@@ -614,17 +612,29 @@ public class AdminController {
 				}else {
 					System.out.println(result);
 				}
+				
+				int result1 = memberService.insertNoticeFile(list);
+				
+				if(result1 > 0) {
+					msg = "게시글이 등록되었습니다.";
+					mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+				}else {
+					msg = "게시글 등록을 실패했습니다.";
+					mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+				}
 			}
+		}else {
+			int result = memberService.insertNoticeForm(n);
 			
-//			HashMap<String, Object> map = new HashMap<String, Object>();
-//			map.put("list", list);
-//			map.put("noticeNo", result);
-			
-			int result1 = memberService.insertNoticeFile(list);				
-			
+			if(result > 0) {
+				msg = "게시글이 등록되었습니다.";
+				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+			}else {
+				msg = "게시글 등록을 실패했습니다.";
+				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+			}
 		}
-		
-		return null;
+		return mv;
 	}
 	
 	

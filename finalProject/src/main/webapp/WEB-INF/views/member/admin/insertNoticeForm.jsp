@@ -6,15 +6,12 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <link rel="stylesheet" href="/fin/resources/css/insertNoticeForm.css">
-
 <!-- 서머노트 쓰기위한 CDN(jQuery, 서머노트cdn) -->
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <!-- 메뉴바에 있는 jquery와 충돌이 나기 때문에 필요한 js는 $대신 변수를 지정해서 써준다. -->
 <script > var jb = jQuery.noConflict(); </script>
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-
-
 </head>
 <body>
 <div class="wrap" style="height: auto;">
@@ -82,7 +79,6 @@
 					<div id="btn-area">
 						<button type="button" id="back" onclick="history.back();">이전</button>
 						<button type="submit" id="submit">등록</button>
-						<button type="button" id="submit" onclick="check()">확인</button>
 					</div>
 				</form>
 			</div>
