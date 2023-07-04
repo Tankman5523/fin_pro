@@ -71,201 +71,201 @@
 				// 아래 코드는 지도 위의 마커를 제거하는 코드입니다
 				// marker.setMap(null);   
 			</script>
-		</div>
-		<div align="center">
-			
-			<div class="busTable_area" style="width:800px;">
-				<h3>버스노선안내</h3>
-				<br>
-				<table id="bus_time_table" border="1" >
-			        <thead style="background-color: #ddd">
-			            <tr>
-			                <th style="width: 20%;">하차지점</th>
-			                <th>유형</th>
-			                <th>노선번호</th>
-			                <th colspan="2">버스위치 정보</th>
-			            </tr>
-			        </thead>
-			        <tbody>
-			            <tr>
-			                <td rowspan="11">선유고등학교<br>(구)강서세무서</td>
-			                <td><i class="fa-sharp fa-solid fa-bus" style="color: #28c31d;"></i> 지선버스 / 초록버스</td>
-			                <td>
-			                    <span>7612</span>
-			                </td>
-			                <td>
-			                     <i id="show_marker_7612" onclick='showBusMarker("100100346",1)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
-			                     <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
-			                </td>
-			                
-			            </tr>
-			            <tr>
-			                <td rowspan="10"><i class="fa-sharp fa-solid fa-bus" style="color: #c11f1f;"></i> 광역버스 / 빨간버스</td>
-			                <td>
-			                    <span>1000</span><br>
-			                </td>
-			                <td>
-			                    <i id="show_marker_1000" onclick='showBusMarker("165000145",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
-			                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
-			                </td>
-			            </tr>
-			            <tr>
-			                <td>
-			                    <span>1200</span><br>
-			                </td>
-			                <td>
-			                    <i id="show_marker_1200" onclick='showBusMarker("165000148",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
-			                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
-			                </td>
-			            </tr>
-			            <tr>
-			                <td>
-			                    <span>1300</span><br>
-			                </td>
-			                <td>
-			                    <i id="show_marker_1300" onclick='showBusMarker("165000149",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
-			                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
-			                    <br>
-			                </td>
-			            </tr>
-			            <tr>
-			                <td>
-			                    <span>1301</span><br>
-			                </td>
-			                <td>
-			                    <i id="show_marker_1301" onclick='showBusMarker("165000150",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
-			                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
-			                    <br>
-			                </td>
-			            </tr>
-			            <tr>
-			                <td>
-			                    <span>1302</span><br>
-			                </td>
-			                <td>
-			                    <i id="show_marker_1302" onclick='showBusMarker("165000421",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
-			                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
-			                    <br>
-			                </td>
-			            </tr>
-			            <tr>
-			                <td>
-			                    <span>1400</span><br>
-			                </td>
-			                <td>
-			                    <i id="show_marker_1400" onclick='showBusMarker("165000151",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
-			                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
-			                    <br>
-			                </td>
-			            </tr>
-			            <tr>
-			                <td>
-			                    <span>1500</span><br>
-			                </td>
-			                <td>
-			                    <i id="show_marker_1500" onclick='showBusMarker("165000152",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
-			                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
-			                    <br>
-			                </td>
-			            </tr>
-			            <tr>
-			                <td>
-			                    <span>1601</span><br>
-			                </td>
-			                <td>
-			                    <i id="show_marker_1601" onclick='showBusMarker("165000154",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
-			                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
-			                    <br>
-			                </td>
-			            </tr>
-			            <tr>
-			                <td>
-			                    <span>M6628</span><br>
-			                </td>
-			                <td>
-			                    <i id="show_marker_M6628" onclick='showBusMarker("165000409",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
-			                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
-			                    <br>
-			                </td>
-			            </tr>
-			            <tr>
-			                <td>
-			                    <span>M6724</span><br>
-			                </td>
-			                <td>
-			                    <i id="show_marker_M6724" onclick='showBusMarker("165000381",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
-			                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
-			                    <br>
-			                </td>
-			            </tr>
-			            <tr>
-			                <td rowspan="6">당산역</td>
-			                <td rowspan="6"><i class="fa-sharp fa-solid fa-bus" style="color: #28c31d;"></i> 지선버스 / 초록버스</td>
-			                <td>
-			                    <span>760</span><br>
-			                </td>
-			                <td>
-			                	<i class="fa-solid fa-location-dot showMark" style="color: #1160e8;" id="show_marker_760" onclick='showBusMarker("100100511",1)'></i>
-			                    <!-- <button id="show_marker_760" onclick='showBusMarker("100100511",1)'>보이기/새로고침</button> -->
-			                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
-			                    <br>
-			                </td>
-			            </tr>
-			            <tr>
-			                <td>
-			                    <span>5620</span><br>
-			                </td>
-			                <td>
-			                    <i id="show_marker_5620" onclick='showBusMarker("100100277",1)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
-			                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
-			                    <br>
-			                </td>
-			            </tr>
-			            <tr>
-			                <td>
-			                    <span>5714</span><br>
-			                </td>
-			                <td>
-			                    <i id="show_marker_5714" onclick='showBusMarker("100100288",1)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
-			                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
-			                    <br>
-			                </td>
-			            </tr>
-			            <tr>
-			                <td>
-			                    <span>6514</span><br>
-			                </td>
-			                <td>
-			                    <i id="show_marker_6514" onclick='showBusMarker("100100294",1)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
-			                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
-			                    <br>
-			                </td>
-			            </tr>
-			            <tr>
-			                <td>
-			                    <span>6623</span><br>
-			                </td>
-			                <td>
-			                    <i id="show_marker_6623" onclick='showBusMarker("100100301",1)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
-			                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
-			                    <br>
-			                </td>
-			            </tr>
-			            <tr>
-			                <td>
-			                    <span>6631</span><br>
-			                </td>
-			                <td>
-			                    <i id="show_marker_6631" onclick='showBusMarker("100100308",1)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
-			                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
-			                    <br>
-			                </td>
-			            </tr>
-			        </tbody>
-			    </table>
+		
+			<div align="center" style="margin-bottom: 70px;">
+				
+				<div class="busTable_area" style="width:800px;">
+					<h3>버스노선안내</h3>
+					<br>
+					<table id="bus_time_table" border="1" >
+				        <thead style="background-color: #ddd">
+				            <tr>
+				                <th style="width: 20%;">하차지점</th>
+				                <th>유형</th>
+				                <th>노선번호</th>
+				                <th colspan="2">버스위치 정보</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				            <tr>
+				                <td rowspan="11">선유고등학교<br>(구)강서세무서</td>
+				                <td><i class="fa-sharp fa-solid fa-bus" style="color: #28c31d;"></i> 지선버스 / 초록버스</td>
+				                <td>
+				                    <span>7612</span>
+				                </td>
+				                <td>
+				                     <i id="show_marker_7612" onclick='showBusMarker("100100346",1)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
+				                     <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
+				                </td>
+				                
+				            </tr>
+				            <tr>
+				                <td rowspan="10"><i class="fa-sharp fa-solid fa-bus" style="color: #c11f1f;"></i> 광역버스 / 빨간버스</td>
+				                <td>
+				                    <span>1000</span><br>
+				                </td>
+				                <td>
+				                    <i id="show_marker_1000" onclick='showBusMarker("165000145",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
+				                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
+				                </td>
+				            </tr>
+				            <tr>
+				                <td>
+				                    <span>1200</span><br>
+				                </td>
+				                <td>
+				                    <i id="show_marker_1200" onclick='showBusMarker("165000148",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
+				                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
+				                </td>
+				            </tr>
+				            <tr>
+				                <td>
+				                    <span>1300</span><br>
+				                </td>
+				                <td>
+				                    <i id="show_marker_1300" onclick='showBusMarker("165000149",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
+				                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
+				                    <br>
+				                </td>
+				            </tr>
+				            <tr>
+				                <td>
+				                    <span>1301</span><br>
+				                </td>
+				                <td>
+				                    <i id="show_marker_1301" onclick='showBusMarker("165000150",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
+				                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
+				                    <br>
+				                </td>
+				            </tr>
+				            <tr>
+				                <td>
+				                    <span>1302</span><br>
+				                </td>
+				                <td>
+				                    <i id="show_marker_1302" onclick='showBusMarker("165000421",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
+				                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
+				                    <br>
+				                </td>
+				            </tr>
+				            <tr>
+				                <td>
+				                    <span>1400</span><br>
+				                </td>
+				                <td>
+				                    <i id="show_marker_1400" onclick='showBusMarker("165000151",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
+				                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
+				                    <br>
+				                </td>
+				            </tr>
+				            <tr>
+				                <td>
+				                    <span>1500</span><br>
+				                </td>
+				                <td>
+				                    <i id="show_marker_1500" onclick='showBusMarker("165000152",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
+				                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
+				                    <br>
+				                </td>
+				            </tr>
+				            <tr>
+				                <td>
+				                    <span>1601</span><br>
+				                </td>
+				                <td>
+				                    <i id="show_marker_1601" onclick='showBusMarker("165000154",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
+				                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
+				                    <br>
+				                </td>
+				            </tr>
+				            <tr>
+				                <td>
+				                    <span>M6628</span><br>
+				                </td>
+				                <td>
+				                    <i id="show_marker_M6628" onclick='showBusMarker("165000409",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
+				                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
+				                    <br>
+				                </td>
+				            </tr>
+				            <tr>
+				                <td>
+				                    <span>M6724</span><br>
+				                </td>
+				                <td>
+				                    <i id="show_marker_M6724" onclick='showBusMarker("165000381",2)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
+				                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
+				                    <br>
+				                </td>
+				            </tr>
+				            <tr>
+				                <td rowspan="6">당산역</td>
+				                <td rowspan="6"><i class="fa-sharp fa-solid fa-bus" style="color: #28c31d;"></i> 지선버스 / 초록버스</td>
+				                <td>
+				                    <span>760</span><br>
+				                </td>
+				                <td>
+				                	<i class="fa-solid fa-location-dot showMark" style="color: #1160e8;" id="show_marker_760" onclick='showBusMarker("100100511",1)'></i>
+				                    <!-- <button id="show_marker_760" onclick='showBusMarker("100100511",1)'>보이기/새로고침</button> -->
+				                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
+				                    <br>
+				                </td>
+				            </tr>
+				            <tr>
+				                <td>
+				                    <span>5620</span><br>
+				                </td>
+				                <td>
+				                    <i id="show_marker_5620" onclick='showBusMarker("100100277",1)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
+				                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
+				                    <br>
+				                </td>
+				            </tr>
+				            <tr>
+				                <td>
+				                    <span>5714</span><br>
+				                </td>
+				                <td>
+				                    <i id="show_marker_5714" onclick='showBusMarker("100100288",1)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
+				                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
+				                    <br>
+				                </td>
+				            </tr>
+				            <tr>
+				                <td>
+				                    <span>6514</span><br>
+				                </td>
+				                <td>
+				                    <i id="show_marker_6514" onclick='showBusMarker("100100294",1)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
+				                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
+				                    <br>
+				                </td>
+				            </tr>
+				            <tr>
+				                <td>
+				                    <span>6623</span><br>
+				                </td>
+				                <td>
+				                    <i id="show_marker_6623" onclick='showBusMarker("100100301",1)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
+				                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
+				                    <br>
+				                </td>
+				            </tr>
+				            <tr>
+				                <td>
+				                    <span>6631</span><br>
+				                </td>
+				                <td>
+				                    <i id="show_marker_6631" onclick='showBusMarker("100100308",1)' class="fa-solid fa-location-dot showMark" style="color: #1160e8;"></i>
+				                    <i class="fa-solid fa-circle-xmark hideMark" onclick='del_mark();' style="color: #e50606;"></i>
+				                    <br>
+				                </td>
+				            </tr>
+				        </tbody>
+				    </table>
+				</div>
 			</div>
 		</div>
-		<br><br>
 		
 		<script>
         var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
