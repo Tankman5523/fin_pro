@@ -17,6 +17,7 @@ import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.main.model.vo.Notice;
+import com.univ.fin.main.model.vo.NoticeAttachment;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
@@ -405,5 +406,14 @@ public interface MemberService {
 
 	// (관리자) 강의 일괄 학기종료
 	int updateClassTermFinish(int[] cArr);
+	
+	// (관리자) 공지사항 등록
+	int insertNoticeForm(Notice n);
+
+	// (관리자) 공지사항 파일 등록
+	int insertNoticeFile(ArrayList<NoticeAttachment> list);
+
+
+
 
 }

@@ -1,5 +1,7 @@
 package com.univ.fin.member.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.main.model.vo.Notice;
+import com.univ.fin.main.model.vo.NoticeAttachment;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
@@ -572,18 +575,59 @@ public class AdminController {
 	
 	//(관리자) 공지사항 관리 - 공지사항 등록
 	@PostMapping("insertNoticeForm.ad")
-	public String insertNoticeFrom(Notice n, MultipartHttpServletRequest multi) {
+	public String insertNoticeFrom(Notice n, MultipartHttpServletRequest multi, HttpSession session) {
 		
-		List<MultipartFile> upfile = multi.getFiles("upfile");
-
-		System.out.println(upfile.size());
-		System.out.println(upfile.get(0).getOriginalFilename());
-		System.out.println(upfile.get(0).getSize());
-//		if(!upfile.isEmpty()) {
-//		}
+		List<MultipartFile> files = multi.getFiles("upfile");
+		String originName = "";
+		String changeName = "";
+		String savePath = "";
+		
+		NoticeAttachment na = new NoticeAttachment();
+		ArrayList<NoticeAttachment> list = new ArrayList<NoticeAttachment>();
+		
+		int result = memberService.insertNoticeForm(n);
+		
+		if(!(files.size() == 1 && files.get(0).getOriginalFilename().equals(""))) {
+			for(MultipartFile upfile : files) {
+				originName = upfile.getOriginalFilename();
+				String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+				int ranNum = (int)(Math.random()*90000+10000);
+				String ext = originName.substring(originName.lastIndexOf("."));
+				
+				changeName = currentTime+ranNum+ext;
+				
+				savePath = session.getServletContext().getRealPath("/resources/uploadFiles/notice/");
+				
+				try {
+					upfile.transferTo(new File(savePath+changeName));
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				if(result > 0) {
+					na = NoticeAttachment.builder().noticeNo(result).originName(originName).changeName(changeName).filePath(savePath).build();
+					list.add(na);
+				}else {
+					System.out.println(result);
+				}
+			}
+			
+//			HashMap<String, Object> map = new HashMap<String, Object>();
+//			map.put("list", list);
+//			map.put("noticeNo", result);
+			
+			int result1 = memberService.insertNoticeFile(list);				
+			
+		}
 		
 		return null;
 	}
+	
+	
 	
 }
 
