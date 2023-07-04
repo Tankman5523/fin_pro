@@ -1008,6 +1008,12 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.selectAllCounseling(sqlSession, user);
 	}
 
+	// (학생) 휴학생 휴학할때 등록금 냈었는지
+	@Override
+	public int selectCheckReg(String studentNo) {
+		return memberDao.selectCheckReg(sqlSession,studentNo);
+	}
+
 	
 
 

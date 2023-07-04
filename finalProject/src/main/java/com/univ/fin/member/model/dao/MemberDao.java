@@ -620,8 +620,13 @@ public class MemberDao {
 	}
 
 	// (관리자) 임직원 안식,퇴직 업데이트
+	@Transactional
 	public int updateProfessorRest(SqlSessionTemplate sqlSession, ProfessorRest pr) {
-		return sqlSession.update("memberMapper.updateProfessorRest",pr);
+		int result = sqlSession.update("memberMapper.updateProfessorRest",pr);
+		if(pr.getCategory()==0&&result>0) {
+			result = sqlSession.update("memberMapper.updateProfessorStatus",pr);
+		}
+		return result;
 	}
 
 	// (관리자) 학생 휴,복학 목록 검색
@@ -760,6 +765,11 @@ public class MemberDao {
 	// (관리자) 메인페이지 -> 교수 안식 및 퇴직 신청 목록 조회
 	public ArrayList<ProfessorRest> selectMainProfessorRest(SqlSessionTemplate sqlSession) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectMainProfessorRest");
+	}
+
+	// (학생) 휴학생 휴학할때 등록금 냈었는지
+	public int selectCheckReg(SqlSessionTemplate sqlSession, String studentNo) {
+		return sqlSession.selectOne("memberMapper.selectCheckReg",studentNo);
 	}
 
 	

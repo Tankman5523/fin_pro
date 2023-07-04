@@ -264,7 +264,7 @@
   		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO) 
         JOIN COLLEGE C ON (S.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE STUDENT_NO = #{studentNo}
-  		AND STUDENT_PWD = #{studentPwd}
+  		<!-- AND STUDENT_PWD = #{studentPwd} -->
   	</select>
   	
   	<!-- 임직원 로그인 -->
@@ -275,7 +275,7 @@
         JOIN DEPARTMENT D ON (P.DEPARTMENT_NO = D.DEPARTMENT_NO)
         JOIN COLLEGE C ON (P.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE PROFESSOR_NO = #{professorNo}
-  		AND PROFESSOR_PWD = #{professorPwd}
+  		<!-- AND PROFESSOR_PWD = #{professorPwd} -->
   	</select>
   
   	<!-- ID조회 - 학생 -->
@@ -860,6 +860,17 @@
 		WHERE STUDENT_NO = #{studentNo}
 		AND   CLASS_YEAR = #{classYear}
 		AND   CLASS_TERM = #{classTerm}
+  	</select>
+  	
+  	<!-- 휴학생 휴학때 등록금 납부 여부(학생) -->
+  	<select id="selectCheckReg" resultType="_int">
+  		SELECT COUNT(*)
+		FROM(SELECT  A.*
+			 FROM(SELECT ROWNUM RNUM,MUST_PAY,INPUT_PAY
+				  FROM REG_ACC
+				  WHERE STUDENT_NO = #{studentNo}) A
+			 WHERE RNUM = 1) R
+		WHERE R.MUST_PAY=R.INPUT_PAY
   	</select>
   	
   	<!-- 휴,복학 신청 인서트(학생) -->

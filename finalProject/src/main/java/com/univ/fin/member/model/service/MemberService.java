@@ -400,6 +400,9 @@ public interface MemberService {
 	// (교수) 전체 상담 신청 조회
 	ArrayList<Counseling> selectAllCounseling(String user);
 
+	// (학생) 휴학생 휴학할때 등록금 냈었는지
+	int selectCheckReg(String studentNo);
+
 
 
 }
