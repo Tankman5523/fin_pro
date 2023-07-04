@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -256,7 +257,7 @@ public class StudentController {
 	// 수강신청 - 수강신청
 	@ResponseBody
 	@RequestMapping("postRegisterClass.st")
-	public String postRegisterClass(RegisterClass rc) {
+	public String postRegisterClass(RegisterClass rc){
 
 		int result = 0; // 최종 성공여부 변수
 		RegisterClass rc2 = null;
@@ -276,16 +277,7 @@ public class StudentController {
 
 			// 수강신청 가능 여부 판별
 			if (check == 0) {
-				result = memberService.postRegisterClass(rc2);
-
-				if (result > 0) {
-					// 해당 과목 장바구니에서 지워주기
-					result += memberService.postRegDelBucket(rc2);
-				}
-
-				if (rc2.getClassHour() == 2) { // 2시간짜리 강의일 경우
-					result *= memberService.postRegisterClass2(rc2);
-				}
+				result = memberService.tranRegClass(rc2);
 			}
 		}
 

@@ -18,11 +18,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,33 +30,6 @@ import com.univ.fin.common.model.vo.WeatherVo;
 @EnableCaching
 @Controller
 public class Weather {
-
-	@Autowired
-	private CacheManager cacheManager;
-	
-	@Autowired
-	private Weather weatherIoc;
-	
-	/* ========== (캐시 삭제후 데이터 갱신 - 온도)========== */
-	@Scheduled(cron = "0 0/10 * * * *") // 매 10분마다 갱신
-	public void updateUltraShortTerm() throws Exception {
-		cacheManager.getCache("weather").clear(); //전 캐쉬 삭제
-		weatherIoc.weather();
-	}
-	
-	/* ========== (캐시 삭제후 데이터 갱신 - 강수형태,하늘상태)========== */
-	@Scheduled(cron = "0 0/10 * * * *") // 매 10분마다 갱신
-	public void updateUltraShortTerm2() throws Exception {
-		cacheManager.getCache("skyPty").clear(); //전 캐쉬 삭제
-		weatherIoc.skyPty();
-	}
-	
-	/* ========== (캐시 삭제후 데이터 갱신 - 최저,최고온도)========== */
-	@Scheduled(cron = "0 30 23 * * *") //매 23시 30분마다 갱신
-	public void updateShortTerm() throws Exception {
-		cacheManager.getCache("tmnTmx").clear(); //전 캐쉬 삭제
-		weatherIoc.tmnTmx();
-	}
 	
 	/* ========== 실시간 온도 ========== */
 	@Cacheable("weather")
