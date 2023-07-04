@@ -77,7 +77,8 @@
                     <table id="board_list" class="table" border="1" style="text-align: center;">
                         <thead>
                             <tr>
-                                <th class="stiky" style="width:3%"><input type="checkbox" id="allCheck"></th>
+                                <th class="stiky" style="width:1%"><input type="checkbox" id="allCheck"></th>
+                                <th class="stiky" style="width:2%"></th>
                                 <th class="stiky" style="width:5%">종류</th>
                                 <th class="stiky" style="width:10%">학과</th>
                                 <th class="stiky" style="width:6.9%">신청교수</th>
@@ -104,6 +105,11 @@
 			                        <c:forEach var="c" items="${list}">
 			                        	<tr>
 			                                <td><input type="checkbox" name="check" value="${c.classNo}"></td>
+			                                <td>
+			                                	<c:if test="${not empty c.fileNo}">
+				                                	<a href="${c.fileNo }" download><i class="fa-solid fa-download fa-2xs"></i></a>
+			                                	</c:if>
+			                                </td>
 			                                <td>${c.division eq 0 ? '전공':'교양'}</td>
 			                                <td>${c.departmentNo}</td>
 			                                <td>${c.professorNo}</td>
@@ -173,6 +179,7 @@
 	    	trcheck(); //테이블 클릭시 체크 함수
 	    	allPermit(); //일괄개설 함수
 	    	termFinish(); //일괄 학기종료 함수
+	    	
     	})
     	
     	function allCheckbox(){
@@ -186,7 +193,7 @@
     	}
     	
     	function trcheck(){//테이블 tr클릭시 체크박스 체크 또는 해제
-    		 $('#board_list>tbody').on('click', 'tr td:not(:first-child,:nth-child(13))',function () {
+    		 $('#board_list>tbody').on('click', 'tr td:not(:first-child,:nth-child(2),:nth-child(14))',function () {
     			var checkbox = $(this).parent().children().eq(0).children();
     			
     			if(checkbox.is(':checked')){
@@ -222,7 +229,7 @@
 	    		var chkArr = []; //배열 초기화
 	    		var count = 0; //카운트
 	    		check.each(function(){
-	    			var already = $(this).parent().parent().children().eq(12).children().text();
+	    			var already = $(this).parent().parent().children().eq(13).children().text();
 	    			if(already=='개설반려'){//이미 개설되었거나 반려된 강의가 체크 안되어있는지
 		    			if($(this).is(":checked")){//체크되었는지
 		    				var val = $(this).val(); //선택된 강의번호
