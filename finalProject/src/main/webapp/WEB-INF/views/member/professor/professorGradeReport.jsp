@@ -75,7 +75,7 @@
         padding-right: 20px;
         height: 10px;
 	}
-	#class_year{
+	#classYear{
         width: 200px;
         height: 40px;
         border-radius: 8px;
@@ -83,7 +83,7 @@
         appearance: none;
         margin: 30px 15px 15px;
     }
-    #class_term{
+    #classTerm{
         width: 200px;
         height: 40px;
         border-radius: 8px;
@@ -99,10 +99,28 @@
         appearance: none;
         margin: 20px 15px 15px;
     }
+    #status{
+    	width: 100px;
+        height: 40px;
+        border-radius: 8px;
+        text-align: center;
+        appearance: none;
+    	border-style: none;
+    }
+    .objectionbtn{
+    	width: 100px;
+        height: 40px;
+        border-radius: 8px;
+    }
+    .opinion{
+    	width: 150px;
+        height: 20px;
+    }
     .reasonText{
     	width : 100%;
     	
     }
+    input:focus {outline: none;}
     
 </style>
 <script>
@@ -117,13 +135,10 @@
                     <span style="margin: 0 auto;">수업관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="">학기별 성적 조회</a>
+                    <a href="professorGradeReport.pr" style="color:#00aeff; font-weight: 550;">성적 이의신청 조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="professorGradeReport">성적 이의신청</a>
-                </div>
-                <div class="child_title">
-                    <a href="classRatingInfo.st">강의평가</a>
+                    <a href="gradeInsert.pr">성적 관리</a>
                 </div>
             </div>
             <div id="content_1">
@@ -160,30 +175,39 @@
 				</div>
 				<br>
 			    <table border="1" id="studentObjection">
-						<thead>
-							<tr>
-								<th>강의이름</th>
-								<th>학생명</th>
-								<th>학번</th>
-								<th>사유</th>
-								<th>처리상태</th>
-								<th>교수의견</th>
-								<th>확인버튼</th>
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach var="c" items="${list}">
+					<thead>
 						<tr>
-							<td>${c.studentNo}</td>
-							<td>${c.className }</td>
-							<td>${c.professorName }</td>
-							<td>${c.credit }</td>
-							<td><input type="text" class="reasonText" name="reason" style="border: none; background: transparent;" ></td>
-							<td><button id="objectionbtn" onclick="reasonRequest">이의신청</button></td>
+							<th>교과목명</th>
+							<th>과목번호</th>
+							<th>학생명</th>
+							<th>학번</th>
+							<th>사유</th>
+							<th>처리상태</th>
+							<th>교수의견</th>
+							<th>회신버튼</th>
 						</tr>
-							</c:forEach>
-						</tbody>
-					</table>
+					</thead>
+					<tbody>
+						<c:forEach var="c" items="${list}">
+							<tr>
+								<td>${c.className}</td>
+								<td>${c.classNo }</td>
+								<td>${c.studentName }</td>
+								<td>${c.studentNo }</td>
+								<td>${c.reason }</td>
+								<td>
+									<select id="status" name="status">
+											<option value="">처리상태</option>
+                                            <option value="N">N</option>
+                                            <option value="Y">Y</option>
+									</select>
+								</td>
+								<td><input type="text" class="opinion" id="opinion" name="opinion" style="border: none; background: transparent;"></td>
+								<td><button class="objectionbtn" onclick="updateDissent('${c.classNo }','${c.studentNo }');">회신버튼</button></td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
 					<br>
 					<hr>
 					<div class="textTitle">
@@ -208,5 +232,41 @@
     		</div>
       </div>
  </div>
+<script>
+ function updateDissent(classNo,studentNo) {
+	 var msg = "${msg}";
+		
+		 var flag = confirm("수정하시겠습니까?");
+		 var status = $("#status").val();
+		 var opinion = $("#opinion").val();
+		 var studentNo = studentNo;
+		 var classNo = classNo;
+		 
+		 console.log(opinion);
+		 console.log(status);
+		 
+		 $.ajax({
+			 url : "professorGradeRequest.pr",
+			 data : {
+				 status : status,
+				 opinion : opinion,
+				 studentNo : studentNo,
+				 classNo : classNo
+			 },
+			 success : function(result){
+				 if(result=="Y"){
+						 alert("수정 완료");
+						 location.reload();
+				 }else{
+					 	alert("수정 실패");
+				 }
+			 }
+			 ,error : function(){
+				alert("수신 오류");  	
+			 } 
+		 });
+		 
+		}
+ </script> 
 </body>
 </html>

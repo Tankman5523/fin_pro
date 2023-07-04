@@ -990,6 +990,19 @@ public class MemberServiceImpl implements MemberService{
 		
 		return memberDao.searchGradeReport(sqlSession, objc);
 	}
+
+	@Override
+	public ArrayList<Objection> professorGradeReport(String professorNo) {
+		
+		return memberDao.professorGradeReport(sqlSession,professorNo );
+	}
+
+	@Override
+	public int professorGradeRequest(Objection obj) {
+		
+		return memberDao.professorGradeRequest(sqlSession,obj);
+	}
+
 		
 	// (관리자) 공지사항 관리 - 공지사항 수정 페이지 이동
 	@Override
@@ -1003,5 +1016,16 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.selectAllCounseling(sqlSession, user);
 	}
 
-}
+	// (학생) 휴학생 휴학할때 등록금 냈었는지
+	@Override
+	public int selectCheckReg(String studentNo) {
+		return memberDao.selectCheckReg(sqlSession,studentNo);
+	}
 
+	// (관리자) 강의 일괄 학기종료
+	@Override
+	public int updateClassTermFinish(int[] cArr) {
+		return memberDao.updateClassTermFinish(sqlSession,cArr);
+	}
+
+}

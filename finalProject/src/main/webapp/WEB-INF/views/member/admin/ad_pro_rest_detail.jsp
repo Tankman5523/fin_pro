@@ -110,9 +110,10 @@
 	    })
 	    
 	    function updateProRest(status){
-	  		var restNo = ${pr.restNo}; //상담번호
+	  		var restNo = '${pr.restNo}'; //상담번호
+	  		var category = '${pr.category}';
 	  		console.log(restNo);
-	  		location.href="updateProRest.ad?restNo="+restNo+"&status="+status;
+	  		location.href="updateProRest.ad?restNo="+restNo+"&status="+status+"&category="+category;
 	  	}
 	    
   	</script>

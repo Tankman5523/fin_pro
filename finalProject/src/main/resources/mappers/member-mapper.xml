@@ -182,7 +182,9 @@
   	
   	<resultMap type="objection" id="objectionResultMap">
   		<result column="PROFESSOR_NAME" property="professorName"/>
+  		<result column="STUDENT_NAME" property="studentName"/>
   		<result column="STUDENT_NO" property="studentNo"/>
+  		<result column="PROFESSOR_NO" property="professorNo"/>
   		<result column="CLASS_NAME" property="className"/>
   		<result column="CLASS_NO" property="classNo"/>
   		<result column="CREDIT" property="credit"/>
@@ -195,6 +197,7 @@
   	<resultMap type="dissent" id="dissentResultMap">
   		<result column="DISSENT_NO" property="dissentNo"/>
   		<result column="STUDENT_NO" property="studentNo"/>
+  		<result column="PROFESSOR_NO" property="professorNo"/>
   		<result column="CLASS_NAME" property="className"/>
   		<result column="CLASS_NO" property="classNo"/>
   		<result column="PROFESSOR_NAME" property="professorName"/>
@@ -860,6 +863,17 @@
 		AND   CLASS_TERM = #{classTerm}
   	</select>
   	
+  	<!-- 휴학생 휴학때 등록금 납부 여부(학생) -->
+  	<select id="selectCheckReg" resultType="_int">
+  		SELECT COUNT(*)
+		FROM(SELECT  A.*
+			 FROM(SELECT ROWNUM RNUM,MUST_PAY,INPUT_PAY
+				  FROM REG_ACC
+				  WHERE STUDENT_NO = #{studentNo}) A
+			 WHERE RNUM = 1) R
+		WHERE R.MUST_PAY=R.INPUT_PAY
+  	</select>
+  	
   	<!-- 휴,복학 신청 인서트(학생) -->
   	<insert id="insertStuRest">
   		INSERT INTO STUDENT_REST(REST_NO,STUDENT_NO,CATEGORY,REASON,START_DATE,END_DATE)
@@ -1096,6 +1110,17 @@
  			#{arr}
 		</foreach>
 		AND STATUS = 'B'
+  	</update>
+  	
+  	<!-- 강의 일괄 학기종료(관리자) -->
+  	<update id="updateClassTermFinish">
+  		UPDATE CLASS
+  		SET STATUS = 'N'
+  		WHERE CLASS_NO IN 
+  		<foreach collection="array" item="arr" open="(" close=")" separator=",">
+ 			#{arr}
+		</foreach>
+		AND STATUS IN ('Y','B','C')
   	</update>
   	
   	<!-- 강의개설 개별승인(관리자) -->
@@ -1839,6 +1864,21 @@
   		</foreach>
   	</update>
   	
+  	<select id ="professorGradeReport" resultMap="objectionResultMap">
+  		SELECT C.CLASS_NAME,D.CLASS_NO,C.CLASS_NAME,D.STUDENT_NO,D.REASON,D.STATUS,S.STUDENT_NAME
+		FROM DISSENT D
+		JOIN CLASS C ON D.CLASS_NO = C.CLASS_NO
+		JOIN STUDENT S ON D.STUDENT_NO = S.STUDENT_NO
+		WHERE C.PROFESSOR_NO = #{professorNo}
+  	</select>
+  	
+  	<update id="professorGradeRequest">
+	UPDATE DISSENT
+		SET STATUS = #{status},
+		OPINION = #{opinion}
+	WHERE STUDENT_NO = #{studentNo}
+	AND CLASS_NO = #{classNo}
+</update>
   	<!-- (관리자) 공지사항 관리 - 수정 게시글 조회 -->
   	<select id="selectUpdateNotice" resultMap="noticeResultSet">
   		SELECT NOTICE_CATEGORY, FIELD, NOTICE_TITLE, NOTICE_CONTENT, CREATE_DATE, ORIGIN_NAME
