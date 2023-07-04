@@ -22,6 +22,7 @@ import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.main.model.vo.Notice;
+import com.univ.fin.main.model.vo.NoticeAttachment;
 import com.univ.fin.member.model.dao.MemberDao;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
@@ -1007,6 +1008,29 @@ public class MemberServiceImpl implements MemberService{
 	public ArrayList<Counseling> selectAllCounseling(String user) {
 		return memberDao.selectAllCounseling(sqlSession, user);
 	}
+
+	// (관리자) 공지사항 등록 & 번호 조회
+	@Override
+	@Transactional
+	public int insertNoticeForm(Notice n) {
+		int result = memberDao.insertNoticeForm(sqlSession, n);
+		
+		if(result>0) {
+			Notice notice = memberDao.selectNoticeNo(sqlSession);
+			
+			result = notice.getNoticeNo();
+		}
+		
+		return result;
+	}
+
+	// (관리자) 공지사항 파일 등록
+	@Override
+	public int insertNoticeFile(ArrayList<NoticeAttachment> list) {
+		// TODO Auto-generated method stub
+		return memberDao.insertNoticeFile(sqlSession, list);
+	}
+
 
 	
 

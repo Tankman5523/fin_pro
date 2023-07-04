@@ -67,7 +67,7 @@
             <li><a href="main.pr">홈</a></li>
             <li><a href="mylist.sl">급여관리</a></li>
             <li><a href="infoProfessor.pr">학사관리</a></li>
-            <li><a href="counselHistory.pr">상담관리</a></li>
+            <li><a href="counselHistory.pr?user=${loginUser.professorNo }">상담관리</a></li>
             <li><a href="classCreateSelect.pr">강의관리</a></li>
             <li><a href="#">수업관리</a></li>
         </ul>

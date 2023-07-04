@@ -333,18 +333,13 @@ public class ProfessorController {
 	
 	//상담관리 페이지 이동
 	@RequestMapping("counselHistory.pr")
-	public String counselHistory() {
-		
-		return "member/professor/counselHistory";
-	}
-	
-	@ResponseBody
-	@RequestMapping(value = "counselHistory.pr", produces = "application/json; charset=UTF-8;")
-	public String counselHistory(String user) {
+	public ModelAndView counselHistory(String user, ModelAndView mv) {
 		
 		ArrayList<Counseling> list = memberService.selectAllCounseling(user);
 		
-		return new Gson().toJson(list);
+		mv.addObject("list", list).setViewName("member/professor/counselHistory");
+		
+		return mv;
 	}
 	
 	// 학사관리 - 강의시간표

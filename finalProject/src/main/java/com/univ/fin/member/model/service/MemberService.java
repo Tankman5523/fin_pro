@@ -17,6 +17,7 @@ import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.main.model.vo.Notice;
+import com.univ.fin.main.model.vo.NoticeAttachment;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
@@ -399,6 +400,13 @@ public interface MemberService {
 
 	// (교수) 전체 상담 신청 조회
 	ArrayList<Counseling> selectAllCounseling(String user);
+
+	// (관리자) 공지사항 등록
+	int insertNoticeForm(Notice n);
+
+	// (관리자) 공지사항 파일 등록
+	int insertNoticeFile(ArrayList<NoticeAttachment> list);
+
 
 
 

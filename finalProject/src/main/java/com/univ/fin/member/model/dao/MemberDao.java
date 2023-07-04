@@ -23,6 +23,7 @@ import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.main.model.vo.Notice;
+import com.univ.fin.main.model.vo.NoticeAttachment;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
@@ -762,6 +763,26 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectMainProfessorRest");
 	}
 
+	// (관리자) 공지사항 등록
+	@Transactional
+	public int insertNoticeForm(SqlSessionTemplate sqlSession, Notice n) {
+		
+		return sqlSession.insert("memberMapper.insertNoticeForm", n);
+	}
+
+	// (관리자) 공지사항 번호 조회
+	public Notice selectNoticeNo(SqlSessionTemplate sqlSession) {
+
+		return sqlSession.selectOne("memberMapper.selectNoticeNo");
+	}
+
+	// (관리자) 공지사항 파일 등록
+	public int insertNoticeFile(SqlSessionTemplate sqlSession, ArrayList<NoticeAttachment> list) {
+		
+		return sqlSession.insert("memberMapper.insertNoticeFile", list);
+	}
+
+	
 	
 
 
