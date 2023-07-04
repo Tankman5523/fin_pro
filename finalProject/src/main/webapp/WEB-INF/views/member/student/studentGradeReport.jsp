@@ -250,7 +250,7 @@
 	</div>
 
 	<script>
-		var arr = ${classTerm};
+		/* var arr = ${classTerm};
 		
 		$(function() {
 			$("select[name=classYear]").children().first().prop("selected", true).change();
@@ -260,7 +260,7 @@
         	$(".basic_table>tbody>th").on("change", "#classTerm", function() {
         		clear();
         	});
-		})
+		}) */
 		
 		function changeYear(e) {
         	var $year = e.value;

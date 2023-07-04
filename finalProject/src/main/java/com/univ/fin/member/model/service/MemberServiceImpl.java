@@ -15,6 +15,7 @@ import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.Objection;
@@ -976,6 +977,18 @@ public class MemberServiceImpl implements MemberService{
 	public int searchGradeReport(Objection objc) {
 		
 		return memberDao.searchGradeReport(sqlSession, objc);
+	}
+
+	@Override
+	public ArrayList<Objection> professorGradeReport(String professorNo) {
+		
+		return memberDao.professorGradeReport(sqlSession,professorNo );
+	}
+
+	@Override
+	public int professorGradeRequest(Objection obj) {
+		
+		return memberDao.professorGradeRequest(sqlSession,obj);
 	}
 	
 

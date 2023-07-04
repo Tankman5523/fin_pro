@@ -9,6 +9,7 @@ import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
+import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.Objection;
@@ -383,5 +384,11 @@ public interface MemberService {
 		
 	//이의 신청 패이지 검색
 	int searchGradeReport(Objection objc);
+	
+	//교수 이의신청 페이지
+	ArrayList<Objection> professorGradeReport(String professorNo);
+	
+	//교수 이의신청 회신
+	int professorGradeRequest(Objection obj);
 
 }

@@ -182,7 +182,9 @@
   	
   	<resultMap type="objection" id="objectionResultMap">
   		<result column="PROFESSOR_NAME" property="professorName"/>
+  		<result column="STUDENT_NAME" property="studentName"/>
   		<result column="STUDENT_NO" property="studentNo"/>
+  		<result column="PROFESSOR_NO" property="professorNo"/>
   		<result column="CLASS_NAME" property="className"/>
   		<result column="CLASS_NO" property="classNo"/>
   		<result column="CREDIT" property="credit"/>
@@ -195,6 +197,7 @@
   	<resultMap type="dissent" id="dissentResultMap">
   		<result column="DISSENT_NO" property="dissentNo"/>
   		<result column="STUDENT_NO" property="studentNo"/>
+  		<result column="PROFESSOR_NO" property="professorNo"/>
   		<result column="CLASS_NAME" property="className"/>
   		<result column="CLASS_NO" property="classNo"/>
   		<result column="PROFESSOR_NAME" property="professorName"/>
@@ -1211,7 +1214,7 @@
   	
   	
   	<select id="studentGradeReport" resultMap="objectionResultMap" parameterType="string"> 
-  	SELECT SC.STUDENT_NO, C.CLASS_NAME, P.PROFESSOR_NAME, C.CREDIT
+  	SELECT SC.STUDENT_NO, C.CLASS_NAME, P.PROFESSOR_NAME,P.PROFESSOR_NO, C.CREDIT
 	FROM (SELECT CLASS_NO,STUDENT_NO,MAX(PERIOD) FROM SCHEDULE GROUP BY CLASS_NO,STUDENT_NO) "SC"
 	JOIN CLASS C ON SC.CLASS_NO = C.CLASS_NO
 	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
@@ -1810,6 +1813,22 @@
 			#{noticeNo }
   		</foreach>
   	</update>
+  	
+  	<select id ="professorGradeReport" resultMap="objectionResultMap">
+  		SELECT C.CLASS_NAME,D.CLASS_NO,C.CLASS_NAME,D.STUDENT_NO,D.REASON,D.STATUS,S.STUDENT_NAME
+		FROM DISSENT D
+		JOIN CLASS C ON D.CLASS_NO = C.CLASS_NO
+		JOIN STUDENT S ON D.STUDENT_NO = S.STUDENT_NO
+		WHERE C.PROFESSOR_NO = #{professorNo}
+  	</select>
+  	
+  	<update id="professorGradeRequest">
+	UPDATE DISSENT
+		SET STATUS = #{status},
+		OPINION = #{opinion}
+	WHERE STUDENT_NO = #{studentNo}
+	AND CLASS_NO = #{classNo}
+</update>
   	
   </mapper>
 

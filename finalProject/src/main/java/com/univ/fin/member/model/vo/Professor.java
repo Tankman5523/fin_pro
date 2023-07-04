@@ -45,5 +45,6 @@ public class Professor {
 	private String accountNo;
 	private int admin;
 	private String status;
+	private String dissentNo;
 	
 }

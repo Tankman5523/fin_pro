@@ -16,6 +16,7 @@ import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Department;
+import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.Objection;
@@ -732,6 +733,15 @@ public class MemberDao {
 	// (관리자) 메인페이지 -> 교수 안식 및 퇴직 신청 목록 조회
 	public ArrayList<ProfessorRest> selectMainProfessorRest(SqlSessionTemplate sqlSession) {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectMainProfessorRest");
+	}
+
+	public ArrayList<Objection> professorGradeReport(SqlSessionTemplate sqlSession,String professorNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.professorGradeReport",professorNo);
+	}
+
+	public int professorGradeRequest(SqlSessionTemplate sqlSession, Objection obj) {
+		
+		return sqlSession.update("memberMapper.professorGradeRequest",obj);
 	}
 
 	
