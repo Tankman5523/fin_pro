@@ -402,7 +402,12 @@ public interface MemberService {
 
 	// (학생) 휴학생 휴학할때 등록금 냈었는지
 	int selectCheckReg(String studentNo);
-
+	
+	//교수 이의신청 페이지
+	ArrayList<Objection> professorGradeReport(String professorNo);
+		
+	//교수 이의신청 회신
+	int professorGradeRequest(Objection obj);
 
 
 }

@@ -16,6 +16,7 @@ import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.Department;
+import com.univ.fin.common.model.vo.Dissent;
 import com.univ.fin.common.model.vo.Grade;
 import com.univ.fin.common.model.vo.Graduation;
 import com.univ.fin.common.model.vo.Objection;
@@ -770,6 +771,15 @@ public class MemberDao {
 	// (학생) 휴학생 휴학할때 등록금 냈었는지
 	public int selectCheckReg(SqlSessionTemplate sqlSession, String studentNo) {
 		return sqlSession.selectOne("memberMapper.selectCheckReg",studentNo);
+	}
+	
+	public ArrayList<Objection> professorGradeReport(SqlSessionTemplate sqlSession,String professorNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.professorGradeReport",professorNo);
+	}
+
+	public int professorGradeRequest(SqlSessionTemplate sqlSession, Objection obj) {
+		
+		return sqlSession.update("memberMapper.professorGradeRequest",obj);
 	}
 
 	
