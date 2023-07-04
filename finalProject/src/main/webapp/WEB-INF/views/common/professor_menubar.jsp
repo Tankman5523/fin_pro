@@ -69,7 +69,7 @@
             <li><a href="infoProfessor.pr">학사관리</a></li>
             <li><a href="counselHistory.pr">상담관리</a></li>
             <li><a href="classCreateSelect.pr">강의관리</a></li>
-            <li><a href="#">수업관리</a></li>
+            <li><a href="professorGradeReport.pr">수업관리</a></li>
         </ul>
 	</div>
 </body>

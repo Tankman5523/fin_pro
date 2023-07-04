@@ -125,7 +125,7 @@
 					<span style="margin: 0 auto;">수업관리</span>
 				</div>
 				<div class="child_title">
-					<a href="classManagement.st">학기별 성적 조회</a>
+					<a href="">학기별 성적 조회</a>
 				</div>
 				<div class="child_title">
 					<a href="studentGradeReport">성적 이의신청</a>

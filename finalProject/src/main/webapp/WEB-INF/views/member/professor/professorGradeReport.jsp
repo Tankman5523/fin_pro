@@ -136,12 +136,10 @@
                 </div>
                 <div class="child_title">
                     <a href="classManagement.st">학기별 성적 조회</a>
+                    <a href="professorGradeReport.pr" style="color:#00aeff; font-weight: 550;">성적 이의신청 조회</a>
                 </div>
                 <div class="child_title">
-                    <a href="professorGradeReport">성적 이의신청</a>
-                </div>
-                <div class="child_title">
-                    <a href="classRatingInfo.st">강의평가</a>
+                    <a href="gradeInsert.pr">성적 관리</a>
                 </div>
             </div>
             <div id="content_1">

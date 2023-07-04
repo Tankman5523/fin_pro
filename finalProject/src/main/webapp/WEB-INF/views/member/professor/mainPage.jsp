@@ -77,7 +77,7 @@
 												</c:when>
 												<c:otherwise>
 													<tr>
-														<td colspan="3">조호된 데이터가 없습니다.</td>
+														<td colspan="3">조회된 데이터가 없습니다.</td>
 													</tr>
 												</c:otherwise>
 											</c:choose>
@@ -190,16 +190,20 @@
 						$(function() {
 							//==========상담 내역==========
 							$(".c_content_1122_table-area>table>tbody>tr").hover(function() {
-								$(this).css("background-color", "#E0E0E0");
-								$(this).css("cursor", "pointer");					
+								if($(this).children().eq(0).text() != '조회된 데이터가 없습니다.') {
+									$(this).css("background-color", "#E0E0E0");
+									$(this).css("cursor", "pointer");					
+								}
 							}, function() {
 								$(this).css("background-color", "white");
 								$(this).css("cursor", "default");					
 							});
 							
 							$(".c_content_1122_table-area>table>tbody").on("click", "tr", function() {
-								var cno = $(this).children("td").eq(0).text();
-								location.href = "counselDetail.pr?cno=" + cno;
+								if($(this).children().eq(0).text() != '조회된 데이터가 없습니다.') {
+									var cno = $(this).children("td").eq(0).text();
+									location.href = "counselDetail.pr?cno=" + cno;
+								}
 							})
 
 							//==========개인 시간표==========
