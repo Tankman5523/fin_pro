@@ -365,9 +365,9 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public int insertStudent(Student st) {
+	public int insertStudent(Student st, Attachment a) {
 		
-		int result = memberDao.insertStudent(sqlSession,st);
+		int result = memberDao.insertStudent(sqlSession,st,a);
 		
 		return result;
 	}
@@ -592,9 +592,9 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public int insertProfessor(Professor pr) {
+	public int insertProfessor(Professor pr, Attachment a) {
 		
-		int result = memberDao.insertProfessor(sqlSession,pr);
+		int result = memberDao.insertProfessor(sqlSession,pr,a);
 		
 		return result;
 	}
@@ -995,9 +995,9 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public ArrayList<Objection> professorGradeReport(String professorNo) {
+	public ArrayList<Objection> professorGradeReport(Objection obj) {
 		
-		return memberDao.professorGradeReport(sqlSession,professorNo );
+		return memberDao.professorGradeReport(sqlSession,obj );
 	}
 
 	@Override
@@ -1056,6 +1056,59 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public int updateClassTermFinish(int[] cArr) {
 		return memberDao.updateClassTermFinish(sqlSession,cArr);
+	}
+
+	// (관리자) 공지사항 수정 파일 조회
+	@Override
+	public ArrayList<NoticeAttachment> selectUpdateNoticeFile(String noticeNo) {
+		
+		return memberDao.selectUpdateNoticeFile(sqlSession, noticeNo);
+	}
+
+	// (관리자) 공지사항 수정
+	@Override
+	@Transactional
+	public int updateNoticeForm(Notice n, String delFileNo) {
+
+		int result = 0;
+		
+		if(delFileNo == null) {
+			result = memberDao.updateNoticeForm(sqlSession, n);
+		}else {
+			result = memberDao.updateNoticeForm(sqlSession, n);
+			
+			if(result>0) {
+				String[] fileNo = delFileNo.split(",");
+				for(int i=0; i<fileNo.length; i++) {
+					System.out.println(fileNo[i]);					
+				}
+				result = memberDao.deleteNoticeFile(sqlSession, fileNo);				
+			}
+		}
+		return result;
+		
+	}
+
+	@Override
+	public Notice detailNoticeView(String noticeNo) {
+		
+		return memberDao.detailNoticeView(sqlSession, noticeNo);
+	}
+
+
+
+	
+
+	@Override
+	public ArrayList<Objection> searchReport(Objection obj) {
+		
+		return memberDao.searchReport(sqlSession,obj);
+	}
+
+	@Override
+	public int updateReport(Objection obj) {
+		
+		return memberDao.updateReport(sqlSession,obj);
 	}
 
 }

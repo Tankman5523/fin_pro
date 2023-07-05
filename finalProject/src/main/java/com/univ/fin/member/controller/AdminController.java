@@ -29,12 +29,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.StudentRest;
+import com.univ.fin.common.template.SaveFile;
 import com.univ.fin.main.model.vo.Notice;
 import com.univ.fin.main.model.vo.NoticeAttachment;
 import com.univ.fin.member.model.service.MemberService;
@@ -61,21 +63,38 @@ public class AdminController {
 	//학생등록 페이지 등록
 	@RequestMapping(value="insertStudent.ad" ,method=RequestMethod.POST)
 	public String insertStudent(Student st,
+								@RequestParam(value="upfile",required = false)MultipartFile upfile,
 								Model model,
 								HttpSession session) {
-	System.out.println(st.toString());
 		
-	int result = memberService.insertStudent(st);
+		st.setStudentPwd("$2a$10$chsqqg6wWHMHhAlO2twsSOUhvFzX1zGWtPuMY/s4EbCEEOInlEUvS");
+		
+		if(!upfile.getOriginalFilename().equals("")) {//첨부파일이 있다면
+			String subPath = "student/"; //학생관련 세부경로
+			String changeName = new SaveFile().saveFile(upfile, session, subPath); //파일 이름 바꾸고, 저장하고 옴
+			String filePath = "resources/uploadFiles/"; 
+			
+			//첨부파일에 담기
+			Attachment a = Attachment.builder()
+									.originName(upfile.getOriginalFilename()) //파일 원래 이름
+									.changeName(changeName) //파일 변경명
+									.filePath(filePath+subPath) //파일 저장 경로
+									.build();
+		
+		
+			int result = memberService.insertStudent(st,a);
+			
+			if(result>0) {
+				model.addAttribute("msg", "회원 생성 완료");
+			}else {
+				model.addAttribute("msg","회원 생성 실패");
+				
+			}
+		
+		}
+		return "member/admin/enrollStudent";
+	}
 	
-	if(result>0) {
-		model.addAttribute("msg", "회원 생성 완료");
-	}else {
-		model.addAttribute("msg","회원 생성 실패");
-	}
-	return "member/admin/enrollStudent";
-		
-	}
-		
 	//강의개설 승인 페이지 이동
 	@RequestMapping("classManagePage.ad")
 	public String classManageSelect(Model model) {
@@ -110,28 +129,45 @@ public class AdminController {
 	
 	@RequestMapping(value="insertProfessor.ad", method=RequestMethod.POST)
 	public String insertProfessor(Professor pr,
+								  @RequestParam(value="upfile",required = false)MultipartFile upfile,
 	                              Model model,
 	                              HttpSession session) {
 		
-	    if (pr.getDepartmentNo().equals("-선택-")) {
-	        if (pr.getPosition().equals("관리자")) {
-	            pr.setDepartmentNo("");
-	            pr.setCollegeNo("");
-	        } else {
-	            if (pr.getCollegeNo().equals("-선택-") || pr.getCollegeNo() == null) {
-	                // 관리자가 아니면서 부서 선택을 하지 않은 경우
-	            	model.addAttribute("msg","빈 입력란이 있습니다.");
-	            }
-	        }
-	    }	        
+		pr.setProfessorPwd("$2a$10$chsqqg6wWHMHhAlO2twsSOUhvFzX1zGWtPuMY/s4EbCEEOInlEUvS");
+		
+		if(!upfile.getOriginalFilename().equals("")) {//첨부파일이 있다면
+			String subPath = "student/"; //학생관련 세부경로
+			String changeName = new SaveFile().saveFile(upfile, session, subPath); //파일 이름 바꾸고, 저장하고 옴
+			String filePath = "resources/uploadFiles/"; 
+			
+			//첨부파일에 담기
+			Attachment a = Attachment.builder()
+									.originName(upfile.getOriginalFilename()) //파일 원래 이름
+									.changeName(changeName) //파일 변경명
+									.filePath(filePath+subPath) //파일 저장 경로
+									.build();
+		
+		    if (pr.getDepartmentNo().equals("-선택-")) {
+		        if (pr.getPosition().equals("관리자")) {
+		            pr.setDepartmentNo("");
+		            pr.setCollegeNo("");
+		        } else {
+		            if (pr.getCollegeNo().equals("-선택-") || pr.getCollegeNo() == null) {
+		                // 관리자가 아니면서 부서 선택을 하지 않은 경우
+		            	model.addAttribute("msg","빈 입력란이 있습니다.");
+		            }
+		        }
+		    }	        
 
-	    int result = memberService.insertProfessor(pr);
-
-	    if (result > 0) {
-	        model.addAttribute("msg", "직원 생성 완료");
-	    } else {
-	        model.addAttribute("msg", "직원 생성 실패");
-	    }
+		    int result = memberService.insertProfessor(pr,a);
+	
+		    if (result > 0) {
+		        model.addAttribute("msg", "직원 생성 완료");
+		    } else {
+		        model.addAttribute("msg", "직원 생성 실패");
+		    }
+	    
+		}
 	    return "redirect:enrollProfessor.ad";
 	}
 
@@ -485,13 +521,19 @@ public class AdminController {
 	
 	// (관리자) 공지사항 관리 이동
 	@RequestMapping("selectNotice.ad")
-	public ModelAndView selectNoticeList(ModelAndView mv) {
-		
+	public String selectNoticeList() {
+
+		return "member/admin/ad_selectNotice";
+	}
+
+	// (관리자) 공지사항 관리 - 전체 공지사항 조회
+	@ResponseBody
+	@PostMapping(value = "selectNoticeList.ad", produces = "application/json; charset=UTF-8;")
+	public String selectNoticeAllList() {
+
 		ArrayList<Notice> list = memberService.selectNoticeAllList();
-		
-		mv.addObject("list", list).setViewName("member/admin/ad_selectNotice");
-		
-		return mv;
+
+		return new Gson().toJson(list);
 	}
 	
 	
@@ -552,13 +594,15 @@ public class AdminController {
 	
 	//(관리자) 공지사항 관리 - 공지사항 수정 페이지 이동
 	@RequestMapping(value = "updateNotice.ad")
-	public ModelAndView selectUpdateNotice(String noticeNo, ModelAndView mv) {
+	public String selectUpdateNotice(String noticeNo, Model model) {
 		
 		Notice n = memberService.selectUpdateNotice(noticeNo);
-		System.out.println(n);
-		mv.addObject("n", n).setViewName("member/admin/updateNoticeForm");
+		ArrayList<NoticeAttachment> list = memberService.selectUpdateNoticeFile(noticeNo);
 		
-		return mv;
+		model.addAttribute("n", n);
+		model.addAttribute("list", list);
+		
+		return "member/admin/updateNoticeForm";
 	}
 	
 	//(관리자) 공지사항 관리 - 공지사항 등록 페이지 이동
@@ -568,36 +612,46 @@ public class AdminController {
 		return "member/admin/insertNoticeForm";
 	}
 	
-	//(관리자) 공지사항 관리 - 공지사항 등록
+	///(관리자) 공지사항 관리 - 공지사항 등록
 	@PostMapping("insertNoticeForm.ad")
-	public ModelAndView insertNoticeFrom(Notice n, MultipartHttpServletRequest multi, HttpSession session, ModelAndView mv) {
+	public ModelAndView insertNoticeFrom(Notice n
+			, @RequestParam("upfile") List<MultipartFile> upfile
+			, HttpSession session, ModelAndView mv) {
+
+		System.out.println(upfile);
 		
-		List<MultipartFile> files = multi.getFiles("upfile");
 		String originName = "";
 		String changeName = "";
 		String savePath = "";
 		
 		NoticeAttachment na = new NoticeAttachment();
 		ArrayList<NoticeAttachment> list = new ArrayList<NoticeAttachment>();
+
+		int result = memberService.insertNoticeForm(n);
 		
-		String msg = "";
-		
-		if(!(files.size() == 1 && files.get(0).getOriginalFilename().equals(""))) {
+		if(!(upfile.size() == 1 && upfile.get(0).getOriginalFilename().equals("")) && result>0) {
+
+			List<Map<String, String>> fileList = new ArrayList<>();
 			
-			int result = memberService.insertNoticeForm(n);
-			
-			for(MultipartFile upfile : files) {
-				originName = upfile.getOriginalFilename();
+			for(int i = 0; i < upfile.size(); i++) {
+				originName = upfile.get(i).getOriginalFilename();
 				String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 				int ranNum = (int)(Math.random()*90000+10000);
 				String ext = originName.substring(originName.lastIndexOf("."));
-				
+
 				changeName = currentTime+ranNum+ext;
+
+				savePath = session.getServletContext().getRealPath("/resources/uploadFiles/notice/");
+
+				Map<String, String> map = new HashMap<>();
+				map.put("originFile", originName);
+				map.put("changeFile", changeName);
 				
-				savePath = session.getServletContext().getRealPath("resources/uploadFiles/notice/");
+				fileList.add(map);
 				
 				try {
-					upfile.transferTo(new File(savePath+changeName));
+					File uploadFile = new File(savePath+changeName+ fileList.get(i).get("originName"));
+					upfile.get(i).transferTo(uploadFile);
 				} catch (IllegalStateException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -606,38 +660,117 @@ public class AdminController {
 					e.printStackTrace();
 				}
 				
-				if(result > 0) {
-					na = NoticeAttachment.builder().noticeNo(result).originName(originName).changeName(changeName).filePath(savePath).build();
-					list.add(na);
-				}else {
-					System.out.println(result);
-				}
-				
-				int result1 = memberService.insertNoticeFile(list);
-				
-				if(result1 > 0) {
-					msg = "게시글이 등록되었습니다.";
-					mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
-				}else {
-					msg = "게시글 등록을 실패했습니다.";
-					mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
-				}
+				na = NoticeAttachment.builder().noticeNo(result).originName(originName).changeName(changeName).filePath(savePath).build();
+				list.add(na);
+
 			}
-		}else {
-			int result = memberService.insertNoticeForm(n);
 			
-			if(result > 0) {
-				msg = "게시글이 등록되었습니다.";
+			int result1 = memberService.insertNoticeFile(list);
+			
+			if(result1 > 0) {
+				String msg = "게시글이 등록되었습니다.";
 				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
 			}else {
-				msg = "게시글 등록을 실패했습니다.";
+				String msg = "게시글 등록을 실패했습니다.";
+				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+			}
+		}else {
+			if(result > 0) {
+				String msg = "게시글이 등록되었습니다.";
+				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+			}else {
+				String msg = "게시글 등록을 실패했습니다.";
 				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
 			}
 		}
 		return mv;
 	}
 	
+	///(관리자) 공지사항 관리 - 공지사항 수정
+	@PostMapping("updateNoticeForm.ad")
+	public ModelAndView updateNoticeFrom(Notice n, String delFileNo, int noticeNo
+			, @RequestParam("upfile") List<MultipartFile> upfile
+			, HttpSession session, ModelAndView mv) {
+
+		System.out.println(upfile);
+		System.out.println(noticeNo);
+		
+		int result = memberService.updateNoticeForm(n, delFileNo);
+		
+		String originName = "";
+		String changeName = "";
+		String savePath = "";
+		
+		NoticeAttachment na = new NoticeAttachment();
+		ArrayList<NoticeAttachment> list = new ArrayList<NoticeAttachment>();
+
+		if(!(upfile.size() == 1 && upfile.get(0).getOriginalFilename().equals("")) && result>0) {
+
+			List<Map<String, String>> fileList = new ArrayList<>();
+			
+			for(int i = 0; i < upfile.size(); i++) {
+				originName = upfile.get(i).getOriginalFilename();
+				String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+				int ranNum = (int)(Math.random()*90000+10000);
+				String ext = originName.substring(originName.lastIndexOf("."));
+
+				changeName = currentTime+ranNum+ext;
+
+				savePath = session.getServletContext().getRealPath("/resources/uploadFiles/notice/");
+
+				Map<String, String> map = new HashMap<>();
+				map.put("originFile", originName);
+				map.put("changeFile", changeName);
+				
+				fileList.add(map);
+				
+				try {
+					File uploadFile = new File(savePath+changeName+ fileList.get(i).get("originName"));
+					upfile.get(i).transferTo(uploadFile);
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				na = NoticeAttachment.builder().noticeNo(noticeNo).originName(originName).changeName(changeName).filePath(savePath).build();
+				list.add(na);
+				System.out.println(list);
+			}
+			
+			int result1 = memberService.insertNoticeFile(list);
+			
+			if(result1 > 0) {
+				String msg = "게시글이 수정되었습니다.";
+				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+			}else {
+				String msg = "게시글 수정을 실패했습니다.";
+				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+			}
+		}else {
+			if(result > 0) {
+				String msg = "게시글이 수정되었습니다.";
+				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+			}else {
+				String msg = "게시글 수정을 실패했습니다.";
+				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+			}
+		}
+		return mv;
+	}
 	
-	
+	// (관리자) 공지사항 상세 보기
+	@RequestMapping(value = "detailNoticeView.ad")
+	public String detailNoticeView(String noticeNo, Model model) {
+		
+		Notice n = memberService.detailNoticeView(noticeNo);
+		System.out.println(n);
+		model.addAttribute("n", n);
+		
+		return "member/admin/detailNoticeView";
+	}
+
 }
 

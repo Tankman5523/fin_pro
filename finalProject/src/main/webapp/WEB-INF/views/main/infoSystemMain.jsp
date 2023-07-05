@@ -149,18 +149,19 @@
 				$("#autoLoginStatus").text("로그인 상태 유지중");
 			}
 			
-			var errorImg = "<span><img id='dustErrorGif' src='resources/icon/dust_error.gif' data-animated='resources/icon/dust_error.gif'></span>";
-			
 			/* 현재 온도 (10분마다 갱신) */
 			$.ajax({
 				
 				url : "weather.api",
 				
 				success : function(result){
-					if(result == null){
-						$("#weather_temp").html(errorImg);
-					}else{
+					if(result.chkError == "YYYY"){
 						$("#weather_temp").html(result.T1H + 'º');
+					}else{
+						$("#weather_temp").html(result.T1H);
+						$.ajax({
+							url : "weatherCache.api"
+						});
 					}
 				}
 			});
@@ -171,12 +172,15 @@
 				url : "skyPty.api",
 				
 				success : function(result){
-					if(result == null){
-						$("#weather_icon").html(errorImg);
-						$("#weather_sky").html(errorImg);
+					if(result.chkError == "YYYY"){
+						$("#weather_icon").html(result.IMG);
+						$("#weather_sky").html(result.SKY);
 					}else{
 						$("#weather_icon").html(result.IMG);
 						$("#weather_sky").html(result.SKY);
+						$.ajax({
+							url : "skyPtyCache.api"
+						});
 					}
 				}
 			});
@@ -185,10 +189,13 @@
 			$.ajax({
 				url : "tmnTmx.api",
 				success : function(result){
-					if(result == null){
-						$("#weather_minMax").html(errorImg);
-					}else{
+					if(result.chkError == "YYYY"){
 						$("#weather_minMax").html("<span style='color:#5b8fed;'>"+ result.TMN +"º</span>" + "<span style='color : #d3d5d7;'>/</span>"+"<span style='color:#f55f5e;'>"+ result.TMX +"º</span>");
+					}else{
+						$("#weather_minMax").html("<span>"+ result.TMN +"</span>" + "<span style='color : #d3d5d7;'>/</span>"+"<span>"+ result.TMX +"</span>");
+						$.ajax({
+							url : "tmnTmxCache.api"
+						});
 					}
 				}
 				
@@ -208,7 +215,7 @@
 						});
 					}
 				}
-			})
+			});
 			
 		});
 	</script>
