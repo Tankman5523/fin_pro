@@ -86,8 +86,11 @@
 	margin-bottom: 10px;
 	overflow-y: scroll;
 }
-#files-info p{
+#files-info li{
 	font-size: 15px;
+	height: 30px;
+	list-style: none;
+	margin-bottom: 10px;
 }
 #files-info button{
 	width: 30px;
@@ -95,7 +98,8 @@
 	border: none;
 	background-color: #ddd;
 	font-size: 20px;
-	margin-left: 20px;
+	float: left;
+	margin-right: 20px;
 }
 #files-info button:hover{
 	background-color: #c0c0c0;

@@ -145,7 +145,7 @@
 	}
 	
 	function prevPage(){
-		location.href = 'counselHistory.pr'
+		history.back();
 	}
 	
 	function changeValue(){
