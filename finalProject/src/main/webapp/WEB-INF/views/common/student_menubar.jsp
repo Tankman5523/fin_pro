@@ -86,6 +86,12 @@
 									 + "<a style='margin-left: 10px;' onclick='alarmCheck(this);'><i class='fa-solid fa-trash' style='color: #c7c7c7;'></i></a>"
 									 + "</li><br>";
 							}
+							else if(obj[i].cmd == 'reportUpdate') { // 성적 이의신청 변동
+								str += "<li style='font-size: 14px; line-height: 14px;'><input type='hidden' value='" + obj[i].alarmNo + "'>"
+									 + "<a href='studentGradeReport.st' onclick='alarmCheck(this);'>" + obj[i].professorName + " 교수님이 성적 이의신청에 응하셨습니다.</a>"
+									 + "<a style='margin-left: 10px;' onclick='alarmCheck(this);'><i class='fa-solid fa-trash' style='color: #c7c7c7;'></i></a>"
+									 + "</li><br>";
+							}
 						}
 						str += "</ul>";
 						$("#alarmDiv").html(str);
@@ -114,6 +120,9 @@
 						}
 						else if(obj.cmd == 'counselUpdate') { // 상담신청 변동
 							str += obj.professorName + " 교수님이 상담신청에 응하셨습니다.";
+						}
+						else if(obj.cmd == 'reportUpdate') { // 성적 이의신청 변동
+							str += obj.professorName + " 교수님이 성적 이의신청에 응하셨습니다.";
 						}
 						str += "</span>";
 						$("#alarm-area2").html(str);

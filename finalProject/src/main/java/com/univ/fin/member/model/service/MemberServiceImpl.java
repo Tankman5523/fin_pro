@@ -587,8 +587,8 @@ public class MemberServiceImpl implements MemberService{
 
 
 	@Override
-	public ArrayList<Objection> studentGradeReport(String studentNo) {
-		ArrayList<Objection> list = memberDao.studentGradeReport(sqlSession,studentNo);
+	public ArrayList<Objection> studentGradeReport(Objection obj) {
+		ArrayList<Objection> list = memberDao.studentGradeReport(sqlSession,obj);
 		
 		return list;
 	}
@@ -997,15 +997,19 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public ArrayList<Objection> professorGradeReport(String professorNo) {
+	public ArrayList<Objection> professorGradeReport(Objection obj) {
 		
-		return memberDao.professorGradeReport(sqlSession,professorNo );
+		return memberDao.professorGradeReport(sqlSession,obj );
 	}
 
 	@Override
-	public int professorGradeRequest(Objection obj) {
-		
-		return memberDao.professorGradeRequest(sqlSession,obj);
+	@Transactional
+	public int professorGradeRequest(Objection obj, HashMap<String, String> alarm) {
+		int result1 = 0;
+		int result2 = 0;
+		result1 = memberDao.professorGradeRequest(sqlSession,obj);
+		result2 = memberDao.alarmInsert(sqlSession, alarm);
+		return result1*result2;
 	}
 
 		

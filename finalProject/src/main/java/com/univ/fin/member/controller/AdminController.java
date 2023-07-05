@@ -60,7 +60,6 @@ public class AdminController {
 	public String insertStudent(Student st,
 								Model model,
 								HttpSession session) {
-	System.out.println(st.toString());
 		
 	int result = memberService.insertStudent(st);
 	

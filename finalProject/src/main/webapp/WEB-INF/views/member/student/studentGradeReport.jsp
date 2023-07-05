@@ -157,7 +157,7 @@
 							</label>
 							</th>
 							<th>
-								<button type="button" id="checkbtn" onclick="gradeCheck()">조회하기</button>
+								<button type="button" id="checkbtn" onclick="reasonRequest()">조회하기</button>
 							</th>
 						<tr>
 					</table>
@@ -254,7 +254,7 @@
 		
 		$(function() {
 			$("select[name=classYear]").children().first().prop("selected", true).change();
-			gradeCheck();
+			/* gradeCheck(); */
             
         	$(".basic_table>tbody>th").on("change", "#classTerm", function() {
         		clear();
@@ -284,16 +284,17 @@
 //         	clear();
         }
 		
-		function clear() {
+		/* function clear() {
 			$("#studentObjection>tbody").empty();
 			$("#studentObjection2>tbody").empty();
 		}
-	
+	 */
 		function reasonRequest() {
 			var studentNo = "${loginUser.studentNo}";
 			var classYear = $("#classYear").val();
 			var classTerm = $("#classTerm").val();
-
+			
+			
 			$.ajax({
 				url : 'studentGradeReport.st',
 				type : 'post',
@@ -304,6 +305,8 @@
 					classTerm : classTerm
 				},
 				success : function(data) {
+					
+					
 					var innerHtml = '';
 					innerHtml += '<table border="1" id="studentObjection2">';
 					innerHtml += '<div style="text-align: center;">';
@@ -330,7 +333,9 @@
 						innerHtml += '<td>' + data.list[i].credit + '</td>';
 						innerHtml += '<td>' + data.list[i].status + '</td>';
 						var opinion = data.list[i].opinion;
-						if(!opinion) opinion = ''; 
+						if(data.list[i].opinion==null) {
+							opinion = '';
+						} 
 						innerHtml += '<td>' + opinion + '</td>';
 						innerHtml += '</tr>';
 					}
@@ -338,6 +343,22 @@
 					innerHtml += '</tbody>';
 					innerHtml += '</table>';
 					$("#ajaxResult").html(innerHtml);
+					
+					var innerHtml2 = '';
+					for (var i = 0; i < data.commList.length; i++) {
+						innerHtml2 += '<tr>';
+						innerHtml2 += '<td>' + data.commList[i].studentNo + '</td>';
+						innerHtml2 += '<td>' + data.commList[i].className + '</td>';
+						innerHtml2 += '<td>' + data.commList[i].professorName + '</td>';
+						innerHtml2 += '<td>' + data.commList[i].credit + '</td>';
+						innerHtml2 += '<td>' + "<input type='text' class='reasonText' id='reason'"
+							+"name='reason' style='border: none; background: transparent;'>" + '</td>';
+						innerHtml2 += '<td>' +"<button class='objectionbtn' onclick='insertDissent(\'${c.className }\',\'${c.professorName}\',\'${c.credit}\');'>이의신청</button>" + '</td>'	
+						innerHtml2 += '</tr>';
+					}
+					$("#studentObjection>tbody").html(innerHtml2);
+					console.log(data.commList);
+
 				},
 				error : function(request) {
 					alert('실패');
@@ -383,19 +404,14 @@
 
 		}
 		
-		 function gradeCheck() {
+		
+		 function gradeCheck() { // 조회하기 버튼
 			  var classYear = document.getElementById("classYear").value;
 			  var classTerm = document.getElementById("classTerm").value;
-			
-			  reasonRequest(); // reasonRequest() 함수 호출
-			  
-			  console.log(classYear);
-			  console.log(classTerm);
 
-			  if (classYear === "2023" && (classTerm === "1" || classTerm === "2")) {
-			    console.log("조회하기 기능 수행");
-			  }
-			}
+			  reasonRequest(); // reasonRequest() 함수 호출	
+		}
+			  
 	</script>
 </body>
 </html>

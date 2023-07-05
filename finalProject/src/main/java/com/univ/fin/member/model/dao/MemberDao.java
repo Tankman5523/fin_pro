@@ -389,9 +389,9 @@ public class MemberDao {
 
 
 	//강의 이의제기 - 학생
-	public ArrayList<Objection> studentGradeReport(SqlSessionTemplate sqlSession, String studentNo) {
+	public ArrayList<Objection> studentGradeReport(SqlSessionTemplate sqlSession, Objection obj) {
 
-		return (ArrayList)sqlSession.selectList("memberMapper.studentGradeReport",studentNo);
+		return (ArrayList)sqlSession.selectList("memberMapper.studentGradeReport",obj);
 		
 	}
 	
@@ -763,8 +763,8 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectMainProfessorRest");
 	}
 
-	public ArrayList<Objection> professorGradeReport(SqlSessionTemplate sqlSession,String professorNo) {
-		return (ArrayList)sqlSession.selectList("memberMapper.professorGradeReport",professorNo);
+	public ArrayList<Objection> professorGradeReport(SqlSessionTemplate sqlSession,Objection obj) {
+		return (ArrayList)sqlSession.selectList("memberMapper.professorGradeReport",obj);
 	}
 
 	public int professorGradeRequest(SqlSessionTemplate sqlSession, Objection obj) {

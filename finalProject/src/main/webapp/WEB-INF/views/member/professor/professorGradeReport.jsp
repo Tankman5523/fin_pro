@@ -135,7 +135,6 @@
                     <span style="margin: 0 auto;">수업관리</span>
                 </div>
                 <div class="child_title">
-                    <a href="classManagement.st">학기별 성적 조회</a>
                     <a href="professorGradeReport.pr" style="color:#00aeff; font-weight: 550;">성적 이의신청 조회</a>
                 </div>
                 <div class="child_title">
@@ -197,11 +196,27 @@
 								<td>${c.studentNo }</td>
 								<td>${c.reason }</td>
 								<td>
-									<select id="status" name="status">
-											<option value="">처리상태</option>
-                                            <option value="N">N</option>
-                                            <option value="Y">Y</option>
-									</select>
+									<c:if test="${c.status eq 'B' }">
+										<select id="status" name="status">
+											<option value="B" selected>처리중</option>
+	                                        <option value="N">N</option>
+	                                        <option value="Y">Y</option>
+										</select>
+									</c:if>
+									<c:if test="${c.status eq 'N' }">
+										<select id="status" name="status">
+											<option value="B">처리중</option>
+	                                        <option value="N" selected>N</option>
+	                                        <option value="Y">Y</option>
+										</select>
+									</c:if>
+									<c:if test="${c.status eq 'Y' }">
+										<select id="status" name="status">
+											<option value="B">처리중</option>
+	                                        <option value="N">N</option>
+	                                        <option value="Y" selected>Y</option>
+										</select>
+									</c:if>
 								</td>
 								<td><input type="text" class="opinion" id="opinion" name="opinion" style="border: none; background: transparent;"></td>
 								<td><button class="objectionbtn" onclick="updateDissent('${c.classNo }','${c.studentNo }');">회신버튼</button></td>
@@ -268,6 +283,109 @@
 		 });
 		 
 		}
+ 
+ function reasonRequest() {
+		var professorNo = "${loginUser.professorNo}";
+		var classYear = $("#classYear").val();
+		var classTerm = $("#classTerm").val();
+		
+		
+		$.ajax({
+			url : 'professorGradeReport.pr',
+			type : 'post',
+			data : {
+
+				professorNo : professorNo,
+				classYear : classYear,
+				classTerm : classTerm
+			},
+			success : function(data) {
+				
+				
+				var innerHtml = '';
+				innerHtml += '<table border="1" id="studentObjection2">';
+				innerHtml += '<div style="text-align: center;">';
+				innerHtml += '<b>신청내역</b>';
+				innerHtml += '</div>';
+				innerHtml += '<br>';
+				innerHtml += '<thead>';
+				innerHtml += '<tr>';
+				innerHtml += '<th>교과목명</th>';
+				innerHtml += '<th>과목번호</th>';
+				innerHtml += '<th>학생명</th>';
+				innerHtml += '<th>학번</th>';
+				innerHtml += '<th>사유</th>';
+				innerHtml += '<th>처리상태</th>';
+				innerHtml += '<th>교수의견</th>';
+				innerHtml += '<th>회신버튼</th>';
+				innerHtml += '</tr>';
+				innerHtml += '</thead>';
+				innerHtml += '<tbody>';
+				console.log(data);
+				for (var i = 0; i < data.list.length; i++) {
+					innerHtml += '<tr>';
+					innerHtml += '<td>' + data.list[i].className + '</td>';
+					innerHtml += '<td>' + data.list[i].classNo + '</td>';
+					innerHtml += '<td>' + data.list[i].studentName + '</td>';
+					innerHtml += '<td>' + data.list[i].studentNo + '</td>';
+					innerHtml += '<td>' + data.list[i].reason + '</td>';
+					var opinion = data.list[i].opinion;
+					if(data.list[i].opinion==null) {
+						opinion = '';
+					} 
+					innerHtml += '<td>' + opinion + '</td>';
+					innerHtml += '</tr>';
+				}
+
+				innerHtml += '</tbody>';
+				innerHtml += '</table>';
+				$("#studentObjection>tbody").html(innerHtml);
+				console.log(data);
+			}
+		});
+				
+	 var arr = ${classTerm};
+		
+		$(function() {
+			$("select[name=classYear]").children().first().prop("selected", true).change();
+			/* gradeCheck(); */
+	     
+	 	$(".basic_table>tbody>th").on("change", "#classTerm", function() {
+	 		clear();
+	 	});
+		}) 
+		
+		function changeYear(e) {
+	 	var $year = e.value;
+	 	var str = "";
+	 	
+	 	for(var i=0;i<arr.length;i++) {
+	 		var tmp = arr[i].toString().substr(0,4); // 2022
+	 		if(tmp.includes($year)) {
+	 			var tmp2 = arr[i].toString().substr(5,);
+	     		if(tmp2 == "1") {
+	     			str += "<option value='1'>1학기</option>";
+	     		}
+	     		if(tmp2 == "2") {
+	     			str += "<option value='2'>2학기</option>";
+	     		}
+	 		}
+	 	}
+	 	
+	 	$("#classTerm").empty();
+	 	$("#classTerm").append(str);
+	 	$("#classTerm").children().first().prop("selected", true).change();
+	//  	clear();
+	 }
+ 
+ 	  function gradeCheck() { // 조회하기 버튼
+	  var classYear = document.getElementById("classYear").value;
+	  var classTerm = document.getElementById("classTerm").value;
+
+	  updateDissent(); 
+	}
+ }
+ 	  
  </script> 
 </body>
 </html>

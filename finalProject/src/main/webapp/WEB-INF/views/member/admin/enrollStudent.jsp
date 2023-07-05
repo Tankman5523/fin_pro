@@ -342,6 +342,10 @@
 						<br>
 						<hr>
 					</div>
+					<div>
+					<th>사진</th>
+					<input type="file">
+					</div>
 					<input type="hidden" id="professorNo" name="professorNo" value="${loginUser.professorNo }">
 					<div id="user_infomation">
 						<table id="user_info">

@@ -1212,8 +1212,8 @@
   	</update>
   	
   	<insert id="insertStudent">
-  	INSERT INTO STUDENT (STUDENT_NO, DEPARTMENT_NO, COLLEGE_NO, ENTRANCE_DATE, STUDENT_NAME, STUDENT_PWD, PHONE, EMAIL, POST, ADDRESS,CLASS_LEVEL)
-	VALUES (('S'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_SNO.NEXTVAL,4,0)),(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
+  	INSERT INTO STUDENT (STUDENT_NO, DEPARTMENT_NO,FILE_NO, COLLEGE_NO, ENTRANCE_DATE, STUDENT_NAME, STUDENT_PWD, PHONE, EMAIL, POST, ADDRESS,CLASS_LEVEL)
+	VALUES (('S'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_SNO.NEXTVAL,4,0)),(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}),#{fileNo}, #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
   	</insert>
   	
   	
@@ -1223,6 +1223,8 @@
 	JOIN CLASS C ON SC.CLASS_NO = C.CLASS_NO
 	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
 	WHERE SC.STUDENT_NO = #{studentNo}
+	AND CLASS_YEAR = #{classYear}
+    AND CLASS_TERM =#{classTerm}
   	</select>
   	
   	<!-- 이의신청 추가 -->
@@ -1237,6 +1239,8 @@
 	JOIN CLASS C ON D.CLASS_NO = C.CLASS_NO
 	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
 	WHERE D.STUDENT_NO = #{studentNo}
+	AND CLASS_YEAR = #{classYear}
+    AND CLASS_TERM =#{classTerm}
   	</select>
   	
   	<select id="searchGradeReport" resultMap="objectionResultMap">
@@ -1249,12 +1253,13 @@
 	JOIN CLASS C ON SC.CLASS_NO = C.CLASS_NO
 	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
 	WHERE SC.STUDENT_NO = #{studentNo}
-	  AND (C.CLASS_YEAR = '2023' AND C.CLASS_TERM = '1' OR C.CLASS_TERM = '2')
+	AND CLASS_YEAR = #{classYear}
+    AND CLASS_TERM =#{classTerm}
   	</select>
   	
   	<insert id="insertProfessor">
-  	INSERT INTO PROFESSOR(PROFESSOR_NO, DEPARTMENT_NO, COLLEGE_NO, PROFESSOR_NAME, PROFESSOR_PWD, POSITION, ENTRANCE_DATE, PHONE, EMAIL, POST, ADDRESS, ACCOUNT_NO, ADMIN)
-  	VALUES (('P'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_PNO.NEXTVAL,4,0)), (SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{professorName}, #{professorPwd}, #{position}, #{entranceDate}, #{phone}, #{email}, #{post}, #{address}, #{accountNo}, #{admin})
+  	INSERT INTO PROFESSOR(PROFESSOR_NO, DEPARTMENT_NO,FILE_NO, COLLEGE_NO, PROFESSOR_NAME, PROFESSOR_PWD, POSITION, ENTRANCE_DATE, PHONE, EMAIL, POST, ADDRESS, ACCOUNT_NO, ADMIN)
+  	VALUES (('P'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_PNO.NEXTVAL,4,0)), (SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}),#{fileNo}, #{collegeNo}, #{professorName}, #{professorPwd}, #{position}, #{entranceDate}, #{phone}, #{email}, #{post}, #{address}, #{accountNo}, #{admin})
 	</insert>
   	
   	<!-- 학기별 성적 조회 -> 학기별 성적 계산 -->
@@ -1850,6 +1855,9 @@
 		JOIN CLASS C ON D.CLASS_NO = C.CLASS_NO
 		JOIN STUDENT S ON D.STUDENT_NO = S.STUDENT_NO
 		WHERE C.PROFESSOR_NO = #{professorNo}
+		AND CLASS_YEAR = #{classYear}
+		AND CLASS_Term = #{classTerm}
+		
   	</select>
   	
   	<update id="professorGradeRequest">

@@ -471,13 +471,14 @@ public class ProfessorController {
 	
 	//교수 이의신청 페이지
 	@RequestMapping(value = "professorGradeReport.pr", method = RequestMethod.GET)
-	public String professorGradeReport(HttpSession session,Model model) {
+	public String professorGradeReport(HttpSession session,Model model ,Objection obj) {
 		
 		Professor loginUser = (Professor)session.getAttribute("loginUser");
 		String professorNo = loginUser.getProfessorNo();
 		
-		ArrayList<Objection> list = memberService.professorGradeReport(professorNo);
-		
+		ArrayList<Objection> list = memberService.professorGradeReport(obj);
+		ArrayList<String> classTerm = memberService.selectProfessorClassTerm(professorNo); // 강의한 학년도, 학기
+		model.addAttribute("classTerm", classTerm);
 		model.addAttribute("list", list);
 		
 		return "member/professor/professorGradeReport";
@@ -486,9 +487,15 @@ public class ProfessorController {
 	//교수 이의신청 회신
 	@ResponseBody
 	@RequestMapping(value = "professorGradeRequest.pr")
-	public String professorGradeRequest(Objection obj) {
+	public String professorGradeRequest(Objection obj, HttpSession session) {
+		Professor p = (Professor)session.getAttribute("loginUser");
+		
+		HashMap<String, String> alarm = new HashMap<>();
+		alarm.put("cmd", "reportUpdate");
+		alarm.put("studentNo", obj.getStudentNo());
+		alarm.put("professorName", p.getProfessorName());
 	 	
-		int result = memberService.professorGradeRequest(obj);
+		int result = memberService.professorGradeRequest(obj, alarm);
 		
 		if(result>0) {
 			return "Y";

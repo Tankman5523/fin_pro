@@ -216,7 +216,7 @@ public interface MemberService {
 	int gradeUpdate(Grade g, HashMap<String, String> alarm);
 
 	// 강의 이의제기 -> 학생 신청
-	ArrayList<Objection> studentGradeReport(String studentNo);
+	ArrayList<Objection> studentGradeReport(Objection obj);
 
 	// 직원 생성하기
 	int insertProfessor(Professor pr);
@@ -401,10 +401,10 @@ public interface MemberService {
 	ArrayList<Counseling> selectAllCounseling(String user);
 
 	//교수 이의신청 페이지
-	ArrayList<Objection> professorGradeReport(String professorNo);
+	ArrayList<Objection> professorGradeReport(Objection obj);
 		
 	//교수 이의신청 회신
-	int professorGradeRequest(Objection obj);
+	int professorGradeRequest(Objection obj, HashMap<String, String> alarm);
 
 
 }
