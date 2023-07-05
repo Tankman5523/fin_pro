@@ -44,6 +44,8 @@ import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
 
+import lombok.Synchronized;
+
 @Controller
 public class StudentController {
 
@@ -255,6 +257,7 @@ public class StudentController {
 	}
 
 	// 수강신청 - 수강신청
+	@Synchronized
 	@ResponseBody
 	@RequestMapping("postRegisterClass.st")
 	public String postRegisterClass(RegisterClass rc){
