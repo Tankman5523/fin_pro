@@ -18,6 +18,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Controller;
@@ -27,12 +29,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.univ.fin.common.model.vo.WeatherVo;
 
+import lombok.Synchronized;
+
 @EnableCaching
 @Controller
 public class Weather {
 	
+	@Autowired
+	private CacheManager cacheManager;
+	
 	/* ========== 실시간 온도 ========== */
 	@Cacheable("weather")
+	@Synchronized
 	@ResponseBody
 	@RequestMapping(value="weather.api",produces="application/json; charset=UTF-8")
 	public String weather() throws Exception{
@@ -45,6 +53,7 @@ public class Weather {
 	
 	/* ========== 하늘상태, 강수형태  ========== */
 	@Cacheable("skyPty")
+	@Synchronized
 	@ResponseBody
 	@RequestMapping(value="skyPty.api",produces="application/json; charset=UTF-8")
 	public String skyPty() throws Exception{
@@ -70,6 +79,7 @@ public class Weather {
 	
 	/* ========== 최저,최고 온도 ========== */
 	@Cacheable("tmnTmx")
+	@Synchronized
 	@ResponseBody
 	@RequestMapping(value="tmnTmx.api",produces="application/json; charset=UTF-8")
 	public String tmnTmx() throws Exception{
@@ -103,6 +113,9 @@ public class Weather {
 			yesterday = yesterday();
 		} catch (Exception e) {
 		}
+		
+		HashMap<String, String> h = new HashMap<>();
+		String chkError = "YYYY"; //비정상 처리 판별
 		
 		String url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
 		url += "?serviceKey=LV1haHMzhSQa4G%2Fy3Z9xbZ9hC9LKdHt3g2Z4M5SQwQVcGxx6M7HRJqVs30pL9H4MdL7POcjH78%2FBspjr%2FNV1sw%3D%3D";
@@ -149,7 +162,11 @@ public class Weather {
 				responseText = ""; // 초기화 시켜줌
 				count++;
 				if(count == 10) {
-					return null;
+					chkError = "NNNN";
+					h.put("TMN", errorImg());
+					h.put("TMX", errorImg());
+					h.put("chkError", chkError);
+					return h;
 				}
 				continue;
 			} catch (IOException e1) {
@@ -162,10 +179,13 @@ public class Weather {
 				responseText = ""; // 초기화 시켜줌
 				count++;
 				if(count == 10) {
-					return null;
+					chkError = "NNNN";
+					h.put("TMN", errorImg());
+					h.put("TMX", errorImg());
+					h.put("chkError", chkError);
+					return h;
 				}
 				continue;
-			}else {
 			}
 			
 			JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
@@ -178,7 +198,11 @@ public class Weather {
 				responseText = ""; // 초기화 시켜줌
 				count++;
 				if(count == 10) {
-					return null;
+					chkError = "NNNN";
+					h.put("TMN", errorImg());
+					h.put("TMX", errorImg());
+					h.put("chkError", chkError);
+					return h;
 				}
 			}else {
 				break; //while 탈출
@@ -200,8 +224,6 @@ public class Weather {
 		}
 		
 		//TMP - 1시간 온도, TMN - 일 최저 온도, TMX - 일 최고 온도
-		
-		HashMap<String, String> h = new HashMap<>();
 		
 		int setTmp = 0;
 		int setMin = 0;
@@ -232,6 +254,7 @@ public class Weather {
 		
 		h.put("TMN", min);
 		h.put("TMX", max);
+		h.put("chkError", chkError);
 		
 		return h; 
 	}
@@ -277,6 +300,9 @@ public class Weather {
 			}
 		}
 		
+		HashMap<String, String> h = new HashMap<>(); //최종 해쉬맵
+		String chkError = "YYYY"; //비정상 처리 판별
+		
 		String url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst";
 		url += "?serviceKey=LV1haHMzhSQa4G%2Fy3Z9xbZ9hC9LKdHt3g2Z4M5SQwQVcGxx6M7HRJqVs30pL9H4MdL7POcjH78%2FBspjr%2FNV1sw%3D%3D";
 		url += "&pageNo=1";
@@ -312,8 +338,11 @@ public class Weather {
 				System.out.println("ultraShortTerm 타임아웃 발생");
 				responseText = ""; // 초기화 시켜줌
 				count++;
-				if(count == 10) { //에러가 10번 발생 할경우 null값 리턴
-					return null;
+				if(count == 10) {
+					chkError = "NNNN";
+					h.put("T1H", errorImg());
+					h.put("chkError", chkError);
+					return h;
 				}
 				continue; //재실행
 			} catch (IOException e1) {
@@ -324,11 +353,14 @@ public class Weather {
 				responseText = ""; // 초기화 시켜줌
 				count++;
 				if(count == 10) {
-					return null;
+					chkError = "NNNN";
+					h.put("T1H", errorImg());
+					h.put("chkError", chkError);
+					return h;
 				}
 				continue; //재실행
-			}else {
 			}
+			
 			System.out.println("ultraShortTerm : " + responseText);
 			
 			JSONObject totalObj = (JSONObject) new JSONParser().parse(responseText);
@@ -341,7 +373,10 @@ public class Weather {
 				responseText = ""; // 초기화 시켜줌
 				count++;
 				if(count == 10) {
-					return null;
+					chkError = "NNNN";
+					h.put("T1H", errorImg());
+					h.put("chkError", chkError);
+					return h;
 				}
 			}else {
 				break; //while 탈출
@@ -363,12 +398,11 @@ public class Weather {
 			list.add(weather);
 		}
 		
-		HashMap<String, String> h = new HashMap<>();
-		
 		for(int i=0; i<list.size(); i++) {
 			//기온
 			if(list.get(i).getCategory().equals("T1H")) {
 				h.put("T1H", list.get(i).getObsrValue());
+				h.put("chkError", chkError);
 			}
 		}
 		return h;
@@ -428,6 +462,9 @@ public class Weather {
 			}
 		}
 		
+		HashMap<String, String> h = new HashMap<>();
+		String chkError = "YYYY";
+		
 		String url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst";
 		url += "?serviceKey=LV1haHMzhSQa4G%2Fy3Z9xbZ9hC9LKdHt3g2Z4M5SQwQVcGxx6M7HRJqVs30pL9H4MdL7POcjH78%2FBspjr%2FNV1sw%3D%3D";
 		url += "&pageNo=1";
@@ -442,7 +479,7 @@ public class Weather {
 		String responseText = "";
 		JSONObject bodyObj = null;
 		
-		while(true) { 
+		while(true) {
 			URL requestUrl = new URL(url);
 		
 			HttpURLConnection urlCon;
@@ -470,7 +507,11 @@ public class Weather {
 				responseText = ""; // 초기화 시켜줌
 				count++;
 				if(count == 10) {
-					return null;
+					chkError = "NNNN";
+					h.put("SKY", errorImg());
+					h.put("PTY", errorImg());
+					h.put("chkError", chkError);
+					return h;
 				}
 				continue;
 			} catch (IOException e1) {
@@ -481,10 +522,13 @@ public class Weather {
 				responseText = ""; // 초기화 시켜줌
 				count++;
 				if(count == 10) {
-					return null;
+					chkError = "NNNN";
+					h.put("SKY", errorImg());
+					h.put("PTY", errorImg());
+					h.put("chkError", chkError);
+					return h;
 				}
 				continue;
-			}else {
 			}
 			
 			System.out.println("ultraShortforecast : " + responseText);
@@ -499,7 +543,11 @@ public class Weather {
 				responseText = ""; // 초기화 시켜줌
 				count++;
 				if(count == 10) {
-					return null;
+					chkError = "NNNN";
+					h.put("SKY", errorImg());
+					h.put("PTY", errorImg());
+					h.put("chkError", chkError);
+					return h;
 				}
 			}else {
 				break; //03while 탈출
@@ -522,8 +570,6 @@ public class Weather {
 			list.add(weather);
 		}
 		
-		HashMap<String, String> h = new HashMap<>();
-		
 		for(int i=0; i<list.size(); i++) {
 			
 			//기온
@@ -533,9 +579,8 @@ public class Weather {
 			if(list.get(i).getCategory().equals("PTY") && list.get(i).getFcstTime().equals(fcstTime)) {
 				h.put("PTY", list.get(i).getFcstValue());
 			}
-			
 		}
-		
+		h.put("chkError", chkError);
 		return h;
 	}
 
@@ -591,6 +636,35 @@ public class Weather {
 		result.put("SKY", resultSky);
 		
 		return result;
+	}
+	
+	//에러 이미지 처리
+	public String errorImg() {
+		
+		String img = "<span><img id='dustErrorGif' src='resources/icon/dust_error.gif' data-animated='resources/icon/dust_error.gif'></span>";
+		
+		return img;
+	}
+	
+	//최저,최고기온 캐시 삭제
+	@ResponseBody
+	@RequestMapping("tmnTmxCache.api")
+	public void tmnTmxCache() {
+		cacheManager.getCache("tmnTmx").clear();
+	}
+	
+	//하늘상태,강수형태 캐시 삭제
+	@ResponseBody
+	@RequestMapping("skyPtyCache.api")
+	public void skyPtyCache() {
+		cacheManager.getCache("skyPty").clear();
+	}
+	
+	//현재온도 캐시 삭제
+	@ResponseBody
+	@RequestMapping("weatherCache.api")
+	public void weatherCache() {
+		cacheManager.getCache("weather").clear();
 	}
 
 }
