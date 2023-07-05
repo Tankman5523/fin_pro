@@ -391,7 +391,7 @@ public class ProfessorController {
 	
 	//안식,퇴직 신청 인서트
 	@RequestMapping("professorRestRetire.pr")
-	public String insertProRest(ProfessorRest pr) {
+	public String insertProRest(ProfessorRest pr,Model model) {
 		
 		if(pr.getEndDate()!=null) {//퇴직은 종료일을 안받기 때문에 안식이라는 뜻
 			pr.setCategory(1);//카테고리 안식(1) 담음
@@ -400,6 +400,12 @@ public class ProfessorController {
 		}
 		
 		int result = memberService.insertProRest(pr);
+		
+		if(result>0) {
+			model.addAttribute("alertMsh","신청 성공");
+		}else {
+			model.addAttribute("alertMsh","신청 오류");
+		}
 		
 		return "redirect:professorRestList.pr";
 	}

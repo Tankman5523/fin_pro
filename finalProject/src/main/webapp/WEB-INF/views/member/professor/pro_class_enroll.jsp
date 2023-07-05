@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>강의 개설 신청 페이지</title>
 <link rel="stylesheet" href="/fin/resources/css/classCreateView.css">
 </head>
 <body>
@@ -107,14 +107,17 @@
                                     </select>
                                 </td>
                                 <td>*강의계획서</td>
-                                <td colspan="4" class="filebox">
+                                <td colspan="3" class="filebox">
                                 	<!-- 
                                 	 <label for="upfile" class="btn" id="file_btn">첨부파일</label>
                                 	<input type="file" name="upfile" id="upfile"  required>
                                 	 -->
-                                	<input class="upload-name" placeholder="강의계획서" style="width:58%" required>
+                                	<input class="upload-name" placeholder="강의계획서" style="width:58%" readonly>
 							    	<label for="file">파일찾기</label> 
-							    	<input type="file" name="upfile" id="file" required>
+							    	<input type="file" name="upfile" id="file" accept=".pdf,.hwpx,.docx">
+							    	<a href="resources/uploadFiles/classes/강의 계획서 양식.docx" download>
+							    		계획서 양식 <i class="fa-solid fa-download"></i>
+							    	</a>
                                 </td>
                                 
                             </tr>
@@ -174,15 +177,29 @@
         }
         $("#file").on('change',function(){//첨부파일 올리면
         	var fileName = $("#file").val().split('/').pop().split('\\').pop();
-        	$(".upload-name").val(fileName);//첨부파일 이름 보여주는곳에 올림
+        	var extend = fileName.substr(fileName.length-4);
+        	console.log(extend);
+        	if(extend=="docx"||extend=="hwpx"||extend=="pdf"){
+	        	$(".upload-name").val(fileName);//첨부파일 이름 보여주는곳에 올림
+        	}else{
+        		alert("강의 계획서는 .pdf,.hwpx,.docx 형식으로 올려주세요.");
+        		$("#file").val("");
+        		$(".upload-name").val("");
+        	}
         });
         
         $("#createform").submit(function(){
-        	if(confirm('강의 개설을 신청 하시겠습니까?')){//개설 신청을 한다면
-        		$("#classTerm").prop("disabled",false);
-        		$("#classYear").prop("disabled",false);
-        	}else{//취소
-        		return false;
+        	console.log($("#file").val());
+        	if($("#file").val()!=""){
+	        	if(confirm('강의 개설을 신청 하시겠습니까?')){//개설 신청을 한다면
+	        		$("#classTerm").prop("disabled",false);
+	        		$("#classYear").prop("disabled",false);
+	        	}else{
+	        		return false;
+	        	}
+        	}else{
+        		alert("강의 계획서를 첨부 해주세요.");
+	        	return false;
         	}
         })
         

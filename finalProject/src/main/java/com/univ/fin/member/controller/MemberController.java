@@ -93,7 +93,11 @@ public class MemberController {
 				
 				Student loginUser = memberService.loginStudent(st);
 				
-				boolean chkPwd = bcryptPasswordEncoder.matches(userPwd, loginUser.getStudentPwd());
+				boolean chkPwd = false;
+				
+				if(loginUser != null) {
+					chkPwd = bcryptPasswordEncoder.matches(userPwd, loginUser.getStudentPwd());
+				}
 				
 				if(loginUser == null || chkPwd == false) {
 					session.setAttribute("alertMsg", "아이디 또는 비밀번호를 잘못 입력했습니다.");
@@ -112,7 +116,7 @@ public class MemberController {
 					}
 					
 					if(autoLogin != null && autoLogin.equals("on")) { //자동로그인 체크 시
-						cookie = new Cookie("autoLoginInfo",URLEncoder.encode(loginUser.getStudentNo() + "," + loginUser.getStudentPwd(),"UTF-8"));
+						cookie = new Cookie("autoLoginInfo",URLEncoder.encode(loginUser.getStudentNo() + "," + userPwd,"UTF-8"));
 						cookie.setMaxAge(60*60*24*365); //1년
 						response.addCookie(cookie);
 					} //로그아웃 시 해당 쿠키 삭제하므로 else처리 x
@@ -128,7 +132,11 @@ public class MemberController {
 				
 				Professor loginUser = memberService.loginProfessor(pr);
 				
-				boolean chkPwd = bcryptPasswordEncoder.matches(userPwd, loginUser.getProfessorPwd());
+				boolean chkPwd = false;
+				
+				if(loginUser != null) {
+					chkPwd = bcryptPasswordEncoder.matches(userPwd, loginUser.getProfessorPwd());
+				}
 				
 				if(loginUser == null || chkPwd == false) {
 					session.setAttribute("alertMsg", "아이디 또는 비밀번호를 잘못 입력했습니다.");
@@ -147,7 +155,7 @@ public class MemberController {
 					}
 					
 					if(autoLogin != null && autoLogin.equals("on")) {
-						cookie = new Cookie("autoLoginInfo",URLEncoder.encode(loginUser.getProfessorNo() + "," + loginUser.getProfessorPwd(),"UTF-8"));
+						cookie = new Cookie("autoLoginInfo",URLEncoder.encode(loginUser.getProfessorNo() + "," + userPwd,"UTF-8"));
 						cookie.setMaxAge(60*60*24*365); //1년
 						response.addCookie(cookie);
 					}

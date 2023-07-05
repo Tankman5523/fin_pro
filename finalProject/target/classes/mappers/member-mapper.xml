@@ -951,7 +951,7 @@
   	
   	<!-- (교수)강의개설 신청 리스트 조회-->
   	<select id="selectClassCreateList" resultMap="classResultMap">
-  		SELECT CLASS_NO,PROFESSOR_NAME,C.FILE_NO,DIVISION,DEPARTMENT_NAME,CLASS_NAME,CLASS_YEAR,CLASS_TERM
+  		SELECT CLASS_NO,PROFESSOR_NAME,FILE_PATH||CHANGE_NAME AS FILE_NO,DIVISION,DEPARTMENT_NAME,CLASS_NAME,CLASS_YEAR,CLASS_TERM
         		,CLASSROOM,DECODE(DAY,1,'월',2,'화',3,'수',4,'목',5,'금') AS DAY
         		,DECODE(CLASS_HOUR,1,DECODE(PERIOD,1,'9:00~10:00',2,'10:00~11:00',3,'11:00~12:00',4,'12:00~13:00',5,'13:00~14:00',6,'14:00~15:00',7,'15:00~16:00',8,'16:00~17:00',9,'17:00~18:00',10,'18:00~19:00')
                                   ,2,DECODE(PERIOD,1,'9:00~11:00',2,'10:00~12:00',3,'11:00~13:00',4,'12:00~14:00',5,'13:00~15:00',6,'14:00~16:00',7,'15:00~17:00',8,'16:00~18:00',9,'17:00~19:00')) AS PERIOD
@@ -959,6 +959,7 @@
 		FROM CLASS C
 		JOIN DEPARTMENT D USING (DEPARTMENT_NO)
 		JOIN PROFESSOR P USING (PROFESSOR_NO)
+		LEFT JOIN ATTACHMENT A ON (C.FILE_NO=A.FILE_NO)
 		WHERE PROFESSOR_NO LIKE '%'||#{professorNo}||'%'
 		ORDER BY CLASS_NO DESC
   	</select>
@@ -1905,7 +1906,8 @@
 		OPINION = #{opinion}
 	WHERE STUDENT_NO = #{studentNo}
 	AND CLASS_NO = #{classNo}
-</update>
+	</update>
+	
   	<!-- (관리자) 공지사항 관리 - 수정 게시글 조회 -->
   	<select id="selectUpdateNotice" resultMap="noticeResultSet">
   		SELECT NOTICE_CATEGORY, FIELD, NOTICE_TITLE, NOTICE_CONTENT, CREATE_DATE
