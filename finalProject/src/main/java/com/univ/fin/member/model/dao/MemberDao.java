@@ -830,6 +830,31 @@ public class MemberDao {
 		
 	}
 
+	// (관리자) 공지사항 수정 파일 조회
+	public ArrayList<NoticeAttachment> selectUpdateNoticeFile(SqlSessionTemplate sqlSession, String noticeNo) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.selectUpdateNoticeFile",noticeNo);
+	}
+
+	// (관리자) 공지사항 수정
+	public int updateNoticeForm(SqlSessionTemplate sqlSession, Notice n) {
+
+		return sqlSession.update("memberMapper.updateNoticeForm", n);
+	}
+
+	// (관리자) 공지사항 파일 삭제
+	public int deleteNoticeFile(SqlSessionTemplate sqlSession, String[] fileNo) {
+		
+		return sqlSession.update("memberMapper.deleteNoticeFile", fileNo);
+	}
+
+	// (관리자) 공지사항 상세 보기
+	public Notice detailNoticeView(SqlSessionTemplate sqlSession, String noticeNo) {
+
+		return sqlSession.selectOne("memberMapper.detailNoticeView", noticeNo);
+	}
+
+
 	public int updateReport(SqlSessionTemplate sqlSession, Objection obj) {
 		
 		return sqlSession.update("memberMapper.updateReport",obj);

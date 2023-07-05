@@ -413,6 +413,16 @@ public interface MemberService {
 	// (관리자) 공지사항 파일 등록
 	int insertNoticeFile(ArrayList<NoticeAttachment> list);
 
+	// (관리자) 공지사항 파일 조회
+	ArrayList<NoticeAttachment> selectUpdateNoticeFile(String noticeNo);
+
+	// (관리자) 공지사항 수정 / 삭제
+	int updateNoticeForm(Notice n, String delFileNo);
+
+	// (관리자) 공지사항 상세보기
+	Notice detailNoticeView(String noticeNo);
+	
+
 	//교수 이의신청 학기년도별 조회
 	ArrayList<Objection> searchReport(Objection obj);
 

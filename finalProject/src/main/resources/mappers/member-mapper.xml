@@ -258,6 +258,16 @@
 		<result column="RECEIVER_NO" property="receiverNo"/>
 		<result column="SENDER_NAME" property="senderName"/>
 	</resultMap>
+	
+	<resultMap type="noticeFile" id="noticeFileResultSet">
+		<result column="FILE_NO" property="fileNo"/>
+		<result column="NOTICE_NO" property="noticeNo"/>
+		<result column="ORIGIN_NAME" property="originName"/>
+		<result column="CHANGE_NAME" property="changeName"/>
+		<result column="FILE_PATH" property="filePath"/>
+		<result column="UPLOAD_DATE" property="uploadDate"/>
+		<result column="STATUS" property="status"/>
+	</resultMap>
   	
   	<!-- 학생 로그인 -->
   	<select id="loginStudent" parameterType="student" resultMap="loginStudentMap">
@@ -1910,13 +1920,13 @@
 	
   	<!-- (관리자) 공지사항 관리 - 수정 게시글 조회 -->
   	<select id="selectUpdateNotice" resultMap="noticeResultSet">
-  		SELECT NOTICE_CATEGORY, FIELD, NOTICE_TITLE, NOTICE_CONTENT, CREATE_DATE
+  		SELECT N.NOTICE_NO, NOTICE_CATEGORY, FIELD, NOTICE_TITLE, NOTICE_CONTENT, CREATE_DATE
           , LISTAGG(ORIGIN_NAME, ',') WITHIN GROUP(ORDER BY N.NOTICE_NO) AS ORIGIN_NAME
 		FROM NOTICE N
 		LEFT JOIN NOTICE_ATTACHMENT NA ON(N.NOTICE_NO = NA.NOTICE_NO)
 		WHERE N.NOTICE_NO = #{noticeNo }
 		AND N.STATUS = 'Y'
-		GROUP BY NOTICE_CATEGORY, FIELD, NOTICE_TITLE, NOTICE_CONTENT, CREATE_DATE
+		GROUP BY N.NOTICE_NO, NOTICE_CATEGORY, FIELD, NOTICE_TITLE, NOTICE_CONTENT, CREATE_DATE
   	</select>
   	
   	<!-- (교수) 전체 상담 신청 조회 -->
@@ -1966,6 +1976,47 @@
 			</foreach>
   		) A
   	</insert>
+  	
+  	<!-- (관리자) 공지사항 수정 파일 조회 -->
+  	<select id="selectUpdateNoticeFile" resultMap="noticeFileResultSet">
+  		SELECT *
+  		FROM NOTICE_ATTACHMENT
+  		WHERE NOTICE_NO = #{noticeNo}
+  		AND STATUS = 'Y'
+  	</select>
+  	
+  	<!-- (관리자) 공지사항 수정 -->
+  	<update id="updateNoticeForm">
+  		UPDATE NOTICE
+  		SET NOTICE_CATEGORY = #{noticeCategory }
+  		  , FIELD = #{field }
+  		  , NOTICE_TITLE = #{noticeTitle }
+  		  , NOTICE_CONTENT = #{noticeContent }
+  		  , CREATE_DATE = SYSDATE
+		WHERE NOTICE_NO = #{noticeNo }
+  	</update>
+  	
+  	<!-- (관리자) 공지사항 파일 삭제 -->
+  	<update id="deleteNoticeFile">
+  		UPDATE NOTICE_ATTACHMENT
+  		SET STATUS = 'N'
+  			, ORIGIN_NAME = NULL
+  		WHERE FILE_NO IN
+  		<foreach collection="array" index="index" item="fileNo"  open="(" close=")" separator=",">
+			#{fileNo }
+  		</foreach>
+  	</update>
+  	
+  	<!-- (관리자) 공지사항 상세 보기 -->
+  	<select id="detailNoticeView" resultMap="noticeResultSet">
+  		SELECT N.NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, CATEGORY_NAME, FIELD
+       		 , LISTAGG(CHANGE_NAME, ',') WITHIN GROUP(ORDER BY N.NOTICE_NO) AS CHANGE_NAME
+		FROM NOTICE N
+		JOIN NOTICE_CATEGORY NC ON(NOTICE_CATEGORY = CATEGORY_NO)
+		LEFT JOIN NOTICE_ATTACHMENT NA ON(N.NOTICE_NO = NA.NOTICE_NO)
+		WHERE N.NOTICE_NO = #{noticeNo}
+		GROUP BY N.NOTICE_NO, NOTICE_TITLE, NOTICE_CONTENT, CATEGORY_NAME, FIELD
+  	</select>
   	
   	<insert id="insertAttachmentStudent" parameterType="attachment">
   		INSERT INTO ATTACHMENT(FILE_NO,ORIGIN_NAME,CHANGE_NAME,FILE_PATH,UPLOAD_DATE)
