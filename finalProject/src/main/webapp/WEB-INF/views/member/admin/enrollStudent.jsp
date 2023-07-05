@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <!-- 주소API 다음(카카오) -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
@@ -331,7 +332,7 @@
             <div id="content_1">
             	<br>
 					<th><button id="randombtn" onclick="randomPasswordBtn()">비밀번호 생성하기</button></th>
-					<form id="insertForm" action="insertStudent.ad" method="post">
+					<form id="insertForm" action="insertStudent.ad" method="post" enctype="multipart/form-data">
 					<div id="basic_info">
 						<table class="basic_table">
 						<tr>
@@ -343,8 +344,9 @@
 						<hr>
 					</div>
 					<div>
-					<th>사진</th>
-					<input type="file">
+					<span style="margin-left : 30px"  >사진</span>
+					<input type="file" name="upfile" id="file" required>
+					<br><br>
 					</div>
 					<input type="hidden" id="professorNo" name="professorNo" value="${loginUser.professorNo }">
 					<div id="user_infomation">

@@ -453,7 +453,7 @@ public class StudentController {
 
 	}
 
-	// 학생 강의 의의신청 페이지
+	// 학생 강의 이의신청 페이지
 	@RequestMapping(value = "studentGradeReport.st" , method = RequestMethod.GET)
 	public String studentGradeReport(HttpSession session, Model model, Objection obj) {
 
@@ -663,29 +663,6 @@ public class StudentController {
 		ArrayList<HashMap<String, String>> list = memberService.detailmajorGra(h);
 
 		return new Gson().toJson(list);
-	}
-
-	// 학생등록 페이지
-	@RequestMapping("enrollStudent.me")
-	public String enrollStudent() {
-
-		return "member/student/enrollStudent";
-	}
-
-	// 학생등록 페이지 등록
-	@RequestMapping("insertStudent.me")
-	public String insertStudent(Student st, Model model, HttpSession session) {
-
-		int result = memberService.insertStudent(st);
-
-		if (result > 0) {
-			session.setAttribute("alertMsg", "회원가입 성공");
-			return "redirect:enrollStudent";
-		} else {
-			model.addAttribute("errorMsg", "회원가입 실패");
-		}
-		return "member/student/infoStudent";
-
 	}
 
 	// 휴,복학 신청 조회(리스트) 페이지 이동(학생)

@@ -15,17 +15,7 @@
 		right: 15%;
 		position: relative;
 	}
-	#studentObjection{
-		border: 1px solid black;
-		text-align: center;
-		width: 95%;
-		margin-left : 20px;
-		border-collapse: collapse;
-		border-radius: 10px;
-		border-style: hidden;
-		box-shadow: 0 0 0 1px #000;
-	}
-	#studentObjection2{
+	#professorObjection{
 		border: 1px solid black;
 		text-align: center;
 		width: 95%;
@@ -36,10 +26,10 @@
 		box-shadow: 0 0 0 1px #000;
 	}
 
-	#student_objection>thead>tr>th{
+	#professor_objection>thead>tr>th{
 		height: 50px;
 	}
-	#student_objection>tbody>tr>td{
+	#professor_objection>tbody>tr>td{
 		height: 40px;
 	}
 	#text-box{
@@ -142,39 +132,39 @@
                 </div>
             </div>
             <div id="content_1">
-					<div id="basic_info">
-						<table class="basic_table">
+				<div id="basic_info">
+					<table class="basic_table">
 						<tr>
-						<th id="grade_report">성적 이의신청</th>
-                        <th id="grade_head">학년도 : </th>
-                        <th>
-                            <label for="class_year">
-                                <select name="classYear" id="classYear">
-                                    <option value="2023">2023</option>
+							<th id="grade_report">성적 이의신청</th>
+							<th id="grade_head">학년도 :</th>
+							<th><label for="classYear"> 
+								<select name="classYear" id="classYear" onchange="changeYear(this);">
+									<c:set var="previous" value="0"/>
+									<c:forEach var="y" items="${classTerm}">
+										<c:if test="${fn:substring(y, 0, 4) ne previous }">
+											<option value="${fn:substring(y, 0, 4) }">${fn:substring(y, 0, 4) }년도</option>
+										</c:if>
+										<c:set var="previous" value="${fn:substring(y, 0, 4) }"/>
+									</c:forEach>
                                 </select>
-                            </label>
-                        </th>
-                        <th>학기 : </th>
-                        <th>
-                            <label for="class_year">
-                                <select name="classTerm" id="classTerm">
-                                    <option value="1">1학기</option>
-                                    <option value="2">2학기</option>
-                                </select>
-                            </label>
-                        </th>
-                        <th>
-                            <button id="checkbtn" onclick="gradecheck()">조회하기</button>
-                         </th>
-                         <tr>
+							</label></th>
+							<th>학기 :</th>
+							<th><label for="classTeam"> 
+								<select name="classTerm" id="classTerm"></select>
+							</label>
+							</th>
+							<th>
+								<button type="button" id="checkbtn" onclick="reasonRequest()">조회하기</button>
+							</th>
+						<tr>
 					</table>
-                     <hr>
-			    </div>
+					<hr>
+				</div>
 			    <div style="text-align: center;">
 					  <b>이의신청 현황</b>
 				</div>
 				<br>
-			    <table border="1" id="studentObjection">
+			    <table border="1" id="professorObjection">
 					<thead>
 						<tr>
 							<th>교과목명</th>
@@ -219,7 +209,7 @@
 									</c:if>
 								</td>
 								<td><input type="text" class="opinion" id="opinion" name="opinion" style="border: none; background: transparent;"></td>
-								<td><button class="objectionbtn" onclick="updateDissent('${c.classNo }','${c.studentNo }');">회신버튼</button></td>
+								<td><button class="objectionbtn" onclick="updateDissent('${c.status }','${c.opinion }');">회신버튼</button></td>
 							</tr>
 						</c:forEach>
 					</tbody>
@@ -249,17 +239,54 @@
       </div>
  </div>
 <script>
+		var arr = ${classTerm};
+		
+		$(function() {
+			$("select[name=classYear]").children().first().prop("selected", true).change();
+			/* gradeCheck(); */
+		    
+			$(".basic_table>tbody>th").on("change", "#classTerm", function() {
+				clear();
+			});
+		}) 
+		
+		function changeYear(e) {
+			var $year = e.value;
+			var str = "";
+			
+			for(var i=0;i<arr.length;i++) {
+				var tmp = arr[i].toString().substr(0,4); // 2022
+				if(tmp.includes($year)) {
+					var tmp2 = arr[i].toString().substr(5,);
+		    		if(tmp2 == "1") {
+		    			str += "<option value='1'>1학기</option>";
+		    		}
+		    		if(tmp2 == "2") {
+		    			str += "<option value='2'>2학기</option>";
+		    		}
+				}
+			}
+			
+			$("#classTerm").empty();
+			$("#classTerm").append(str);
+			$("#classTerm").children().first().prop("selected", true).change();
+		// 	clear();
+		}
+		
+		function reasonRequest() { // 조회하기 버튼
+			  var classYear = document.getElementById("classYear").value;
+			  var classTerm = document.getElementById("classTerm").value;
+			  
+			}
+
+	
  function updateDissent(classNo,studentNo) {
 	 var msg = "${msg}";
 		
-		 var flag = confirm("수정하시겠습니까?");
 		 var status = $("#status").val();
 		 var opinion = $("#opinion").val();
 		 var studentNo = studentNo;
 		 var classNo = classNo;
-		 
-		 console.log(opinion);
-		 console.log(status);
 		 
 		 $.ajax({
 			 url : "professorGradeRequest.pr",
@@ -289,9 +316,8 @@
 		var classYear = $("#classYear").val();
 		var classTerm = $("#classTerm").val();
 		
-		
-		$.ajax({
-			url : 'professorGradeReport.pr',
+		 $.ajax({
+			url : 'searchReport.pr',
 			type : 'post',
 			data : {
 
@@ -303,88 +329,84 @@
 				
 				
 				var innerHtml = '';
-				innerHtml += '<table border="1" id="studentObjection2">';
-				innerHtml += '<div style="text-align: center;">';
-				innerHtml += '<b>신청내역</b>';
-				innerHtml += '</div>';
-				innerHtml += '<br>';
-				innerHtml += '<thead>';
-				innerHtml += '<tr>';
-				innerHtml += '<th>교과목명</th>';
-				innerHtml += '<th>과목번호</th>';
-				innerHtml += '<th>학생명</th>';
-				innerHtml += '<th>학번</th>';
-				innerHtml += '<th>사유</th>';
-				innerHtml += '<th>처리상태</th>';
-				innerHtml += '<th>교수의견</th>';
-				innerHtml += '<th>회신버튼</th>';
-				innerHtml += '</tr>';
-				innerHtml += '</thead>';
-				innerHtml += '<tbody>';
-				console.log(data);
-				for (var i = 0; i < data.list.length; i++) {
-					innerHtml += '<tr>';
-					innerHtml += '<td>' + data.list[i].className + '</td>';
-					innerHtml += '<td>' + data.list[i].classNo + '</td>';
-					innerHtml += '<td>' + data.list[i].studentName + '</td>';
-					innerHtml += '<td>' + data.list[i].studentNo + '</td>';
-					innerHtml += '<td>' + data.list[i].reason + '</td>';
-					var opinion = data.list[i].opinion;
-					if(data.list[i].opinion==null) {
-						opinion = '';
-					} 
-					innerHtml += '<td>' + opinion + '</td>';
-					innerHtml += '</tr>';
+
+				 for (var i = 0; i < data.length; i++) {
+				  innerHtml += '<tr>';
+				  innerHtml += '<td>' + data[i].className + '</td>';
+				  innerHtml += '<td>' + data[i].classNo + '</td>';
+				  innerHtml += '<td>' + data[i].studentName + '</td>';
+				  innerHtml += '<td>' + data[i].studentNo + '</td>';
+				  var reason = data[i].reason;
+				  if (data[i].reason == null) {
+					  reason = '';
+				  }
+				  innerHtml += '<td>' + reason + '</td>';
+				  innerHtml += '<td>';
+				  if (data[i].status === 'B') {
+				    innerHtml += '<select id="status" name="status">';
+				    innerHtml += '<option value="B" selected>처리중</option>';
+				    innerHtml += '<option value="N">N</option>';
+				    innerHtml += '<option value="Y">Y</option>';
+				    innerHtml += '</select>';
+				  } else if (data[i].status === 'N') {
+				    innerHtml += '<select id="status" name="status">';
+				    innerHtml += '<option value="B">처리중</option>';
+				    innerHtml += '<option value="N" selected>N</option>';
+				    innerHtml += '<option value="Y">Y</option>';
+				    innerHtml += '</select>';
+				  } else if (data[i].status === 'Y') {
+				    innerHtml += '<select id="status" name="status">';
+				    innerHtml += '<option value="B">처리중</option>';
+				    innerHtml += '<option value="N">N</option>';
+				    innerHtml += '<option value="Y" selected>Y</option>';
+				    innerHtml += '</select>';
+				  }
+				  innerHtml += '</td>';
+				  innerHtml += '<td><input type="text" class="opinion" id="opinion" name="opinion" style="border: none; background: transparent;"></td>';
+				  innerHtml += '<td><button onclick="updateDissent(this);">회신버튼</button></td>'; // Added button element
+				  innerHtml += '</tr>';
 				}
 
-				innerHtml += '</tbody>';
-				innerHtml += '</table>';
-				$("#studentObjection>tbody").html(innerHtml);
-				console.log(data);
+				$("#professorObjection>tbody").html(innerHtml); 
 			}
-		});
+		}); 
 				
-	 var arr = ${classTerm};
-		
-		$(function() {
-			$("select[name=classYear]").children().first().prop("selected", true).change();
-			/* gradeCheck(); */
-	     
-	 	$(".basic_table>tbody>th").on("change", "#classTerm", function() {
-	 		clear();
-	 	});
-		}) 
-		
-		function changeYear(e) {
-	 	var $year = e.value;
-	 	var str = "";
-	 	
-	 	for(var i=0;i<arr.length;i++) {
-	 		var tmp = arr[i].toString().substr(0,4); // 2022
-	 		if(tmp.includes($year)) {
-	 			var tmp2 = arr[i].toString().substr(5,);
-	     		if(tmp2 == "1") {
-	     			str += "<option value='1'>1학기</option>";
-	     		}
-	     		if(tmp2 == "2") {
-	     			str += "<option value='2'>2학기</option>";
-	     		}
-	 		}
-	 	}
-	 	
-	 	$("#classTerm").empty();
-	 	$("#classTerm").append(str);
-	 	$("#classTerm").children().first().prop("selected", true).change();
-	//  	clear();
-	 }
- 
- 	  function gradeCheck() { // 조회하기 버튼
-	  var classYear = document.getElementById("classYear").value;
-	  var classTerm = document.getElementById("classTerm").value;
-
-	  updateDissent(); 
-	}
  }
+ 	function updateDissent(e){
+ 		var tr = $(e).parents("tr");
+ 		
+ 		var flag = confirm("회신하시겠습니까?");
+ 		
+ 		if(flag){
+ 			var	classNo = tr.children().eq(1).text();
+ 			var studentNo = tr.children().eq(3).text();
+ 			var status = tr.children().eq(5).children('select').val();
+ 			var opinion = tr.children().eq(6).children('input').val();
+ 			
+ 			 $.ajax({
+ 				url : "updateReport.pr",
+ 				data : {
+ 					classNo : classNo,
+ 					studentNo : studentNo,
+ 					status : status,
+ 					opinion : opinion,
+ 				},
+ 				method : "post",
+ 				success : function(result){
+ 					if(result == 'Y'){
+ 						alert("회신 성공");
+ 						reasonRequest();
+ 					}else{
+ 						alert("실패!");
+ 					}
+ 				},
+ 				error : function(){
+ 					alert("그냥 실패!!");
+ 				}
+ 			}); 
+ 			
+ 		}
+ 	}
  	  
  </script> 
 </body>

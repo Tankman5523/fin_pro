@@ -133,7 +133,7 @@ public interface MemberService {
 	int updateProfessor(Professor pr);
 	
 	//학생추가 (관리자)
-	int insertStudent(Student st);
+	int insertStudent(Student st, Attachment a);
 	
 	// 학생 개인시간표 -> 학년도,학기 조회
 	ArrayList<String> selectStudentClassTerm(String studentNo);
@@ -214,7 +214,7 @@ public interface MemberService {
 	ArrayList<Objection> studentGradeReport(Objection obj);
 
 	// 직원 생성하기
-	int insertProfessor(Professor pr);
+	int insertProfessor(Professor pr,Attachment a);
 
 	// (관리자)강의개설 일괄 승인
 	int updateClassPermitAll(int[] cArr);
@@ -413,7 +413,11 @@ public interface MemberService {
 	// (관리자) 공지사항 파일 등록
 	int insertNoticeFile(ArrayList<NoticeAttachment> list);
 
+	//교수 이의신청 학기년도별 조회
+	ArrayList<Objection> searchReport(Objection obj);
 
+	//교수 이의신청 회신
+	int updateReport(Objection obj);
 
 
 }

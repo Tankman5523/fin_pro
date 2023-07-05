@@ -474,17 +474,20 @@ public class ProfessorController {
 	
 	//교수 이의신청 페이지
 	@RequestMapping(value = "professorGradeReport.pr", method = RequestMethod.GET)
-	public String professorGradeReport(HttpSession session,Model model ,Objection obj) {
+	public ModelAndView professorGradeReport(HttpSession session,ModelAndView mv ,Objection obj) {
 		
 		Professor loginUser = (Professor)session.getAttribute("loginUser");
 		String professorNo = loginUser.getProfessorNo();
 		
 		ArrayList<Objection> list = memberService.professorGradeReport(obj);
 		ArrayList<String> classTerm = memberService.selectProfessorClassTerm(professorNo); // 강의한 학년도, 학기
-		model.addAttribute("classTerm", classTerm);
-		model.addAttribute("list", list);
+		mv.addObject("classTerm", classTerm);
+		mv.addObject("list", list);
+		mv.setViewName("member/professor/professorGradeReport");
 		
-		return "member/professor/professorGradeReport";
+		System.out.println("확인용"+classTerm);
+		
+		return mv;
 	}
 	
 	//교수 이의신청 회신
@@ -507,6 +510,35 @@ public class ProfessorController {
 		}
 		
 	}
+	
+	//년도별 학기별 이의 확인
+	@ResponseBody
+	@PostMapping(value= "searchReport.pr" ,  produces = "application/json; charset=UTF-8;")
+	public String searchReport(Objection obj) {
+		
+		ArrayList<Objection> list = memberService.searchReport(obj);
+	
+		return new Gson().toJson(list);	
+		
+	}
+	
+	//강의 이의회신
+	@ResponseBody
+	@PostMapping(value="updateReport.pr")
+	public String updateReport(Objection obj) {
+		
+		int result = memberService.updateReport(obj);
+		
+		if(result>0) {
+			return "Y";
+		}else {
+			return "N";
+		}
+		
+	}
+	
+	
+	
 	
 
 }
