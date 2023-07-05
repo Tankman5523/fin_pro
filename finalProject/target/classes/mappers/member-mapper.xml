@@ -255,8 +255,8 @@
 	<resultMap type="alarm" id="alarmResultMap">
 		<result column="ALARM_NO" property="alarmNo"/>
 		<result column="CMD" property="cmd"/>
-		<result column="STUDENT_NO" property="studentNo"/>
-		<result column="PROFESSOR_NAME" property="professorName"/>
+		<result column="RECEIVER_NO" property="receiverNo"/>
+		<result column="SENDER_NAME" property="senderName"/>
 	</resultMap>
   	
   	<!-- 학생 로그인 -->
@@ -267,7 +267,6 @@
   		JOIN DEPARTMENT D ON (S.DEPARTMENT_NO = D.DEPARTMENT_NO) 
         JOIN COLLEGE C ON (S.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE STUDENT_NO = #{studentNo}
-  		AND STUDENT_PWD = #{studentPwd}
   	</select>
   	
   	<!-- 임직원 로그인 -->
@@ -278,7 +277,6 @@
         JOIN DEPARTMENT D ON (P.DEPARTMENT_NO = D.DEPARTMENT_NO)
         JOIN COLLEGE C ON (P.COLLEGE_NO = C.COLLEGE_NO)
   		WHERE PROFESSOR_NO = #{professorNo}
-  		AND PROFESSOR_PWD = #{professorPwd}
   	</select>
   
   	<!-- ID조회 - 학생 -->
@@ -1741,21 +1739,21 @@
   	
   	<!-- 알람 발신 -->
   	<insert id="alarmInsert" parameterType="hashmap">
-  		INSERT INTO ALARM VALUES(SEQ_ALNO.NEXTVAL, #{cmd}, #{studentNo}, #{professorName}, 'N')
+  		INSERT INTO ALARM VALUES(SEQ_ALNO.NEXTVAL, #{cmd}, #{receiverNo}, #{senderName}, 'N')
   	</insert>
   	
   	<!-- 알람 수신 -->
   	<select id="alarmReceive" parameterType="string" resultMap="alarmResultMap">
   		SELECT *
   		FROM ALARM
-  		WHERE STUDENT_NO = #{studentNo} AND STATUS = 'N'
+  		WHERE RECEIVER_NO = #{receiverNo} AND STATUS = 'N'
   	</select>
   	
   	<!-- 알람 전체확인 -->
   	<update id="alarmAllCheck">
   		UPDATE ALARM
   		SET STATUS = 'Y'
-  		WHERE STUDENT_NO = #{studentNo} AND STATUS = 'N'
+  		WHERE RECEIVER_NO = #{receiverNo} AND STATUS = 'N'
   	</update>
   	
   	<!-- 알람 확인 -->
@@ -1767,13 +1765,14 @@
   	
   	<!-- (관리자) 공지사항 관리 - 전체 리스트 조회 -->
   	<select id="selectNoticeAllList" resultMap="noticeResultSet">
-  		SELECT *
-		FROM (SELECT NOTICE_NO, CATEGORY_NAME, NOTICE_TITLE, COUNT, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE, FIELD, N.STATUS, ORIGIN_NAME
-		        FROM NOTICE N
-		        JOIN NOTICE_CATEGORY NC ON(NOTICE_CATEGORY = CATEGORY_NO)
-		        LEFT JOIN NOTICE_ATTACHMENT NA USING(NOTICE_NO)
-		        WHERE N.STATUS = 'Y')
-		ORDER BY CREATE_DATE DESC
+  		SELECT N.NOTICE_NO, CATEGORY_NAME, NOTICE_TITLE, COUNT, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') CREATE_DATE, FIELD, N.STATUS
+            , LISTAGG(ORIGIN_NAME, ',') WITHIN GROUP(ORDER BY N.NOTICE_NO) AS ORIGIN_NAME
+		FROM NOTICE N
+		JOIN NOTICE_CATEGORY NC ON(N.NOTICE_CATEGORY = NC.CATEGORY_NO)
+		LEFT JOIN NOTICE_ATTACHMENT NA ON(N.NOTICE_NO = NA.NOTICE_NO)
+		WHERE N.STATUS = 'Y'
+		GROUP BY N.NOTICE_NO, CATEGORY_NAME, NOTICE_TITLE, COUNT, CREATE_DATE, FIELD, N.STATUS
+		ORDER BY NOTICE_NO DESC
   	</select>
 
 	<!-- (관리자) 메인 -> 강의 신청 목록 조회 -->
@@ -1813,20 +1812,20 @@
 		        AND N.STATUS = 'Y')
 		<choose>
 	        <when test="field.equals('all-field') and category.equals('all-category')">
-				ORDER BY CREATE_DATE DESC        
+				ORDER BY NOTICE_NO DESC        
 	        </when>
 	        <when test="field.equals('all-field')">
 	        	WHERE NOTICE_CATEGORY = #{category }
-				ORDER BY CREATE_DATE DESC        
+				ORDER BY NOTICE_NO DESC        
 	        </when>
 	        <when test="category.equals('all-category')">
 		        WHERE FIELD = #{field }
-				ORDER BY CREATE_DATE DESC        
+				ORDER BY NOTICE_NO DESC        
 	        </when>
 	        <otherwise>
 		        WHERE FIELD = #{field }
 		        AND NOTICE_CATEGORY = #{category }
-				ORDER BY CREATE_DATE DESC
+				ORDER BY NOTICE_NO DESC
 	        </otherwise>
 		</choose>
   	</select>
@@ -1884,11 +1883,13 @@
 </update>
   	<!-- (관리자) 공지사항 관리 - 수정 게시글 조회 -->
   	<select id="selectUpdateNotice" resultMap="noticeResultSet">
-  		SELECT NOTICE_CATEGORY, FIELD, NOTICE_TITLE, NOTICE_CONTENT, CREATE_DATE, ORIGIN_NAME
+  		SELECT NOTICE_CATEGORY, FIELD, NOTICE_TITLE, NOTICE_CONTENT, CREATE_DATE
+          , LISTAGG(ORIGIN_NAME, ',') WITHIN GROUP(ORDER BY N.NOTICE_NO) AS ORIGIN_NAME
 		FROM NOTICE N
-		LEFT JOIN NOTICE_ATTACHMENT USING(NOTICE_NO)
-		WHERE NOTICE_NO = #{noticeNo }
+		LEFT JOIN NOTICE_ATTACHMENT NA ON(N.NOTICE_NO = NA.NOTICE_NO)
+		WHERE N.NOTICE_NO = #{noticeNo }
 		AND N.STATUS = 'Y'
+		GROUP BY NOTICE_CATEGORY, FIELD, NOTICE_TITLE, NOTICE_CONTENT, CREATE_DATE
   	</select>
   	
   	<!-- (교수) 전체 상담 신청 조회 -->
@@ -1901,6 +1902,43 @@
 		WHERE PROFESSOR_NO = #{user}
 		ORDER BY COUNSEL_NO DESC
   	</select>
+  	
+  	<!-- (관리자) 공지사항 등록 -->
+  	<insert id="insertNoticeForm">
+  		INSERT INTO NOTICE(NOTICE_NO,PROFESSOR_NO,NOTICE_CATEGORY,NOTICE_TITLE,NOTICE_CONTENT,CREATE_DATE,FIELD,STATUS)
+		VALUES(SEQ_NNO.NEXTVAL, #{professorNo}, #{noticeCategory }, #{noticeTitle }, #{noticeContent }, SYSDATE, #{field }, 'Y')
+  	</insert>
+  	
+  	<!-- (관리자) 공지사항 번호 조회 -->
+  	<select id="selectNoticeNo" resultMap="noticeResultSet">
+  		SELECT *
+		FROM (SELECT NOTICE_NO FROM NOTICE WHERE STATUS = 'Y' ORDER BY NOTICE_NO DESC)
+		WHERE ROWNUM = 1
+  	</select>
+  	
+  	<!-- (관리자) 공지사항 파일 등록 -->
+  	<insert id="insertNoticeFile" parameterType="list">
+  		INSERT INTO NOTICE_ATTACHMENT(
+  			  FILE_NO
+  			, NOTICE_NO
+  			, ORIGIN_NAME
+  			, CHANGE_NAME
+  			, FILE_PATH
+  			, UPLOAD_DATE
+  			, STATUS)
+  		SELECT SEQ_NANO.NEXTVAL AS FILE_NO, A.*
+  		FROM(
+	  		<foreach collection="list" item="i" separator="UNION ALL">
+		  		SELECT #{i.noticeNo } AS NOTICE_NO
+		  			 , #{i.originName} AS ORIGIN_NAME
+		  			 , #{i.changeName} AS CHANGE_NAME
+		  			 , #{i.filePath} AS FILE_PATH
+		  			 , SYSDATE AS UPLOAD_DATE
+		  			 , 'Y' AS STATUS
+	  			 FROM DUAL
+			</foreach>
+  		) A
+  	</insert>
   	
   </mapper>
 

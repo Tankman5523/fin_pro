@@ -230,7 +230,6 @@
 	            	   $(".student-table>tbody>tr").hover(function() {
 	            		   $(this).css("cursor", "pointer");
 	            	   });
-	            	   connect();
 	               }
 	               
 	               function impossibleInsert() {
@@ -241,7 +240,6 @@
 	            	   $(".student-table>tbody>tr").hover(function() {
 	            		   $(this).css("cursor", "default");
 	            	   });
-	            	   disconnect();
 	               }
 	               
 	               function scoreInsert(e) {

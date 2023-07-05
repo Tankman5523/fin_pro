@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -256,7 +257,7 @@ public class StudentController {
 	// 수강신청 - 수강신청
 	@ResponseBody
 	@RequestMapping("postRegisterClass.st")
-	public String postRegisterClass(RegisterClass rc) {
+	public String postRegisterClass(RegisterClass rc){
 
 		int result = 0; // 최종 성공여부 변수
 		RegisterClass rc2 = null;
@@ -276,16 +277,7 @@ public class StudentController {
 
 			// 수강신청 가능 여부 판별
 			if (check == 0) {
-				result = memberService.postRegisterClass(rc2);
-
-				if (result > 0) {
-					// 해당 과목 장바구니에서 지워주기
-					result += memberService.postRegDelBucket(rc2);
-				}
-
-				if (rc2.getClassHour() == 2) { // 2시간짜리 강의일 경우
-					result *= memberService.postRegisterClass2(rc2);
-				}
+				result = memberService.tranRegClass(rc2);
 			}
 		}
 
@@ -373,9 +365,15 @@ public class StudentController {
 
 	// 상담신청 - 상담신청 작성
 	@RequestMapping(value = "insertCounseling.st", method = RequestMethod.POST)
-	public ModelAndView insertCounseling(Counseling c, ModelAndView mv) {
+	public ModelAndView insertCounseling(Counseling c, ModelAndView mv, HttpSession session) {
+		Student s = (Student)session.getAttribute("loginUser");
+		
+		HashMap<String, String> alarm = new HashMap<>();
+		alarm.put("cmd", "counselRequest");
+		alarm.put("receiverNo", c.getProfessorNo());
+		alarm.put("senderName", s.getStudentName());
 
-		int result = memberService.insertCounseling(c);
+		int result = memberService.insertCounseling(c, alarm);
 
 		if (result > 0) {
 			mv.addObject("alertMsg", "상담신청 성공");
@@ -420,9 +418,18 @@ public class StudentController {
 
 	// 학적 정보조회 - 학생
 	@RequestMapping("infoStudent.st")
-	public String infoStudent() {
+	public ModelAndView infoStudent(ModelAndView mv, HttpSession session) {
+		Student s = (Student)session.getAttribute("loginUser");
+		String studentNo = s.getStudentNo();
+		
+		HashMap<String, String> map = new HashMap<>();
+		map.put("person", "student");
+		map.put("personNo", studentNo);
+		String filePath = memberService.selectProfile(map);
+		
+		mv.addObject("filePath", filePath).setViewName("member/student/infoStudent");
 
-		return "member/student/infoStudent";
+		return mv;
 	}
 
 	// 학적 정보수정 - 학생

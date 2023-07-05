@@ -39,7 +39,7 @@
 	 <task:executor id="ee" pool-size="10"/> <!-- 일반 쓰레드 풀사이즈 -->
   <mvc:interceptors>
   
-  	<!-- 비로그인시 학생,임직원관련 접근 불가처리 -->
+  	<!-- 비로그인시 학생,임직원관련 접근불가 처리 -->
  	<mvc:interceptor>
 	   	<mvc:mapping path="/*.st"/>	<!-- 학생 -->
 	   	<mvc:mapping path="/*.pr"/>	<!-- 임직원 -->

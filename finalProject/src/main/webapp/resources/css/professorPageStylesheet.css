@@ -14,6 +14,7 @@ div{
 }
 #header{
     height: 15%;
+    position: relative;
 }
 #menubar{
     height: 7%;
@@ -64,6 +65,92 @@ div{
     font-size: 23px;
     font-weight: bold;
     color: black;
+}
+
+/*===============알람창============*/
+#alarm-area {
+	position: absolute; 
+	width: 500px; 
+	height: 180px; 
+	top: 115px; 
+	left: 750px; 
+	border: 2px solid black; 
+	background-color: white; 
+	border-radius: 15px;
+}
+
+#alarm-area2 {
+	position: absolute;
+	width: 400px;
+	height: 30px;
+	top: 120px;
+	left: 800px;
+	background-color: #bfebff;
+	border-radius: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#alarm-area2:after {
+	position: absolute;
+	content: "";
+	border-top: 0px solid transparent;
+	border-left: 8px solid transparent;
+	border-right: 8px solid transparent;
+	border-bottom: 8px solid #bfebff;
+	top: -8px;
+	left: 223px;
+}
+
+#alarm-area2>span {
+	line-height: 30px;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.alarm-remove {
+	visibility: hidden;
+}
+
+#alarm-area>button {
+	float: right; 
+	border-radius: 5px; 
+	margin: 2%;
+}
+
+#alarmDiv {
+	width: 480px;
+	height: 110px;
+	padding-left: 15px;
+	overflow: auto;
+	margin: 0 auto;
+}
+
+#alarmDiv>ul {
+	margin-bottom: 0px; 
+	padding-left: 15px;
+	line-height: 120%; /*li 간격 조정*/
+}
+
+#alarmDiv>ul>li {
+	padding: 
+}
+
+#alarmDiv>ul>li>a {
+	color: black;
+	line-height: 100%;
+	font-size: 15px;
+}
+
+#alarmDiv>ul>li>a:hover {
+	text-decoration: none;
+	color: black;
+	font-weight: bold;
+}
+
+#alarmImg:hover, #alarmDiv>ul>li>a>i:hover {
+	cursor: pointer;
 }
 
 /*===============로그인 유저============*/
