@@ -32,7 +32,7 @@ public class WeatherScheduled {
 	}
 	
 	/* ========== (캐시 삭제후 데이터 갱신 - 최저,최고온도)========== */
-	@Scheduled(cron = "0 30 23 * * *") //매 23시 30분마다 갱신
+	@Scheduled(cron = "0 0 23 * * *") //매일 23시마다 갱신
 	public void updateShortTerm() throws Exception {
 		cacheManager.getCache("tmnTmx").clear(); //전 캐쉬 삭제
 		weatherIoc.tmnTmx();
