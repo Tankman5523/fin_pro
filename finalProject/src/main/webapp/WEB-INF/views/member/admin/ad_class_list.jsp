@@ -70,7 +70,8 @@
 	                </div>
                 
                 <div style="margin-left:20px; margin-bottom:10px;">
-                	<button type="button" class="btn btn-primary" id="allPermit">일괄 개설</button>
+                	<button type="button" class="btn btn-primary" id="allPermit">선택 개설</button>
+                	<button type="button" class="btn btn-danger" id="termFinish">선택 학기종료</button>
                 </div>
                 <div id="table_div" class="table-response">
                     <table id="board_list" class="table" border="1" style="text-align: center;">
@@ -123,7 +124,7 @@
 				                                	<span class="resultMsg" style="color:blue;">개설</span>
 				                                </c:when>
 				                                <c:when test="${c.status eq 'N'}">
-				                                	<span class="resultMsg" style="color:red;">학기끝</span>
+				                                	<span class="resultMsg" style="color:red;">학기종료</span>
 				                                </c:when>
 				                                <c:when test="${c.status eq 'C'}">
 				                                	<span class="resultMsg" style="color:#FFA500;">반려</span>
@@ -169,7 +170,9 @@
     <script>
     	$(function(){
 	    	checkbox(); //전체 체크박스 기능 실행함수
-	    	trcheck();
+	    	trcheck(); //테이블 클릭시 체크 함수
+	    	allPermit(); //일괄개설 함수
+	    	termFinish(); //일괄 학기종료 함수
     	})
     	
     	function allCheckbox(){
@@ -212,52 +215,67 @@
 	    		$("#board_list").on("click","input[name=check]",function(){//개별 체크 했을때 전체선택 반응
 	    			allCheckbox();
 	    		})
-	    		
-	    		$("#allPermit").click(function(){//일괄개설 눌렀을때
-	    			var chkArr = []; //배열 초기화
-	    			var count = 0; //카운트
-	    			check.each(function(){
-	    				var already = $(this).parent().parent().children().eq(12).children().text();
-	    				if(already=='개설반려'){//이미 개설되었거나 반려된 강의가 체크 안되어있는지
-		    				if($(this).is(":checked")){
-		    					var val = $(this).val(); //선택된 강의번호
-		    					chkArr.push(val); //배열에 담기
-		    				}
-	    				}else{
-	    					count++;//이미 처리된 강의를 체크했다는 판별을 위해
-	    				}	
-	    			})
-	    			if(chkArr.length == 0){//아무것도 선택안하고 일괄개선 눌렀을때
-	    				alert("개설할 강의를 선택해주세요");
-	    			}else{//선택된 강의가 있을때
-	    				if(count>0&&confirm('개설처리중인 강의들만 개설 됩니다.\n선택하신 강의들을 일괄 개설하시겠습니까?')){
-	    					location.href="permitAllClassCreate.ad?cArr="+chkArr;
-		    			}else{//취소 눌렀을때
-		    				alert("일괄 개설을 취소하셨습니다.");
-		    				return false;
+    	}
+    	function allPermit(){
+    		var check = $("input[name=check]"); //강의 개별 선택
+	    	$("#allPermit").click(function(){//일괄개설 눌렀을때
+	    		var chkArr = []; //배열 초기화
+	    		var count = 0; //카운트
+	    		check.each(function(){
+	    			var already = $(this).parent().parent().children().eq(12).children().text();
+	    			if(already=='개설반려'){//이미 개설되었거나 반려된 강의가 체크 안되어있는지
+		    			if($(this).is(":checked")){//체크되었는지
+		    				var val = $(this).val(); //선택된 강의번호
+		    				chkArr.push(val); //배열에 담기
 		    			}
+	    			}else {
+	    				if($(this).is(":checked")){//체크되었는지
+	    					count++;//이미 처리된 강의를 체크했다는 판별을 위해
+	    				}
 	    			}
+	    				
 	    		})
-    		}
+	    		if(chkArr.length == 0){//아무것도 선택안하고 일괄개선 눌렀을때
+	    			if(count==0){
+		    			alert("개설할 강의를 선택해주세요");
+	    			}else{
+	    				alert("개설처리중인 강의가 없습니다.");
+	    			}
+	    		}else{//선택된 강의가 있을때
+	    			if(confirm('개설처리중인 강의들만 개설 됩니다.\n선택하신 강의들을 일괄 개설하시겠습니까?')){
+	    				location.href="permitAllClassCreate.ad?cArr="+chkArr;
+		    		}else{//취소 눌렀을때
+		    			alert("일괄 개설을 취소하셨습니다.");
+		    		}
+	    		}
+	    	})
+    	}
+    	function termFinish(){
+    		$("#termFinish").click(function(){
+    			var chkArr = [];
+    			$("input[name=check]").each(function(){
+    				if($(this).is(":checked")){//체크되었는지
+	    				var val = $(this).val(); //선택된 강의번호
+	    				chkArr.push(val); //배열에 담기
+	    			}
+    			})
+    			if(chkArr.length==0){
+    				alert("선택된 강의가 없습니다.");
+    			}else{
+    				if(confirm('선택된 강의들을 정말 학기종료 하시겠습니까? \n한번 종료하면 바꿀 수 없습니다.')){
+    					location.href="classTermFinish.ad?cArr="+chkArr;
+    				}else{
+    					alert("취소하셨습니다.");
+    				}
+    			}
+    		})
+    	}
+    		
+    	
     	
     	function updateClassPermit(cno){
     		if(confirm('이 강의를 정말 개설 하시겠습니까?')){
-    			
-	    		$.ajax({
-	    			url:"permitClassCreate.ad",
-	    			data:{cno:cno},
-	    			
-	    			success:function(result){
-	    				if(result>0){
-	    					alert("개설 성공");
-	    				}else{
-	    					alert("개설 승인 실패");
-	    				}
-	    			},
-	    			error:function(){
-	    				alert("통신오류");
-	    			}
-	    		})
+    			location.href="permitClassCreate.ad?cno="+cno;
 	    	}else{
 	    		console.log("취소");
 	    	}
@@ -307,7 +325,7 @@
 	                        switch(list[i].status){
 	                    	case "Y" : result+="<td><span class='resultMsg' style='color:blue;'>개설</span></td>"
 	                    	break;
-	                    	case "N" : result+="<td><span class='resultMsg' style='color:red;'>학기끝</span></td>"
+	                    	case "N" : result+="<td><span class='resultMsg' style='color:red;'>학기종료</span></td>"
 	                    	break;
 	                    	case "C" : result+="<td><span class='resultMsg' style='color:#FFA500;'>반려</span></td>"
 	                    	break;
@@ -324,6 +342,7 @@
     				}
     				$("#board_list>tbody").html(result);
     				checkbox();
+    				allCheckbox();
     			},
     			error:function(){
     				alert("통신 실패");

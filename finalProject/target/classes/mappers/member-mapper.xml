@@ -1887,5 +1887,41 @@
 		ORDER BY COUNSEL_NO DESC
   	</select>
   	
+  	<!-- (관리자) 공지사항 등록 -->
+  	<insert id="insertNoticeForm">
+  		INSERT INTO NOTICE(NOTICE_NO,PROFESSOR_NO,NOTICE_CATEGORY,NOTICE_TITLE,NOTICE_CONTENT,CREATE_DATE,FIELD,STATUS)
+		VALUES(SEQ_NNO.NEXTVAL, #{professorNo}, #{noticeCategory }, #{noticeTitle }, #{noticeContent }, SYSDATE, #{field }, 'Y')
+  	</insert>
+  	
+  	<!-- (관리자) 공지사항 번호 조회 -->
+  	<select id="selectNoticeNo" resultMap="noticeResultSet">
+  		SELECT *
+		FROM (SELECT NOTICE_NO FROM NOTICE WHERE STATUS = 'Y' ORDER BY NOTICE_NO DESC)
+		WHERE ROWNUM = 1
+  	</select>
+  	
+  	<!-- (관리자) 공지사항 파일 등록 -->
+  	<insert id="insertNoticeFile" parameterType="list">
+  		INSERT INTO NOTICE_ATTACHMENT(
+  			  FILE_NO
+  			, NOTICE_NO
+  			, ORIGIN_NAME
+  			, CHANGE_NAME
+  			, FILE_PATH
+  			, UPLOAD_DATE
+  			, STATUS)
+  		SELECT SEQ_NANO.NEXTVAL AS FILE_NO, A.*
+  		FROM(
+	  		<foreach collection="list" item="i" separator="UNION ALL">
+		  		SELECT #{i.noticeNo } AS NOTICE_NO
+		  			 , #{i.originName} AS ORIGIN_NAME
+		  			 , #{i.changeName} AS CHANGE_NAME
+		  			 , #{i.filePath} AS FILE_PATH
+		  			 , SYSDATE AS UPLOAD_DATE
+		  			 , 'Y' AS STATUS
+	  			 FROM DUAL
+			</foreach>
+  		) A
+  	</insert>
+  	
   </mapper>
-

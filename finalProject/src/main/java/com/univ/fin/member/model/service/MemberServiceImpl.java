@@ -22,6 +22,7 @@ import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.main.model.vo.Notice;
+import com.univ.fin.main.model.vo.NoticeAttachment;
 import com.univ.fin.member.model.dao.MemberDao;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
@@ -205,29 +206,24 @@ public class MemberServiceImpl implements MemberService{
 		return result2;
 	}
 	
-	//수강신청 - 수강신청
+	//수강신청 - 수강신청(판별 트렌젝션 처리)
+	@Transactional
 	@Override
-	public int postRegisterClass(RegisterClass rc3) {
+	public int tranRegClass(RegisterClass rc2) {
 		
-		int result = memberDao.postRegisterClass(sqlSession,rc3);
+		int result = 0;
 		
-		return result;
-	}
-	
-	//수강신청 - 수강신청(해당 과목 장바구니에서 지워주기)
-	@Override
-	public int postRegDelBucket(RegisterClass rc2) {
+		//수강신청
+		result = memberDao.postRegisterClass(sqlSession,rc2);
+
+		if (result > 0) {
+			// 해당 과목 장바구니에서 지워주기
+			result += memberDao.postRegDelBucket(sqlSession,rc2);
+		}
 		
-		int result = memberDao.postRegDelBucket(sqlSession,rc2);
-		
-		return result;
-	}
-	
-	//수강신청 - 수강신청(2시간짜리 강의)
-	@Override
-	public int postRegisterClass2(RegisterClass rc3) {
-		
-		int result = memberDao.postRegisterClass2(sqlSession,rc3);
+		if (rc2.getClassHour() == 2) { // 2시간짜리 강의일 경우
+			result *= memberDao.postRegisterClass2(sqlSession,rc2);
+		}
 		
 		return result;
 	}
@@ -291,11 +287,13 @@ public class MemberServiceImpl implements MemberService{
 
 	//상담신청 - 상담신청 작성
 	@Override
-	public int insertCounseling(Counseling c) {
-		
-		int result = memberDao.insertCounseling(sqlSession,c);
-		
-		return result;
+	@Transactional
+	public int insertCounseling(Counseling c, HashMap<String, String> alarm) {
+		int result1 = 0;
+		int result2 = 0;
+		result1 = memberDao.insertCounseling(sqlSession,c);
+		result2 = memberDao.alarmInsert(sqlSession, alarm);
+		return result1*result2;
 	}
 
 	//상담관리 - 상담내역 조회
@@ -1025,9 +1023,39 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.selectAllCounseling(sqlSession, user);
 	}
 
+	// (관리자) 공지사항 등록 & 번호 조회
+	@Override
+	@Transactional
+	public int insertNoticeForm(Notice n) {
+		int result = memberDao.insertNoticeForm(sqlSession, n);
+		
+		if(result>0) {
+			Notice notice = memberDao.selectNoticeNo(sqlSession);
+			
+			result = notice.getNoticeNo();
+		}
+		
+		return result;
+	}
 
-	
+	// (관리자) 공지사항 파일 등록
+	@Override
+	public int insertNoticeFile(ArrayList<NoticeAttachment> list) {
+		// TODO Auto-generated method stub
+		return memberDao.insertNoticeFile(sqlSession, list);
+	}
 
+
+	// (학생) 휴학생 휴학할때 등록금 냈었는지
+	@Override
+	public int selectCheckReg(String studentNo) {
+		return memberDao.selectCheckReg(sqlSession,studentNo);
+	}
+
+	// (관리자) 강의 일괄 학기종료
+	@Override
+	public int updateClassTermFinish(int[] cArr) {
+		return memberDao.updateClassTermFinish(sqlSession,cArr);
+	}
 
 }
-

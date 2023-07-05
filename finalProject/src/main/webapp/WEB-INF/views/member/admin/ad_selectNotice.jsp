@@ -79,7 +79,34 @@
 							<th>게시일</th>	
 						</tr>
 					</thead>
-					<tbody></tbody>
+					<tbody>
+						<c:forEach var="i" items="${list }">
+							<tr>
+								<td><input type="checkBox" class="chkRows" name="chkRows"></td>
+								<td>${i.noticeNo }</td>
+								<c:choose>
+									<c:when test="${i.field eq 0}">
+										<td>공지사항</td>
+									</c:when>
+									<c:otherwise>
+										<td>FAQ</td>
+									</c:otherwise>
+								</c:choose>
+								<td>${i.categoryName }</td>
+								<td>${i.noticeTitle }</td>
+								<c:choose>
+									<c:when test="${i.originName ne null }">
+										<td style='width: 80px;'><i class='fa-solid fa-paperclip'></i></td>
+										<td>${i.createDate }</td>
+									</c:when>
+									<c:otherwise>
+										<td style='width: 80px;'></td>
+										<td>${i.createDate }</td>
+									</c:otherwise>
+								</c:choose>
+							</tr>
+						</c:forEach>
+					</tbody>
 				</table>
 			</div>
 			<div id="btn-area">
@@ -95,37 +122,37 @@
 	
 	window.onload = function(){
 		
-		$.ajax({
-			url: "selectNoticeList.ad",
-			type: "post",
-			success: function(result){
-				var str = "";
+// 		$.ajax({
+// 			url: "selectNoticeList.ad",
+// 			type: "post",
+// 			success: function(result){
+// 				var str = "";
 				
-				result.forEach(function(result){
-					str += "<tr>"
-						+"<td>"+"<input type='checkBox' class='chkRows' name='chkRows'>"+"</td>"
-						+"<td>"+result.noticeNo+"</td>"
-						+"<td>"+result.field+"</td>"
-						+"<td>"+result.categoryName+"</td>"
-						+"<td>"+result.noticeTitle+"</td>";
+// 				result.forEach(function(result){
+// 					str += "<tr>"
+// 						+"<td>"+"<input type='checkBox' class='chkRows' name='chkRows'>"+"</td>"
+// 						+"<td>"+result.noticeNo+"</td>"
+// 						+"<td>"+result.field+"</td>"
+// 						+"<td>"+result.categoryName+"</td>"
+// 						+"<td>"+result.noticeTitle+"</td>";
 						
-						if (result.originName != null) {
-							str += "<td style='width: 80px;'>"+"<i class='fa-solid fa-paperclip'></i>"+"</td>"
-							+"<td>"+result.createDate+"</td>"
-							+"</tr>"
-						}else{
-							str += "<td></td>"
-							+"<td>"+result.createDate+"</td>"
-							+"</tr>"
-						}
-				})
+// 						if (result.originName != null) {
+// 							str += "<td style='width: 80px;'>"+"<i class='fa-solid fa-paperclip'></i>"+"</td>"
+// 							+"<td>"+result.createDate+"</td>"
+// 							+"</tr>"
+// 						}else{
+// 							str += "<td></td>"
+// 							+"<td>"+result.createDate+"</td>"
+// 							+"</tr>"
+// 						}
+// 				})
 				
-				$('#result-table > tbody').html(str);
-			},
-			error: function(){
-				alert("현재 페이지를 로드할 수 없습니다.");
-			}
-		})
+// 				$('#result-table > tbody').html(str);
+// 			},
+// 			error: function(){
+// 				alert("현재 페이지를 로드할 수 없습니다.");
+// 			}
+// 		})
 		
 		var submit = document.getElementById('submit')
 	
@@ -158,10 +185,17 @@
 						data.forEach(function(data){
 							str += "<tr>"
 								+"<td>"+"<input type='checkBox' class='chkRows' name='chkRows'>"+"</td>"
-								+"<td>"+data.noticeNo+"</td>"
-								+"<td>"+data.field+"</td>"
-								+"<td>"+data.categoryName+"</td>"
-								+"<td>"+data.noticeTitle+"</td>";
+								+"<td>"+data.noticeNo+"</td>";
+								
+								if(data.field == 0){
+									str +="<td>"+"공지사항"+"</td>"
+									+"<td>"+data.categoryName+"</td>"
+									+"<td>"+data.noticeTitle+"</td>";
+								}else{
+									str +="<td>"+"FAQ"+"</td>"
+									+"<td>"+data.categoryName+"</td>"
+									+"<td>"+data.noticeTitle+"</td>";
+								}
 								
 								if (data.originName != null) {
 									str += "<td style='width: 80px;'>"+"<i class='fa-solid fa-paperclip'></i>"+"</td>"

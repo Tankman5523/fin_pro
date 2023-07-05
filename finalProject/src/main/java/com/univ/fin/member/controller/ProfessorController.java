@@ -74,10 +74,18 @@ public class ProfessorController {
 	
 	//교수 학적정보 조회
 	@RequestMapping("infoProfessor.pr")
-	public String infoProfessor() {
+	public ModelAndView infoProfessor(ModelAndView mv, HttpSession session) {
+		Professor p = (Professor)session.getAttribute("loginUser");
+		String professorNo = p.getProfessorNo();
+		
+		HashMap<String, String> map = new HashMap<>();
+		map.put("person", "professor");
+		map.put("personNo", professorNo);
+		String filePath = memberService.selectProfile(map);
+		
+		mv.addObject("filePath", filePath).setViewName("member/professor/infoProfessor");
 
-			
-		return "member/professor/infoProfessor";
+		return mv;
 	}
 	
 	//강의 개설 내역 페이지로 이동
@@ -280,8 +288,8 @@ public class ProfessorController {
 		
 		HashMap<String, String> alarm = new HashMap<>();
 		alarm.put("cmd", "gradeInsert");
-		alarm.put("studentNo", g.getStudentNo());
-		alarm.put("professorName", p.getProfessorName());
+		alarm.put("receiverNo", g.getStudentNo());
+		alarm.put("senderName", p.getProfessorName());
 		
 		// A: 30%, A+B: 70% 이내
 		if(map.get("gradeLevel").equals("A") || map.get("gradeLevel").equals("B")) {
@@ -313,8 +321,8 @@ public class ProfessorController {
 		
 		HashMap<String, String> alarm = new HashMap<>();
 		alarm.put("cmd", "gradeUpdate");
-		alarm.put("studentNo", g.getStudentNo());
-		alarm.put("professorName", p.getProfessorName());
+		alarm.put("receiverNo", g.getStudentNo());
+		alarm.put("senderName", p.getProfessorName());
 		
 		// A: 30%, A+B: 70% 이내
 		if(map.get("gradeLevel").equals("A") || map.get("gradeLevel").equals("B")) {
@@ -336,18 +344,13 @@ public class ProfessorController {
 	
 	//상담관리 페이지 이동
 	@RequestMapping("counselHistory.pr")
-	public String counselHistory() {
-		
-		return "member/professor/counselHistory";
-	}
-	
-	@ResponseBody
-	@RequestMapping(value = "counselHistory.pr", produces = "application/json; charset=UTF-8;")
-	public String counselHistory(String user) {
+	public ModelAndView counselHistory(String user, ModelAndView mv) {
 		
 		ArrayList<Counseling> list = memberService.selectAllCounseling(user);
 		
-		return new Gson().toJson(list);
+		mv.addObject("list", list).setViewName("member/professor/counselHistory");
+		
+		return mv;
 	}
 	
 	// 학사관리 - 강의시간표
@@ -448,8 +451,8 @@ public class ProfessorController {
 		HashMap<String, String> alarm = new HashMap<>();
 		Counseling c = memberService.selectCounselDetail(counselNo);
 		alarm.put("cmd", "counselUpdate");
-		alarm.put("studentNo", c.getStudentNo());
-		alarm.put("professorName", p.getProfessorName());
+		alarm.put("receiverNo", c.getStudentNo());
+		alarm.put("senderName", p.getProfessorName());
 		
 		int result = memberService.updateCounselStatus(statusMap, alarm);
 		

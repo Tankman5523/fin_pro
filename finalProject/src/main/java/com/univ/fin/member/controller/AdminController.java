@@ -1,5 +1,7 @@
 package com.univ.fin.member.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ import com.univ.fin.common.model.vo.Counseling;
 import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.main.model.vo.Notice;
+import com.univ.fin.main.model.vo.NoticeAttachment;
 import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
@@ -134,34 +137,59 @@ public class AdminController {
 	
 	//강의 개설 일괄 승인
 	@RequestMapping("permitAllClassCreate.ad")
-	public String updateClassPermitAll(int cArr[]) {
+	public String updateClassPermitAll(int cArr[],Model model) {
 			
 		int result = memberService.updateClassPermitAll(cArr);
 			
 		if(result>0) {//업데이트(개설승인) 성공
-				
+			model.addAttribute("alertMsg","일괄 개설을 성공 했습니다.");
 		}else {//업데이트(개설승인) 실패
-				
+			model.addAttribute("alertMsg","일괄 개설 오류");
 		}
 			
 		return "redirect:classManagePage.ad";
 	}
 		
 	//강의 개설 개별 승인
-	@ResponseBody
-	@RequestMapping(value="permitClassCreate.ad")
-	public int updateClassPermit(int cno) {
+	@RequestMapping("permitClassCreate.ad")
+	public String updateClassPermit(int cno,Model model) {
 		
 		int result = memberService.updateClassPermit(cno);
 		
-		return result;
+		if(result>0) {
+			model.addAttribute("alertMsg","개설 성공 했습니다.");
+		}else {
+			model.addAttribute("alertMsg","개설 오류");	
+		}
+		
+		return "redirect:classManagePage.ad";
 	}
 		
 	//강의 개설 반려
 	@RequestMapping("rejectClassCreate.ad")
-	public String updateClassReject(Classes c) {
+	public String updateClassReject(Classes c,Model model) {
 			
 		int result = memberService.updateClassReject(c);
+		
+		if(result>0) {
+			model.addAttribute("alertMsg","반려 했습니다.");
+		}else {
+			model.addAttribute("alertMsg","반려 오류");	
+		}
+			
+		return "redirect:classManagePage.ad";
+	}
+	
+	//강의 일괄 학기종료
+	@RequestMapping("classTermFinish.ad")
+	public String updateClassTermFinish(int cArr[],Model model) {
+		int result = memberService.updateClassTermFinish(cArr);
+		
+		if(result>0) {//업데이트(학기종료) 성공
+			model.addAttribute("alertMsg","일괄 개설을 성공 했습니다.");
+		}else {//업데이트(학기종료) 실패
+			model.addAttribute("alertMsg","일괄 개설 오류");
+		}
 			
 		return "redirect:classManagePage.ad";
 	}
@@ -341,14 +369,14 @@ public class AdminController {
 	
 	//학생 휴,복학 승인
 	@RequestMapping("updateRestPermit.ad")
-	public String updateStuRestPermit(StudentRest sr) {
+	public String updateStuRestPermit(StudentRest sr,Model model) {
 		
 		int result = memberService.updateStuRestPermit(sr);
 		
 		if(result>0) {
-			
+			model.addAttribute("alertMsg","신청 승인 했습니다.");
 		}else {
-			
+			model.addAttribute("alertMsg","승인 오류 발생");
 		}
 		
 		return "redirect:stuRestList.ad";
@@ -356,14 +384,14 @@ public class AdminController {
 	
 	//학생 휴,복학 반려
 	@RequestMapping("updateRestRetire.ad")
-	public String updateStuRestRetire(int restNo) {
+	public String updateStuRestRetire(int restNo,Model model) {
 		
 		int result = memberService.updateStuRestRetire(restNo);
 			
 		if(result>0) {
-			
+			model.addAttribute("alertMsg","반려 했습니다.");
 		}else {
-			
+			model.addAttribute("alertMsg","반려 오류 발생");
 		}
 		return "redirect:stuRestList.ad";
 	}
@@ -420,14 +448,13 @@ public class AdminController {
 	
 	//임직원 안식,퇴직 업데이트
 	@RequestMapping("updateProRest.ad")
-	public String updateProfessorRest(ProfessorRest pr) {
-		System.out.println(pr);
-		int result = memberService.updateProfessorRest(pr);
+	public String updateProfessorRest(ProfessorRest pr,Model model) {
+		int result = memberService.updateProfessorRest(pr);//
 		
 		if(result>0) {
-			System.out.println("성공");
+			model.addAttribute("alertMsg","반려 했습니다.");
 		}else {
-			System.out.println("실패");
+			model.addAttribute("alertMsg","반려 했습니다.");
 		}
 		
 		return "redirect:proRestList.ad";
@@ -457,20 +484,15 @@ public class AdminController {
 	
 	// (관리자) 공지사항 관리 이동
 	@RequestMapping("selectNotice.ad")
-	public String selectNoticeList() {
-		
-		return "member/admin/ad_selectNotice";
-	}
-	
-	// (관리자) 공지사항 관리 - 전체 공지사항 조회
-	@ResponseBody
-	@PostMapping(value = "selectNoticeList.ad", produces = "application/json; charset=UTF-8;")
-	public String selectNoticeAllList() {
+	public ModelAndView selectNoticeList(ModelAndView mv) {
 		
 		ArrayList<Notice> list = memberService.selectNoticeAllList();
 		
-		return new Gson().toJson(list);
+		mv.addObject("list", list).setViewName("member/admin/ad_selectNotice");
+		
+		return mv;
 	}
+	
 	
 	//(관리자) 공지사항 관리 - 공지사항 검색
 	@ResponseBody
@@ -532,8 +554,8 @@ public class AdminController {
 	public ModelAndView selectUpdateNotice(String noticeNo, ModelAndView mv) {
 		
 		Notice n = memberService.selectUpdateNotice(noticeNo);
-		
-		mv.addObject(n).setViewName("member/admin/updateNoticeForm");
+		System.out.println(n);
+		mv.addObject("n", n).setViewName("member/admin/updateNoticeForm");
 		
 		return mv;
 	}
@@ -547,18 +569,74 @@ public class AdminController {
 	
 	//(관리자) 공지사항 관리 - 공지사항 등록
 	@PostMapping("insertNoticeForm.ad")
-	public String insertNoticeFrom(Notice n, MultipartHttpServletRequest multi) {
+	public ModelAndView insertNoticeFrom(Notice n, MultipartHttpServletRequest multi, HttpSession session, ModelAndView mv) {
 		
-		List<MultipartFile> upfile = multi.getFiles("upfile");
-
-		System.out.println(upfile.size());
-		System.out.println(upfile.get(0).getOriginalFilename());
-		System.out.println(upfile.get(0).getSize());
-//		if(!upfile.isEmpty()) {
-//		}
+		List<MultipartFile> files = multi.getFiles("upfile");
+		String originName = "";
+		String changeName = "";
+		String savePath = "";
 		
-		return null;
+		NoticeAttachment na = new NoticeAttachment();
+		ArrayList<NoticeAttachment> list = new ArrayList<NoticeAttachment>();
+		
+		String msg = "";
+		
+		if(!(files.size() == 1 && files.get(0).getOriginalFilename().equals(""))) {
+			
+			int result = memberService.insertNoticeForm(n);
+			
+			for(MultipartFile upfile : files) {
+				originName = upfile.getOriginalFilename();
+				String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+				int ranNum = (int)(Math.random()*90000+10000);
+				String ext = originName.substring(originName.lastIndexOf("."));
+				
+				changeName = currentTime+ranNum+ext;
+				
+				savePath = session.getServletContext().getRealPath("resources/uploadFiles/notice/");
+				
+				try {
+					upfile.transferTo(new File(savePath+changeName));
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				if(result > 0) {
+					na = NoticeAttachment.builder().noticeNo(result).originName(originName).changeName(changeName).filePath(savePath).build();
+					list.add(na);
+				}else {
+					System.out.println(result);
+				}
+				
+				int result1 = memberService.insertNoticeFile(list);
+				
+				if(result1 > 0) {
+					msg = "게시글이 등록되었습니다.";
+					mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+				}else {
+					msg = "게시글 등록을 실패했습니다.";
+					mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+				}
+			}
+		}else {
+			int result = memberService.insertNoticeForm(n);
+			
+			if(result > 0) {
+				msg = "게시글이 등록되었습니다.";
+				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+			}else {
+				msg = "게시글 등록을 실패했습니다.";
+				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+			}
+		}
+		return mv;
 	}
+	
+	
 	
 }
 

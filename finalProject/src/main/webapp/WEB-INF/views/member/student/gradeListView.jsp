@@ -34,7 +34,7 @@
                     <table class="wholeGrade-table">
                         <thead>
                             <tr height="40">
-                                <th width="15%" style="border-left: 1px solid #76D2FF;">학년도</th>
+                                <th width="15%" style="border-left: 1px solid #88C1E3;">학년도</th>
                                 <th width="15%">학기</th>
                                 <th width="10%">신청학점</th>
                                 <th width="10%">취득학점</th>
