@@ -102,13 +102,6 @@ public class EchoHandler extends TextWebSocketHandler  {
 					
 					person.sendMessage(newMessage);
 				}
-				else if("reportUpdate".equals(cmd)) {
-					AlarmVo alarm = AlarmVo.builder().cmd(cmd).professorName(pName).build();
-					String text = new Gson().toJson(alarm);
-					TextMessage newMessage = new TextMessage(text);
-					
-					student.sendMessage(newMessage);
-				}
 			}
 			
 		}
