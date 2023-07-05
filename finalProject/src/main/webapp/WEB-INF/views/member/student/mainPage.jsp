@@ -280,7 +280,12 @@
 							
 							if(str == "") {
 								str = "수업이 없습니다.";
+								$("#today-class").css("font-size", "14px");
 							}
+							else {
+								$("#today-class").css("font-size", "18px");
+							}
+							
 							$("#today-class").html(str);
 						}
 					</script>
