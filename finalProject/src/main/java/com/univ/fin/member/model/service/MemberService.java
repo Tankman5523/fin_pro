@@ -17,6 +17,7 @@ import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.main.model.vo.Notice;
+import com.univ.fin.main.model.vo.NoticeAttachment;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
@@ -80,14 +81,8 @@ public interface MemberService {
 	//수강신청 - 수강신청 (강의 시간 체크)
 	int checkPostReg2(RegisterClass rc2);
 	
-	//수강신청 - 수강신청
-	int postRegisterClass(RegisterClass rc3);
-	
-	//수강신청 - 수강신청(해당 과목 장바구니에서 지워주기)
-	int postRegDelBucket(RegisterClass rc2);
-	
-	//수강신청 - 수강신청(2시간짜리 강의)
-	int postRegisterClass2(RegisterClass rc3);
+	//수강신청 - 수강신청(판별 트렌젝션 처리)
+	int tranRegClass(RegisterClass rc2);
 	
 	//수강신청 - 수강신청 (수강신청내역 조회)
 	ArrayList<RegisterClass> postRegList(RegisterClass rc2);
@@ -117,7 +112,7 @@ public interface MemberService {
 	ArrayList<Professor> selectDepartProList(String departmentNo);
 
 	//상담신청 - 상담신청 작성
-	int insertCounseling(Counseling c);
+	int insertCounseling(Counseling c, HashMap<String, String> alarm);
 	
 	//상담관리 - 상담 상세보기(학생)
 	Counseling selectCounseling(int counselNo);
@@ -400,11 +395,25 @@ public interface MemberService {
 	// (교수) 전체 상담 신청 조회
 	ArrayList<Counseling> selectAllCounseling(String user);
 
+	// (학생) 휴학생 휴학할때 등록금 냈었는지
+	int selectCheckReg(String studentNo);
+	
 	//교수 이의신청 페이지
 	ArrayList<Objection> professorGradeReport(String professorNo);
 		
 	//교수 이의신청 회신
-	int professorGradeRequest(Objection obj);
+	int professorGradeRequest(Objection obj, HashMap<String, String> alarm);
+
+	// (관리자) 강의 일괄 학기종료
+	int updateClassTermFinish(int[] cArr);
+	
+	// (관리자) 공지사항 등록
+	int insertNoticeForm(Notice n);
+
+	// (관리자) 공지사항 파일 등록
+	int insertNoticeFile(ArrayList<NoticeAttachment> list);
+
+
 
 
 }

@@ -232,7 +232,21 @@
 										
 										//코멘트 작성
 										if(endCheck === "불합격"){
-											$("#commentSpan").text("코멘트 들어갈 곳");
+											var checkComent;
+											console.log(typeof checkComent);
+											console.log(checkComent);
+											if($("#generalSumResult").text() === "불합격"){
+												checkComent = "교양"
+											}
+											if($("#majorSumResult").text() === "불합격"){
+												if(checkComent == null){ //전공소계만 불합격 일시
+													checkComent = "전공"
+												}else{
+													checkComent += ", 전공"
+												}
+											}
+											checkComent += " 기준학점 미달"
+											$("#commentSpan").text(checkComent);	
 										}
 									},
 									error : function(){

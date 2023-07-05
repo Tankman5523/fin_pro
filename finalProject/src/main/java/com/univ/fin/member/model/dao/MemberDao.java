@@ -24,6 +24,7 @@ import com.univ.fin.common.model.vo.ProfessorRest;
 import com.univ.fin.common.model.vo.RegisterClass;
 import com.univ.fin.common.model.vo.StudentRest;
 import com.univ.fin.main.model.vo.Notice;
+import com.univ.fin.main.model.vo.NoticeAttachment;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
@@ -621,8 +622,13 @@ public class MemberDao {
 	}
 
 	// (관리자) 임직원 안식,퇴직 업데이트
+	@Transactional
 	public int updateProfessorRest(SqlSessionTemplate sqlSession, ProfessorRest pr) {
-		return sqlSession.update("memberMapper.updateProfessorRest",pr);
+		int result = sqlSession.update("memberMapper.updateProfessorRest",pr);
+		if(pr.getCategory()==0&&result>0) {
+			result = sqlSession.update("memberMapper.updateProfessorStatus",pr);
+		}
+		return result;
 	}
 
 	// (관리자) 학생 휴,복학 목록 검색
@@ -763,6 +769,11 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectMainProfessorRest");
 	}
 
+	// (학생) 휴학생 휴학할때 등록금 냈었는지
+	public int selectCheckReg(SqlSessionTemplate sqlSession, String studentNo) {
+		return sqlSession.selectOne("memberMapper.selectCheckReg",studentNo);
+	}
+	
 	public ArrayList<Objection> professorGradeReport(SqlSessionTemplate sqlSession,String professorNo) {
 		return (ArrayList)sqlSession.selectList("memberMapper.professorGradeReport",professorNo);
 	}
@@ -772,6 +783,31 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.professorGradeRequest",obj);
 	}
 
+	// (관리자) 강의 일괄 학기종료
+	public int updateClassTermFinish(SqlSessionTemplate sqlSession, int[] cArr) {
+		return sqlSession.update("memberMapper.updateClassTermFinish",cArr);
+	}
+	
+	// (관리자) 공지사항 등록
+	@Transactional
+	public int insertNoticeForm(SqlSessionTemplate sqlSession, Notice n) {
+		
+		return sqlSession.insert("memberMapper.insertNoticeForm", n);
+	}
+
+	// (관리자) 공지사항 번호 조회
+	public Notice selectNoticeNo(SqlSessionTemplate sqlSession) {
+
+		return sqlSession.selectOne("memberMapper.selectNoticeNo");
+	}
+
+	// (관리자) 공지사항 파일 등록
+	public int insertNoticeFile(SqlSessionTemplate sqlSession, ArrayList<NoticeAttachment> list) {
+		
+		return sqlSession.insert("memberMapper.insertNoticeFile", list);
+	}
+
+	
 	
 
 
