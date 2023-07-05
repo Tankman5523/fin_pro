@@ -86,7 +86,6 @@ public class AdminController {
 		
 		ArrayList<String> ylist= new ArrayList<>(); //학년도 담아갈 리스트
 		String year; //학년도 담을 변수
-		String term;
 		
 		for(Classes b : list) {
 			year = b.getClassYear();
