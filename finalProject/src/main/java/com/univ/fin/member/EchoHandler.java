@@ -17,9 +17,6 @@ import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class EchoHandler extends TextWebSocketHandler  {
 	
 	@Autowired
