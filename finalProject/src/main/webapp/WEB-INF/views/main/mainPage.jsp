@@ -59,21 +59,18 @@
 					</li>		
 				</ul>
 			</div>
-			
-			
 		</div>
 		
 		<script type="text/javascript">
 				var slideBox = document.querySelector('.img-container'),
 					slide = document.querySelectorAll('.main-img'),
-					currentImg = 0,
-					slideCount = slide.length,
-					slideWidth = 100,
-					prevBtn = document.querySelector('.prev'),
-					nextBtn = document.querySelector('.next')
+					currentImg = 0, // 현재 이미지
+					slideCount = slide.length, // 총 이미지 개수를 이용하여 slide 카운트
+					slideWidth = 100 // 슬라이드 이미지 크기
 					
-				makeClone();
+				makeClone(); // makeClone 함수 호출
 				
+				//makeClone 함수
 				function makeClone(){
 					
 					for(var i=0; i<slideCount; i++){
@@ -86,12 +83,13 @@
 						cloneSlide.classList.add('clone')
 						slideBox.prepend(cloneSlide)
 					}
-					updateWidth();
-					setIntervalPos();
+					updateWidth(); // updateWidth( 함수 호출
+					setIntervalPos(); // 
 					
 					setTimeout(function(){
 						slideBox.classList.add('slideShow')
 					},100)
+					
 				}
 				
 				function updateWidth(){
@@ -120,7 +118,6 @@
 						setTimeout(function(){
 							slideBox.classList.add('slideShow')
 						}, 5100)
-						
 					}
 				}
 				
@@ -134,7 +131,7 @@
 					}
 				}
 				
-				autoSlide()
+				autoSlide();
 				
 				function stopSlide(){
 					clearInterval(timer)

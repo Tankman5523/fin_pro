@@ -1058,4 +1058,45 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.updateClassTermFinish(sqlSession,cArr);
 	}
 
+	// (관리자) 공지사항 수정 파일 조회
+	@Override
+	public ArrayList<NoticeAttachment> selectUpdateNoticeFile(String noticeNo) {
+		
+		return memberDao.selectUpdateNoticeFile(sqlSession, noticeNo);
+	}
+
+	// (관리자) 공지사항 수정
+	@Override
+	@Transactional
+	public int updateNoticeForm(Notice n, String delFileNo) {
+
+		int result = 0;
+		
+		if(delFileNo == null) {
+			result = memberDao.updateNoticeForm(sqlSession, n);
+		}else {
+			result = memberDao.updateNoticeForm(sqlSession, n);
+			
+			if(result>0) {
+				String[] fileNo = delFileNo.split(",");
+				for(int i=0; i<fileNo.length; i++) {
+					System.out.println(fileNo[i]);					
+				}
+				result = memberDao.deleteNoticeFile(sqlSession, fileNo);				
+			}
+		}
+		return result;
+		
+	}
+
+	@Override
+	public Notice detailNoticeView(String noticeNo) {
+		
+		return memberDao.detailNoticeView(sqlSession, noticeNo);
+	}
+
+
+
+	
+
 }

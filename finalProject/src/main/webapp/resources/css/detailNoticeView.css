@@ -1,0 +1,63 @@
+@charset "UTF-8";
+
+#sub-title{
+	text-align: center;
+	margin: 50px;
+	font-size: 30px;
+}
+
+#notice-container{
+	width: 90%;
+	border: 1px solid black;
+	margin: auto;
+}
+
+#field-area{
+	width: auto;
+	height: auto;
+	margin-bottom: 20px;
+}
+#field-area td{
+	height: 50px;
+	margin-left: 60px;
+}
+#field-area input{
+	width: 120px;
+	height: 40px;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+}
+#field-area input:focus{
+	outline: none;
+}
+.field{
+	border: none;
+	border-right: 1px solid black;
+}
+#cate{
+	border: none;
+}
+
+#noticeTitle{
+	width: 100%;
+	height: 50px;
+	border-radius: 5px;
+	border: 1px solid black;
+	font-size: 20px;
+	font-weight: bold;
+	padding: 0 20px;
+	margin-bottom: 40px;
+}
+#noticeTitle:focus{
+	outline: none;
+}
+
+#summernote{
+	height: 500px;
+	border: 1px solid black;
+	border-radius: 5px;
+	padding: 20px;
+	font-size: 16px;
+	background-color: lightblue;
+}
