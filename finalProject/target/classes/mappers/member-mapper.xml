@@ -1233,8 +1233,8 @@
   	</update>
   	
   	<insert id="insertStudent">
-  	INSERT INTO STUDENT (STUDENT_NO, DEPARTMENT_NO, COLLEGE_NO, ENTRANCE_DATE, STUDENT_NAME, STUDENT_PWD, PHONE, EMAIL, POST, ADDRESS,CLASS_LEVEL)
-	VALUES (('S'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_SNO.NEXTVAL,4,0)),(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel})
+  	INSERT INTO STUDENT (STUDENT_NO, DEPARTMENT_NO, COLLEGE_NO, ENTRANCE_DATE, STUDENT_NAME, STUDENT_PWD, PHONE, EMAIL, POST, ADDRESS,CLASS_LEVEL,FILE_NO)
+	VALUES (('S'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_SNO.NEXTVAL,4,0)),(SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{entranceDate}, #{studentName}, #{studentPwd}, #{phone}, #{email}, #{post}, #{address}, #{classLevel} ,SEQ_ANO.CURRVAL)
   	</insert>
   	
   	
@@ -1244,6 +1244,8 @@
 	JOIN CLASS C ON SC.CLASS_NO = C.CLASS_NO
 	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
 	WHERE SC.STUDENT_NO = #{studentNo}
+	AND CLASS_YEAR = #{classYear}
+    AND CLASS_TERM =#{classTerm}
   	</select>
   	
   	<!-- 이의신청 추가 -->
@@ -1258,6 +1260,8 @@
 	JOIN CLASS C ON D.CLASS_NO = C.CLASS_NO
 	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
 	WHERE D.STUDENT_NO = #{studentNo}
+	AND CLASS_YEAR = #{classYear}
+    AND CLASS_TERM =#{classTerm}
   	</select>
   	
   	<select id="searchGradeReport" resultMap="objectionResultMap">
@@ -1270,12 +1274,32 @@
 	JOIN CLASS C ON SC.CLASS_NO = C.CLASS_NO
 	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
 	WHERE SC.STUDENT_NO = #{studentNo}
-	  AND (C.CLASS_YEAR = '2023' AND C.CLASS_TERM = '1' OR C.CLASS_TERM = '2')
+	AND CLASS_YEAR = #{classYear}
+    AND CLASS_TERM =#{classTerm}
   	</select>
   	
+  	<select id="searchReport" resultMap="objectionResultMap">
+	  	SELECT D.STUDENT_NO,C.CLASS_NO, C.CLASS_NAME, S.STUDENT_NAME, D.STATUS ,C.CREDIT, D.REASON
+		FROM DISSENT D
+		JOIN CLASS C ON D.CLASS_NO = C.CLASS_NO
+		JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
+	    JOIN STUDENT S ON D.STUDENT_NO = S.STUDENT_NO
+		WHERE P.PROFESSOR_NO = #{professorNo}
+		AND CLASS_YEAR = #{classYear}
+	    AND CLASS_TERM = #{classTerm}
+  	</select>
+  	
+  	<update id="updateReport">
+  	UPDATE DISSENT 
+  		SET STATUS = #{status},
+  			OPINION = #{opinion}
+  	WHERE CLASS_NO = #{classNo}
+  	AND STUDENT_NO = #{studentNo} 
+  	</update>
+  	
   	<insert id="insertProfessor">
-  	INSERT INTO PROFESSOR(PROFESSOR_NO, DEPARTMENT_NO, COLLEGE_NO, PROFESSOR_NAME, PROFESSOR_PWD, POSITION, ENTRANCE_DATE, PHONE, EMAIL, POST, ADDRESS, ACCOUNT_NO, ADMIN)
-  	VALUES (('P'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_PNO.NEXTVAL,4,0)), (SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{professorName}, #{professorPwd}, #{position}, #{entranceDate}, #{phone}, #{email}, #{post}, #{address}, #{accountNo}, #{admin})
+  	INSERT INTO PROFESSOR(PROFESSOR_NO, DEPARTMENT_NO, COLLEGE_NO, PROFESSOR_NAME, PROFESSOR_PWD, POSITION, ENTRANCE_DATE, PHONE, EMAIL, POST, ADDRESS, ACCOUNT_NO, ADMIN , FILE_NO)
+  	VALUES (('P'||TO_CHAR(SYSDATE, 'YYYY')||LPAD(SEQ_PNO.NEXTVAL,4,0)), (SELECT DEPARTMENT_NO FROM DEPARTMENT WHERE DEPARTMENT_NAME = #{departmentNo}), #{collegeNo}, #{professorName}, #{professorPwd}, #{position}, #{entranceDate}, #{phone}, #{email}, #{post}, #{address}, #{accountNo}, #{admin} ,SEQ_ANO.CURRVAL)
 	</insert>
   	
   	<!-- 학기별 성적 조회 -> 학기별 성적 계산 -->
@@ -1872,6 +1896,8 @@
 		JOIN CLASS C ON D.CLASS_NO = C.CLASS_NO
 		JOIN STUDENT S ON D.STUDENT_NO = S.STUDENT_NO
 		WHERE C.PROFESSOR_NO = #{professorNo}
+		AND CLASS_YEAR = #{classYear}
+		AND CLASS_Term = #{classTerm}
   	</select>
   	
   	<update id="professorGradeRequest">
@@ -1880,7 +1906,8 @@
 		OPINION = #{opinion}
 	WHERE STUDENT_NO = #{studentNo}
 	AND CLASS_NO = #{classNo}
-</update>
+	</update>
+	
   	<!-- (관리자) 공지사항 관리 - 수정 게시글 조회 -->
   	<select id="selectUpdateNotice" resultMap="noticeResultSet">
   		SELECT NOTICE_CATEGORY, FIELD, NOTICE_TITLE, NOTICE_CONTENT, CREATE_DATE
@@ -1938,6 +1965,16 @@
 	  			 FROM DUAL
 			</foreach>
   		) A
+  	</insert>
+  	
+  	<insert id="insertAttachmentStudent" parameterType="attachment">
+  		INSERT INTO ATTACHMENT(FILE_NO,ORIGIN_NAME,CHANGE_NAME,FILE_PATH,UPLOAD_DATE)
+		VALUES(SEQ_ANO.NEXTVAL,#{originName},#{changeName},#{filePath},SYSDATE)
+  	</insert>
+  	
+  	<insert id="insertAttachmentProfessor" parameterType="attachment">
+  		INSERT INTO ATTACHMENT(FILE_NO,ORIGIN_NAME,CHANGE_NAME,FILE_PATH,UPLOAD_DATE)
+		VALUES(SEQ_ANO.NEXTVAL,#{originName},#{changeName},#{filePath},SYSDATE)
   	</insert>
   	
   </mapper>

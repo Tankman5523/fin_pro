@@ -456,19 +456,19 @@ public class StudentController {
 
 	}
 
-	// 학생 강의 의의신청 페이지
+	// 학생 강의 이의신청 페이지
 	@RequestMapping(value = "studentGradeReport.st" , method = RequestMethod.GET)
-	public String studentGradeReport(HttpSession session, Model model) {
+	public String studentGradeReport(HttpSession session, Model model, Objection obj) {
 
 		Student loginUser = (Student) session.getAttribute("loginUser");
 		String studentNo = loginUser.getStudentNo();
 		
 		ArrayList<String> classTerm = memberService.selectStudentClassTerm(studentNo); // 수강한 학년도, 학기
 
-		ArrayList<Objection> list = memberService.studentGradeReport(studentNo);
-		Objection obj = new Objection();
-		obj.setStudentNo(studentNo);
-		ArrayList<Objection> resultList = memberService.studentGradeView(obj);
+		ArrayList<Objection> list = memberService.studentGradeReport(obj);
+		Objection objc = new Objection();
+		objc.setStudentNo(studentNo);
+		ArrayList<Objection> resultList = memberService.studentGradeView(objc);
 		
 		model.addAttribute("classTerm", classTerm);
 		model.addAttribute("list", list);
@@ -484,7 +484,9 @@ public class StudentController {
 	public HashMap<String , ArrayList<Objection>> studentGradeReport(Objection obj) {
 		
 		ArrayList<Objection> list = memberService.studentGradeView(obj);
-		ArrayList<Objection> commList = memberService.studentGradeReport(obj.getStudentNo());
+		ArrayList<Objection> commList = memberService.studentGradeReport(obj);
+		
+		System.out.println(commList);
 		
 		HashMap<String , ArrayList<Objection>> listMap = new HashMap<String, ArrayList<Objection>>();
 		listMap.put("list", list);
@@ -512,17 +514,16 @@ public class StudentController {
 	
 	//년도 학기별 이의 신청
 	@PostMapping(value = "searchReport.st")
-	public String searchGradeReport(HttpSession session, Objection objc ,Model model) {
-		int result =  memberService.searchGradeReport(objc);
+	public String searchGradeReport(HttpSession session, Objection obj ,Model model) {
 		
 		Student loginUser = (Student) session.getAttribute("loginUser");
 
 		String studentNo = loginUser.getStudentNo();
 
-		ArrayList<Objection> list = memberService.studentGradeReport(studentNo);
-		Objection obj = new Objection();
-		obj.setStudentNo(studentNo);
-		ArrayList<Objection> resultList = memberService.studentGradeView(obj);
+		ArrayList<Objection> list = memberService.studentGradeReport(obj);
+		Objection objc = new Objection();
+		objc.setStudentNo(studentNo);
+		ArrayList<Objection> resultList = memberService.studentGradeView(objc);
 		
 		model.addAttribute("list", list);
 		model.addAttribute("resultList", resultList);
@@ -665,29 +666,6 @@ public class StudentController {
 		ArrayList<HashMap<String, String>> list = memberService.detailmajorGra(h);
 
 		return new Gson().toJson(list);
-	}
-
-	// 학생등록 페이지
-	@RequestMapping("enrollStudent.me")
-	public String enrollStudent() {
-
-		return "member/student/enrollStudent";
-	}
-
-	// 학생등록 페이지 등록
-	@RequestMapping("insertStudent.me")
-	public String insertStudent(Student st, Model model, HttpSession session) {
-
-		int result = memberService.insertStudent(st);
-
-		if (result > 0) {
-			session.setAttribute("alertMsg", "회원가입 성공");
-			return "redirect:enrollStudent";
-		} else {
-			model.addAttribute("errorMsg", "회원가입 실패");
-		}
-		return "member/student/infoStudent";
-
 	}
 
 	// 휴,복학 신청 조회(리스트) 페이지 이동(학생)

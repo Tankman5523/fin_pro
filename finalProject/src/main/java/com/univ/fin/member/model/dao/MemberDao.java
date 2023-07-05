@@ -227,10 +227,16 @@ public class MemberDao {
 		
 		return sqlSession.update("memberMapper.updateProfessor",pr);
 	}
+	
+	@Transactional
+	public int insertStudent(SqlSessionTemplate sqlSession, Student st , Attachment a) {
 
-	public int insertStudent(SqlSessionTemplate sqlSession, Student st) {
-
-		return sqlSession.insert("memberMapper.insertStudent",st);
+		int result = sqlSession.insert("memberMapper.insertAttachmentStudent",a);
+		
+		if(result>0) {
+			result =  sqlSession.insert("memberMapper.insertStudent",st);
+		}
+		return result;
 	}
 
 	// 강의시간표 -> 교수명 검색/과목 검색
@@ -390,16 +396,22 @@ public class MemberDao {
 
 
 	//강의 이의제기 - 학생
-	public ArrayList<Objection> studentGradeReport(SqlSessionTemplate sqlSession, String studentNo) {
+	public ArrayList<Objection> studentGradeReport(SqlSessionTemplate sqlSession, Objection obj) {
 
-		return (ArrayList)sqlSession.selectList("memberMapper.studentGradeReport",studentNo);
+		return (ArrayList)sqlSession.selectList("memberMapper.studentGradeReport",obj);
 		
 	}
 	
 	//임직원 생성
-	public int insertProfessor(SqlSessionTemplate sqlSession, Professor pr) {
+	@Transactional
+	public int insertProfessor(SqlSessionTemplate sqlSession, Professor pr ,Attachment a) {
 		
-	return sqlSession.insert("memberMapper.insertProfessor",pr);
+		int result = sqlSession.insert("memberMapper.insertAttachmentProfessor",a);
+		
+		if(result>0) {
+			result =  sqlSession.insert("memberMapper.insertProfessor",pr);
+		}
+		return result;
 	}
 	// (관리자)강의개설 일괄 승인
 	public int updateClassPermitAll(SqlSessionTemplate sqlSession, int[] cArr) {
@@ -769,6 +781,10 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectMainProfessorRest");
 	}
 
+	public ArrayList<Objection> professorGradeReport(SqlSessionTemplate sqlSession,Objection obj) {
+		return (ArrayList)sqlSession.selectList("memberMapper.professorGradeReport",obj);
+		
+	}
 	// (학생) 휴학생 휴학할때 등록금 냈었는지
 	public int selectCheckReg(SqlSessionTemplate sqlSession, String studentNo) {
 		return sqlSession.selectOne("memberMapper.selectCheckReg",studentNo);
@@ -806,9 +822,19 @@ public class MemberDao {
 		
 		return sqlSession.insert("memberMapper.insertNoticeFile", list);
 	}
+	
+	//교수별 년도검색
+	public ArrayList<Objection> searchReport(SqlSessionTemplate sqlSession, Objection obj) {
+		
+		return (ArrayList)sqlSession.selectList("memberMapper.searchReport", obj);
+		
+	}
 
-	
-	
+	public int updateReport(SqlSessionTemplate sqlSession, Objection obj) {
+		
+		return sqlSession.update("memberMapper.updateReport",obj);
+	}
+
 
 
 }

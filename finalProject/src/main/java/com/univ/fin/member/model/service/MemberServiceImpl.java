@@ -365,9 +365,9 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public int insertStudent(Student st) {
+	public int insertStudent(Student st, Attachment a) {
 		
-		int result = memberDao.insertStudent(sqlSession,st);
+		int result = memberDao.insertStudent(sqlSession,st,a);
 		
 		return result;
 	}
@@ -585,16 +585,16 @@ public class MemberServiceImpl implements MemberService{
 
 
 	@Override
-	public ArrayList<Objection> studentGradeReport(String studentNo) {
-		ArrayList<Objection> list = memberDao.studentGradeReport(sqlSession,studentNo);
+	public ArrayList<Objection> studentGradeReport(Objection obj) {
+		ArrayList<Objection> list = memberDao.studentGradeReport(sqlSession,obj);
 		
 		return list;
 	}
 
 	@Override
-	public int insertProfessor(Professor pr) {
+	public int insertProfessor(Professor pr, Attachment a) {
 		
-		int result = memberDao.insertProfessor(sqlSession,pr);
+		int result = memberDao.insertProfessor(sqlSession,pr,a);
 		
 		return result;
 	}
@@ -995,9 +995,9 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public ArrayList<Objection> professorGradeReport(String professorNo) {
+	public ArrayList<Objection> professorGradeReport(Objection obj) {
 		
-		return memberDao.professorGradeReport(sqlSession,professorNo );
+		return memberDao.professorGradeReport(sqlSession,obj );
 	}
 
 	@Override
@@ -1056,6 +1056,18 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public int updateClassTermFinish(int[] cArr) {
 		return memberDao.updateClassTermFinish(sqlSession,cArr);
+	}
+
+	@Override
+	public ArrayList<Objection> searchReport(Objection obj) {
+		
+		return memberDao.searchReport(sqlSession,obj);
+	}
+
+	@Override
+	public int updateReport(Objection obj) {
+		
+		return memberDao.updateReport(sqlSession,obj);
 	}
 
 }
