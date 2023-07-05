@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>강의신청 조회</title>
+<title>강의 신청 목록 페이지</title>
 <link rel="stylesheet" href="/fin/resources/css/classCreateView.css">
 </head>
 <body>
