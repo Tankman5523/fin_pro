@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>안식 신청 조회</title>
+<title>안식 휴가/퇴직 신청 조회 페이지</title>
 <link rel="stylesheet" href="/fin/resources/css/professorRestView.css">
 </head>
 <body>

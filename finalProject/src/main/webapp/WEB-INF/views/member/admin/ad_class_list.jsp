@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>강의 개설 관리 페이지</title>
 <link rel="stylesheet" href="/fin/resources/css/classManegeListView.css">
 </head>
 <body>
@@ -313,8 +313,13 @@
     				var st = "";
     				if(list.length != 0){
 	    				for(var i=0; i<list.length; i++){
+	    					var fileNo;
+	    					if(list[i].fileNo==undefined){
+	    						fileNo='javascript:void(0)';
+	    					}
 	    					result += "<tr>"
 	                        +"<td><input type='checkbox' name='check' value="+list[i].classNo+"></td>"
+	                        +"<td><a href='"+fileNo+"' download><i class='fa-solid fa-download fa-2xs'></i></a></td>"
 	                        +"<td>"+(list[i].division == 0 ? "전공":"교양")+"</td>"
 	                        +"<td>"+list[i].departmentNo+"</td>"
 	                        +"<td>"+list[i].professorNo+"</td>"

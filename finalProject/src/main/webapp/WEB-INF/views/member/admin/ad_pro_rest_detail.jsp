@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>임직원 안식 휴가/퇴직 상세보기 페이지</title>
 <link rel="stylesheet" href="/fin/resources/css/adminProfessorRestList.css">
 </head>
 <body>

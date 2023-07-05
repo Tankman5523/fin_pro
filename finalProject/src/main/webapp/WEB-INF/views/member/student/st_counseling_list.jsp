@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>상담 신청 이력 페이지</title>
 <link rel="stylesheet" href="/fin/resources/css/studentCounselingList.css">
 </head>
 <body>

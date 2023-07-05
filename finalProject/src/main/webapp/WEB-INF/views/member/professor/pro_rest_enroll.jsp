@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>안식 휴가 신청 페이지</title>
 <link rel="stylesheet" href="/fin/resources/css/professorRestView.css">
 </head>
 <body>
