@@ -241,9 +241,9 @@ public class RegistController {
 		Date date = java.sql.Date.valueOf(now);
 		result = registService.deactivateRegistPay(date);
 		if(result>0) {
-			log.info("등록금 비활성화 성공 / 테스트중입니다.");
+			log.info("등록금 비활성화 성공");
 		}else {
-			log.info("등록금 비활성화 실패 / 테스트중입니다.");
+			log.info("등록금 비활성화 실패 ");
 		}
 	}
 	
