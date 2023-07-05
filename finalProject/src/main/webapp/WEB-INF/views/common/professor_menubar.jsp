@@ -142,6 +142,16 @@
 		}
 	</script>
 	
+	<c:if test="${not empty alertMsg}">
+	
+		<script>
+		 	alert("<c:out value='${alertMsg}'/>");
+		</script>
+		
+		<c:remove var="alertMsg" scope="session"/>
+		
+	</c:if>
+	
 	<div id="header">
 		<div id="logo" style="width: 500px; height: 100%; margin: 0; float: left; display: flex; align-items: center; justify-content: center;">
 			<img src="resources/icon/blue_logo_text.png" onclick="location.href='mainPage.mp'" style="width:300px;">

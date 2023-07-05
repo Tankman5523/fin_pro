@@ -382,8 +382,8 @@ public class StudentController {
 			mv.addObject("alertMsg", "상담신청 성공");
 			mv.setViewName("redirect:counselingList.st");
 		} else {
-			mv.addObject("errorMsg", "상담신청 실패");
-			mv.setViewName("common/errorPage");
+			mv.addObject("alertMsg", "상담신청 실패");
+			mv.setViewName("redirect:counselingList.st");
 		}
 		return mv;
 	}
