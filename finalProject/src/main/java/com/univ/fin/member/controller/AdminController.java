@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.univ.fin.common.model.vo.Attachment;
 import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
 import com.univ.fin.common.model.vo.Classes;
@@ -62,21 +63,38 @@ public class AdminController {
 	//학생등록 페이지 등록
 	@RequestMapping(value="insertStudent.ad" ,method=RequestMethod.POST)
 	public String insertStudent(Student st,
+								@RequestParam(value="upfile",required = false)MultipartFile upfile,
 								Model model,
 								HttpSession session) {
-	System.out.println(st.toString());
 		
-	int result = memberService.insertStudent(st);
+		st.setStudentPwd("$2a$10$chsqqg6wWHMHhAlO2twsSOUhvFzX1zGWtPuMY/s4EbCEEOInlEUvS");
+		
+		if(!upfile.getOriginalFilename().equals("")) {//첨부파일이 있다면
+			String subPath = "student/"; //학생관련 세부경로
+			String changeName = new SaveFile().saveFile(upfile, session, subPath); //파일 이름 바꾸고, 저장하고 옴
+			String filePath = "resources/uploadFiles/"; 
+			
+			//첨부파일에 담기
+			Attachment a = Attachment.builder()
+									.originName(upfile.getOriginalFilename()) //파일 원래 이름
+									.changeName(changeName) //파일 변경명
+									.filePath(filePath+subPath) //파일 저장 경로
+									.build();
+		
+		
+			int result = memberService.insertStudent(st,a);
+			
+			if(result>0) {
+				model.addAttribute("msg", "회원 생성 완료");
+			}else {
+				model.addAttribute("msg","회원 생성 실패");
+				
+			}
+		
+		}
+		return "member/admin/enrollStudent";
+	}
 	
-	if(result>0) {
-		model.addAttribute("msg", "회원 생성 완료");
-	}else {
-		model.addAttribute("msg","회원 생성 실패");
-	}
-	return "member/admin/enrollStudent";
-		
-	}
-		
 	//강의개설 승인 페이지 이동
 	@RequestMapping("classManagePage.ad")
 	public String classManageSelect(Model model) {
@@ -111,28 +129,45 @@ public class AdminController {
 	
 	@RequestMapping(value="insertProfessor.ad", method=RequestMethod.POST)
 	public String insertProfessor(Professor pr,
+								  @RequestParam(value="upfile",required = false)MultipartFile upfile,
 	                              Model model,
 	                              HttpSession session) {
 		
-	    if (pr.getDepartmentNo().equals("-선택-")) {
-	        if (pr.getPosition().equals("관리자")) {
-	            pr.setDepartmentNo("");
-	            pr.setCollegeNo("");
-	        } else {
-	            if (pr.getCollegeNo().equals("-선택-") || pr.getCollegeNo() == null) {
-	                // 관리자가 아니면서 부서 선택을 하지 않은 경우
-	            	model.addAttribute("msg","빈 입력란이 있습니다.");
-	            }
-	        }
-	    }	        
+		pr.setProfessorPwd("$2a$10$chsqqg6wWHMHhAlO2twsSOUhvFzX1zGWtPuMY/s4EbCEEOInlEUvS");
+		
+		if(!upfile.getOriginalFilename().equals("")) {//첨부파일이 있다면
+			String subPath = "student/"; //학생관련 세부경로
+			String changeName = new SaveFile().saveFile(upfile, session, subPath); //파일 이름 바꾸고, 저장하고 옴
+			String filePath = "resources/uploadFiles/"; 
+			
+			//첨부파일에 담기
+			Attachment a = Attachment.builder()
+									.originName(upfile.getOriginalFilename()) //파일 원래 이름
+									.changeName(changeName) //파일 변경명
+									.filePath(filePath+subPath) //파일 저장 경로
+									.build();
+		
+		    if (pr.getDepartmentNo().equals("-선택-")) {
+		        if (pr.getPosition().equals("관리자")) {
+		            pr.setDepartmentNo("");
+		            pr.setCollegeNo("");
+		        } else {
+		            if (pr.getCollegeNo().equals("-선택-") || pr.getCollegeNo() == null) {
+		                // 관리자가 아니면서 부서 선택을 하지 않은 경우
+		            	model.addAttribute("msg","빈 입력란이 있습니다.");
+		            }
+		        }
+		    }	        
 
-	    int result = memberService.insertProfessor(pr);
-
-	    if (result > 0) {
-	        model.addAttribute("msg", "직원 생성 완료");
-	    } else {
-	        model.addAttribute("msg", "직원 생성 실패");
-	    }
+		    int result = memberService.insertProfessor(pr,a);
+	
+		    if (result > 0) {
+		        model.addAttribute("msg", "직원 생성 완료");
+		    } else {
+		        model.addAttribute("msg", "직원 생성 실패");
+		    }
+	    
+		}
 	    return "redirect:enrollProfessor.ad";
 	}
 

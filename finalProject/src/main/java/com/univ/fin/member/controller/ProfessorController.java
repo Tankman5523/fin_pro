@@ -391,7 +391,7 @@ public class ProfessorController {
 	
 	//안식,퇴직 신청 인서트
 	@RequestMapping("professorRestRetire.pr")
-	public String insertProRest(ProfessorRest pr) {
+	public String insertProRest(ProfessorRest pr,Model model) {
 		
 		if(pr.getEndDate()!=null) {//퇴직은 종료일을 안받기 때문에 안식이라는 뜻
 			pr.setCategory(1);//카테고리 안식(1) 담음
@@ -400,6 +400,12 @@ public class ProfessorController {
 		}
 		
 		int result = memberService.insertProRest(pr);
+		
+		if(result>0) {
+			model.addAttribute("alertMsh","신청 성공");
+		}else {
+			model.addAttribute("alertMsh","신청 오류");
+		}
 		
 		return "redirect:professorRestList.pr";
 	}
@@ -474,16 +480,20 @@ public class ProfessorController {
 	
 	//교수 이의신청 페이지
 	@RequestMapping(value = "professorGradeReport.pr", method = RequestMethod.GET)
-	public String professorGradeReport(HttpSession session,Model model) {
+	public ModelAndView professorGradeReport(HttpSession session,ModelAndView mv ,Objection obj) {
 		
 		Professor loginUser = (Professor)session.getAttribute("loginUser");
 		String professorNo = loginUser.getProfessorNo();
 		
-		ArrayList<Objection> list = memberService.professorGradeReport(professorNo);
+		ArrayList<Objection> list = memberService.professorGradeReport(obj);
+		ArrayList<String> classTerm = memberService.selectProfessorClassTerm(professorNo); // 강의한 학년도, 학기
+		mv.addObject("classTerm", classTerm);
+		mv.addObject("list", list);
+		mv.setViewName("member/professor/professorGradeReport");
 		
-		model.addAttribute("list", list);
+		System.out.println("확인용"+classTerm);
 		
-		return "member/professor/professorGradeReport";
+		return mv;
 	}
 	
 	//교수 이의신청 회신
@@ -506,6 +516,35 @@ public class ProfessorController {
 		}
 		
 	}
+	
+	//년도별 학기별 이의 확인
+	@ResponseBody
+	@PostMapping(value= "searchReport.pr" ,  produces = "application/json; charset=UTF-8;")
+	public String searchReport(Objection obj) {
+		
+		ArrayList<Objection> list = memberService.searchReport(obj);
+	
+		return new Gson().toJson(list);	
+		
+	}
+	
+	//강의 이의회신
+	@ResponseBody
+	@PostMapping(value="updateReport.pr")
+	public String updateReport(Objection obj) {
+		
+		int result = memberService.updateReport(obj);
+		
+		if(result>0) {
+			return "Y";
+		}else {
+			return "N";
+		}
+		
+	}
+	
+	
+	
 	
 
 }

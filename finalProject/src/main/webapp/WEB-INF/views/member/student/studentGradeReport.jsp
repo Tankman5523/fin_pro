@@ -157,7 +157,7 @@
 							</label>
 							</th>
 							<th>
-								<button type="button" id="checkbtn" onclick="gradeCheck()">조회하기</button>
+								<button type="button" id="checkbtn" onclick="reasonRequest()">조회하기</button>
 							</th>
 						<tr>
 					</table>
@@ -187,8 +187,23 @@
 								<td>${c.credit }</td>
 								<td><input type="text" class="reasonText" id="reason"
 									name="reason" style="border: none; background: transparent;"></td>
-								<td><button class="objectionbtn"
-										onclick="insertDissent('${c.className }','${c.professorName}','${c.credit}');">이의신청</button></td>
+								<td>
+								
+								<%-- <c:forEach var="r" items="${resultList}">
+									<c:choose>
+											<c:when test="${c.className eq r.className}">
+												작성완료
+											</c:when>
+											<c:otherwise>
+												<button class="objectionbtn"
+											onclick="insertDissent('${c.className }','${c.professorName}','${c.credit}');">이의신청</button>
+											</c:otherwise>
+									</c:choose>
+								</c:forEach> --%>
+								
+								<button class="objectionbtn"
+										onclick="insertDissent('${c.className }','${c.professorName}','${c.credit}');">이의신청</button>
+								</td>
 							</tr>
 						</c:forEach>
 					</tbody>
@@ -250,17 +265,14 @@
 	</div>
 
 	<script>
-		/* var arr = ${classTerm};
+		 var arr = ${classTerm};
 		
 		$(function() {
 			$("select[name=classYear]").children().first().prop("selected", true).change();
-			clear();
-			gradeCheck();
             
         	$(".basic_table>tbody>th").on("change", "#classTerm", function() {
-        		clear();
         	});
-		}) */
+		}) 
 		
 		function changeYear(e) {
         	var $year = e.value;
@@ -282,19 +294,14 @@
         	$("#classTerm").empty();
         	$("#classTerm").append(str);
         	$("#classTerm").children().first().prop("selected", true).change();
-        	clear();
         }
 		
-		function clear() {
-			$("#studentObjection>tbody").empty();
-			$("#studentObjection2>tbody").empty();
-		}
-	
 		function reasonRequest() {
 			var studentNo = "${loginUser.studentNo}";
 			var classYear = $("#classYear").val();
 			var classTerm = $("#classTerm").val();
-
+			
+			
 			$.ajax({
 				url : 'studentGradeReport.st',
 				type : 'post',
@@ -305,6 +312,8 @@
 					classTerm : classTerm
 				},
 				success : function(data) {
+					
+					
 					var innerHtml = '';
 					innerHtml += '<table border="1" id="studentObjection2">';
 					innerHtml += '<div style="text-align: center;">';
@@ -331,7 +340,9 @@
 						innerHtml += '<td>' + data.list[i].credit + '</td>';
 						innerHtml += '<td>' + data.list[i].status + '</td>';
 						var opinion = data.list[i].opinion;
-						if(!opinion) opinion = ''; 
+						if(data.list[i].opinion==null) {
+							opinion = '';
+						} 
 						innerHtml += '<td>' + opinion + '</td>';
 						innerHtml += '</tr>';
 					}
@@ -339,6 +350,32 @@
 					innerHtml += '</tbody>';
 					innerHtml += '</table>';
 					$("#ajaxResult").html(innerHtml);
+					
+					var innerHtml2 = '';
+					for (var i = 0; i < data.commList.length; i++) {
+		                innerHtml2 += '<tr>';
+		                innerHtml2 += '<td>' + data.commList[i].studentNo + '</td>';
+		                innerHtml2 += '<td>' + data.commList[i].className + '</td>';
+		                innerHtml2 += '<td>' + data.commList[i].professorName + '</td>';
+		                innerHtml2 += '<td>' + data.commList[i].credit + '</td>';
+		                var text1 = "";    
+		                var text2 = "";    
+	                    for (var j = 0; j < data.list.length; j++) {
+	                    	if(data.commList[i].className == data.list[j].className){
+	                    		text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;' readonly>";
+	                    		text2 = "진행중";
+	                    		break;
+	                    	}else{
+	                    		text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;'>";
+	                    		text2 = "<button class='objectionbtn' onclick='insertDissent(this);'>이의신청</button>";
+	                    	}
+	                    }
+		                innerHtml2 += '<td>' + text1 + '</td>';
+		                innerHtml2 += '<td>' + text2 + '</td>';
+		                innerHtml2 += '</tr>';
+		            }
+					$("#studentObjection>tbody").html(innerHtml2);
+
 				},
 				error : function(request) {
 					alert('실패');
@@ -347,16 +384,17 @@
 
 		}
 
-		function insertDissent(a, b, c) {
-			var loginUser = "${loginUser}";
-			var flag = confirm("이의신청을 하시겠습니까?");
 
+		function insertDissent(e) {
+			var tr = $(e).parents("tr");
+			
+			var flag = confirm("이의신청을 하시겠습니까?");
 			if (flag) {
 				var studentNo = "${loginUser.studentNo}";
-				var className = a;
-				var professorName = b;
-				var credit = c;
-				var reason = document.querySelector('input[name="reason"]').value;
+				var className = tr.children().eq(1).text();
+				var professorName = tr.children().eq(2).text();
+				var credit = tr.children().eq(3).text();
+				var reason = tr.children().eq(4).children().val();
 
 				$.ajax({
 					url : "insertReport.st",
@@ -372,6 +410,14 @@
 						if (result == 'Y') {
 							alert("이의신청에 성공하였습니다.");
 							reasonRequest();
+							/* for(var i=0;i<$("#studentObjection>tbody").children('tr').length;i++) {
+								if($("#studentObjection>tbody").children('tr').eq(i).children().eq(1).text() == className) {
+									$("#studentObjection>tbody").children('tr').eq(i).find('button').prop('disabled', true);
+								}
+							} */
+// 							$(e).prop("disabled",true);
+							/* socket.send('reportRequest,'+); */
+
 						} else {
 							alert("이의신청에 실패하였습니다.");
 						}
@@ -381,22 +427,16 @@
 					}
 				});
 			}
-
 		}
 		
-		/* function gradeCheck() {
+		
+		 function gradeCheck() { // 조회하기 버튼
 			  var classYear = document.getElementById("classYear").value;
 			  var classTerm = document.getElementById("classTerm").value;
-			
-			  reasonRequest(); // reasonRequest() 함수 호출
-			  
-			  console.log(classYear);
-			  console.log(classTerm);
 
-			  if (classYear === "2023" && (classTerm === "1" || classTerm === "2")) {
-			    console.log("조회하기 기능 수행");
-			  }
-			} */
+			  reasonRequest(); 
+		}
+			  
 	</script>
 </body>
 </html>
