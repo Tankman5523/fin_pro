@@ -368,12 +368,12 @@
 		                <!-- Modal body -->
 		                <div class="modal-body">
 	                		<input type="hidden" name="classNo" class="classNo">
-					                   학과: <input style="width: 150px;" type="text" class="departmentName" readonly>
-					                   학번: <input style="width: 150px;" type="text" class="studentNo" readonly> <br><br>
-					                   학년: <input style="width: 150px;" type="text" class="classLevel" readonly>
-					                   이름: <input style="width: 150px;" type="text" class="studentName" readonly> <br><br>
-					                   성적: <input style="width: 150px;" type="number" min="0" max="100" class="score" onchange="scoreInsert(this);">
-					                   등급: <input style="width: 150px;" type="text" class="gradeLevel" readonly>
+					                   학과: <input style="margin: 0 30px 0 10px; width: 150px;" type="text" class="departmentName" readonly>
+					                   학번: <input style="margin: 0 20px 0 10px; width: 150px;" type="text" class="studentNo" readonly> <br><br>
+					                   학년: <input style="margin: 0 30px 0 10px; width: 150px;" type="text" class="classLevel" readonly>
+					                   이름: <input style="margin: 0 20px 0 10px; width: 150px;" type="text" class="studentName" readonly> <br><br>
+					                   성적: <input style="margin: 0 30px 0 10px; width: 150px;" type="number" min="0" max="100" class="score" onchange="scoreInsert(this);">
+					                   등급: <input style="margin: 0 20px 0 10px; width: 150px;" type="text" class="gradeLevel" readonly>
 			                <br><br><br>
 			                
 			            	<button type="button" class="btn btn-warning" id="insert" onclick="gradeInsert();">등록</button>
