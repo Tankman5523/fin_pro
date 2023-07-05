@@ -422,12 +422,16 @@ public interface MemberService {
 	// (관리자) 공지사항 상세보기
 	Notice detailNoticeView(String noticeNo);
 	
-
 	//교수 이의신청 학기년도별 조회
 	ArrayList<Objection> searchReport(Objection obj);
 
 	//교수 이의신청 회신
 	int updateReport(Objection obj);
+
+	// (관리자) 공지사항 상세보기 첨부파일
+	ArrayList<NoticeAttachment> detailNoticeFile(String noticeNo);
+
+	
 
 
 }

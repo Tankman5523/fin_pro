@@ -26,27 +26,19 @@
 						 | ${n.count } | ${n.createDate }
 					</div>
 				</div>
-					<c:choose>
-						<c:when test="${not empty files}">
-							<c:forEach var="f" items="${files }">
-								<c:if test="${null ne f.originName }">
-									<div id="files">
-										<span>
-											<i class="fa-solid fa-file"></i>
-											${f.originName }
-										</span>
-									</div>
-								</c:if>
-							</c:forEach>
-						</c:when>
-						<c:otherwise>
-							<div id="files">
-								<span>첨부파일이 없습니다.</span>
-							</div>
-						</c:otherwise>
-					</c:choose>
+				<c:if test="${na ne ''}">
+					<ul id="file-container">
+						<c:forEach var="i" items="${na }">
+							<li class="file-list">
+								<a href="${i.changeName }" download="${i.originName }">
+									<i class="fa-solid fa-paperclip"></i>&nbsp;&nbsp;&nbsp;${i.originName }
+								</a>
+							</li>
+						</c:forEach>
+					</ul>
+				</c:if>
 				<div id="notice_content">
-					<textarea readonly="readonly">${n.noticeContent }</textarea>
+					<div id="summernote">${n.noticeContent }</div>
 				</div>
 			</div>
 		</div>

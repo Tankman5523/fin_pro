@@ -2028,5 +2028,12 @@
 		VALUES(SEQ_ANO.NEXTVAL,#{originName},#{changeName},#{filePath},SYSDATE)
   	</insert>
   	
+  	<!-- (관리자) 공지사항 상세 보기 파일조회 -->
+  	<select id="detailNoticeFile" resultMap="noticeFileResultSet">
+  		SELECT *
+  		FROM NOTICE_ATTACHMENT
+  		WHERE NOTICE_NO = #{noticeNo }
+  		AND STATUS = 'Y'
+  	</select>
   </mapper>
 

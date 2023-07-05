@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.PageInfo;
 import com.univ.fin.main.model.vo.Notice;
+import com.univ.fin.main.model.vo.NoticeAttachment;
 
 @Repository
 public class MainDao {
@@ -122,6 +123,10 @@ public class MainDao {
 	public ArrayList<CalendarVo> selectHaksaCalendar(SqlSessionTemplate sqlSession) {
 		 
 		return (ArrayList)sqlSession.selectList("mainMapper.selectHaksaCalendar");
+	}
+
+	public ArrayList<NoticeAttachment> detailNoticeFile(SqlSessionTemplate sqlSession, int noticeNo) {
+		return (ArrayList)sqlSession.selectList("mainMapper.detailNoticeFile", noticeNo);
 	}
 
 	

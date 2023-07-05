@@ -22,6 +22,7 @@ import com.univ.fin.common.model.vo.PageInfo;
 import com.univ.fin.common.template.Pagination;
 import com.univ.fin.main.model.service.MainService;
 import com.univ.fin.main.model.vo.Notice;
+import com.univ.fin.main.model.vo.NoticeAttachment;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 
@@ -130,9 +131,9 @@ public class MainPageController {
 		
 		if(result > 0) {
 			Notice n = mainService.selectNotice(noticeNo);
-			ArrayList<Notice> files = mainService.selectFiles(noticeNo);
+			ArrayList<NoticeAttachment> na = mainService.detailNoticeFile(noticeNo);
 			mv.addObject("n", n);
-			mv.addObject("files", files);
+			mv.addObject("na", na);
 			mv.setViewName("main/noticeDetailView");
 		}else {
 			mv.addObject("alertMsg", "해당 게시물을 조회할 수 없습니다.");

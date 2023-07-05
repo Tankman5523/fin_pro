@@ -16,7 +16,7 @@
 <body>
 <div class="wrap" style="height: auto;">
 	<%@include file="../../common/admin_menubar.jsp" %> <%--알아서 수정해서 쓰기 --%> 
-	<div id="content" style="height: 1100px;">
+	<div id="content" style="height: 1000px;">
 		<div id="category">
 			<div id="cate_title" style="height: 94px;">
 				<span style="margin: 0 auto;">학사관리</span>
@@ -43,7 +43,10 @@
 		<div id="content_1">
 		
 			<p id="sub-title">공지사항 상세보기</p>
+			
 			<div id="notice-container">
+				<button id="update" onclick="update()">수정</button>
+				<button type="button" id="back" onclick="history.back();">이전</button>
 				<table id="field-area">
 					<tr>
 						<c:choose>
@@ -57,18 +60,31 @@
 						<td><input type="text" id="cate" value="${n.categoryName }" readonly="readonly"></td>
 					</tr>
 				</table>
+				
 				<input type="text" id="noticeTitle" value="${n.noticeTitle }" readonly="readonly">
-				<div id="file-area">
-					${n.changeName }
-				</div>
+				
+				<c:if test="${na ne ''}">
+					<ul id="file-container">
+						<c:forEach var="i" items="${na }">
+							<li class="file-list">
+								<a href="${i.changeName }" download="${i.originName }">
+									<i class="fa-solid fa-paperclip"></i>&nbsp;&nbsp;&nbsp;${i.originName }
+								</a>
+							</li>
+						</c:forEach>
+					</ul>
+				</c:if>
+				
 				<div id="summernote">${n.noticeContent }</div>
-			</div>
-			
-			<div id="btn-area">
-				<button type="button" id="back" onclick="history.back();">이전</button>
 			</div>
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+	function update(){
+		const noticeNo = '${n.noticeNo}'
+		location.href = "updateNotice.ad?noticeNo="+noticeNo;
+	}
+</script>
 </body>
 </html>

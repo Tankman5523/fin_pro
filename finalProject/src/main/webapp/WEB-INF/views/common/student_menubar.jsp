@@ -106,7 +106,7 @@
 							$("#alarmImg").css("filter", "grayscale(0%)");
 						}
 						
-						if($check==1) {
+						if($check==1) { // 로그인시 딱 한번만
 							$("#alarm-area").removeClass("alarm-remove");
 							$("#alarmImg").attr("src", $("#alarmImg").data("animated"));
 							

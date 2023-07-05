@@ -130,6 +130,7 @@
 				$('#result-table > tbody').html(str);
 				
 				selectRow()
+				
 			},
 			error: function(){
 				alert("현재 페이지를 로드할 수 없습니다.");
@@ -206,9 +207,12 @@
 	function selectRow(){
 		const tr = document.querySelectorAll('#result-table tbody tr')
 		
-		tr.forEach(function(tr){
-			tr.addEventListener('click', function(){
-				const noticeNo = tr.childNodes[1].innerText
+		tr.forEach(function(row){
+			const chk = row.childNodes[0];
+			chk.setAttribute('onclick', 'event.cancelBubble=true;')
+			
+			row.addEventListener('click', function(){
+				const noticeNo = row.childNodes[1].innerText
 				location.href = 'detailNoticeView.ad?noticeNo='+noticeNo;
 			});
 		});

@@ -42,24 +42,29 @@
 	font-weight: bold;
 }
 
-#files{
-	height: 25px;
-	border-bottom: 1px solid black;
-	padding: 0 20px;
-}
-#files span{
-	line-height: 25px;
-}
 #notice_content{
 	height: auto;
 	border-bottom: 3px solid black;
-	padding: 20px;
 }
-#notice_content textarea{
-	width: 100%;
-	height: auto;
-	margin: 0;
-	resize: none;
-	font-size: 18px;
-	border: none;
+
+#file-container{
+	list-style: none;
+	padding: 10px 10px 0 10px;
+	margin: 0px;
+}
+#file-container a{
+	text-decoration: none;
+}
+.file-list{
+	list-style: none;
+	margin-bottom: 10px;
+}
+
+#summernote{
+	height: 700px;
+	border: 1px solid black;
+	padding: 20px;
+	font-size: 16px;
+	overflow-y: scroll;
+	margin: 10px 0 20px 0;
 }

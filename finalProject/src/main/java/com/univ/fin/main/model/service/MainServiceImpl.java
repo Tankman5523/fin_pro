@@ -11,6 +11,7 @@ import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.PageInfo;
 import com.univ.fin.main.model.dao.MainDao;
 import com.univ.fin.main.model.vo.Notice;
+import com.univ.fin.main.model.vo.NoticeAttachment;
 import com.univ.fin.member.model.dao.MemberDao;
 
 @Service
@@ -172,6 +173,12 @@ public class MainServiceImpl implements MainService{
 		ArrayList<CalendarVo> list = mainDao.selectHaksaCalendar(sqlSession);
 		
 		return list;
+	}
+
+	//공지사항 파일 조회
+	@Override
+	public ArrayList<NoticeAttachment> detailNoticeFile(int noticeNo) {
+		return mainDao.detailNoticeFile(sqlSession, noticeNo);
 	}
 
 
