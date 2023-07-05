@@ -66,12 +66,13 @@ public class Weather {
 		}else {
 			
 			//강수, 하늘 가공처리
+			/* IMG - 아이콘, SKY - 하늘상태 */
 			HashMap<String, String> icon = new HashMap<>();
 			icon.put("sky", h.get("SKY"));
 			icon.put("pty", h.get("PTY"));
 			
 			HashMap<String,String> setIcon = weatherIcon(icon);
-			/* IMG - 아이콘, SKY - 하늘상태 */
+			setIcon.put("chkError", h.get("chkError"));
 			
 			return new Gson().toJson(setIcon);
 		}
