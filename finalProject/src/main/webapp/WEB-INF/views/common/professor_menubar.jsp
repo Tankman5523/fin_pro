@@ -88,7 +88,7 @@
 							$("#alarmImg").css("filter", "grayscale(0%)");
 						}
 						
-						if($check==1) {
+						if($check==1) { // 로그인시 딱 한번만
 							$("#alarm-area").removeClass("alarm-remove");
 							$("#alarmImg").attr("src", $("#alarmImg").data("animated"));
 							
@@ -120,9 +120,6 @@
 						
 						setTimeout(function() {
 							$("#alarm-area2").addClass("alarm-remove");
-							if($("#alarmDiv").html() == "<span>새로운 알람이 없습니다.</span>") {
-								$("#alarmImg").css("filter", "grayscale(100%)");
-							}
 							$("#alarmImg").attr("src", $("#alarmImg").data("static"));
 							
 						}, 8000); // 8초동안 보여줌
@@ -141,6 +138,16 @@
 			socket = "";
 		}
 	</script>
+	
+	<c:if test="${not empty alertMsg}">
+	
+		<script>
+		 	alert("<c:out value='${alertMsg}'/>");
+		</script>
+		
+		<c:remove var="alertMsg" scope="session"/>
+		
+	</c:if>
 	
 	<div id="header">
 		<div id="logo" style="width: 500px; height: 100%; margin: 0; float: left; display: flex; align-items: center; justify-content: center;">

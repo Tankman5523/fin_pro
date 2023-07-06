@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="wrap">
-	<%@include file="../../common/admin_menubar.jsp" %> <%--알아서 수정해서 쓰기 --%> 
+	<%@include file="../../common/admin_menubar.jsp" %> <%--알아서 수정해서 쓰기 --%>
 	<div id="content">
 		<div id="category">
 			<div id="cate_title">
@@ -79,34 +79,7 @@
 							<th>게시일</th>	
 						</tr>
 					</thead>
-					<tbody>
-						<c:forEach var="i" items="${list }">
-							<tr>
-								<td><input type="checkBox" class="chkRows" name="chkRows"></td>
-								<td>${i.noticeNo }</td>
-								<c:choose>
-									<c:when test="${i.field eq 0}">
-										<td>공지사항</td>
-									</c:when>
-									<c:otherwise>
-										<td>FAQ</td>
-									</c:otherwise>
-								</c:choose>
-								<td>${i.categoryName }</td>
-								<td>${i.noticeTitle }</td>
-								<c:choose>
-									<c:when test="${i.originName ne null }">
-										<td style='width: 80px;'><i class='fa-solid fa-paperclip'></i></td>
-										<td>${i.createDate }</td>
-									</c:when>
-									<c:otherwise>
-										<td style='width: 80px;'></td>
-										<td>${i.createDate }</td>
-									</c:otherwise>
-								</c:choose>
-							</tr>
-						</c:forEach>
-					</tbody>
+					<tbody></tbody>
 				</table>
 			</div>
 			<div id="btn-area">
@@ -122,37 +95,47 @@
 	
 	window.onload = function(){
 		
-// 		$.ajax({
-// 			url: "selectNoticeList.ad",
-// 			type: "post",
-// 			success: function(result){
-// 				var str = "";
+		$.ajax({
+			url: "selectNoticeList.ad",
+			type: "post",
+			success: function(result){
+				var str = "";
 				
-// 				result.forEach(function(result){
-// 					str += "<tr>"
-// 						+"<td>"+"<input type='checkBox' class='chkRows' name='chkRows'>"+"</td>"
-// 						+"<td>"+result.noticeNo+"</td>"
-// 						+"<td>"+result.field+"</td>"
-// 						+"<td>"+result.categoryName+"</td>"
-// 						+"<td>"+result.noticeTitle+"</td>";
+				result.forEach(function(result){
+					str += "<tr>"
+						+"<td>"+"<input type='checkBox' class='chkRows' name='chkRows'>"+"</td>"
+						+"<td>"+result.noticeNo+"</td>";
 						
-// 						if (result.originName != null) {
-// 							str += "<td style='width: 80px;'>"+"<i class='fa-solid fa-paperclip'></i>"+"</td>"
-// 							+"<td>"+result.createDate+"</td>"
-// 							+"</tr>"
-// 						}else{
-// 							str += "<td></td>"
-// 							+"<td>"+result.createDate+"</td>"
-// 							+"</tr>"
-// 						}
-// 				})
+						if(result.field == 0){
+							str +="<td>"+"공지사항"+"</td>"
+								+"<td>"+result.categoryName+"</td>"
+								+"<td>"+result.noticeTitle+"</td>";							
+						}else{
+							str +="<td>"+"FAQ"+"</td>"
+								+"<td>"+result.categoryName+"</td>"
+								+"<td>"+result.noticeTitle+"</td>";
+						}
+						
+						if (result.originName != null) {
+							str += "<td style='width: 80px;'>"+"<i class='fa-solid fa-paperclip'></i>"+"</td>"
+							+"<td>"+result.createDate+"</td>"
+							+"</tr>"
+						}else{
+							str += "<td></td>"
+							+"<td>"+result.createDate+"</td>"
+							+"</tr>"
+						}
+				})
 				
-// 				$('#result-table > tbody').html(str);
-// 			},
-// 			error: function(){
-// 				alert("현재 페이지를 로드할 수 없습니다.");
-// 			}
-// 		})
+				$('#result-table > tbody').html(str);
+				
+				selectRow()
+				
+			},
+			error: function(){
+				alert("현재 페이지를 로드할 수 없습니다.");
+			}
+		})
 		
 		var submit = document.getElementById('submit')
 	
@@ -221,6 +204,20 @@
 			
 	}
 	
+	function selectRow(){
+		const tr = document.querySelectorAll('#result-table tbody tr')
+		
+		tr.forEach(function(row){
+			const chk = row.childNodes[0];
+			chk.setAttribute('onclick', 'event.cancelBubble=true;')
+			
+			row.addEventListener('click', function(){
+				const noticeNo = row.childNodes[1].innerText
+				location.href = 'detailNoticeView.ad?noticeNo='+noticeNo;
+			});
+		});
+	}
+	
 	function selectAll(selectAll){
 		const checkBoxes = document.getElementsByName('chkRows')
 		
@@ -230,7 +227,6 @@
 	}
 	
 	function insert(){
-// 		const professorNo = "${loginUser.professorNo}";
 		location.href = 'insertNotice.ad';
 	}
 	
@@ -294,20 +290,15 @@
 		})
 	}
 	
-	//전체선택
-	$(document).on('click', '#result-table tbody tr', function(e){
-		if($(e.target).is('input[type="checkBox"]')){
-			return;
-		}
-		const chkBox = $(this).find('input[type="checkBox"]')
-		chkBox.prop('checked', !chkBox.prop('checked'))
-	})
+	//행 선택 시 체크박스 체크
+// 	$(document).on('click', '#result-table tbody tr', function(e){
+// 		if($(e.target).is('input[type="checkBox"]')){
+// 			return;
+// 		}
+// 		const chkBox = $(this).find('input[type="checkBox"]')
+// 		chkBox.prop('checked', !chkBox.prop('checked'))
+// 	})
 	
-	const msg = "${msg}"
-	
-	if(msg != ''){
-		alert(msg)	
-	}
 	
 </script>
 </body>

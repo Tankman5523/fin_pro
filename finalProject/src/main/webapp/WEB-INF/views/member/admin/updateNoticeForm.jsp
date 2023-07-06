@@ -42,9 +42,9 @@
 	    </div>
 		<div id="content_1">
 		
-			<p id="sub-title">공지사항 등록</p>
+			<p id="sub-title">공지사항 수정</p>
 			<div id="editor-container">			
-				<form action="insertNoticeForm.ad" id="file-form" method="post" onsubmit="return insertForm()" enctype="multipart/form-data">
+				<form action="updateNoticeForm.ad?noticeNo=${n.noticeNo }" id="file-form" method="post" onsubmit="return insertForm()" enctype="multipart/form-data">
 					<input type="hidden" name="professorNo" value="${loginUser.professorNo }">
 					<table id="select-area">
 						<tbody>
@@ -71,13 +71,21 @@
 					</table>
 					<input type="file" name="upfile" id="files" class="files" onchange="upload()" multiple="multiple">
 					<label for="files" id="upFile-button">파일찾기</label>
-					<ul id="files-info"></ul>
+					<ul id="files-info">
+						<c:forEach var="i" items="${list }">
+							<li class="list-file">
+								<input type="hidden" name="fileNo" id="fileNo" value="${i.fileNo }">
+								<button type="button" class="list-del"><i class='fa-solid fa-xmark'></i></button>
+								${i.originName }
+							</li>
+						</c:forEach>
+					</ul>
 					
 					<input type="text" id="notice-title" name="noticeTitle" value="${n.noticeTitle }" placeholder="제목을 입력하세요." required="required">
 					<textarea name="noticeContent" id="noticeContent" style="display:none;"></textarea>
 					<div id="summernote"></div>
 					<div id="btn-area">
-						<button type="button" id="back" onclick="history.back();">이전</button>
+						<button type="button" id="back" onclick="location.href='selectNotice.ad'">이전</button>
 						<button type="submit" id="submit">수정</button>
 					</div>
 				</form>
@@ -93,99 +101,183 @@
 	        height: 500,
 	        maxHeight: 500
 	    });
+		
         jb('.note-insert').css('display', 'none')
         jb('.note-table').css('display', 'none')
         jb('.note-view').css('display', 'none')
-        jb('.note-placeholder').remove()
-        jb('.note-editable').html('${n.noticeContent}')
         
+        const noticeContent = '${n.noticeContent}'
+       
+        if('${n.noticeContent}' != null){
+	        jb('.note-placeholder').remove()    	
+        }
+        jb('.note-editable').html(noticeContent)
         
         const fieldSelect = document.getElementById('field-select');
-        const fieldOptions = fieldSelect.options.length;
+        const fieldLength = fieldSelect.options.length;
         const field = '${n.field}'
         
+         for(var i=0; i<fieldLength; i++){
+        	 if(fieldSelect.options[i].value == field){
+        		 fieldSelect.options[i].selected = true;
+        	 }
+         }
         
 		const categorySelect = document.getElementById('category-select');
 		const cateLength = categorySelect.options.length;
 		const category = '${n.noticeCategory}'
 		
-        console.log(field)
-        console.log(category)
+		for(var i=0; i<cateLength; i++){
+        	 if(categorySelect.options[i].value == category){
+        		 categorySelect.options[i].selected = true;
+        	 }
+         }
 		
 	});
 	
-// 	window.onload = function(){
-// 		const note = document.querySelector('.note-editable')
-// 		note.innerHTML = '${n.noticeContent}';
-		
-// 	}
+	//조회한 첨부파일 삭제
+	const delBtn = document.querySelectorAll('.list-del');
+	const form = document.getElementById('file-form');
 	
-// 	function upload(){
-// 		const dataTransfer = new DataTransfer();
-		
-// 		const fileArr = document.getElementById('files').files;
-// 		const files = Array.from(fileArr);
-// 		const fileInfo = document.getElementById('files-info')
-		
-// 		if(fileArr != null && fileArr.length>0){
-// 			for(var i=0; i<fileArr.length; i++){
-// 				const li = document.createElement('li')
-// 				const btn = document.createElement('button')
-				
-// 				li.innerHTML += fileArr[i].name
-// 				li.setAttribute('class', 'select-file')
-// 				btn.setAttribute('type', 'button')
-// 				btn.setAttribute('onclick', 'deleteFile(this)')
-// 				btn.setAttribute('class', 'delete-btn')
-// 				btn.innerHTML = "<i class='fa-solid fa-xmark'></i>"
-// 				li.appendChild(btn)
-// 				fileInfo.append(li)
-				
-// 			}
-// 			files.forEach(function(file){
-// 				dataTransfer.items.add(file);
-// 				document.getElementById('files').files = dataTransfer.files;
-// 			});
-// 			console.log(document.getElementById('files').files)
-// 		}
-// 	}	
+	delBtn.forEach(function(btn, i){			
+		btn.addEventListener('click', function(){
+			const input = document.createElement('input');
+			input.setAttribute('type', 'hidden');
+			input.setAttribute('name', 'delFileNo');
+			input.setAttribute('value', btn.previousElementSibling.value);
+			form.appendChild(input);
+			btn.parentNode.style.display = 'none';
+		});
+	});
 	
-// 	//선택 파일 삭제
-// 	function deleteFile(e){
-// 		const dataTransfer = new DataTransfer();
+	const dataTransfer1 = new DataTransfer();
+	const dataTransfer2 = new DataTransfer();
+	
+	function upload(){
+		var fileArr = document.getElementById("files").files
+		const fileInfo = document.getElementById('files-info')
 		
-// 		const fileArr = document.getElementById('files').files;
-// 		const files = Array.from(fileArr);
-// 		const li = document.querySelectorAll('.select-file');
+		if(dataTransfer2.files.length != 0){
+			//파일 리스트에서 삭제한 값이 있을 때
+			if(fileArr != null && fileArr.length>0){
+	
+	          // =====DataTransfer 파일 관리========
+	            for(var i=0; i<fileArr.length; i++){
+	            	const li = document.createElement('li')
+					const btn = document.createElement('button')
+	
+					li.innerHTML = fileArr[i].name
+					li.setAttribute('class', 'select-file')
+					btn.setAttribute('type', 'button')
+					btn.setAttribute('class', 'remove-btn')
+					btn.innerHTML = "<i class='fa-solid fa-xmark' onclick='deleteFile(event)' data-index="+fileArr[i].lastModified+"></i>"
+					li.appendChild(btn)
+					fileInfo.append(li)
+	            	
+	                dataTransfer2.items.add(fileArr[i])
+	            }
+	            document.getElementById("files").files = dataTransfer2.files;
+	            console.log("dataTransfer =>",dataTransfer2.files)
+	            console.log("input FIles =>", document.getElementById("files").files)
+			}
+			
+		}else{
+			if(fileArr != null && fileArr.length>0){
+			//파일 리스트에서 삭제한 값이 있을 때
+			
+	            for(var i=0; i<fileArr.length; i++){
+	            	const li = document.createElement('li')
+					const btn = document.createElement('button')
+	
+					li.innerHTML = fileArr[i].name
+					li.setAttribute('class', 'select-file')
+					btn.setAttribute('type', 'button')
+					btn.setAttribute('class', 'remove-btn')
+					btn.innerHTML = "<i class='fa-solid fa-xmark' onclick='deleteFile(event)' data-index="+fileArr[i].lastModified+"></i>"
+					li.appendChild(btn)
+					fileInfo.append(li)
+	            	
+	                dataTransfer1.items.add(fileArr[i])
+	            }
+	            document.getElementById("files").files = dataTransfer1.files;
+	            console.log("dataTransfer =>",dataTransfer1.files)
+	            console.log("input FIles =>", document.getElementById("files").files)
+			}
+		} 
+	}
+	
+	
+	
+	function deleteFile(event){
+		const fileArr = document.getElementById("files").files
 		
-// 		const fileNum = $(e).parent().index();
-		
-// 		$(e).parent().remove();
-// 		files.splice(fileNum, 1);
-		
-// 		files.forEach(function(file){
-// 			dataTransfer.items.add(file);
-// 			document.getElementById('files').files = dataTransfer.files;
-// 		});
-// 		console.log(document.getElementById('files').files)
-// 	}
+		console.log(event.target.className)
+		if(dataTransfer2.files.length != 0){
+	        if(event.target.className == 'fa-solid fa-xmark'){
+	            const removeTargetId = event.target.dataset.index;
+	            console.log("removeTargetId => ", removeTargetId);
+	            
+	            const files = Array.from(fileArr).filter(file => file.lastModified != removeTargetId);
+	            files.splice(removeTargetId, 1);
+	            
+	            dataTransfer2.items.clear()
+	           	
+	            files.forEach(function(file){
+	            	dataTransfer2.items.add(file);
+	            });
+	            
+	            document.querySelector('#files').files = dataTransfer2.files;
+	            
+	            removeTargetId.remove;
+				event.target.parentNode.parentNode.remove();
+				event.target.parentNode.remove();
+				event.target.remove();
+	
+		        console.log("dataTransfer 삭제후=>",dataTransfer2.files)
+		        console.log('input FIles 삭제후=>',document.getElementById("files").files)
+	        }
+		}else{
+			if(event.target.className == 'fa-solid fa-xmark'){
+	            const removeTargetId = event.target.dataset.index;
+	            console.log("removeTargetId => ", removeTargetId);
+	            
+	            const files = Array.from(fileArr).filter(file => file.lastModified != removeTargetId);
+	            
+	            files.splice(removeTargetId, 1);
+	           	
+	            files.forEach(function(file){
+	            	dataTransfer2.items.add(file);
+	            });
+	            
+	            document.querySelector('#files').files = dataTransfer2.files;
+	            
+	            removeTargetId.remove;
+				event.target.parentNode.parentNode.remove();
+				event.target.parentNode.remove();
+				event.target.remove();
+	
+		        console.log("dataTransfer 삭제후=>",dataTransfer2.files)
+		        console.log('input FIles 삭제후=>',document.getElementById("files").files)
+	        }
+		}
+	}
 	
 	function insertForm(){
 		const txtarea = document.getElementById('noticeContent')
 		const note = document.querySelector('.note-editable').innerHTML
-		txtarea.value = note			
+		txtarea.value = note
 		
-		if(note == '<p><br></p>'){
+		if(note == ''){
 			alert("내용을 입력해주세요.")
 			return false;
 		}
 	}
 	
-// 	function check(){
-// 		const upfile = document.querySelectorAll('.files')
-		
-// 		console.log(upfile)
-// 	}
+	const msg = '${msg }'
+	
+	if(msg != ''){
+		alert(msg);
+	}
 	
 </script>
 </body>

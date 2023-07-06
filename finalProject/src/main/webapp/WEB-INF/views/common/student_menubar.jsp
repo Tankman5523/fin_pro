@@ -92,6 +92,12 @@
 									 + "<a style='margin-left: 10px;' onclick='alarmCheck(this);'><i class='fa-solid fa-trash' style='color: #c7c7c7;'></i></a>"
 									 + "</li><br>";
 							}
+							else if(obj[i].cmd == 'reportUpdate') { // 성적 이의신청 변동
+								str += "<li style='font-size: 14px; line-height: 14px;'><input type='hidden' value='" + obj[i].alarmNo + "'>"
+									 + "<a href='studentGradeReport.st' onclick='alarmCheck(this);'>" + obj[i].senderName + " 교수님이 성적 이의신청에 응하셨습니다.</a>"
+									 + "<a style='margin-left: 10px;' onclick='alarmCheck(this);'><i class='fa-solid fa-trash' style='color: #c7c7c7;'></i></a>"
+									 + "</li><br>";
+							}
 						}
 						str += "</ul>";
 						$("#alarmDiv").html(str);
@@ -100,7 +106,7 @@
 							$("#alarmImg").css("filter", "grayscale(0%)");
 						}
 						
-						if($check==1) {
+						if($check==1) { // 로그인시 딱 한번만
 							$("#alarm-area").removeClass("alarm-remove");
 							$("#alarmImg").attr("src", $("#alarmImg").data("animated"));
 							
@@ -124,10 +130,13 @@
 						else if(obj.cmd == 'reportUpdate') { // 성적 이의신청 변동
 							str += obj.senderName + " 교수님이 성적 이의신청에 응하셨습니다.";
 						}
+						else if(obj.cmd == 'reportUpdate') { // 성적 이의신청 변동
+							str += obj.senderName + " 교수님이 성적 이의신청에 응하셨습니다.";
+						}
 						str += "</span>";
 						$("#alarm-area2").html(str);
 						
-						setTimeout(function() {
+						setTimeout(function() { // 말풍선 띄우기
 							$("#alarm-area2").removeClass("alarm-remove");
 						}, 500);
 						
@@ -136,10 +145,7 @@
 						}
 						
 						setTimeout(function() {
-							$("#alarm-area2").addClass("alarm-remove");
-							if($("#alarmDiv").html() == "<span>새로운 알람이 없습니다.</span>") {
-								$("#alarmImg").css("filter", "grayscale(100%)");
-							}
+							$("#alarm-area2").addClass("alarm-remove"); // 말풍선 지우기
 							$("#alarmImg").attr("src", $("#alarmImg").data("static"));
 							
 						}, 8000); // 8초동안 보여줌

@@ -3,9 +3,6 @@ package com.univ.fin.member.controller;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -14,7 +11,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +23,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.univ.fin.common.model.vo.AlarmVo;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
@@ -43,6 +38,8 @@ import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
+
+import lombok.Synchronized;
 
 @Controller
 public class StudentController {
@@ -255,6 +252,7 @@ public class StudentController {
 	}
 
 	// 수강신청 - 수강신청
+	@Synchronized
 	@ResponseBody
 	@RequestMapping("postRegisterClass.st")
 	public String postRegisterClass(RegisterClass rc){
@@ -379,8 +377,8 @@ public class StudentController {
 			mv.addObject("alertMsg", "상담신청 성공");
 			mv.setViewName("redirect:counselingList.st");
 		} else {
-			mv.addObject("errorMsg", "상담신청 실패");
-			mv.setViewName("common/errorPage");
+			mv.addObject("alertMsg", "상담신청 실패");
+			mv.setViewName("redirect:counselingList.st");
 		}
 		return mv;
 	}
@@ -453,19 +451,27 @@ public class StudentController {
 
 	}
 
-	// 학생 강의 의의신청 페이지
+	// 학생 강의 이의신청 페이지
 	@RequestMapping(value = "studentGradeReport.st" , method = RequestMethod.GET)
-	public String studentGradeReport(HttpSession session, Model model) {
+	public String studentGradeReport(HttpSession session, Model model, Objection obj) {
 
 		Student loginUser = (Student) session.getAttribute("loginUser");
 		String studentNo = loginUser.getStudentNo();
 		
 		ArrayList<String> classTerm = memberService.selectStudentClassTerm(studentNo); // 수강한 학년도, 학기
-
-		ArrayList<Objection> list = memberService.studentGradeReport(studentNo);
-		Objection obj = new Objection();
+		String year = classTerm.get(0).substring(0, 4);
+		String term = classTerm.get(0).substring(5);
+		obj.setClassYear(year);
+		obj.setClassTerm(term);
 		obj.setStudentNo(studentNo);
-		ArrayList<Objection> resultList = memberService.studentGradeView(obj);
+		
+
+		ArrayList<Objection> list = memberService.studentGradeReport(obj);
+		Objection objc = new Objection();
+		objc.setClassYear(year);
+		objc.setClassTerm(term);
+		objc.setStudentNo(studentNo);
+		ArrayList<Objection> resultList = memberService.studentGradeView(objc);
 		
 		model.addAttribute("classTerm", classTerm);
 		model.addAttribute("list", list);
@@ -481,7 +487,9 @@ public class StudentController {
 	public HashMap<String , ArrayList<Objection>> studentGradeReport(Objection obj) {
 		
 		ArrayList<Objection> list = memberService.studentGradeView(obj);
-		ArrayList<Objection> commList = memberService.studentGradeReport(obj.getStudentNo());
+		ArrayList<Objection> commList = memberService.studentGradeReport(obj);
+		
+		System.out.println(commList);
 		
 		HashMap<String , ArrayList<Objection>> listMap = new HashMap<String, ArrayList<Objection>>();
 		listMap.put("list", list);
@@ -496,8 +504,15 @@ public class StudentController {
 	@ResponseBody
 	@PostMapping(value = "insertReport.st")
 	public String insertGradeRequest(HttpSession session, Objection obj) {
+		System.out.println("!@#@#%$%&&^**&(%@#!@@#%"+obj);
+		
+		HashMap<String, String> alarm = new HashMap<>();
+		alarm.put("cmd", "reportRequest");
+		alarm.put("receiverNo", obj.getProfessorNo());
+		alarm.put("senderName", obj.getStudentName());
+		System.out.println(alarm);
 
-		int result = memberService.studentGradeRequest(obj);
+		int result = memberService.studentGradeRequest(obj, alarm);
 
 		if (result > 0) {
 			return "Y";
@@ -509,17 +524,16 @@ public class StudentController {
 	
 	//년도 학기별 이의 신청
 	@PostMapping(value = "searchReport.st")
-	public String searchGradeReport(HttpSession session, Objection objc ,Model model) {
-		int result =  memberService.searchGradeReport(objc);
+	public String searchGradeReport(HttpSession session, Objection obj ,Model model) {
 		
 		Student loginUser = (Student) session.getAttribute("loginUser");
 
 		String studentNo = loginUser.getStudentNo();
 
-		ArrayList<Objection> list = memberService.studentGradeReport(studentNo);
-		Objection obj = new Objection();
-		obj.setStudentNo(studentNo);
-		ArrayList<Objection> resultList = memberService.studentGradeView(obj);
+		ArrayList<Objection> list = memberService.studentGradeReport(obj);
+		Objection objc = new Objection();
+		objc.setStudentNo(studentNo);
+		ArrayList<Objection> resultList = memberService.studentGradeView(objc);
 		
 		model.addAttribute("list", list);
 		model.addAttribute("resultList", resultList);
@@ -662,29 +676,6 @@ public class StudentController {
 		ArrayList<HashMap<String, String>> list = memberService.detailmajorGra(h);
 
 		return new Gson().toJson(list);
-	}
-
-	// 학생등록 페이지
-	@RequestMapping("enrollStudent.me")
-	public String enrollStudent() {
-
-		return "member/student/enrollStudent";
-	}
-
-	// 학생등록 페이지 등록
-	@RequestMapping("insertStudent.me")
-	public String insertStudent(Student st, Model model, HttpSession session) {
-
-		int result = memberService.insertStudent(st);
-
-		if (result > 0) {
-			session.setAttribute("alertMsg", "회원가입 성공");
-			return "redirect:enrollStudent";
-		} else {
-			model.addAttribute("errorMsg", "회원가입 실패");
-		}
-		return "member/student/infoStudent";
-
 	}
 
 	// 휴,복학 신청 조회(리스트) 페이지 이동(학생)
@@ -852,34 +843,4 @@ public class StudentController {
 		}
 	}
 	
-	// 알람 수신
-	@ResponseBody
-	@RequestMapping(value = "alarmReceive.me", produces = "application/json; charset=UTF-8;")
-	public String alarmReceive(HttpSession session) {
-		Student s = (Student)session.getAttribute("loginUser");
-		String studentNo = s.getStudentNo();
-		
-		ArrayList<AlarmVo> aList = memberService.alarmReceive(studentNo);
-		return new Gson().toJson(aList);
-	}
-	
-	// 알람 전체확인
-	@ResponseBody
-	@RequestMapping(value = "alarmAllCheck.me")
-	public String alarmAllCheck(HttpSession session) {
-		Student s = (Student)session.getAttribute("loginUser");
-		String studentNo = s.getStudentNo();
-		
-		int result = memberService.alarmAllCheck(studentNo);
-		return (result>0)? "Y" : "N";
-	}
-	
-	// 알람 확인
-	@ResponseBody
-	@RequestMapping(value = "alarmCheck.me")
-	public String alarmCheck(String aNo) {
-		int alarmNo = Integer.parseInt(aNo);
-		int result = memberService.alarmCheck(alarmNo);
-		return (result>0)? "Y" : "N";
-	}
 }

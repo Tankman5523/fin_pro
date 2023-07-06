@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>  
 <style>
 #basic_info {
 	margin-left: 30px;
@@ -128,7 +129,7 @@
 					<a href="classManagement.st">학기별 성적 조회</a>
 				</div>
 				<div class="child_title">
-					<a href="studentGradeReport.st">성적 이의신청</a>
+					<a href="studentGradeReport.st" style="color:#00aeff; font-weight: 550;">성적 이의신청</a>
 				</div>
 				<div class="child_title">
 					<a href="classRatingInfo.st">강의평가</a>
@@ -157,7 +158,7 @@
 							</label>
 							</th>
 							<th>
-								<button type="button" id="checkbtn" onclick="gradeCheck()">조회하기</button>
+								<button type="button" id="checkbtn" onclick="reasonRequest()">조회하기</button>
 							</th>
 						<tr>
 					</table>
@@ -185,10 +186,58 @@
 								<td>${c.className }</td>
 								<td>${c.professorName }</td>
 								<td>${c.credit }</td>
-								<td><input type="text" class="reasonText" id="reason"
-									name="reason" style="border: none; background: transparent;"></td>
-								<td><button class="objectionbtn"
-										onclick="insertDissent('${c.className }','${c.professorName}','${c.credit}');">이의신청</button></td>
+<!-- 								if(data.list.length == 0) { -->
+<!-- 				                	text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;'>"; -->
+<!-- 		                    		text2 = "<button class='objectionbtn' onclick='insertDissent(this);'>이의신청</button>"; -->
+<!-- 				                } else { -->
+<!-- 				                    for (var j = 0; j < data.list.length; j++) { -->
+<!-- 				                    	if(data.commList[i].className == data.list[j].className){ -->
+<!-- 				                    		text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;' readonly>"; -->
+<!-- 				                    		text2 = "진행중"; -->
+<!-- 				                    		break; -->
+<!-- 				                    	}else{ -->
+<!-- 				                    		text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;'>"; -->
+<!-- 				                    		text2 = "<button class='objectionbtn' onclick='insertDissent(this);'>이의신청</button>"; -->
+<!-- 				                    	} -->
+<!-- 				                    } -->
+<!-- 				                } -->
+<!-- 				                innerHtml2 += '<td>' + text1 + '</td>'; -->
+<!-- 				                innerHtml2 += '<td>' + text2 + '</td>'; -->
+<!-- 				                innerHtml2 += '<td style="display: none;">' + data.commList[i].professorNo + '</td>'; -->
+<!-- 				                innerHtml2 += '</tr>'; -->
+								<c:choose>
+									<c:when test="${fn:length(resultList) == 0}">
+										<td><input type="text" class="reasonText" id="reason"
+											name="reason" style="border: none; background: transparent;"></td>
+										<td>
+										<button class="objectionbtn"
+												onclick="insertDissent(this);">이의신청</button>
+										</td>
+									</c:when>
+									<c:otherwise>
+										<c:set var="chk" value="true" />
+										<c:forEach var="rl" items="${resultList }">
+											<c:if test="${rl.className eq c.className}">
+												<c:set var="chk" value="false"/>
+											</c:if>
+										</c:forEach>
+										<c:choose>
+											<c:when test="${chk}">
+												<td><input type="text" class="reasonText" id="reason"
+													name="reason" style="border: none; background: transparent;"></td>
+												<td>
+												<button class="objectionbtn"
+														onclick="insertDissent(this);">이의신청</button>
+												</td>
+											</c:when>
+											<c:otherwise>
+												<td><input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;' readonly></td>
+												<td>진행중</td>
+											</c:otherwise>
+										</c:choose>
+									</c:otherwise>
+								</c:choose>
+								<td style="display: none;">${c.professorNo }</td>
 							</tr>
 						</c:forEach>
 					</tbody>
@@ -250,17 +299,14 @@
 	</div>
 
 	<script>
-		/* var arr = ${classTerm};
+		 var arr = ${classTerm};
 		
 		$(function() {
 			$("select[name=classYear]").children().first().prop("selected", true).change();
-			clear();
-			gradeCheck();
             
         	$(".basic_table>tbody>th").on("change", "#classTerm", function() {
-        		clear();
         	});
-		}) */
+		}) 
 		
 		function changeYear(e) {
         	var $year = e.value;
@@ -282,19 +328,14 @@
         	$("#classTerm").empty();
         	$("#classTerm").append(str);
         	$("#classTerm").children().first().prop("selected", true).change();
-        	clear();
         }
 		
-		function clear() {
-			$("#studentObjection>tbody").empty();
-			$("#studentObjection2>tbody").empty();
-		}
-	
 		function reasonRequest() {
 			var studentNo = "${loginUser.studentNo}";
 			var classYear = $("#classYear").val();
 			var classTerm = $("#classTerm").val();
-
+			
+			
 			$.ajax({
 				url : 'studentGradeReport.st',
 				type : 'post',
@@ -305,6 +346,8 @@
 					classTerm : classTerm
 				},
 				success : function(data) {
+					
+					
 					var innerHtml = '';
 					innerHtml += '<table border="1" id="studentObjection2">';
 					innerHtml += '<div style="text-align: center;">';
@@ -331,7 +374,9 @@
 						innerHtml += '<td>' + data.list[i].credit + '</td>';
 						innerHtml += '<td>' + data.list[i].status + '</td>';
 						var opinion = data.list[i].opinion;
-						if(!opinion) opinion = ''; 
+						if(data.list[i].opinion==null) {
+							opinion = '';
+						} 
 						innerHtml += '<td>' + opinion + '</td>';
 						innerHtml += '</tr>';
 					}
@@ -339,6 +384,38 @@
 					innerHtml += '</tbody>';
 					innerHtml += '</table>';
 					$("#ajaxResult").html(innerHtml);
+					
+					var innerHtml2 = '';
+					for (var i = 0; i < data.commList.length; i++) {
+		                innerHtml2 += '<tr>';
+		                innerHtml2 += '<td>' + data.commList[i].studentNo + '</td>';
+		                innerHtml2 += '<td>' + data.commList[i].className + '</td>';
+		                innerHtml2 += '<td>' + data.commList[i].professorName + '</td>';
+		                innerHtml2 += '<td>' + data.commList[i].credit + '</td>';
+		                var text1 = "";    
+		                var text2 = "";
+		                if(data.list.length == 0) {
+		                	text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;'>";
+                    		text2 = "<button class='objectionbtn' onclick='insertDissent(this);'>이의신청</button>";
+		                } else {
+		                    for (var j = 0; j < data.list.length; j++) {
+		                    	if(data.commList[i].className == data.list[j].className){
+		                    		text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;' readonly>";
+		                    		text2 = "진행중";
+		                    		break;
+		                    	}else{
+		                    		text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;'>";
+		                    		text2 = "<button class='objectionbtn' onclick='insertDissent(this);'>이의신청</button>";
+		                    	}
+		                    }
+		                }
+		                innerHtml2 += '<td>' + text1 + '</td>';
+		                innerHtml2 += '<td>' + text2 + '</td>';
+		                innerHtml2 += '<td style="display: none;">' + data.commList[i].professorNo + '</td>';
+		                innerHtml2 += '</tr>';
+		            }
+					$("#studentObjection>tbody").html(innerHtml2);
+
 				},
 				error : function(request) {
 					alert('실패');
@@ -347,16 +424,18 @@
 
 		}
 
-		function insertDissent(a, b, c) {
-			var loginUser = "${loginUser}";
-			var flag = confirm("이의신청을 하시겠습니까?");
 
+		function insertDissent(e) {
+			var tr = $(e).parents("tr");
+			
+			var flag = confirm("이의신청을 하시겠습니까?");
 			if (flag) {
 				var studentNo = "${loginUser.studentNo}";
-				var className = a;
-				var professorName = b;
-				var credit = c;
-				var reason = document.querySelector('input[name="reason"]').value;
+				var className = tr.children().eq(1).text();
+				var professorName = tr.children().eq(2).text();
+				var credit = tr.children().eq(3).text();
+				var reason = tr.children().eq(4).children().val();
+				var professorNo = tr.children().eq(6).text();
 
 				$.ajax({
 					url : "insertReport.st",
@@ -365,13 +444,17 @@
 						className : className,
 						professorName : professorName,
 						credit : credit,
-						reason : reason
+						reason : reason,
+						professorNo : professorNo,
+						studentName : '${loginUser.studentName}'
 					},
 					method : "post",
 					success : function(result) {
 						if (result == 'Y') {
 							alert("이의신청에 성공하였습니다.");
 							reasonRequest();
+ 							socket.send('reportRequest,' + professorNo + ',${loginUser.studentName}');
+
 						} else {
 							alert("이의신청에 실패하였습니다.");
 						}
@@ -381,22 +464,16 @@
 					}
 				});
 			}
-
 		}
 		
-		/* function gradeCheck() {
+		
+		 function gradeCheck() { // 조회하기 버튼
 			  var classYear = document.getElementById("classYear").value;
 			  var classTerm = document.getElementById("classTerm").value;
-			
-			  reasonRequest(); // reasonRequest() 함수 호출
-			  
-			  console.log(classYear);
-			  console.log(classTerm);
 
-			  if (classYear === "2023" && (classTerm === "1" || classTerm === "2")) {
-			    console.log("조회하기 기능 수행");
-			  }
-			} */
+			  reasonRequest(); 
+		}
+			  
 	</script>
 </body>
 </html>

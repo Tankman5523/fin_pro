@@ -117,9 +117,6 @@
 	
 		 validArr.push($("#entranceDate"));
 		 validArr.push($("#professorName"));
-		 /* validArr.push($("#collegeNo"));
-		 validArr.push($("#departmentNo")); */
-		 /* validArr.push($("#professorNo")); */
 		 validArr.push($("#professorPwd"));
 		 validArr.push($("#admin"));
 		 validArr.push($("#position"));
@@ -344,11 +341,14 @@
                 <div class="child_title">
                     <a href="proRestList.ad">안식/퇴직 관리</a>
                 </div>
+                <div class="child_title" style="height: 77px;">
+				    <a href="selectNotice.ad">공지사항 관리</a>
+				</div>
             </div>
             <div id="content_1">
             	<br>
 					<th><button id="randombtn" onclick="randomPasswordBtn()">비밀번호 생성하기</button></th>
-					<form id="insertForm" action="insertProfessor.ad" method="post">
+					<form id="insertForm" action="insertProfessor.ad" method="post" enctype="multipart/form-data">
 					<div id="basic_info">
 						<table class="basic_table">
 						<tr>
@@ -359,6 +359,8 @@
 						<br>
 						<hr>
 					</div>
+					<span style="margin-left : 30px"  >사진</span>
+					<input type="file" name="upfile" id="file" required>
 					<input type="hidden" id="professorNo" name="professorNo" value="${loginUser.professorNo }">
 					<div id="user_infomation">
 						<table id="user_info">

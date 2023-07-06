@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.univ.fin.common.model.vo.AlarmVo;
 import com.univ.fin.common.model.vo.Classes;
 import com.univ.fin.common.template.ChatBot;
 import com.univ.fin.common.template.Sms;
@@ -93,7 +94,11 @@ public class MemberController {
 				
 				Student loginUser = memberService.loginStudent(st);
 				
-				boolean chkPwd = bcryptPasswordEncoder.matches(userPwd, loginUser.getStudentPwd());
+				boolean chkPwd = false;
+				
+				if(loginUser != null) {
+					chkPwd = bcryptPasswordEncoder.matches(userPwd, loginUser.getStudentPwd());
+				}
 				
 				if(loginUser == null || chkPwd == false) {
 					session.setAttribute("alertMsg", "아이디 또는 비밀번호를 잘못 입력했습니다.");
@@ -112,7 +117,7 @@ public class MemberController {
 					}
 					
 					if(autoLogin != null && autoLogin.equals("on")) { //자동로그인 체크 시
-						cookie = new Cookie("autoLoginInfo",URLEncoder.encode(loginUser.getStudentNo() + "," + loginUser.getStudentPwd(),"UTF-8"));
+						cookie = new Cookie("autoLoginInfo",URLEncoder.encode(loginUser.getStudentNo() + "," + userPwd,"UTF-8"));
 						cookie.setMaxAge(60*60*24*365); //1년
 						response.addCookie(cookie);
 					} //로그아웃 시 해당 쿠키 삭제하므로 else처리 x
@@ -128,7 +133,11 @@ public class MemberController {
 				
 				Professor loginUser = memberService.loginProfessor(pr);
 				
-				boolean chkPwd = bcryptPasswordEncoder.matches(userPwd, loginUser.getProfessorPwd());
+				boolean chkPwd = false;
+				
+				if(loginUser != null) {
+					chkPwd = bcryptPasswordEncoder.matches(userPwd, loginUser.getProfessorPwd());
+				}
 				
 				if(loginUser == null || chkPwd == false) {
 					session.setAttribute("alertMsg", "아이디 또는 비밀번호를 잘못 입력했습니다.");
@@ -147,7 +156,7 @@ public class MemberController {
 					}
 					
 					if(autoLogin != null && autoLogin.equals("on")) {
-						cookie = new Cookie("autoLoginInfo",URLEncoder.encode(loginUser.getProfessorNo() + "," + loginUser.getProfessorPwd(),"UTF-8"));
+						cookie = new Cookie("autoLoginInfo",URLEncoder.encode(loginUser.getProfessorNo() + "," + userPwd,"UTF-8"));
 						cookie.setMaxAge(60*60*24*365); //1년
 						response.addCookie(cookie);
 					}
@@ -502,6 +511,55 @@ public class MemberController {
 	public String searchClassKeyword(@RequestParam HashMap<String,String> map) {
 		ArrayList<Classes> cList = memberService.searchClassKeyword(map);
 		return new Gson().toJson(cList);
+	}
+	
+	// 알람 수신
+	@ResponseBody
+	@RequestMapping(value = "alarmReceive.me", produces = "application/json; charset=UTF-8;")
+	public String alarmReceive(HttpSession session) {
+		Object loginUser = session.getAttribute("loginUser");
+		String receiveNo = "";
+		
+		if(loginUser instanceof Student) {
+			Student s = (Student)session.getAttribute("loginUser");
+			receiveNo = s.getStudentNo();
+		}
+		else if(loginUser instanceof Professor) {
+			Professor s = (Professor)session.getAttribute("loginUser");
+			receiveNo = s.getProfessorNo();
+		}
+		
+		ArrayList<AlarmVo> aList = memberService.alarmReceive(receiveNo);
+		return new Gson().toJson(aList);
+	}
+	
+	// 알람 전체확인
+	@ResponseBody
+	@RequestMapping(value = "alarmAllCheck.me")
+	public String alarmAllCheck(HttpSession session) {
+		Object loginUser = session.getAttribute("loginUser");
+		String receiveNo = "";
+		
+		if(loginUser instanceof Student) {
+			Student s = (Student)session.getAttribute("loginUser");
+			receiveNo = s.getStudentNo();
+		}
+		else if(loginUser instanceof Professor) {
+			Professor s = (Professor)session.getAttribute("loginUser");
+			receiveNo = s.getProfessorNo();
+		}
+		
+		int result = memberService.alarmAllCheck(receiveNo);
+		return (result>0)? "Y" : "N";
+	}
+	
+	// 알람 확인
+	@ResponseBody
+	@RequestMapping(value = "alarmCheck.me")
+	public String alarmCheck(String aNo) {
+		int alarmNo = Integer.parseInt(aNo);
+		int result = memberService.alarmCheck(alarmNo);
+		return (result>0)? "Y" : "N";
 	}
 
 }

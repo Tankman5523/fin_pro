@@ -133,7 +133,7 @@ public interface MemberService {
 	int updateProfessor(Professor pr);
 	
 	//학생추가 (관리자)
-	int insertStudent(Student st);
+	int insertStudent(Student st, Attachment a);
 	
 	// 학생 개인시간표 -> 학년도,학기 조회
 	ArrayList<String> selectStudentClassTerm(String studentNo);
@@ -211,10 +211,10 @@ public interface MemberService {
 	int gradeUpdate(Grade g, HashMap<String, String> alarm);
 
 	// 강의 이의제기 -> 학생 신청
-	ArrayList<Objection> studentGradeReport(String studentNo);
+	ArrayList<Objection> studentGradeReport(Objection obj);
 
 	// 직원 생성하기
-	int insertProfessor(Professor pr);
+	int insertProfessor(Professor pr,Attachment a);
 
 	// (관리자)강의개설 일괄 승인
 	int updateClassPermitAll(int[] cArr);
@@ -351,10 +351,10 @@ public interface MemberService {
 	ArrayList<ProfessorRest> selectSearchProRestList(HashMap<String, String> set);	
 	
 	// 알람 수신
-	ArrayList<AlarmVo> alarmReceive(String studentNo);
+	ArrayList<AlarmVo> alarmReceive(String receiveNo);
 
 	// 알람 전체확인
-	int alarmAllCheck(String studentNo);
+	int alarmAllCheck(String receiveNo);
 	
 	// 알람 확인
 	int alarmCheck(int alarmNo);
@@ -381,7 +381,7 @@ public interface MemberService {
 	int selectDeleteNotice(String[] noticeNo);
 	
 	//이의 신청 넘기기
-	int studentGradeRequest(Objection obj);
+	int studentGradeRequest(Objection obj, HashMap<String, String> alarm);
 
 	//이의 신청 확인
 	ArrayList<Objection> studentGradeView(Objection obj);
@@ -399,7 +399,7 @@ public interface MemberService {
 	int selectCheckReg(String studentNo);
 	
 	//교수 이의신청 페이지
-	ArrayList<Objection> professorGradeReport(String professorNo);
+	ArrayList<Objection> professorGradeReport(Objection obj);
 		
 	//교수 이의신청 회신
 	int professorGradeRequest(Objection obj, HashMap<String, String> alarm);
@@ -413,7 +413,28 @@ public interface MemberService {
 	// (관리자) 공지사항 파일 등록
 	int insertNoticeFile(ArrayList<NoticeAttachment> list);
 
+	// (관리자) 공지사항 파일 조회
+	ArrayList<NoticeAttachment> selectUpdateNoticeFile(String noticeNo);
 
+	// (관리자) 공지사항 수정 / 삭제
+	int updateNoticeForm(Notice n, String delFileNo);
+
+	// (관리자) 공지사항 상세보기
+	Notice detailNoticeView(String noticeNo);
+	
+	//교수 이의신청 학기년도별 조회
+	ArrayList<Objection> searchReport(Objection obj);
+
+	//교수 이의신청 회신
+	int updateReport(Objection obj);
+
+	// (관리자) 공지사항 상세보기 첨부파일
+	ArrayList<NoticeAttachment> detailNoticeFile(String noticeNo);
+
+	// 낮 12시 퇴직예정 직원 퇴직처리
+	void updateAutoRetire();
+
+	
 
 
 }

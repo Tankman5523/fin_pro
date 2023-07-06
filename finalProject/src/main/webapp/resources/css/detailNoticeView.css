@@ -1,0 +1,112 @@
+@charset "UTF-8";
+
+#back{
+	width: 100px;
+	height: 40px;
+	background-color: #d7d7d7;
+	float: right;
+	margin: 10px;
+	cursor: pointer;
+	border: none;
+	border-radius: 5px;
+	color: white;
+	font-weight: bold;
+}
+#back:hover{
+	background-color: #c0c0c0;
+	transition: all 0.1s ease-out;
+}
+
+#update{
+	width: 100px;
+	height: 40px;
+	background-color: #ffc924;
+	float: right;
+	margin: 10px;
+	cursor: pointer;
+	border: none;
+	border-radius: 5px;
+	color: white;
+	font-weight: bold;
+}
+#update:hover{
+	background-color: #ffa702;
+	transition: all 0.1s ease-out;
+}
+
+#sub-title{
+	text-align: center;
+	margin: 50px 0 20px 0;
+	font-size: 30px;
+	font-weight: bold;
+}
+
+#notice-container{
+	width: 90%;
+	margin: auto;
+}
+
+#field-area{
+	width: auto;
+	height: auto;
+	margin-bottom: 20px;
+}
+#field-area td{
+	height: 50px;
+	margin-left: 60px;
+}
+#field-area input{
+	width: 120px;
+	height: 40px;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+}
+#field-area input:focus{
+	outline: none;
+}
+.field{
+	border: none;
+	border-right: 1px solid black;
+}
+#cate{
+	border: none;
+}
+
+#noticeTitle{
+	width: 100%;
+	height: 50px;
+	border-radius: 5px;
+	border: 1px solid black;
+	font-size: 20px;
+	font-weight: bold;
+	padding: 0 20px;
+	margin-bottom: 10px;
+}
+#noticeTitle:focus{
+	outline: none;
+}
+
+#file-container{
+	max-height: 100px;
+	overflow-y: scroll;
+	list-style: none;
+	padding: 0 10px;
+	margin: 0px;
+}
+#file-container a{
+	text-decoration: none;
+}
+.file-list{
+	list-style: none;
+	margin-bottom: 10px;
+}
+
+#summernote{
+	height: 650px;
+	border: 1px solid black;
+	padding: 20px;
+	font-size: 16px;
+	overflow-y: scroll;
+	margin: 10px 0 20px 0;
+}

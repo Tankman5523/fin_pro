@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>반려 강의 수정</title>
+<title>반려 강의 수정 페이지</title>
 <link rel="stylesheet" href="/fin/resources/css/classCreateView.css">
 </head>
 <body>
@@ -122,7 +122,7 @@
 	                                	</c:otherwise>
                                 	</c:choose>
 								    	<label for="file">파일찾기</label> 
-								    	<input type="file" name="reUpfile" id="file" required>
+								    	<input type="file" name="reUpfile" id="file">
                         			</div>
                                 </td>
                             </tr>
@@ -135,7 +135,8 @@
                         </table>
                         
                         <div style="text-align:center">
-                        	<button type="submit" class="btn btn-primary">신청</button>
+                        	<button type="reset" class="btn btn-secondary btn-lg">되돌리기</button>
+                        	<button type="submit" class="btn btn-primary btn-lg">신청</button>
                         </div>
                     </form>
                 </div>
@@ -168,6 +169,7 @@
         })
         
         function changeDivision(target){ //전공or교양 고른거에 따라 학점 옵션 바꿔주기
+        	console.log(target);
             var division = target.value;//전공or교양 셀렉트 가져옴
             var credit = document.querySelector("#credit");//학점 셀렉트 가져옴
             
@@ -197,6 +199,12 @@
                 hour.options[hour.options.length]=new Option("2교시",2);
             }
         }
+        
+        $("button[type='reset']").click(function(){
+        	var credit = document.querySelector("#credit");
+        	credit.options.length=0;
+        	credit.options[credit.options.length]=new Option("3학점",3);
+        })
         
     </script>
 </body>

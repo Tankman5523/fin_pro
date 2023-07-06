@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>휴,복학 신청</title>
+<title>휴,복학 신청 페이지</title>
 <link rel="stylesheet" href="/fin/resources/css/studentRestFormView.css">
 </head>
 <body>

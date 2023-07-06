@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>안식 휴가 신청 페이지</title>
 <link rel="stylesheet" href="/fin/resources/css/professorRestView.css">
 </head>
 <body>
@@ -104,7 +104,7 @@
     	
     
 	    $("#datepicker1").datepicker({
-	    	minDate:new Date() //오늘 이전은 못 고르게 하기
+	    	minDate:"+1D" //오늘 이전은 못 고르게 하기
 	    });
 	    
 	    $("#datepicker1").datepicker("option","onClose",function(selectDate){
