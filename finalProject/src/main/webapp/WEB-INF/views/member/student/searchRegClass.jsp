@@ -90,11 +90,14 @@
            				function searchBtn(num){
            					var year = $("#searchRegYear").val(); //년도 추출
            					var term = $("#searchRegTerm").val(); //학기 추출
-           					
+           					var selectedYear = $("#searchRegYear option").index($("#searchRegYear option:selected")); //selected 되어있는 인덱스 추출
+         					var selBackNum = $("#searchRegYear").children().eq(selectedYear + 1).text(); //이전년도
+         					var selNextNum = $("#searchRegYear").children().eq(selectedYear - 1).text(); //다음년도
+         					
            					if(num == 1){ /* 이전버튼 */
 	           					if(term == 1){ //1학기가 체크되었을 경우
 		           					$("#searchRegYear option").each(function(){
-		           						if(parseInt($(this).val()) === parseInt(year)-1){
+		           						if($(this).text() === selBackNum){
 		           							$(this).prop("selected",true); //이전년도로 변경
 				           					$("#searchRegTerm").children().eq(1).prop("selected",true); //1학기로 변경
 				           					searchReg();
@@ -107,7 +110,7 @@
            					}else{ /* 다음버튼 */
 	           					if(term == 2){ //2학기가 체크되었을 경우
 		           					$("#searchRegYear option").each(function(){
-		           						if(parseInt($(this).val()) === parseInt(year)+1){
+		           						if($(this).text() === selNextNum && selectedYear != 0){
 		           							$(this).prop("selected",true); //다음년도로 변경
 				           					$("#searchRegTerm").children().eq(0).prop("selected",true); //2학기로 변경
 				           					searchReg();
