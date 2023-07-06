@@ -637,9 +637,6 @@ public class MemberDao {
 	@Transactional
 	public int updateProfessorRest(SqlSessionTemplate sqlSession, ProfessorRest pr) {
 		int result = sqlSession.update("memberMapper.updateProfessorRest",pr);
-		if(pr.getCategory()==0&&result>0) {
-			result = sqlSession.update("memberMapper.updateProfessorStatus",pr);
-		}
 		return result;
 	}
 
@@ -862,6 +859,11 @@ public class MemberDao {
 	// (관리자) 공지사항 상세보기 파일조회
 	public ArrayList<NoticeAttachment> detailNoticeFile(SqlSessionTemplate sqlSession, String noticeNo) {
 		return (ArrayList)sqlSession.selectList("memberMapper.detailNoticeFile", noticeNo);
+	}
+
+	// 낮 12시 퇴직예정 직원 퇴직처리
+	public void updateAutoRetire(SqlSessionTemplate sqlSession) {
+		sqlSession.update("memberMapper.updateAutoRetire");
 	}
 
 

@@ -1598,6 +1598,18 @@
   		AND STATUS = 'B'
   	</update>
   	
+  	<!-- 임직원 자동 퇴직 처리 -->
+  	<update id="updateAutoRetire">
+  		UPDATE 	PROFESSOR
+		SET 	STATUS = 'N'
+		WHERE 	STATUS = 'Y'
+		AND   	PROFESSOR_NO IN (SELECT PROFESSOR_NO
+		                        FROM PROFESSOR_REST
+		                        WHERE STATUS = 'Y'
+		                        AND   CATEGORY = 0
+		                        AND   TO_CHAR(START_DATE,'YYYY-MM-DD') = TO_CHAR(SYSDATE,'YYYY-MM-DD'))
+  	</update>
+  	
   	<!-- 임직원 안식,퇴직 신청 목록 검색 (관리자) -->
   	<select id="selectSearchProRestList" resultMap="professorRestResultSet">
   		SELECT REST_NO,PROFESSOR_NO,PROFESSOR_NAME,CATEGORY,REASON,REQUEST_DATE,START_DATE,END_DATE

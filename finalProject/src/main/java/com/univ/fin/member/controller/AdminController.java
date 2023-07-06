@@ -9,10 +9,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,6 +45,8 @@ import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 public class AdminController {
@@ -491,11 +495,18 @@ public class AdminController {
 		if(result>0) {
 			model.addAttribute("alertMsg","반려 했습니다.");
 		}else {
-			model.addAttribute("alertMsg","반려 했습니다.");
+			model.addAttribute("alertMsg","반려 오류");
 		}
 		
 		return "redirect:proRestList.ad";
 	}
+	
+	//임직원 자동 퇴직 처리
+	@Scheduled(cron = "0 0 12 * * *")
+	public void autoUpdateProfessorRetire() {
+		memberService.updateAutoRetire();
+	}
+	
 	
 	//임직원 안식,퇴직 신청 검색 리스트 조회
 	@ResponseBody

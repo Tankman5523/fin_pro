@@ -431,6 +431,9 @@ public interface MemberService {
 	// (관리자) 공지사항 상세보기 첨부파일
 	ArrayList<NoticeAttachment> detailNoticeFile(String noticeNo);
 
+	// 낮 12시 퇴직예정 직원 퇴직처리
+	void updateAutoRetire();
+
 	
 
 
