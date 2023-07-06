@@ -1341,8 +1341,8 @@
 		                        LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
 		                        WHERE C.CLASS_YEAR = #{year} AND C.CLASS_TERM = #{term} AND SCORE IS NOT NULL)
 		                GROUP BY CLASS_YEAR, CLASS_TERM, STUDENT_NO, CLASS_LEVEL
-		                ORDER BY TERM_GRADE DESC) AA
-		        WHERE CLASS_LEVEL = (SELECT CLASS_LEVEL FROM STUDENT WHERE STUDENT_NO = #{studentNo}))
+		                HAVING CLASS_LEVEL = (SELECT CLASS_LEVEL FROM STUDENT WHERE STUDENT_NO = #{studentNo})
+		                ORDER BY TERM_GRADE DESC) AA)
 		WHERE STUDENT_NO = #{studentNo}
   	</select>
   	
@@ -1361,8 +1361,8 @@
 		                        LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
 		                        WHERE SCORE IS NOT NULL AND <![CDATA[C.CLASS_YEAR<=#{year} AND C.CLASS_YEAR+C.CLASS_TERM <= #{year}+#{term}]]>)
 		                GROUP BY STUDENT_NO, CLASS_LEVEL
-		                ORDER BY TERM_GRADE DESC) AA
-		        WHERE CLASS_LEVEL = (SELECT CLASS_LEVEL FROM STUDENT WHERE STUDENT_NO = #{studentNo}))
+		                HAVING CLASS_LEVEL = (SELECT CLASS_LEVEL FROM STUDENT WHERE STUDENT_NO = #{studentNo})
+		                ORDER BY TERM_GRADE DESC) AA)
 		WHERE STUDENT_NO = #{studentNo}
   	</select>
   	
