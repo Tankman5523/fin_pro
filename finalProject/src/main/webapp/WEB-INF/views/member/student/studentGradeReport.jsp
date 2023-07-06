@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>  
 <style>
 #basic_info {
 	margin-left: 30px;
@@ -128,7 +129,7 @@
 					<a href="classManagement.st">학기별 성적 조회</a>
 				</div>
 				<div class="child_title">
-					<a href="studentGradeReport.st">성적 이의신청</a>
+					<a href="studentGradeReport.st" style="color:#00aeff; font-weight: 550;">성적 이의신청</a>
 				</div>
 				<div class="child_title">
 					<a href="classRatingInfo.st">강의평가</a>
@@ -185,12 +186,57 @@
 								<td>${c.className }</td>
 								<td>${c.professorName }</td>
 								<td>${c.credit }</td>
-								<td><input type="text" class="reasonText" id="reason"
-									name="reason" style="border: none; background: transparent;"></td>
-								<td>
-								<button class="objectionbtn"
-										onclick="insertDissent(this);">이의신청</button>
-								</td>
+<!-- 								if(data.list.length == 0) { -->
+<!-- 				                	text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;'>"; -->
+<!-- 		                    		text2 = "<button class='objectionbtn' onclick='insertDissent(this);'>이의신청</button>"; -->
+<!-- 				                } else { -->
+<!-- 				                    for (var j = 0; j < data.list.length; j++) { -->
+<!-- 				                    	if(data.commList[i].className == data.list[j].className){ -->
+<!-- 				                    		text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;' readonly>"; -->
+<!-- 				                    		text2 = "진행중"; -->
+<!-- 				                    		break; -->
+<!-- 				                    	}else{ -->
+<!-- 				                    		text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;'>"; -->
+<!-- 				                    		text2 = "<button class='objectionbtn' onclick='insertDissent(this);'>이의신청</button>"; -->
+<!-- 				                    	} -->
+<!-- 				                    } -->
+<!-- 				                } -->
+<!-- 				                innerHtml2 += '<td>' + text1 + '</td>'; -->
+<!-- 				                innerHtml2 += '<td>' + text2 + '</td>'; -->
+<!-- 				                innerHtml2 += '<td style="display: none;">' + data.commList[i].professorNo + '</td>'; -->
+<!-- 				                innerHtml2 += '</tr>'; -->
+								<c:choose>
+									<c:when test="${fn:length(resultList) == 0}">
+										<td><input type="text" class="reasonText" id="reason"
+											name="reason" style="border: none; background: transparent;"></td>
+										<td>
+										<button class="objectionbtn"
+												onclick="insertDissent(this);">이의신청</button>
+										</td>
+									</c:when>
+									<c:otherwise>
+										<c:set var="chk" value="true" />
+										<c:forEach var="rl" items="${resultList }">
+											<c:if test="${rl.className eq c.className}">
+												<c:set var="chk" value="false"/>
+											</c:if>
+										</c:forEach>
+										<c:choose>
+											<c:when test="${chk}">
+												<td><input type="text" class="reasonText" id="reason"
+													name="reason" style="border: none; background: transparent;"></td>
+												<td>
+												<button class="objectionbtn"
+														onclick="insertDissent(this);">이의신청</button>
+												</td>
+											</c:when>
+											<c:otherwise>
+												<td><input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;' readonly></td>
+												<td>진행중</td>
+											</c:otherwise>
+										</c:choose>
+									</c:otherwise>
+								</c:choose>
 								<td style="display: none;">${c.professorNo }</td>
 							</tr>
 						</c:forEach>
