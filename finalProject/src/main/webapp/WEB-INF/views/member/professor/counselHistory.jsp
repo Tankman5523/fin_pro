@@ -38,7 +38,7 @@
 									<option value="etc">기타</option>
 								</select>
 							</td>
-							<th>상담일</th>
+							<th>상담신청일</th>
 							<td>
 								<input type="date" id="startDate" min="2019-01-01" max="2060-12-31" placeholder="날짜 선택" required="required">								</td>
 							<th>
@@ -53,7 +53,7 @@
 				
 				<div id="select-btn">
 					<button onclick="searchCounsel();" id="submit"><i class="fa-solid fa-magnifying-glass"></i>&nbsp;조회</button>
-					<button type="reset"><i class="fa-solid fa-arrow-rotate-left"></i>&nbsp;초기화</button>
+					<button type="reset" onclick="location.reload();"><i class="fa-solid fa-arrow-rotate-left"></i>&nbsp;초기화</button>
 				</div>
 				
 				<div id="record-area">

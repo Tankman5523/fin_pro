@@ -30,7 +30,7 @@
 					<ul id="file-container">
 						<c:forEach var="i" items="${na }">
 							<li class="file-list">
-								<a href="${i.changeName }" download="${i.originName }">
+								<a href="${i.filePath}${i.changeName }" download="${i.originName }">
 									<i class="fa-solid fa-paperclip"></i>&nbsp;&nbsp;&nbsp;${i.originName }
 								</a>
 							</li>

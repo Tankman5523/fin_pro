@@ -634,8 +634,7 @@ public class AdminController {
 			, @RequestParam("upfile") List<MultipartFile> upfile
 			, HttpSession session, ModelAndView mv) {
 
-		System.out.println(upfile);
-		
+		String alertMsg = "";		
 		String originName = "";
 		String changeName = "";
 		String savePath = "";
@@ -657,16 +656,19 @@ public class AdminController {
 
 				changeName = currentTime+ranNum+ext;
 
+				String subPath = "notice/";
+				String filePath = "resources/uploadFiles/";
+				
 				savePath = session.getServletContext().getRealPath("/resources/uploadFiles/notice/");
 
 				Map<String, String> map = new HashMap<>();
-				map.put("originFile", originName);
-				map.put("changeFile", changeName);
+				map.put("originName", originName);
+				map.put("changeName", changeName);
 				
 				fileList.add(map);
 				
 				try {
-					File uploadFile = new File(savePath+changeName+ fileList.get(i).get("originName"));
+					File uploadFile = new File(savePath+fileList.get(i).get("changeName"));
 					upfile.get(i).transferTo(uploadFile);
 				} catch (IllegalStateException e) {
 					// TODO Auto-generated catch block
@@ -676,7 +678,7 @@ public class AdminController {
 					e.printStackTrace();
 				}
 				
-				na = NoticeAttachment.builder().noticeNo(result).originName(originName).changeName(changeName).filePath(savePath).build();
+				na = NoticeAttachment.builder().noticeNo(result).originName(originName).changeName(changeName).filePath(filePath+subPath).build();
 				list.add(na);
 
 			}
@@ -684,19 +686,23 @@ public class AdminController {
 			int result1 = memberService.insertNoticeFile(list);
 			
 			if(result1 > 0) {
-				String msg = "게시글이 등록되었습니다.";
-				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+				alertMsg = "게시글이 등록되었습니다.";
+				session.setAttribute("alertMsg", alertMsg);
+				mv.setViewName("member/admin/ad_selectNotice");
 			}else {
-				String msg = "게시글 등록을 실패했습니다.";
-				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+				alertMsg = "게시글 등록을 실패했습니다.";
+				session.setAttribute("msg", alertMsg);
+				mv.setViewName("member/admin/ad_selectNotice");
 			}
 		}else {
 			if(result > 0) {
-				String msg = "게시글이 등록되었습니다.";
-				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+				alertMsg = "게시글이 등록되었습니다.";
+				session.setAttribute("alertMsg", alertMsg);
+				mv.setViewName("member/admin/ad_selectNotice");
 			}else {
-				String msg = "게시글 등록을 실패했습니다.";
-				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+				alertMsg = "게시글 등록을 실패했습니다.";
+				session.setAttribute("alertMsg", alertMsg);
+				mv.setViewName("member/admin/ad_selectNotice");
 			}
 		}
 		return mv;
@@ -708,8 +714,7 @@ public class AdminController {
 			, @RequestParam("upfile") List<MultipartFile> upfile
 			, HttpSession session, ModelAndView mv) {
 
-		System.out.println(upfile);
-		System.out.println(noticeNo);
+		String alertMsg = "";
 		
 		int result = memberService.updateNoticeForm(n, delFileNo);
 		
@@ -732,16 +737,19 @@ public class AdminController {
 
 				changeName = currentTime+ranNum+ext;
 
+				String subPath = "notice/";
+				String filePath = "resources/uploadFiles/";
+				
 				savePath = session.getServletContext().getRealPath("/resources/uploadFiles/notice/");
 
 				Map<String, String> map = new HashMap<>();
-				map.put("originFile", originName);
-				map.put("changeFile", changeName);
+				map.put("originName", originName);
+				map.put("changeName", changeName);
 				
 				fileList.add(map);
 				
 				try {
-					File uploadFile = new File(savePath+changeName+ fileList.get(i).get("originName"));
+					File uploadFile = new File(savePath+fileList.get(i).get("changeName"));
 					upfile.get(i).transferTo(uploadFile);
 				} catch (IllegalStateException e) {
 					// TODO Auto-generated catch block
@@ -751,7 +759,7 @@ public class AdminController {
 					e.printStackTrace();
 				}
 				
-				na = NoticeAttachment.builder().noticeNo(noticeNo).originName(originName).changeName(changeName).filePath(savePath).build();
+				na = NoticeAttachment.builder().noticeNo(noticeNo).originName(originName).changeName(changeName).filePath(filePath+subPath).build();
 				list.add(na);
 				System.out.println(list);
 			}
@@ -759,19 +767,19 @@ public class AdminController {
 			int result1 = memberService.insertNoticeFile(list);
 			
 			if(result1 > 0) {
-				String msg = "게시글이 수정되었습니다.";
-				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+				alertMsg = "게시글이 수정되었습니다.";
+				mv.setViewName("member/admin/ad_selectNotice");
 			}else {
-				String msg = "게시글 수정을 실패했습니다.";
-				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+				alertMsg = "게시글 수정을 실패했습니다.";
+				mv.setViewName("member/admin/ad_selectNotice");
 			}
 		}else {
 			if(result > 0) {
-				String msg = "게시글이 수정되었습니다.";
-				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+				alertMsg = "게시글이 수정되었습니다.";
+				mv.setViewName("member/admin/ad_selectNotice");
 			}else {
 				String msg = "게시글 수정을 실패했습니다.";
-				mv.addObject("msg", msg).setViewName("member/admin/ad_selectNotice");
+				mv.setViewName("member/admin/ad_selectNotice");
 			}
 		}
 		return mv;

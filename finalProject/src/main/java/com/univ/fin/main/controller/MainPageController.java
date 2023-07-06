@@ -125,7 +125,7 @@ public class MainPageController {
 	}
 
 	@GetMapping("detail.mp")
-	public ModelAndView boardDetailView(int noticeNo, Model mvmodel, ModelAndView mv, HttpServletRequest request) {
+	public ModelAndView boardDetailView(int noticeNo, ModelAndView mv, HttpServletRequest request) {
 		
 		int result = mainService.increaseCount(noticeNo);		
 		
@@ -151,7 +151,9 @@ public class MainPageController {
 		
 		if(result > 0) {
 			Notice faq = mainService.selectFaq(faqNo);
+			ArrayList<NoticeAttachment> na = mainService.detailFaqFile(faqNo);
 			mv.addObject("f", faq);
+			mv.addObject("na", na);
 			mv.setViewName("main/faqDetailView");
 		}else {
 			mv.addObject("alertMsg", "해당 게시물을 조회할 수 없습니다.");

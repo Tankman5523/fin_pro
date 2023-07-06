@@ -181,6 +181,12 @@ public class MainServiceImpl implements MainService{
 		return mainDao.detailNoticeFile(sqlSession, noticeNo);
 	}
 
+	//FAQ 파일 조회
+	@Override
+	public ArrayList<NoticeAttachment> detailFaqFile(int faqNo) {
+		return mainDao.detailFaqFile(sqlSession, faqNo);
+	}
+
 
 	
 	

@@ -73,19 +73,25 @@
 				//makeClone 함수
 				function makeClone(){
 					
+					// 원본 이미지 슬라이드를 복제하여 클론 이미지 슬라이드를 만들기
 					for(var i=0; i<slideCount; i++){
 						var cloneSlide = slide[i].cloneNode(true)
 						cloneSlide.classList.add('clone')
+						//원본 이미지 슬라이드 뒤에 복제한 클론 이미지 슬라이드를 append 한다.
 						slideBox.appendChild(cloneSlide)
 					}
+					
 					for(var i = slideCount -1; i>=0; i--){
 						var cloneSlide = slide[i].cloneNode(true)
 						cloneSlide.classList.add('clone')
+						//원본 이미지 슬라이드 앞에 복제한 클론 이미지 슬라이드를 prepend 한다.
 						slideBox.prepend(cloneSlide)
 					}
-					updateWidth(); // updateWidth( 함수 호출
-					setIntervalPos(); // 
+					updateWidth(); // updateWidth() 함수 호출
+					setIntervalPos(); // setIntervalPos() 함수 호출
 					
+					//setTimeOut을 이용하여 0.1초 뒤에
+					//슬라이드 박스에 'slideShow'라는 클래스명을 추가하도록 한다.
 					setTimeout(function(){
 						slideBox.classList.add('slideShow')
 					},100)
@@ -93,29 +99,48 @@
 				}
 				
 				function updateWidth(){
+					// 클래스 이름이 main-img인 요소를 전부 담아준다 (앞 클론(3)+원본(3)+뒤 클론(3))
 					var currentSlides = document.querySelectorAll('.main-img')
-					var newSlideCount = currentSlides.length;
+					var newSlideCount = currentSlides.length; // = 9
 					
+					// 클론 슬라이드들과 원본 슬라이드가 모두 들어갈 수 있게 슬라이드 박스(.img-container)의 넓이 값을 변경해준다.
+					// newWidth = 100 * 9 + 'vw';
+					// newWidth = 900vw;
 					var newWidth = slideWidth * newSlideCount + 'vw';
 					slideBox.style.width = newWidth;
 				}
+				
 				function setIntervalPos(){
-					var initialTranslateValue = -(slideWidth * slideCount)
+					// initialTranslateValue = -(100 * 3);
+					// initialTranslateValue = -300;
+					var initialTranslateValue = -(slideWidth * slideCount);
+					// 슬라이드 박스를 우에서 좌로 300vw만큼 이동시킨다. 
 					slideBox.style.transform = 'translateX(' + initialTranslateValue + 'vw)'
 				}
 				
+				// 슬라이드쇼
 				function moveSlide(num){
+					// 슬라이드 박스를 왼쪽을 기준으로 -num * 100vw 만큼 이동시킨다
 					slideBox.style.left = -num * slideWidth + 'vw'
 					currentImg = num
 					
+					//현재 페이지가 + 또는 슬라이드 카운트와 같을 때
 					if(currentImg == slideCount || currentImg == -slideCount){
 						
+						//5초마다
 						setTimeout(function(){
+							// 슬라이드 박스에서 'slideShow'라는 클래스명을 지워준다. 
 							slideBox.classList.remove('slideShow')
+							// 슬라이드 박스 left를 0px로 초기화
 							slideBox.style.left = '0px'
+							// 현재 이미즈를 0으로 초기화
 							currentImg = 0
 						}, 5000)
+						
+						//5.1초마다
 						setTimeout(function(){
+							// 슬라이드 박스에 다시 'slideShow'라는
+							// 클래스명을 넣어준다.
 							slideBox.classList.add('slideShow')
 						}, 5100)
 					}
@@ -123,8 +148,12 @@
 				
 				var timer = undefined
 				
+				// 자동으로 슬라이드가 움직이는 함수
 				function autoSlide(){
+					// timer가  undefined일 때
 					if(timer == undefined){
+						// setInterval 함수를 이용하여
+						// 5초 간격으로 슬라이드쇼 함수를 반복 실행한다.
 						timer = setInterval(function(){
 							moveSlide(currentImg + 1)
 						}, 5000)
@@ -133,16 +162,20 @@
 				
 				autoSlide();
 				
-				function stopSlide(){
-					clearInterval(timer)
-					timer = undefined
-				}
+				// 마우스 커서가 슬라이드 영역 안에 있을 때 stopSlide함수를 실행 
 				slideBox.addEventListener('mouseenter', function(){
 					stopSlide()
 				})
+				// 마우스 커서가 슬라이드 영역 밖에 있을 때 autoSlide함수를 실행
 				slideBox.addEventListener('mouseleave', function(){
 					autoSlide()
 				})
+				
+				function stopSlide(){
+				//clearInterval 함수를 이용하여 슬라이드 반복을 중단한다
+					clearInterval(timer)
+					timer = undefined
+				}
 
 			</script>
 		
