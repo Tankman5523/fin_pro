@@ -57,6 +57,7 @@
 	position: sticky;
 	top: 0;
 	background-color: #ddd;
+	z-index: 1;
 }
 #result-table th{
 	height: 50px;
