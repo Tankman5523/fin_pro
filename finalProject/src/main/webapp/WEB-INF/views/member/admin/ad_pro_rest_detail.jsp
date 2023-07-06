@@ -112,8 +112,9 @@
 	    function updateProRest(status){
 	  		var restNo = '${pr.restNo}'; //상담번호
 	  		var category = '${pr.category}';
+	  		var professorNo = '${pr.professorNo}';
 	  		console.log(restNo);
-	  		location.href="updateProRest.ad?restNo="+restNo+"&status="+status+"&category="+category;
+	  		location.href="updateProRest.ad?restNo="+restNo+"&status="+status;
 	  	}
 	    
   	</script>
