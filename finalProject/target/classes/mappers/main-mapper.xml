@@ -31,6 +31,16 @@
 		<result column="END_DATE" property="endDate"/>
 	</resultMap>
 	
+	<resultMap type="noticeFile" id="noticeFileResultSet">
+		<result column="FILE_NO" property="fileNo"/>
+		<result column="NOTICE_NO" property="noticeNo"/>
+		<result column="ORIGIN_NAME" property="originName"/>
+		<result column="CHANGE_NAME" property="changeName"/>
+		<result column="FILE_PATH" property="filePath"/>
+		<result column="UPLOAD_DATE" property="uploadDate"/>
+		<result column="STATUS" property="status"/>
+	</resultMap>
+	
 	<!-- 공지사항 조회  -->
 	<select id="selectNoticeList" resultMap="noticeResultSet">
 		SELECT NOTICE_NO, FIELD, CATEGORY_NAME, NOTICE_TITLE, ORIGIN_NAME, TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE"
@@ -203,8 +213,16 @@
 		WHERE ROWNUM BETWEEN 1 AND 10
 	</select>
 	
+	<!-- 학사일정 조회 -->
 	<select id="selectHaksaCalendar" resultMap="calendarResultSet">
 		SELECT CALENDAR_NO, CONTENT, TO_CHAR(START_DATE, 'YYYY-MM-DD') START_DATE, TO_CHAR(END_DATE, 'YYYY-MM-DD') END_DATE
 		FROM CALENDAR
 	</select>
+	
+	<!-- (관리자) 공지사항 상세 보기 파일조회 -->
+  	<select id="detailNoticeFile" resultMap="noticeFileResultSet">
+  		SELECT *
+  		FROM NOTICE_ATTACHMENT
+  		WHERE NOTICE_NO = #{noticeNo }
+  	</select>
   </mapper>

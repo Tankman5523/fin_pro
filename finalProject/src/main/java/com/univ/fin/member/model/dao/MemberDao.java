@@ -854,10 +854,14 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.detailNoticeView", noticeNo);
 	}
 
-
 	public int updateReport(SqlSessionTemplate sqlSession, Objection obj) {
 		
 		return sqlSession.update("memberMapper.updateReport",obj);
+	}
+
+	// (관리자) 공지사항 상세보기 파일조회
+	public ArrayList<NoticeAttachment> detailNoticeFile(SqlSessionTemplate sqlSession, String noticeNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.detailNoticeFile", noticeNo);
 	}
 
 

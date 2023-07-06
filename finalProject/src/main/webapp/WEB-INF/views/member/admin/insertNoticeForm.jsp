@@ -44,8 +44,7 @@
 		
 			<p id="sub-title">공지사항 등록</p>
 			<div id="editor-container">			
-				<form action="insertNoticeForm.ad" id="file-form" method="post" onsubmit="return insertForm()" enctype="multipart/form-data">
-					<input type="hidden" name="professorNo" value="${loginUser.professorNo }">
+				<form action="insertNoticeForm.ad?professorNo=${loginUser.professorNo }" id="file-form" method="post" onsubmit="return insertForm()" enctype="multipart/form-data">
 					<table id="select-area">
 						<tbody>
 							<tr>
@@ -99,55 +98,163 @@
 	});
 	
 	
+	const dataTransfer = new DataTransfer();
+	
 	function upload(){
-		const dataTransfer = new DataTransfer();
-		
-		const fileArr = document.getElementById('files').files;
-		const files = Array.from(fileArr);
+		var fileArr = document.getElementById("files").files
 		const fileInfo = document.getElementById('files-info')
 		
 		if(fileArr != null && fileArr.length>0){
-			for(var i=0; i<fileArr.length; i++){
-				const li = document.createElement('li')
+
+          // =====DataTransfer 파일 관리========
+            for(var i=0; i<fileArr.length; i++){
+            	const li = document.createElement('li')
 				const btn = document.createElement('button')
-				
-				li.innerHTML += fileArr[i].name
+
+				li.innerHTML = fileArr[i].name
 				li.setAttribute('class', 'select-file')
 				btn.setAttribute('type', 'button')
-				btn.setAttribute('onclick', 'deleteFile(this)')
-				btn.setAttribute('class', 'delete-btn')
-				btn.innerHTML = "<i class='fa-solid fa-xmark'></i>"
+				btn.setAttribute('onclick', 'deleteFile(event)')
+				btn.setAttribute('data-index', fileArr[i].lastModified)
+				btn.setAttribute('class', 'remove-btn')
+// 				btn.innerHTML = "<i class='fa-solid fa-xmark'></i>"
+				btn.innerHTML = "X"
 				li.appendChild(btn)
 				fileInfo.append(li)
+            	
+                dataTransfer.items.add(fileArr[i])
+            }
+            document.getElementById("files").files = dataTransfer.files;
+            console.log("dataTransfer =>",dataTransfer.files)
+            console.log("input FIles =>", document.getElementById("files").files)
+			// ==========================================
+		} 
+//         	const removeBtn = document.querySelectorAll('.remove-btn');
+//         	const li = document.querySelectorAll('.select-file');
+//         	var filesSize = 0;       		
+//         	for(var i=0; i<fileArr.length; i++){
+//         		filesSize += fileArr[i].size;
+//         	}
+        	
+//         	removeBtn.forEach(function(btn, idx){
+//         		btn.addEventListener('click', function(){
+//         			if(btn.className == 'remove-btn'){
+// 	        			const targetFile = fileArr[idx].lastModified;
+	        			
+// 	        			if(dataTransfer.files[idx].lastModified == targetFile){
+// 	        				console.log(fileArr[idx])
+    	                    // 총용량에서 삭제
+//     	                    filesSize -= dataTransfer.files[idx].size
+//     	                    dataTransfer.items.remove(idx);
+//     	                    removeBtn[idx].remove();
+//     	                    li[idx].remove();
+// 	        				document.getElementById("files").files = dataTransfer.files;
+	        				
+// 	        				console.log(fileArr[idx])
+//     	                }
+//         			}
+ 	                   
+// 	                    console.log("dataTransfer 삭제후=>",dataTransfer.files)
+// 	                    console.log('input FIles 삭제후=>',document.getElementById("files").files)
+//         		});
+//         	});
+        
+	}
+	
+	
+	
+	function deleteFile(event){
+		const fileArr = document.getElementById("files").files
+		
+        if(event.target.className == 'remove-btn'){
+            const removeTargetId = event.target.dataset.index;
+            console.log("removeTargetId => ", removeTargetId);
+            
+            const dataTranster = new DataTransfer();
+            
+            const files = Array.from(fileArr).filter(file => file.lastModified != removeTargetId);
+            
+            files.splice(removeTargetId, 1);
+           	
+            files.forEach(function(file){
+            	dataTranster.items.add(file);
+            });
+            
+            document.querySelector('#files').files = dataTranster.files;
+            
+            removeTargetId.remove;
+			event.target.parentNode.remove();
+			event.target.remove();
+
+        }
+        console.log("dataTransfer 삭제후=>",dataTransfer.files)
+        console.log('input FIles 삭제후=>',document.getElementById("files").files)
+	}
+	
+	
+	
+	
+// 	function upload(){
+// 		const dataTransfer = new DataTransfer();
+		
+// 		const fileArr = document.getElementById('files').files;
+// 		const files = Array.from(fileArr);
+// 		const fileInfo = document.getElementById('files-info')
+		
+// 		if(fileArr != null && fileArr.length>0){
+// 			for(var i=0; i<fileArr.length; i++){
+// 				const li = document.createElement('li')
+// 				const btn = document.createElement('button')
 				
-			}
-			files.forEach(function(file){
-				dataTransfer.items.add(file);
-				document.getElementById('files').files = dataTransfer.files;
-			});
-			console.log(document.getElementById('files').files)
-		}
-	}	
+// 				li.innerHTML += fileArr[i].name
+// 				li.setAttribute('class', 'select-file')
+// 				btn.setAttribute('type', 'button')
+// 				btn.setAttribute('onclick', 'deleteFile(this)')
+// 				btn.setAttribute('class', 'delete-btn')
+// 				btn.innerHTML = "<i class='fa-solid fa-xmark'></i>"
+// 				li.appendChild(btn)
+// 				fileInfo.append(li)
+				
+// 				dataTransfer.items.add(file);
+				
+// 			}
+// 			document.getElementById('files').files = dataTransfer.files;
+// 			files.forEach(function(file){
+// 				dataTransfer.items.add(file);
+// 				document.getElementById('files').files = dataTransfer.files;
+// 				fileArr = dataTransfer.files;
+// 			});
+// 		}
+// 		console.log(fileArr)
+// 	}	
 	
 	//선택 파일 삭제
-	function deleteFile(e){
-		const dataTransfer = new DataTransfer();
+// 	function deleteFile(){
+// 		const fileArr = document.getElementById('files').files;
+// 		const removeBtn = document.querySelectorAll('.remove-btn');
+// 		const li = document.querySelectorAll('.select-file');
 		
-		const fileArr = document.getElementById('files').files;
-		const files = Array.from(fileArr);
-		const li = document.querySelectorAll('.select-file');
+// 		removeBtn.forEach(function(btn, i){
+// 			btn.addEventListener('click', function(){
+// 				console.log('click');
+// 			});
+// 		});
+// 		const fileNum = $(e).parent().index();
 		
-		const fileNum = $(e).parent().index();
+// 		$(e).parent().remove();
+// 		files.splice(fileNum, 1);
 		
-		$(e).parent().remove();
-		files.splice(fileNum, 1);
-		
-		files.forEach(function(file){
-			dataTransfer.items.add(file);
-			document.getElementById('files').files = dataTransfer.files;
-		});
-		console.log(document.getElementById('files').files)
-	}
+// 		files.forEach(function(file){
+// 			dataTransfer.items.add(file);
+// 			document.getElementById('files').files = dataTransfer.files;
+// 		});
+// 		console.log(document.getElementById('files').files)
+// 	}
+	
+	
+	
+	
+	
 	
 	
 	function insertForm(){

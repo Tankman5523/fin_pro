@@ -585,12 +585,12 @@ public class MemberServiceImpl implements MemberService{
 
 
 	@Override
-	public ArrayList<Objection> studentGradeReport(String studentNo) {
-		ArrayList<Objection> list = memberDao.studentGradeReport(sqlSession,studentNo);
+	public ArrayList<Objection> studentGradeReport(Objection obj) {
+		ArrayList<Objection> list = memberDao.studentGradeReport(sqlSession, obj);
 		
 		return list;
 	}
-
+ 
 	@Override
 	public int insertProfessor(Professor pr, Attachment a) {
 		
@@ -598,7 +598,6 @@ public class MemberServiceImpl implements MemberService{
 		
 		return result;
 	}
-
 
 	// (관리자)강의개설 일괄 승인
 	@Override
@@ -1086,18 +1085,15 @@ public class MemberServiceImpl implements MemberService{
 			}
 		}
 		return result;
-		
 	}
 
+	// (관리자) 공지사항 상세보기
 	@Override
 	public Notice detailNoticeView(String noticeNo) {
 		
 		return memberDao.detailNoticeView(sqlSession, noticeNo);
 	}
 
-
-
-	
 
 	@Override
 	public ArrayList<Objection> searchReport(Objection obj) {
@@ -1110,5 +1106,12 @@ public class MemberServiceImpl implements MemberService{
 		
 		return memberDao.updateReport(sqlSession,obj);
 	}
+
+	// (관리자) 공지사항 상세보기 첨부파일
+	@Override
+	public ArrayList<NoticeAttachment> detailNoticeFile(String noticeNo) {
+		return memberDao.detailNoticeFile(sqlSession, noticeNo);
+	}
+	
 
 }

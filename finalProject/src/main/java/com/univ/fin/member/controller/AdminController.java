@@ -766,8 +766,9 @@ public class AdminController {
 	public String detailNoticeView(String noticeNo, Model model) {
 		
 		Notice n = memberService.detailNoticeView(noticeNo);
-		System.out.println(n);
+		ArrayList<NoticeAttachment> na = memberService.detailNoticeFile(noticeNo);
 		model.addAttribute("n", n);
+		model.addAttribute("na", na);
 		
 		return "member/admin/detailNoticeView";
 	}

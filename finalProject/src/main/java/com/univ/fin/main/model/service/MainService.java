@@ -6,6 +6,7 @@ import java.util.HashMap;
 import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.PageInfo;
 import com.univ.fin.main.model.vo.Notice;
+import com.univ.fin.main.model.vo.NoticeAttachment;
 
 public interface MainService {
 
@@ -59,6 +60,9 @@ public interface MainService {
 
 	//학사일정 캘린더 조회
 	ArrayList<CalendarVo> selectHaksaCalendar();
+
+	//공지사항 파일 조회
+	ArrayList<NoticeAttachment> detailNoticeFile(int noticeNo);
 
 	
 
