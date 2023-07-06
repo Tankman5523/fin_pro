@@ -64,7 +64,7 @@
                     <span class="left_span"><label for="checkNum">인증 번호</label></span>
                     <span id="restTime">남은시간 : </span>
                     <span id="timer"></span>
-                    <button onclick="plusTime();">시간연장</button>
+                    <button onclick="plusTime(1);">시간연장</button>
                     <input type="number" name="checkNum" id="checkNum" placeholder="인증번호 6자리를 입력해주세요">
                 </div>
                 
@@ -244,7 +244,6 @@
                 var timer;
                 
                 function startTimer(num){
-                	
                 	clearInterval(timer);
                 	
                     var time = 300;
@@ -304,8 +303,8 @@
                 	}
                 };
                 
-                function plusTime(){
-                	startTimer();
+                function plusTime(num){
+                	startTimer(num);
                 };
                 
                 function checkSubmit(num){

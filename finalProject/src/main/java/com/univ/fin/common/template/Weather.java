@@ -61,7 +61,7 @@ public class Weather {
 		//하늘 상태, 강수형태
 		HashMap<String, String> h = ultraShortforecast();
 		
-		if(h == null) {
+		if(h.get("chkError").equals("NNNN")) {
 			return new Gson().toJson(h);
 		}else {
 			
