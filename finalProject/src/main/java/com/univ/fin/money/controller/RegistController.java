@@ -45,14 +45,16 @@ public class RegistController {
 	//학생
 	
 	@PostMapping("input.rg")
-	public String updateInputPay(RegistPay r) {//학생이 등록금을 냈을때 정보수정
+	public String updateInputPay(RegistPay r,HttpSession session) {//학생이 등록금을 냈을때 정보수정
 		//금액 , 입금학생계좌 , 입금시각/날짜, 입금학교계좌
 		int result = registService.updateInputPay(r);
 		if(result>0) {
 			log.info("inputPay Success) SchoolAccount : "+r.getRegAccountNo()+" ,amount : "+r.getInputPay());
+			session.setAttribute("alertMsg", "등록금 입금에 성공하였습니다.");
 		}
 		else {
 			log.info("inputPay failed) SchoolAccount : "+r.getRegAccountNo());
+			session.setAttribute("alertMsg", "등록금 입금에 실패하였습니다.");
 		}
 		return "redirect:/onelist.rg";
 	}

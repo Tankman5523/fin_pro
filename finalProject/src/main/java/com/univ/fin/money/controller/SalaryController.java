@@ -72,7 +72,7 @@ public class SalaryController {
 		if(result>0) {
 			session.setAttribute("alertMsg", "급여 입력이 완료되었습니다.");
 		}else {
-			session.setAttribute("errorMsg", "급여입력실패! 데이터를 확인하세요.");
+			session.setAttribute("alertMsg", "이미 등록된 급여 정보거나 잘못된 데이터입니다.");
 		}
 		
 		return "redirect:allList.sl";
@@ -146,7 +146,6 @@ public class SalaryController {
 		if(result>0) {
 			return "Y";
 		}else {
-			System.out.println("자동 급여 테스트");
 			return "N";
 		}
 	}

@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>학생_강의평가</title>
 <style>
 	#ratingForm>table th,#ratingForm>table>tbody td{
 		text-align:center;
