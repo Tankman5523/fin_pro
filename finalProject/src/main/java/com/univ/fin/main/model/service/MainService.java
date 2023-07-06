@@ -64,6 +64,9 @@ public interface MainService {
 	//공지사항 파일 조회
 	ArrayList<NoticeAttachment> detailNoticeFile(int noticeNo);
 
+	//FAQ 파일 조회
+	ArrayList<NoticeAttachment> detailFaqFile(int faqNo);
+
 	
 
 }
