@@ -7,48 +7,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/fin/resources/css/studentRegistPayNowList.css">
     <title>학생_이번학기등록금</title>
-    <style>
-   	.readonly{
-   		background-color : lightgray;
-   	}
-   	/* 전부 모달용 style */
-    .modal {
-       position: absolute;
-       top: 0;
-       left: 0;
-
-       width: 100%;
-       height: 100%;
-
-       display: none;
-
-       background-color: rgba(0, 0, 0, 0.4);
-    }
-     
-    .modal.show {
-       display: block;
-    }
-    .modalContent{
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		
-		width: 550px;
-		height: 600px;
-		
-		padding: 40px;
-		
-		text-align: center;
-		
-		background-color: rgb(255, 255, 255);
-		border-radius: 10px;
-		box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
-		
-		transform: translateX(-50%) translateY(-50%);
-    }
-      
-    </style>
 </head>
 <body>
     <div class="wrap">
@@ -94,7 +54,7 @@
                                 <th>입금한계좌(학생)</th>
                                 <th>상태</th>
                                 <!-- 오픈뱅킹 api사용 불가로  임시 입금데이터-->
-                                <th>입금테스트</th>
+                                <th>입금</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -147,7 +107,7 @@
                                 			<c:choose>
 	                                			<c:when test="${RegistPay.status eq 'Y'}">
 		                                			<button class="btn btn-outline-primary btn-sm" onclick="openModal();">
-		                                				입금테스트
+		                                				입금하기
 		                                			</button>
 	                                			</c:when>
 	                                			<c:otherwise>
@@ -180,7 +140,7 @@
        	<div class="modalContent">
        		<form action="input.rg" method="post">
 	       		<span style="float:right;curser:pointer;" onclick="closeModal();"><b>X</b></span>
-	       		<h4><b>입금테스트</b></h4>
+	       		<h4><b>입금</b></h4>
 	       		<br>
 	       		<table border="1" style="text-align:center;width: 100%;height: 60%;">
 	       			<tr>
@@ -212,7 +172,7 @@
 	           	</table>
 	           	<br>
 	           	<div id="modalBtns" style="float:right;width:100%;">
-					<input type="submit" value="입금테스트 시작">
+					<input type="submit" value="입금">
 	           	</div>
            	</form>
        	</div>

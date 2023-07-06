@@ -48,7 +48,6 @@ public class ScholarshipController {
 	public String selectMyScholarshipList(Scholarship sc) { //학년도로 조회(본인)
 		//sc => 유저 학번, 선택한 학년도 
 		ArrayList<Scholarship> list = scholarshipService.selectMyScholarshipList(sc);
-		
 		return new Gson().toJson(list);
 	}
 	
@@ -56,7 +55,6 @@ public class ScholarshipController {
 	//관리자
 	@GetMapping("insert.sc")
 	public String insertScholarForm(){ //장학금 수여 페이지로
-		
 		return "money/scholarship/admin/admin_scholar_insertForm";
 	}
 	@PostMapping("insert.sc")
@@ -92,11 +90,8 @@ public class ScholarshipController {
 	
 	@GetMapping("update.sc")
 	public ModelAndView updateScholarForm(int schNo, ModelAndView mv) {//장학금 수정페이지
-		
 		Scholarship sc = scholarshipService.selectOneScholarship(schNo);
-		
 		mv.addObject("sc", sc).setViewName("money/scholarship/admin/admin_scholar_updateForm");
-		
 		return mv;
 	}
 	@PostMapping("update.sc")
@@ -145,10 +140,8 @@ public class ScholarshipController {
 		if(r==null) {//해당학기 등록금이 이미 입력되어있지 않을 때.
 			String studentName = scholarshipService.selectStudentForSc(studentNo); //
 			return studentName; //
-		}else {
+		}else {//이미 해당학기 등록금이 있을때
 			return "N";
 		}
 	}
-	
-	
 }

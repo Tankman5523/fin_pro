@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>관리자_장학금수여</title>
+    <title>관리자_장학금수정</title>
     <style>
     	.readonly{
     		background-color : lightgray;
