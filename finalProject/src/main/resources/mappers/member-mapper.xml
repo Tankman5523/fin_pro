@@ -1347,9 +1347,9 @@
   	
   	<!-- 학기별 성적 조회 -> 전체석차 -->
   	<select id="calculatedTotalRank" parameterType="hashmap" resultType="string">
-  		SELECT RANK||'/'||TOTAL_STUDENTS
+		SELECT RANK||'/'||TOTAL_STUDENTS
 		FROM (SELECT AA.*, COUNT(*) OVER () AS TOTAL_STUDENTS
-		        FROM (SELECT CLASS_YEAR, CLASS_TERM, STUDENT_NO, ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) AS TERM_GRADE, RANK() OVER (ORDER BY ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) DESC) AS RANK
+		        FROM (SELECT STUDENT_NO, ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) AS TERM_GRADE, RANK() OVER (ORDER BY ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) DESC) AS RANK
 		                FROM (SELECT A.STUDENT_NO, C.CLASS_YEAR, C.CLASS_TERM, CREDIT, SCORE, GRADE_LEVEL
 		                        , DECODE(GRADE_LEVEL, 'A+', 4.5, 'A0', 4.3, 'A-', 4.0, 'B+', 3.5, 'B0', 3.3, 'B-', 3.0, 'C+', 2.5, 'C0', 2.3, 'C-', 2.0, 'D+', 1.5, 'D0', 1.3, 'D-', 1.0, 'F', 0)*CREDIT AS GRADE
 		                        FROM (SELECT CLASS_NO, STUDENT_NO
@@ -1357,9 +1357,8 @@
 		                                GROUP BY CLASS_NO, STUDENT_NO) A
 		                        JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
 		                        LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
-		                        WHERE SCORE IS NOT NULL)
-		                GROUP BY CLASS_YEAR, CLASS_TERM, STUDENT_NO
-		                <![CDATA[HAVING CLASS_YEAR <= #{year} AND CLASS_TERM <= #{term}]]>
+		                        WHERE SCORE IS NOT NULL AND <![CDATA[C.CLASS_YEAR<=#{year} AND C.CLASS_YEAR+C.CLASS_TERM <= #{year}+#{term}]]>)
+		                GROUP BY STUDENT_NO
 		                ORDER BY TERM_GRADE DESC) AA)
 		WHERE STUDENT_NO = #{studentNo}
   	</select>
@@ -1384,7 +1383,7 @@
 		                GROUP BY CLASS_NO, STUDENT_NO) A
 		        JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
 		        LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
-		        WHERE A.STUDENT_NO = #{studentNo} AND GRADE_LEVEL NOT IN ('F', ' ')) AA
+		        WHERE A.STUDENT_NO = #{studentNo} AND GRADE_LEVEL NOT IN ('F', ' '))
   	</select>
   	
   	<!-- 학기별 성적 조회 -> 증명산술평균 -->
