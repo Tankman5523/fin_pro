@@ -1,0 +1,60 @@
+@charset "UTF-8";
+
+/* 전부 모달용 style */
+.modal {
+	position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: none;
+
+    background-color: rgba(0, 0, 0, 0.4);
+}
+      
+.modal.show {
+	display: block;
+}
+.modalContent{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+		
+	width: 550px;
+	height: 600px;
+		
+	padding: 40px;
+		
+	text-align: center;
+		
+	background-color: rgb(255, 255, 255);
+	border-radius: 10px;
+	box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+		
+	transform: translateX(-50%) translateY(-50%);
+}
+      
+.payCol{
+	background-color:rgb(69, 190, 238);
+}
+.taxCol{
+	background-color:lightcoral;
+}
+.realCol{
+	background-color:lightyellow;
+}
+.hiddenInput{
+	width:130px;
+}
+.modalContent input{
+	text-align:center;
+}
+#salaryList>tbody>tr:hover{
+	background-color : lightgray;
+    cursor : pointer;
+}
+#closeBtn:hover{
+	cursor : pointer;			
+}

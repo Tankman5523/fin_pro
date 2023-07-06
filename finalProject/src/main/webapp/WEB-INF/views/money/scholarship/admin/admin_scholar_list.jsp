@@ -141,7 +141,7 @@
     							
     					}
     				}else{
-    					str+="<tr><td colspan='9'>데이터가 없습니다.</td></tr>"
+    					str+="<tr><td colspan='10'>데이터가 없습니다.</td></tr>"
     				}
     				$("#schList>tbody").html(str);
     			},

@@ -249,6 +249,8 @@ public class Weather {
 					}
 				}else {
 					setMin = setTmp;
+					min = list.get(i).getFcstValue();
+					max = list.get(i).getFcstValue();
 				}
 			}
 		}
