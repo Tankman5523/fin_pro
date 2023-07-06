@@ -637,9 +637,6 @@ public class MemberDao {
 	@Transactional
 	public int updateProfessorRest(SqlSessionTemplate sqlSession, ProfessorRest pr) {
 		int result = sqlSession.update("memberMapper.updateProfessorRest",pr);
-		if(pr.getCategory()==0&&result>0) {
-			result = sqlSession.update("memberMapper.updateProfessorStatus",pr);
-		}
 		return result;
 	}
 
@@ -715,13 +712,13 @@ public class MemberDao {
 	}
 	
 	// 알람 수신
-	public ArrayList<AlarmVo> alarmReceive(SqlSessionTemplate sqlSession, String studentNo) {
-		return (ArrayList)sqlSession.selectList("memberMapper.alarmReceive", studentNo);
+	public ArrayList<AlarmVo> alarmReceive(SqlSessionTemplate sqlSession, String receiveNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.alarmReceive", receiveNo);
 	}
 
 	// 알람 전체확인
-	public int alarmAllCheck(SqlSessionTemplate sqlSession, String studentNo) {
-		return sqlSession.update("memberMapper.alarmAllCheck", studentNo);
+	public int alarmAllCheck(SqlSessionTemplate sqlSession, String receiveNo) {
+		return sqlSession.update("memberMapper.alarmAllCheck", receiveNo);
 	}
 	
 	// 알람 확인
@@ -854,10 +851,19 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.detailNoticeView", noticeNo);
 	}
 
-
 	public int updateReport(SqlSessionTemplate sqlSession, Objection obj) {
 		
 		return sqlSession.update("memberMapper.updateReport",obj);
+	}
+
+	// (관리자) 공지사항 상세보기 파일조회
+	public ArrayList<NoticeAttachment> detailNoticeFile(SqlSessionTemplate sqlSession, String noticeNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.detailNoticeFile", noticeNo);
+	}
+
+	// 낮 12시 퇴직예정 직원 퇴직처리
+	public void updateAutoRetire(SqlSessionTemplate sqlSession) {
+		sqlSession.update("memberMapper.updateAutoRetire");
 	}
 
 

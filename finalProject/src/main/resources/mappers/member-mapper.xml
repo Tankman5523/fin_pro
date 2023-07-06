@@ -1249,7 +1249,7 @@
   	
   	
   	<select id="studentGradeReport" resultMap="objectionResultMap" parameterType="string"> 
-  	SELECT SC.STUDENT_NO, C.CLASS_NAME, P.PROFESSOR_NAME, C.CREDIT
+  	SELECT SC.STUDENT_NO, C.CLASS_NAME, P.PROFESSOR_NAME, C.CREDIT, P.PROFESSOR_NO
 	FROM (SELECT CLASS_NO,STUDENT_NO,MAX(PERIOD) FROM SCHEDULE GROUP BY CLASS_NO,STUDENT_NO) "SC"
 	JOIN CLASS C ON SC.CLASS_NO = C.CLASS_NO
 	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
@@ -1265,7 +1265,7 @@
   	</insert>
   	
   	<select id="studentGradeView" resultMap="objectionResultMap">
-  	SELECT D.STUDENT_NO, C.CLASS_NAME, P.PROFESSOR_NAME, D.OPINION, D.STATUS ,C.CREDIT
+  	SELECT D.STUDENT_NO, C.CLASS_NAME, P.PROFESSOR_NAME, D.OPINION, D.STATUS ,C.CREDIT, P.PROFESSOR_NO
 	FROM DISSENT D
 	JOIN CLASS C ON D.CLASS_NO = C.CLASS_NO
 	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
@@ -1596,6 +1596,18 @@
   		SET STATUS = #{status}
   		WHERE REST_NO = #{restNo}
   		AND STATUS = 'B'
+  	</update>
+  	
+  	<!-- 임직원 자동 퇴직 처리 -->
+  	<update id="updateAutoRetire">
+  		UPDATE 	PROFESSOR
+		SET 	STATUS = 'N'
+		WHERE 	STATUS = 'Y'
+		AND   	PROFESSOR_NO IN (SELECT PROFESSOR_NO
+		                        FROM PROFESSOR_REST
+		                        WHERE STATUS = 'Y'
+		                        AND   CATEGORY = 0
+		                        AND   TO_CHAR(START_DATE,'YYYY-MM-DD') = TO_CHAR(SYSDATE,'YYYY-MM-DD'))
   	</update>
   	
   	<!-- 임직원 안식,퇴직 신청 목록 검색 (관리자) -->
@@ -2028,5 +2040,12 @@
 		VALUES(SEQ_ANO.NEXTVAL,#{originName},#{changeName},#{filePath},SYSDATE)
   	</insert>
   	
+  	<!-- (관리자) 공지사항 상세 보기 파일조회 -->
+  	<select id="detailNoticeFile" resultMap="noticeFileResultSet">
+  		SELECT *
+  		FROM NOTICE_ATTACHMENT
+  		WHERE NOTICE_NO = #{noticeNo }
+  		AND STATUS = 'Y'
+  	</select>
   </mapper>
 

@@ -1,14 +1,48 @@
 @charset "UTF-8";
 
+#back{
+	width: 100px;
+	height: 40px;
+	background-color: #d7d7d7;
+	float: right;
+	margin: 10px;
+	cursor: pointer;
+	border: none;
+	border-radius: 5px;
+	color: white;
+	font-weight: bold;
+}
+#back:hover{
+	background-color: #c0c0c0;
+	transition: all 0.1s ease-out;
+}
+
+#update{
+	width: 100px;
+	height: 40px;
+	background-color: #ffc924;
+	float: right;
+	margin: 10px;
+	cursor: pointer;
+	border: none;
+	border-radius: 5px;
+	color: white;
+	font-weight: bold;
+}
+#update:hover{
+	background-color: #ffa702;
+	transition: all 0.1s ease-out;
+}
+
 #sub-title{
 	text-align: center;
-	margin: 50px;
+	margin: 50px 0 20px 0;
 	font-size: 30px;
+	font-weight: bold;
 }
 
 #notice-container{
 	width: 90%;
-	border: 1px solid black;
 	margin: auto;
 }
 
@@ -47,17 +81,32 @@
 	font-size: 20px;
 	font-weight: bold;
 	padding: 0 20px;
-	margin-bottom: 40px;
+	margin-bottom: 10px;
 }
 #noticeTitle:focus{
 	outline: none;
 }
 
+#file-container{
+	max-height: 100px;
+	overflow-y: scroll;
+	list-style: none;
+	padding: 0 10px;
+	margin: 0px;
+}
+#file-container a{
+	text-decoration: none;
+}
+.file-list{
+	list-style: none;
+	margin-bottom: 10px;
+}
+
 #summernote{
-	height: 500px;
+	height: 650px;
 	border: 1px solid black;
-	border-radius: 5px;
 	padding: 20px;
 	font-size: 16px;
-	background-color: lightblue;
+	overflow-y: scroll;
+	margin: 10px 0 20px 0;
 }

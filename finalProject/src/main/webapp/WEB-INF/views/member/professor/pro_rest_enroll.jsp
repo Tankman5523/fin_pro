@@ -104,7 +104,7 @@
     	
     
 	    $("#datepicker1").datepicker({
-	    	minDate:new Date() //오늘 이전은 못 고르게 하기
+	    	minDate:"+1D" //오늘 이전은 못 고르게 하기
 	    });
 	    
 	    $("#datepicker1").datepicker("option","onClose",function(selectDate){

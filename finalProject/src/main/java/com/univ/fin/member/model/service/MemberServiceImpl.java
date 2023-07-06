@@ -585,12 +585,12 @@ public class MemberServiceImpl implements MemberService{
 
 
 	@Override
-	public ArrayList<Objection> studentGradeReport(String studentNo) {
-		ArrayList<Objection> list = memberDao.studentGradeReport(sqlSession,studentNo);
+	public ArrayList<Objection> studentGradeReport(Objection obj) {
+		ArrayList<Objection> list = memberDao.studentGradeReport(sqlSession, obj);
 		
 		return list;
 	}
-
+ 
 	@Override
 	public int insertProfessor(Professor pr, Attachment a) {
 		
@@ -598,7 +598,6 @@ public class MemberServiceImpl implements MemberService{
 		
 		return result;
 	}
-
 
 	// (관리자)강의개설 일괄 승인
 	@Override
@@ -912,14 +911,14 @@ public class MemberServiceImpl implements MemberService{
 
 	// 알람 수신
 	@Override
-	public ArrayList<AlarmVo> alarmReceive(String studentNo) {
-		return memberDao.alarmReceive(sqlSession, studentNo);
+	public ArrayList<AlarmVo> alarmReceive(String receiveNo) {
+		return memberDao.alarmReceive(sqlSession, receiveNo);
 	}
 
 	// 알람 전체확인
 	@Override
-	public int alarmAllCheck(String studentNo) {
-		return memberDao.alarmAllCheck(sqlSession, studentNo);
+	public int alarmAllCheck(String receiveNo) {
+		return memberDao.alarmAllCheck(sqlSession, receiveNo);
 	}
 	
 	// 알람 확인
@@ -973,11 +972,13 @@ public class MemberServiceImpl implements MemberService{
 	}
 	
 	@Override
-	public int studentGradeRequest(Objection obj) {
-		
-		int result = memberDao.studentGradeRequest(sqlSession, obj);
-		
-		return result;
+	@Transactional
+	public int studentGradeRequest(Objection obj, HashMap<String, String> alarm) {
+		int result1 = 0;
+		int result2 = 0;
+		result1 = memberDao.studentGradeRequest(sqlSession, obj);
+		result2 = memberDao.alarmInsert(sqlSession, alarm);
+		return result1*result2;
 	}
 	
 	//이의신청 확인
@@ -1086,18 +1087,15 @@ public class MemberServiceImpl implements MemberService{
 			}
 		}
 		return result;
-		
 	}
 
+	// (관리자) 공지사항 상세보기
 	@Override
 	public Notice detailNoticeView(String noticeNo) {
 		
 		return memberDao.detailNoticeView(sqlSession, noticeNo);
 	}
 
-
-
-	
 
 	@Override
 	public ArrayList<Objection> searchReport(Objection obj) {
@@ -1110,5 +1108,18 @@ public class MemberServiceImpl implements MemberService{
 		
 		return memberDao.updateReport(sqlSession,obj);
 	}
+
+	// (관리자) 공지사항 상세보기 첨부파일
+	@Override
+	public ArrayList<NoticeAttachment> detailNoticeFile(String noticeNo) {
+		return memberDao.detailNoticeFile(sqlSession, noticeNo);
+	}
+
+	// 낮 12시 퇴직예정 직원 퇴직처리
+	@Override
+	public void updateAutoRetire() {
+		memberDao.updateAutoRetire(sqlSession);
+	}
+	
 
 }
