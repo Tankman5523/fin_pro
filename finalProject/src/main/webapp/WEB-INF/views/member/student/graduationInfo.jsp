@@ -233,8 +233,6 @@
 										//코멘트 작성
 										if(endCheck === "불합격"){
 											var checkComent;
-											console.log(typeof checkComent);
-											console.log(checkComent);
 											if($("#generalSumResult").text() === "불합격"){
 												checkComent = "교양"
 											}

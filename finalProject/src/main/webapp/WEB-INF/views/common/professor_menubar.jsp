@@ -120,9 +120,6 @@
 						
 						setTimeout(function() {
 							$("#alarm-area2").addClass("alarm-remove");
-							if($("#alarmDiv").html() == "<span>새로운 알람이 없습니다.</span>") {
-								$("#alarmImg").css("filter", "grayscale(100%)");
-							}
 							$("#alarmImg").attr("src", $("#alarmImg").data("static"));
 							
 						}, 8000); // 8초동안 보여줌

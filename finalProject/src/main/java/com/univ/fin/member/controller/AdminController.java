@@ -292,7 +292,6 @@ public class AdminController {
 	@GetMapping(value="classRatingAverage.ad",produces = "application/json;charset=utf-8")
 	public String classRatingAverage(ClassRating cr) {
 		ClassRating result = memberService.classRatingAverage(cr);
-		System.out.println(result);
 		return new Gson().toJson(result);
 	}
 	

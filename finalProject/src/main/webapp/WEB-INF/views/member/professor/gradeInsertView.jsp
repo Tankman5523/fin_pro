@@ -282,7 +282,7 @@
 	            	   else if(94<= $score && $score <= 96) {
 	            		   $grade = "A0";
 	            	   }
-	            	   else if(94<= $score && $score <= 100) {
+	            	   else if(97<= $score && $score <= 100) {
 	            		   $grade = "A+";
 	            	   }
 	            	   else {

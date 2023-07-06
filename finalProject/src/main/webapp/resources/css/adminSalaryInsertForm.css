@@ -1,0 +1,18 @@
+@charset "UTF-8";
+
+.readonly{
+ 	background-color : lightgray;
+ }
+.pay{
+    background-color:rgb(69, 190, 238);
+}
+.deduct{
+    background-color:lightcoral;
+}
+.total{
+    background-color:lightyellow;
+}
+#searchMemberList>table>tbody tr:hover{
+    background-color:lightgray;
+    cursor : pointer;
+}

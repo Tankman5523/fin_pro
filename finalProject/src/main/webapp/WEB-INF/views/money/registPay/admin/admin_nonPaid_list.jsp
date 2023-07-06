@@ -75,7 +75,9 @@
                         		<c:when test="${not empty list}" >
 		                            	<c:forEach var="r" items="${list}" >
 			                            	<tr>
-				                                <td><input type="checkbox" name="checkbox" class="checkbox"></td>
+				                                <td>
+				                               		<input type="checkbox" name="checkbox" class="checkbox">
+				                                </td>
 				                                <td>${r.studentNo}</td>
 				                                <td class="studentName">${r.studentName}</td>
 				                                <td class="nonPaidAmount">
@@ -95,7 +97,10 @@
 				                                <td>${r.regAccountNo}</td>
 				                                <td class="email" >${r.studentEmail}</td>
 				                                <td class="phone">${r.studentPhone}</td>
-				                                <td><button class="sendDunningBtn btn btn-outline-primary btn-sm">발송</button> <button class="cancelRegistBtn btn btn-outline-warning btn-sm">등록취소</button></td>
+				                                <td>
+				                                	<button class="sendDunningBtn btn btn-outline-primary btn-sm">발송</button> 
+				                                	<!-- <button class="cancelRegistBtn btn btn-outline-warning btn-sm">등록취소</button> -->
+				                                </td>
 			                            	</tr>
 		                                </c:forEach>
 	                            </c:when>
@@ -197,7 +202,6 @@
         	//등록금 계속 안낼시 강제휴학
         	$(".cancelRegistBtn").on("click",function(){
         		var studentNo = $(this).parent().siblings().eq(1).text();
-        		console.log(studentNo);
         		
         		/* 
         		$.ajax({
