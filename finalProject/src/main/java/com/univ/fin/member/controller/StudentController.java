@@ -504,13 +504,11 @@ public class StudentController {
 	@ResponseBody
 	@PostMapping(value = "insertReport.st")
 	public String insertGradeRequest(HttpSession session, Objection obj) {
-		System.out.println("!@#@#%$%&&^**&(%@#!@@#%"+obj);
 		
 		HashMap<String, String> alarm = new HashMap<>();
 		alarm.put("cmd", "reportRequest");
 		alarm.put("receiverNo", obj.getProfessorNo());
 		alarm.put("senderName", obj.getStudentName());
-		System.out.println(alarm);
 
 		int result = memberService.studentGradeRequest(obj, alarm);
 
