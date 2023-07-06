@@ -375,8 +375,16 @@ public class AdminController {
 		//휴학 횟수
 		int restCount = memberService.selectRestCount(studentNo);
 		
-		if(s.getStatus().equals("재학")) {//학생이 휴학 상태가 아니면
+		if(sr.getCategory().contains("휴학")) {//학생이 휴학 상태가 아니면
 			Date startDate = sr.getStartDate(); //휴,복학 시작날짜
+			
+			if(sr.getCategory().equals("휴학연장")) {//휴학연장이면 그전 상담 정보도 가져와야함
+				StudentRest sr2 = memberService.selectRestInfo(studentNo);
+				startDate = sr2.getStartDate();//휴학 연장 전에 시작 날짜를 알아야함
+				
+				model.addAttribute("sr2",sr2); //연장 전 휴학 정보
+			}
+			
 			String classYear =startDate.toString().substring(0, startDate.toString().indexOf("-")); //해당 년도만 뽑기
 			int classTerm ; //해당 학기
 			
@@ -395,9 +403,7 @@ public class AdminController {
 			RegistPay checkRp = memberService.checkRegPay(rp);
 			
 			model.addAttribute("rp",checkRp); //등록금 정보
-		}else if(sr.getCategory().equals("휴학연장")) {//휴학연장이면 그전 상담 정보도 가져와야함
-			StudentRest sr2 = memberService.selectRestInfo(studentNo);
-			model.addAttribute("sr2",sr2); //연장 전 휴학 정보
+			
 		}
 		
 		//담아 가기

@@ -72,7 +72,7 @@
 	                    <div>
 	                        	퇴직 사유:
 	                    </div>
-	                    <textarea name="reason" id="" cols="100" rows="5" style="resize: none;"></textarea>
+	                    <textarea name="reason" id="" cols="100" rows="5" style="resize: none;" required></textarea>
 	                    <br>
 	                    <div id="btn_area">
 	                        <button type="reset" class="btn btn-secondary btn-lg">초기화</button>

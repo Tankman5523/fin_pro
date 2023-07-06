@@ -187,6 +187,7 @@
 		    
 		    $("#board_list input[name=check]").each(function(){
 		        is_checked = is_checked && $(this).is(":checked"); //내가 누른 버튼이 true인지
+		        console.log(is_checked);
 		    });
 		    
 		    $("#allCheck").prop("checked", is_checked); //전체선택 변화
@@ -213,8 +214,10 @@
 	    		
 	    		allCheck.click(function(){//전체체크 클릭
 	    			if(allCheck.is(":checked")){//전체선택 눌렀을때 체크가 되었다면
+	    				console.log("선택");
 	    				check.prop("checked",true); //전체 체크 선택
 	    			}else{//눌럿을때 체크가 해제
+	    				console.log("해제");
 	    				check.prop("checked",false); //전체 체크 해제
 	    			}
 	    		});
@@ -224,8 +227,8 @@
 	    		})
     	}
     	function allPermit(){
-    		var check = $("input[name=check]"); //강의 개별 선택
 	    	$("#allPermit").click(function(){//일괄개설 눌렀을때
+    			var check = $("input[name=check]"); //강의 개별 선택
 	    		var chkArr = []; //배열 초기화
 	    		var count = 0; //카운트
 	    		check.each(function(){
@@ -289,12 +292,9 @@
     	}
     	
     	function searchClassList(){//검색했을때 리스트 가져와서 붙이기
-    		//$("#allCheck").prop("checked",false);
     		var division = $("#division").val();
     		var classYear = $("select[name=classYear]").val();
-    		//console.log(typeof classYear);
     		var classTerm = $("select[name=classTerm]").val();
-    		//console.log(typeof classTerm);
     		var status = $("#status").val();
     		var category = $("select[name=category]").val();
     		var keyword = $("#keyword").val();
@@ -318,35 +318,35 @@
 	    						fileNo='javascript:void(0)';
 	    					}
 	    					result += "<tr>"
-	                        +"<td><input type='checkbox' name='check' value="+list[i].classNo+"></td>"
-	                        +"<td><a href='"+fileNo+"' download><i class='fa-solid fa-download fa-2xs'></i></a></td>"
-	                        +"<td>"+(list[i].division == 0 ? "전공":"교양")+"</td>"
-	                        +"<td>"+list[i].departmentNo+"</td>"
-	                        +"<td>"+list[i].professorNo+"</td>"
-	                        +"<td>"+list[i].className+"</td>"
-	                        +"<td>"+list[i].classYear+"년</td>"
-	                        +"<td>"+list[i].classTerm+"학기</td>"
-	                        +"<td style='white-space: nowrap;'>"+list[i].classroom+"</td>"
-	                        +"<td>"
-	                           +list[i].period+"<br>"
-	                           +"( "+list[i].day+" )"
-	                        +"</td>"
-	                        +"<td>"+(list[i].classLevel == 0 ? '전':list[i].classLevel)+"학년</td>"
-	                        +"<td>"+list[i].classNos+"명</td>"
-	                        +"<td>"+list[i].credit+"학점</td>"
-	                        switch(list[i].status){
-	                    	case "Y" : result+="<td><span class='resultMsg' style='color:blue;'>개설</span></td>"
-	                    	break;
-	                    	case "N" : result+="<td><span class='resultMsg' style='color:red;'>학기종료</span></td>"
-	                    	break;
-	                    	case "C" : result+="<td><span class='resultMsg' style='color:#FFA500;'>반려</span></td>"
-	                    	break;
-	                    	case "B" : result+="<td>"
-	                    					+"<button type='button' class='btn btn-primary' onclick='updateClassPermit("+list[i].classNo+");'>개설</button>"
-	                        				+"<button type='button' class='btn btn-warning'  data-toggle='modal' data-target='#exampleModal'>반려</button>"
-	                    				+"</td>"
-	                    	}
-	                    +"</tr>";
+			                        +"<td><input type='checkbox' name='check' value="+list[i].classNo+"></td>"
+			                        +"<td><a href='"+fileNo+"' download><i class='fa-solid fa-download fa-2xs'></i></a></td>"
+			                        +"<td>"+(list[i].division == 0 ? "전공":"교양")+"</td>"
+			                        +"<td>"+list[i].departmentNo+"</td>"
+			                        +"<td>"+list[i].professorNo+"</td>"
+			                        +"<td>"+list[i].className+"</td>"
+			                        +"<td>"+list[i].classYear+"년</td>"
+			                        +"<td>"+list[i].classTerm+"학기</td>"
+			                        +"<td style='white-space: nowrap;'>"+list[i].classroom+"</td>"
+			                        +"<td>"
+			                           +list[i].period+"<br>"
+			                           +"( "+list[i].day+" )"
+			                        +"</td>"
+			                        +"<td>"+(list[i].classLevel == 0 ? '전':list[i].classLevel)+"학년</td>"
+			                        +"<td>"+list[i].classNos+"명</td>"
+			                        +"<td>"+list[i].credit+"학점</td>"
+			                        switch(list[i].status){
+			                    	case "Y" : result+="<td><span class='resultMsg' style='color:blue;'>개설</span></td>"
+			                    	break;
+			                    	case "N" : result+="<td><span class='resultMsg' style='color:red;'>학기종료</span></td>"
+			                    	break;
+			                    	case "C" : result+="<td><span class='resultMsg' style='color:#FFA500;'>반려</span></td>"
+			                    	break;
+			                    	case "B" : result+="<td>"
+			                    					+"<button type='button' class='btn btn-primary' onclick='updateClassPermit("+list[i].classNo+");'>개설</button>"
+			                        				+" <button type='button' class='btn btn-warning'  data-toggle='modal' data-target='#exampleModal'>반려</button>"
+			                    				+"</td>"
+			                    	}
+			                    +"</tr>";
 	    				}
 	    			}else{
     					result += "<tr><td colspan='14'>검색된 강의가 없습니다.</td></tr>";	
@@ -355,6 +355,7 @@
     				$("#board_list>tbody").html(result);
     				checkbox();
     				allCheckbox();
+    				
     			},
     			error:function(){
     				alert("통신 실패");
