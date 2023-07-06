@@ -1328,19 +1328,21 @@
   	
   	<!-- 학기별 성적 조회 -> 학기별석차 -->
   	<select id="calculatedTermRank" parameterType="hashmap" resultType="string">
-  		SELECT RANK||'/'||TOTAL_STUDENTS
+		SELECT RANK||'/'||TOTAL_STUDENTS
 		FROM (SELECT AA.*, COUNT(*) OVER () AS TOTAL_STUDENTS
-		    FROM (SELECT CLASS_YEAR, CLASS_TERM, STUDENT_NO, ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) AS TERM_GRADE, RANK() OVER (ORDER BY ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) DESC) AS RANK
-		            FROM (SELECT A.STUDENT_NO, C.CLASS_YEAR, C.CLASS_TERM, CREDIT, SCORE, GRADE_LEVEL
-		                    , DECODE(GRADE_LEVEL, 'A+', 4.5, 'A0', 4.3, 'A-', 4.0, 'B+', 3.5, 'B0', 3.3, 'B-', 3.0, 'C+', 2.5, 'C0', 2.3, 'C-', 2.0, 'D+', 1.5, 'D0', 1.3, 'D-', 1.0, 'F', 0)*CREDIT AS GRADE
-		                    FROM (SELECT CLASS_NO, STUDENT_NO
-		                            FROM SCHEDULE
-		                            GROUP BY CLASS_NO, STUDENT_NO) A
-		                    JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
-		                    LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
-			                WHERE C.CLASS_YEAR = #{year} AND C.CLASS_TERM = #{term} AND SCORE IS NOT NULL)
-		            GROUP BY CLASS_YEAR, CLASS_TERM, STUDENT_NO
-		            ORDER BY TERM_GRADE DESC) AA)
+		        FROM (SELECT CLASS_YEAR, CLASS_TERM, STUDENT_NO, ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) AS TERM_GRADE, RANK() OVER (ORDER BY ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) DESC) AS RANK, CLASS_LEVEL
+		                FROM (SELECT A.STUDENT_NO, C.CLASS_YEAR, C.CLASS_TERM, CREDIT, SCORE, GRADE_LEVEL, S.CLASS_LEVEL
+		                        , DECODE(GRADE_LEVEL, 'A+', 4.5, 'A0', 4.3, 'A-', 4.0, 'B+', 3.5, 'B0', 3.3, 'B-', 3.0, 'C+', 2.5, 'C0', 2.3, 'C-', 2.0, 'D+', 1.5, 'D0', 1.3, 'D-', 1.0, 'F', 0)*CREDIT AS GRADE
+		                        FROM (SELECT CLASS_NO, STUDENT_NO
+		                                FROM SCHEDULE
+		                                GROUP BY CLASS_NO, STUDENT_NO) A
+		                        JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
+		                        JOIN STUDENT S ON(A.STUDENT_NO = S.STUDENT_NO)
+		                        LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
+		                        WHERE C.CLASS_YEAR = #{year} AND C.CLASS_TERM = #{term} AND SCORE IS NOT NULL)
+		                GROUP BY CLASS_YEAR, CLASS_TERM, STUDENT_NO, CLASS_LEVEL
+		                HAVING CLASS_LEVEL = (SELECT CLASS_LEVEL FROM STUDENT WHERE STUDENT_NO = #{studentNo})
+		                ORDER BY TERM_GRADE DESC) AA)
 		WHERE STUDENT_NO = #{studentNo}
   	</select>
   	
@@ -1348,16 +1350,18 @@
   	<select id="calculatedTotalRank" parameterType="hashmap" resultType="string">
 		SELECT RANK||'/'||TOTAL_STUDENTS
 		FROM (SELECT AA.*, COUNT(*) OVER () AS TOTAL_STUDENTS
-		        FROM (SELECT STUDENT_NO, ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) AS TERM_GRADE, RANK() OVER (ORDER BY ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) DESC) AS RANK
-		                FROM (SELECT A.STUDENT_NO, C.CLASS_YEAR, C.CLASS_TERM, CREDIT, SCORE, GRADE_LEVEL
+		        FROM (SELECT STUDENT_NO, ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) AS TERM_GRADE, RANK() OVER (ORDER BY ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) DESC) AS RANK, CLASS_LEVEL
+		                FROM (SELECT A.STUDENT_NO, C.CLASS_YEAR, C.CLASS_TERM, CREDIT, SCORE, GRADE_LEVEL, S.CLASS_LEVEL
 		                        , DECODE(GRADE_LEVEL, 'A+', 4.5, 'A0', 4.3, 'A-', 4.0, 'B+', 3.5, 'B0', 3.3, 'B-', 3.0, 'C+', 2.5, 'C0', 2.3, 'C-', 2.0, 'D+', 1.5, 'D0', 1.3, 'D-', 1.0, 'F', 0)*CREDIT AS GRADE
 		                        FROM (SELECT CLASS_NO, STUDENT_NO
 		                                FROM SCHEDULE
 		                                GROUP BY CLASS_NO, STUDENT_NO) A
 		                        JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
+		                        JOIN STUDENT S ON(A.STUDENT_NO = S.STUDENT_NO)
 		                        LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
 		                        WHERE SCORE IS NOT NULL AND <![CDATA[C.CLASS_YEAR<=#{year} AND C.CLASS_YEAR+C.CLASS_TERM <= #{year}+#{term}]]>)
-		                GROUP BY STUDENT_NO
+		                GROUP BY STUDENT_NO, CLASS_LEVEL
+		                HAVING CLASS_LEVEL = (SELECT CLASS_LEVEL FROM STUDENT WHERE STUDENT_NO = #{studentNo})
 		                ORDER BY TERM_GRADE DESC) AA)
 		WHERE STUDENT_NO = #{studentNo}
   	</select>
