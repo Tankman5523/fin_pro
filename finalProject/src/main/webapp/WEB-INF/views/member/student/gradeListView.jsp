@@ -100,7 +100,7 @@
                     <table class="termGrade-table">
                         <thead>
                             <tr height="40">
-                                <th width="14%" style="border-left: 1px solid #76D2FF;">이수학년도</th>
+                                <th width="14%" style="border-left: 1px solid #88C1E3;">이수학년도</th>
                                 <th width="12%">이수학기</th>
                                 <th width="12%">과목번호</th>
                                 <th width="20%">과목명</th>
