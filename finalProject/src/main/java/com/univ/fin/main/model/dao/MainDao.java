@@ -125,8 +125,14 @@ public class MainDao {
 		return (ArrayList)sqlSession.selectList("mainMapper.selectHaksaCalendar");
 	}
 
+	//공지사항 파일 조회
 	public ArrayList<NoticeAttachment> detailNoticeFile(SqlSessionTemplate sqlSession, int noticeNo) {
 		return (ArrayList)sqlSession.selectList("mainMapper.detailNoticeFile", noticeNo);
+	}
+
+	//FAQ 파일 조회
+	public ArrayList<NoticeAttachment> detailFaqFile(SqlSessionTemplate sqlSession, int faqNo) {
+		return (ArrayList)sqlSession.selectList("mainMapper.detailFaqFile", faqNo);
 	}
 
 	

@@ -125,7 +125,7 @@
         
 		const categorySelect = document.getElementById('category-select');
 		const cateLength = categorySelect.options.length;
-		const category = '${n.noticeCategory}'
+		const category = "${n.noticeCategory}"
 		
 		for(var i=0; i<cateLength; i++){
         	 if(categorySelect.options[i].value == category){
@@ -150,116 +150,61 @@
 		});
 	});
 	
-	const dataTransfer1 = new DataTransfer();
-	const dataTransfer2 = new DataTransfer();
+	let dataTransfer = new DataTransfer();
 	
 	function upload(){
 		var fileArr = document.getElementById("files").files
 		const fileInfo = document.getElementById('files-info')
 		
-		if(dataTransfer2.files.length != 0){
-			//파일 리스트에서 삭제한 값이 있을 때
-			if(fileArr != null && fileArr.length>0){
-	
-	          // =====DataTransfer 파일 관리========
-	            for(var i=0; i<fileArr.length; i++){
-	            	const li = document.createElement('li')
-					const btn = document.createElement('button')
-	
-					li.innerHTML = fileArr[i].name
-					li.setAttribute('class', 'select-file')
-					btn.setAttribute('type', 'button')
-					btn.setAttribute('class', 'remove-btn')
-					btn.innerHTML = "<i class='fa-solid fa-xmark' onclick='deleteFile(event)' data-index="+fileArr[i].lastModified+"></i>"
-					li.appendChild(btn)
-					fileInfo.append(li)
-	            	
-	                dataTransfer2.items.add(fileArr[i])
-	            }
-	            document.getElementById("files").files = dataTransfer2.files;
-	            console.log("dataTransfer =>",dataTransfer2.files)
-	            console.log("input FIles =>", document.getElementById("files").files)
-			}
-			
-		}else{
-			if(fileArr != null && fileArr.length>0){
-			//파일 리스트에서 삭제한 값이 있을 때
-			
-	            for(var i=0; i<fileArr.length; i++){
-	            	const li = document.createElement('li')
-					const btn = document.createElement('button')
-	
-					li.innerHTML = fileArr[i].name
-					li.setAttribute('class', 'select-file')
-					btn.setAttribute('type', 'button')
-					btn.setAttribute('class', 'remove-btn')
-					btn.innerHTML = "<i class='fa-solid fa-xmark' onclick='deleteFile(event)' data-index="+fileArr[i].lastModified+"></i>"
-					li.appendChild(btn)
-					fileInfo.append(li)
-	            	
-	                dataTransfer1.items.add(fileArr[i])
-	            }
-	            document.getElementById("files").files = dataTransfer1.files;
-	            console.log("dataTransfer =>",dataTransfer1.files)
-	            console.log("input FIles =>", document.getElementById("files").files)
-			}
-		} 
+		if(fileArr != null && fileArr.length>0){
+            for(var i=0; i<fileArr.length; i++){
+            	const li = document.createElement('li')
+				const btn = document.createElement('button')
+
+				li.innerHTML = fileArr[i].name
+				li.setAttribute('class', 'select-file')
+				btn.setAttribute('type', 'button')
+				btn.setAttribute('class', 'remove-btn')
+				btn.innerHTML = "<i class='fa-solid fa-xmark' onclick='deleteFile(event)' data-index="+fileArr[i].lastModified+"></i>"
+				li.appendChild(btn)
+				fileInfo.append(li)
+				
+				dataTransfer.items.add(fileArr[i])
+            }
+            document.getElementById("files").files = dataTransfer.files;
+            console.log("dataTransfer =>",dataTransfer.files)
+            console.log("input FIles =>", document.getElementById("files").files)
+		}
 	}
-	
-	
 	
 	function deleteFile(event){
 		const fileArr = document.getElementById("files").files
 		
-		console.log(event.target.className)
-		if(dataTransfer2.files.length != 0){
-	        if(event.target.className == 'fa-solid fa-xmark'){
-	            const removeTargetId = event.target.dataset.index;
-	            console.log("removeTargetId => ", removeTargetId);
-	            
-	            const files = Array.from(fileArr).filter(file => file.lastModified != removeTargetId);
-	            files.splice(removeTargetId, 1);
-	            
-	            dataTransfer2.items.clear()
-	           	
-	            files.forEach(function(file){
-	            	dataTransfer2.items.add(file);
-	            });
-	            
-	            document.querySelector('#files').files = dataTransfer2.files;
-	            
-	            removeTargetId.remove;
-				event.target.parentNode.parentNode.remove();
-				event.target.parentNode.remove();
-				event.target.remove();
-	
-		        console.log("dataTransfer 삭제후=>",dataTransfer2.files)
-		        console.log('input FIles 삭제후=>',document.getElementById("files").files)
-	        }
-		}else{
-			if(event.target.className == 'fa-solid fa-xmark'){
-	            const removeTargetId = event.target.dataset.index;
-	            console.log("removeTargetId => ", removeTargetId);
-	            
-	            const files = Array.from(fileArr).filter(file => file.lastModified != removeTargetId);
-	            
-	            files.splice(removeTargetId, 1);
-	           	
-	            files.forEach(function(file){
-	            	dataTransfer2.items.add(file);
-	            });
-	            
-	            document.querySelector('#files').files = dataTransfer2.files;
-	            
-	            removeTargetId.remove;
-				event.target.parentNode.parentNode.remove();
-				event.target.parentNode.remove();
-				event.target.remove();
-	
-		        console.log("dataTransfer 삭제후=>",dataTransfer2.files)
-		        console.log('input FIles 삭제후=>',document.getElementById("files").files)
-	        }
-		}
+		if(event.target.className == 'fa-solid fa-xmark'){
+			console.log('click')
+            const removeTargetId = event.target.dataset.index;
+            console.log("removeTargetId => ", removeTargetId);
+           
+            const files = Array.from(fileArr).filter(file => file.lastModified != removeTargetId);
+            files.splice(removeTargetId, 1);
+           
+            dataTransfer.items.clear()
+          	
+            files.forEach(function(file){
+            	dataTransfer.items.add(file);
+            });
+           
+            document.querySelector('#files').files = dataTransfer.files;
+           
+            removeTargetId.remove;
+			event.target.parentNode.parentNode.remove();
+			event.target.parentNode.remove();
+			event.target.remove();
+
+	        console.log("dataTransfer 삭제후=>",dataTransfer.files)
+	        console.log('input FIles 삭제후=>',document.getElementById("files").files)
+        }
+	    
 	}
 	
 	function insertForm(){
