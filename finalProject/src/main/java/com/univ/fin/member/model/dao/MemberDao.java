@@ -715,13 +715,13 @@ public class MemberDao {
 	}
 	
 	// 알람 수신
-	public ArrayList<AlarmVo> alarmReceive(SqlSessionTemplate sqlSession, String studentNo) {
-		return (ArrayList)sqlSession.selectList("memberMapper.alarmReceive", studentNo);
+	public ArrayList<AlarmVo> alarmReceive(SqlSessionTemplate sqlSession, String receiveNo) {
+		return (ArrayList)sqlSession.selectList("memberMapper.alarmReceive", receiveNo);
 	}
 
 	// 알람 전체확인
-	public int alarmAllCheck(SqlSessionTemplate sqlSession, String studentNo) {
-		return sqlSession.update("memberMapper.alarmAllCheck", studentNo);
+	public int alarmAllCheck(SqlSessionTemplate sqlSession, String receiveNo) {
+		return sqlSession.update("memberMapper.alarmAllCheck", receiveNo);
 	}
 	
 	// 알람 확인
