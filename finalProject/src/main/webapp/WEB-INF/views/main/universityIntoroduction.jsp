@@ -280,7 +280,6 @@
             
             var busRouteId = busRouteId;
             var typeNum = typeNum;
-            var options2;
             if(typeNum==1){
 	            options = { //지도를 생성할 때 필요한 기본 옵션
 	                    center: new kakao.maps.LatLng(37.5339148578269, 126.89678447948727), //지도의 중심좌표.

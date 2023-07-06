@@ -359,7 +359,7 @@
   	
   	<!-- 수강신청 - 수강신청내역조회 (로그인 학생의 수강신청 년도/학기 추출) -->
   	<select id="searchRegYear" parameterType="classes" resultMap="classResultMap">
-	  	SELECT DISTINCT CLASS_YEAR, CLASS_TERM
+	  	SELECT DISTINCT CLASS_YEAR
 		FROM SCHEDULE S
 		JOIN CLASS C USING (CLASS_NO)
 		WHERE STUDENT_NO = #{studentNo}
@@ -606,8 +606,7 @@
 		JOIN COLLEGE CO ON (D.COLLEGE_NO = CO.COLLEGE_NO)
 		JOIN PROFESSOR P ON (P.PROFESSOR_NO = C.PROFESSOR_NO)
         JOIN SCHEDULE S ON (C.CLASS_NO = S.CLASS_NO)
-		WHERE C.STATUS = 'Y'
-        AND S.STUDENT_NO = #{studentNo}
+        WHERE S.STUDENT_NO = #{studentNo}
         AND CLASS_YEAR = #{classYear}
         AND CLASS_TERM = #{classTerm}
         group by COLLEGE_NAME, C.CLASS_NO, CLASS_NAME, PROFESSOR_NAME, DEPARTMENT_NAME, CLASS_NOS,
@@ -971,7 +970,7 @@
 		JOIN PROFESSOR P USING (PROFESSOR_NO)
 		LEFT JOIN ATTACHMENT A ON (C.FILE_NO=A.FILE_NO)
 		WHERE PROFESSOR_NO LIKE '%'||#{professorNo}||'%'
-		ORDER BY CLASS_NO DESC
+		ORDER BY CLASS_YEAR DESC,CLASS_TERM DESC,CLASS_NO DESC
   	</select>
   	
   	<!-- (교수)강의개설 첨부파일(강의계획서) 인서트 -->
@@ -1192,7 +1191,7 @@
         AND DEPARTMENT_NAME LIKE '%'||#{departmentNo}||'%'
         AND CLASS_YEAR LIKE '%'||#{classYear}||'%'
         AND CLASS_TERM LIKE '%'||#{classTerm}||'%'
-		ORDER BY CLASS_NO DESC
+		ORDER BY CLASS_YEAR DESC,CLASS_TERM DESC,CLASS_NO DESC
   	</select>
   	
   	<!-- 반려당한 강의 수정위해 조회(교수) -->
@@ -1249,7 +1248,7 @@
   	
   	
   	<select id="studentGradeReport" resultMap="objectionResultMap" parameterType="string"> 
-  	SELECT SC.STUDENT_NO, C.CLASS_NAME, P.PROFESSOR_NAME, C.CREDIT
+  	SELECT SC.STUDENT_NO, C.CLASS_NAME, P.PROFESSOR_NAME, C.CREDIT, P.PROFESSOR_NO
 	FROM (SELECT CLASS_NO,STUDENT_NO,MAX(PERIOD) FROM SCHEDULE GROUP BY CLASS_NO,STUDENT_NO) "SC"
 	JOIN CLASS C ON SC.CLASS_NO = C.CLASS_NO
 	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
@@ -1265,7 +1264,7 @@
   	</insert>
   	
   	<select id="studentGradeView" resultMap="objectionResultMap">
-  	SELECT D.STUDENT_NO, C.CLASS_NAME, P.PROFESSOR_NAME, D.OPINION, D.STATUS ,C.CREDIT
+  	SELECT D.STUDENT_NO, C.CLASS_NAME, P.PROFESSOR_NAME, D.OPINION, D.STATUS ,C.CREDIT, P.PROFESSOR_NO
 	FROM DISSENT D
 	JOIN CLASS C ON D.CLASS_NO = C.CLASS_NO
 	JOIN PROFESSOR P ON C.PROFESSOR_NO = P.PROFESSOR_NO
@@ -1347,9 +1346,9 @@
   	
   	<!-- 학기별 성적 조회 -> 전체석차 -->
   	<select id="calculatedTotalRank" parameterType="hashmap" resultType="string">
-  		SELECT RANK||'/'||TOTAL_STUDENTS
+		SELECT RANK||'/'||TOTAL_STUDENTS
 		FROM (SELECT AA.*, COUNT(*) OVER () AS TOTAL_STUDENTS
-		        FROM (SELECT CLASS_YEAR, CLASS_TERM, STUDENT_NO, ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) AS TERM_GRADE, RANK() OVER (ORDER BY ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) DESC) AS RANK
+		        FROM (SELECT STUDENT_NO, ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) AS TERM_GRADE, RANK() OVER (ORDER BY ROUND(NVL(SUM(GRADE)/SUM(CREDIT), 0), 2) DESC) AS RANK
 		                FROM (SELECT A.STUDENT_NO, C.CLASS_YEAR, C.CLASS_TERM, CREDIT, SCORE, GRADE_LEVEL
 		                        , DECODE(GRADE_LEVEL, 'A+', 4.5, 'A0', 4.3, 'A-', 4.0, 'B+', 3.5, 'B0', 3.3, 'B-', 3.0, 'C+', 2.5, 'C0', 2.3, 'C-', 2.0, 'D+', 1.5, 'D0', 1.3, 'D-', 1.0, 'F', 0)*CREDIT AS GRADE
 		                        FROM (SELECT CLASS_NO, STUDENT_NO
@@ -1357,9 +1356,8 @@
 		                                GROUP BY CLASS_NO, STUDENT_NO) A
 		                        JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
 		                        LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
-		                        WHERE SCORE IS NOT NULL)
-		                GROUP BY CLASS_YEAR, CLASS_TERM, STUDENT_NO
-		                <![CDATA[HAVING CLASS_YEAR <= #{year} AND CLASS_TERM <= #{term}]]>
+		                        WHERE SCORE IS NOT NULL AND <![CDATA[C.CLASS_YEAR<=#{year} AND C.CLASS_YEAR+C.CLASS_TERM <= #{year}+#{term}]]>)
+		                GROUP BY STUDENT_NO
 		                ORDER BY TERM_GRADE DESC) AA)
 		WHERE STUDENT_NO = #{studentNo}
   	</select>
@@ -1384,7 +1382,7 @@
 		                GROUP BY CLASS_NO, STUDENT_NO) A
 		        JOIN CLASS C ON(A.CLASS_NO = C.CLASS_NO)
 		        LEFT JOIN GRADE G ON(A.STUDENT_NO = G.STUDENT_NO AND A.CLASS_NO = G.CLASS_NO)
-		        WHERE A.STUDENT_NO = #{studentNo} AND GRADE_LEVEL NOT IN ('F', ' ')) AA
+		        WHERE A.STUDENT_NO = #{studentNo} AND GRADE_LEVEL NOT IN ('F', ' '))
   	</select>
   	
   	<!-- 학기별 성적 조회 -> 증명산술평균 -->
@@ -1596,6 +1594,18 @@
   		SET STATUS = #{status}
   		WHERE REST_NO = #{restNo}
   		AND STATUS = 'B'
+  	</update>
+  	
+  	<!-- 임직원 자동 퇴직 처리 -->
+  	<update id="updateAutoRetire">
+  		UPDATE 	PROFESSOR
+		SET 	STATUS = 'N'
+		WHERE 	STATUS = 'Y'
+		AND   	PROFESSOR_NO IN (SELECT PROFESSOR_NO
+		                        FROM PROFESSOR_REST
+		                        WHERE STATUS = 'Y'
+		                        AND   CATEGORY = 0
+		                        AND   TO_CHAR(START_DATE,'YYYY-MM-DD') = TO_CHAR(SYSDATE,'YYYY-MM-DD'))
   	</update>
   	
   	<!-- 임직원 안식,퇴직 신청 목록 검색 (관리자) -->

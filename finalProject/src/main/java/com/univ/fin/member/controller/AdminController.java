@@ -9,10 +9,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,6 +45,8 @@ import com.univ.fin.member.model.service.MemberService;
 import com.univ.fin.member.model.vo.Professor;
 import com.univ.fin.member.model.vo.Student;
 import com.univ.fin.money.model.vo.RegistPay;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 public class AdminController {
@@ -288,7 +292,6 @@ public class AdminController {
 	@GetMapping(value="classRatingAverage.ad",produces = "application/json;charset=utf-8")
 	public String classRatingAverage(ClassRating cr) {
 		ClassRating result = memberService.classRatingAverage(cr);
-		System.out.println(result);
 		return new Gson().toJson(result);
 	}
 	
@@ -371,8 +374,16 @@ public class AdminController {
 		//휴학 횟수
 		int restCount = memberService.selectRestCount(studentNo);
 		
-		if(s.getStatus().equals("재학")) {//학생이 휴학 상태가 아니면
+		if(sr.getCategory().contains("휴학")) {//학생이 휴학 상태가 아니면
 			Date startDate = sr.getStartDate(); //휴,복학 시작날짜
+			
+			if(sr.getCategory().equals("휴학연장")) {//휴학연장이면 그전 상담 정보도 가져와야함
+				StudentRest sr2 = memberService.selectRestInfo(studentNo);
+				startDate = sr2.getStartDate();//휴학 연장 전에 시작 날짜를 알아야함
+				
+				model.addAttribute("sr2",sr2); //연장 전 휴학 정보
+			}
+			
 			String classYear =startDate.toString().substring(0, startDate.toString().indexOf("-")); //해당 년도만 뽑기
 			int classTerm ; //해당 학기
 			
@@ -391,9 +402,7 @@ public class AdminController {
 			RegistPay checkRp = memberService.checkRegPay(rp);
 			
 			model.addAttribute("rp",checkRp); //등록금 정보
-		}else if(sr.getCategory().equals("휴학연장")) {//휴학연장이면 그전 상담 정보도 가져와야함
-			StudentRest sr2 = memberService.selectRestInfo(studentNo);
-			model.addAttribute("sr2",sr2); //연장 전 휴학 정보
+			
 		}
 		
 		//담아 가기
@@ -491,11 +500,18 @@ public class AdminController {
 		if(result>0) {
 			model.addAttribute("alertMsg","반려 했습니다.");
 		}else {
-			model.addAttribute("alertMsg","반려 했습니다.");
+			model.addAttribute("alertMsg","반려 오류");
 		}
 		
 		return "redirect:proRestList.ad";
 	}
+	
+	//임직원 자동 퇴직 처리
+	@Scheduled(cron = "0 0 12 * * *")
+	public void autoUpdateProfessorRetire() {
+		memberService.updateAutoRetire();
+	}
+	
 	
 	//임직원 안식,퇴직 신청 검색 리스트 조회
 	@ResponseBody

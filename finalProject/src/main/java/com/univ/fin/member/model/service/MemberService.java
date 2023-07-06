@@ -351,10 +351,10 @@ public interface MemberService {
 	ArrayList<ProfessorRest> selectSearchProRestList(HashMap<String, String> set);	
 	
 	// 알람 수신
-	ArrayList<AlarmVo> alarmReceive(String studentNo);
+	ArrayList<AlarmVo> alarmReceive(String receiveNo);
 
 	// 알람 전체확인
-	int alarmAllCheck(String studentNo);
+	int alarmAllCheck(String receiveNo);
 	
 	// 알람 확인
 	int alarmCheck(int alarmNo);
@@ -381,7 +381,7 @@ public interface MemberService {
 	int selectDeleteNotice(String[] noticeNo);
 	
 	//이의 신청 넘기기
-	int studentGradeRequest(Objection obj);
+	int studentGradeRequest(Objection obj, HashMap<String, String> alarm);
 
 	//이의 신청 확인
 	ArrayList<Objection> studentGradeView(Objection obj);
@@ -430,6 +430,9 @@ public interface MemberService {
 
 	// (관리자) 공지사항 상세보기 첨부파일
 	ArrayList<NoticeAttachment> detailNoticeFile(String noticeNo);
+
+	// 낮 12시 퇴직예정 직원 퇴직처리
+	void updateAutoRetire();
 
 	
 

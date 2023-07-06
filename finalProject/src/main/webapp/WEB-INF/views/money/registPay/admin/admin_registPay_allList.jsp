@@ -145,7 +145,7 @@
                            							str+="</tr>";
                            					}
                            				}else{
-                           					str +="<tr><td colspan='9'>데이터가 없습니다.</td></tr>";
+                           					str +="<tr><td colspan='11'>데이터가 없습니다.</td></tr>";
                            				}
                            				$("#registPayList>tbody").html(str);
                            				$("#countSearch").html(list.length).css("color","blue").css("font-weight","bold");
@@ -176,214 +176,201 @@
                             			$("input:checkbox").prop("checked",false);
                             		}
                             	});
-                       		//초과금 환급
-                       		$(".refundBtn").on("click","button",function(){
-                       			var inputPay = $(this).parent().siblings().eq(4).text().replace(/,/g,"");
-                       			var mustPay = $(this).parent().siblings().eq(5).text().replace(/,/g,"");
-                       			var overValue = inputPay - mustPay;
-                       			
-                       			var regNo = $(this).siblings().eq(0).val();
-                       			
-                       			var control = confirm("초과금액 "+overValue+"(원) 을 환급하시겠습니까?");
-                       			
-                       			console.log(inputPay);
-                       			console.log(mustPay);
-                       			console.log(overvalue);
-                       			
-                       			if(true){
-                       				//overValue 환급 처리
-                       			}
-                       			
-                       			//등록금 정상화 (inputPay 와 mustPay 동일하게 변경)
-                       			
-                       			/* 
-                       			$.ajax({
-                       				url : "refund.rg",
-                       				data : {
-                       					
-                       					inputPay : mustPay,
-                       					regNo : regNo 
-                       				
-                       				},
-                       				success : function(result){
-                       					if(result=='Y'){
-                       						alert("초과금 환급완료");
-                       						selectRegistPay();
-                       					}else{
-                       						alert("환급 실패! 비정상적 데이터입니다.");
-                       					}
-                       				},
-                       				error : function(){
-                       					alert("통신 오류");
-                       				}
-                       			});  
-                       			*/
-                       			
-                       			
-                       		});
-                       	});
-                          	
-                          //초과금 환급
-                       	function refundOne(a,b,c){
-                   			var regNo = a;
-                   			
-                   			var inputPay = b;
-                   			var mustPay = c;
-                   			var overValue = b - c;
-                   			
-                   			console.log(inputPay);
-                   			console.log(regNo);
-                   			
-                   			var control = confirm("초과금액 "+overValue+"(원) 을 환급하시겠습니까?");
-                   			
-                   			if(true){
-                 				//overValue 환급 처리
-                   			}
-                    			
-                   			//등록금 정상화 (inputPay 와 mustPay 동일하게 변경)
-                   			
-                   			
-                   			$.ajax({
-                   				url : "refund.rg",
-                   				data : {
-                   					regNo : regNo, 
-                   					inputPay : mustPay
-                   				},
-                   				method: "POST",
-                   				success : function(result){
-                   					if(result=='Y'){
-                   						alert("초과금 환급완료");
-                   						selectRegistPay();
-                   					}else{
-                   						alert("환급 실패! 비정상적 데이터입니다.");
-                   					}
-                   				},
-                   				error : function(){
-                   					alert("통신 오류");
-                   				}
-                   			});  
-                          }	
-                        
-						function delReg(a,b,c){
-							
-							var studentNo = a;
-							var classYear = b;
-							var classTerm = c;
-							
-							$.ajax({
-								url : "delete.rg",
-								data : {
-									studentNo : studentNo,
-									classYear : classYear,
-									classTerm : classTerm
-								},
-								success : function(result){
-									if(result=='Y'){
-										alert("등록금 정보 삭제에 성공했습니다.");
-										selectRegistPay();
-									}else{
-										alert("등록금 정보 삭제 실패!");
-									}
-								},
-								error : function(){
-									alert("통신 에러");
-								}
-							});
-							
-							
-                   		}
-						
-						function refundAll(){
-							var control = confirm("선택한 모든 등록금에 대하여 환급처리 하시겠습니까?");
-							var succ = 0;
-			   				var fail = 0;
-			   				
-							if(control){
-								
-								$(".listBody>table>tbody>tr>td>input:checkbox:checked").each(function(index){
-									var inputPay = $(this).parent().siblings().eq(5).text().replace(/,/g,"");
-	                       			var mustPay = $(this).parent().siblings().eq(6).text().replace(/,/g,"");
-	                       			var overValue = parseInt(inputPay) - parseInt(mustPay);
+	                       		//초과금 환급
+	                       		$(".refundBtn").on("click","button",function(){
+	                       			var inputPay = $(this).parent().siblings().eq(4).text().replace(/,/g,"");
+	                       			var mustPay = $(this).parent().siblings().eq(5).text().replace(/,/g,"");
+	                       			var overValue = inputPay - mustPay;
 	                       			
-	                       			var regNo = $(this).parent().siblings().eq(0).text();
+	                       			var regNo = $(this).siblings().eq(0).val();
+	                       			
+	                       			var control = confirm("초과금액 "+overValue+"(원) 을 환급하시겠습니까?");
 	                       			
 	                       			console.log(inputPay);
 	                       			console.log(mustPay);
-	                       			console.log(overValue);
-	                       			
-	                       			console.log(regNo);
+	                       			console.log(overvalue);
 	                       			
 	                       			if(true){
-                       					//overValue 환급 처리
+	                       				//overValue 환급 처리
 	                       			}
 	                       			
-	                       			//등록금 정상화
-	                       			/*
+	                       			//등록금 정상화 (inputPay 와 mustPay 동일하게 변경)
+	                       			
 	                       			$.ajax({
 	                       				url : "refund.rg",
 	                       				data : {
 	                       					
 	                       					inputPay : mustPay,
-	                       					mustPay : mustPay,
 	                       					regNo : regNo 
 	                       				
 	                       				},
 	                       				success : function(result){
 	                       					if(result=='Y'){
-												succ+=1;	
-											}else{
-												fail+=1;
-											}
+	                       						alert("초과금 환급완료");
+	                       						selectRegistPay();
+	                       					}else{
+	                       						alert("환급 실패! 비정상적 데이터입니다.");
+	                       					}
 	                       				},
 	                       				error : function(){
 	                       					alert("통신 오류");
 	                       				}
-	                       			}); 
-	                       			*/
-								});
-								alert("삭제성공 : "+succ+" 건 , 삭제실패 : "+fail+" 건");
-								selectRegistPay();
-							}
-						}
-						
-						function delAll(){
-							var control = confirm("선택한 모든 등록금에 대하여 삭제처리 하시겠습니까?");
-							var succ = 0;
-			   				var fail = 0;
-							
-							if(control){
-								$(".listBody>table>tbody>tr>td>input:checkbox:checked").each(function(index){
-									var classYear = $(this).parent().siblings().eq(1).text();
-									var classTerm = $(this).parent().siblings().eq(2).text();
-									var studentNo = $(this).parent().siblings().eq(3).text();
-									
-									$.ajax({
-										url : "delete.rg",
-										data : {
-											classYear : classYear,
-											classTerm : classTerm,
-											studentNo : studentNo
-										},
-										async : false,
-										success : function(result){
-											if(result=='Y'){
-												succ+=1;	
-											}else{
-												fail+=1;
-											}
-										},
-										error : function(){
-											alert("통신에러");
-										}
-									});
-									
-								});
-								alert("삭제성공 : "+succ+" 건 , 삭제실패 : "+fail+" 건");
-								selectRegistPay();
-							}
-						}
-						
+	                       			});  
+	                       		});
+                       		});
                           	
+                          //초과금 환급
+                       		function refundOne(a,b,c){
+	                   			var regNo = a;
+	                   			
+	                   			var inputPay = b;
+	                   			var mustPay = c;
+	                   			var overValue = b - c;
+	                   			
+	                   			console.log(inputPay);
+	                   			console.log(regNo);
+	                   			
+	                   			var control = confirm("초과금액 "+overValue+"(원) 을 환급하시겠습니까?");
+	                   			
+	                   			if(true){
+	                 				//overValue 환급 처리
+	                   			}
+	                    			
+	                   			//등록금 정상화 (inputPay 와 mustPay 동일하게 변경)
+	                   			
+	                   			
+	                   			$.ajax({
+	                   				url : "refund.rg",
+	                   				data : {
+	                   					regNo : regNo, 
+	                   					inputPay : mustPay
+	                   				},
+	                   				method: "POST",
+	                   				success : function(result){
+	                   					if(result=='Y'){
+	                   						alert("초과금 환급완료");
+	                   						selectRegistPay();
+	                   					}else{
+	                   						alert("환급 실패! 비정상적 데이터입니다.");
+	                   					}
+	                   				},
+	                   				error : function(){
+	                   					alert("통신 오류");
+	                   				}
+	                   			});  
+	                          }	
+                        
+							function delReg(a,b,c){
+								
+								var studentNo = a;
+								var classYear = b;
+								var classTerm = c;
+								
+								$.ajax({
+									url : "delete.rg",
+									data : {
+										studentNo : studentNo,
+										classYear : classYear,
+										classTerm : classTerm
+									},
+									success : function(result){
+										if(result=='Y'){
+											alert("등록금 정보 삭제에 성공했습니다.");
+											selectRegistPay();
+										}else{
+											alert("등록금 정보 삭제 실패!");
+										}
+									},
+									error : function(){
+										alert("통신 에러");
+									}
+								});
+	                   		}
+						
+							function refundAll(){
+								var control = confirm("선택한 모든 등록금에 대하여 환급처리 하시겠습니까?");
+								var succ = 0;
+				   				var fail = 0;
+				   				
+								if(control){
+									
+									$(".listBody>table>tbody>tr>td>input:checkbox:checked").each(function(index){
+										var inputPay = $(this).parent().siblings().eq(5).text().replace(/,/g,"");
+		                       			var mustPay = $(this).parent().siblings().eq(6).text().replace(/,/g,"");
+		                       			var overValue = parseInt(inputPay) - parseInt(mustPay);
+		                       			
+		                       			var regNo = $(this).parent().siblings().eq(0).text();
+		                       			
+		                       			console.log(inputPay);
+		                       			console.log(mustPay);
+		                       			console.log(overValue);
+		                       			
+		                       			console.log(regNo);
+		                       			
+		                       			
+		                       			//등록금 정상화
+		                       			$.ajax({
+		                       				url : "refund.rg",
+		                       				data : {
+		                       					
+		                       					inputPay : mustPay,
+		                       					mustPay : mustPay,
+		                       					regNo : regNo 
+		                       				
+		                       				},
+		                       				success : function(result){
+		                       					if(result=='Y'){
+													succ+=1;	
+												}else{
+													fail+=1;
+												}
+		                       				},
+		                       				error : function(){
+		                       					alert("통신 오류");
+		                       				}
+		                       			}); 
+									});
+									alert("삭제성공 : "+succ+" 건 , 삭제실패 : "+fail+" 건");
+									selectRegistPay();
+								}
+							}
+						
+							function delAll(){
+								var control = confirm("선택한 모든 등록금에 대하여 삭제처리 하시겠습니까?");
+								var succ = 0;
+				   				var fail = 0;
+								
+								if(control){
+									$(".listBody>table>tbody>tr>td>input:checkbox:checked").each(function(index){
+										var classYear = $(this).parent().siblings().eq(1).text();
+										var classTerm = $(this).parent().siblings().eq(2).text();
+										var studentNo = $(this).parent().siblings().eq(3).text();
+										
+										$.ajax({
+											url : "delete.rg",
+											data : {
+												classYear : classYear,
+												classTerm : classTerm,
+												studentNo : studentNo
+											},
+											async : false,
+											success : function(result){
+												if(result=='Y'){
+													succ+=1;	
+												}else{
+													fail+=1;
+												}
+											},
+											error : function(){
+												alert("통신에러");
+											}
+										});
+										
+									});
+									alert("삭제성공 : "+succ+" 건 , 삭제실패 : "+fail+" 건");
+									selectRegistPay();
+								}
+							}
                         </script>
                 
                     </div>    

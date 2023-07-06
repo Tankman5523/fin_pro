@@ -72,7 +72,7 @@
 	                    <div>
 	                        	퇴직 사유:
 	                    </div>
-	                    <textarea name="reason" id="" cols="100" rows="5" style="resize: none;"></textarea>
+	                    <textarea name="reason" id="" cols="100" rows="5" style="resize: none;" required></textarea>
 	                    <br>
 	                    <div id="btn_area">
 	                        <button type="reset" class="btn btn-secondary btn-lg">초기화</button>
@@ -84,7 +84,9 @@
         </div>
     </div>
     <script >
-    	$("#datepicker1").datepicker();
+	    $("#datepicker1").datepicker({
+	    	minDate:"+1D" //오늘 이전은 못 고르게 하기
+	    });
     	
     	function retireDate(){
     		var today = new Date($("#datepicker1").val());//현재 날짜

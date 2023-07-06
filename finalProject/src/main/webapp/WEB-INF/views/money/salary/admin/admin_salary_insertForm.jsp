@@ -6,21 +6,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/fin/resources/css/adminSalaryInsertForm.css">
     <title>관리_급여입력</title>
-    <style>
-    	.readonly{
-    		background-color : lightgray;
-    	}
-    	.pay{
-    		background-color:rgb(69, 190, 238);
-    	}
-    	.deduct{
-    		background-color:lightcoral;
-    	}
-    	.total{
-    		background-color:lightyellow;
-    	}
-    </style>
 </head>
 <body>
     <div class="wrap">

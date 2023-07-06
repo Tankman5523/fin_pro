@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>  
 <style>
 #basic_info {
 	margin-left: 30px;
@@ -128,7 +129,7 @@
 					<a href="classManagement.st">학기별 성적 조회</a>
 				</div>
 				<div class="child_title">
-					<a href="studentGradeReport.st">성적 이의신청</a>
+					<a href="studentGradeReport.st" style="color:#00aeff; font-weight: 550;">성적 이의신청</a>
 				</div>
 				<div class="child_title">
 					<a href="classRatingInfo.st">강의평가</a>
@@ -185,25 +186,58 @@
 								<td>${c.className }</td>
 								<td>${c.professorName }</td>
 								<td>${c.credit }</td>
-								<td><input type="text" class="reasonText" id="reason"
-									name="reason" style="border: none; background: transparent;"></td>
-								<td>
-								
-								<%-- <c:forEach var="r" items="${resultList}">
-									<c:choose>
-											<c:when test="${c.className eq r.className}">
-												작성완료
+<!-- 								if(data.list.length == 0) { -->
+<!-- 				                	text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;'>"; -->
+<!-- 		                    		text2 = "<button class='objectionbtn' onclick='insertDissent(this);'>이의신청</button>"; -->
+<!-- 				                } else { -->
+<!-- 				                    for (var j = 0; j < data.list.length; j++) { -->
+<!-- 				                    	if(data.commList[i].className == data.list[j].className){ -->
+<!-- 				                    		text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;' readonly>"; -->
+<!-- 				                    		text2 = "진행중"; -->
+<!-- 				                    		break; -->
+<!-- 				                    	}else{ -->
+<!-- 				                    		text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;'>"; -->
+<!-- 				                    		text2 = "<button class='objectionbtn' onclick='insertDissent(this);'>이의신청</button>"; -->
+<!-- 				                    	} -->
+<!-- 				                    } -->
+<!-- 				                } -->
+<!-- 				                innerHtml2 += '<td>' + text1 + '</td>'; -->
+<!-- 				                innerHtml2 += '<td>' + text2 + '</td>'; -->
+<!-- 				                innerHtml2 += '<td style="display: none;">' + data.commList[i].professorNo + '</td>'; -->
+<!-- 				                innerHtml2 += '</tr>'; -->
+								<c:choose>
+									<c:when test="${fn:length(resultList) == 0}">
+										<td><input type="text" class="reasonText" id="reason"
+											name="reason" style="border: none; background: transparent;"></td>
+										<td>
+										<button class="objectionbtn"
+												onclick="insertDissent(this);">이의신청</button>
+										</td>
+									</c:when>
+									<c:otherwise>
+										<c:set var="chk" value="true" />
+										<c:forEach var="rl" items="${resultList }">
+											<c:if test="${rl.className eq c.className}">
+												<c:set var="chk" value="false"/>
+											</c:if>
+										</c:forEach>
+										<c:choose>
+											<c:when test="${chk}">
+												<td><input type="text" class="reasonText" id="reason"
+													name="reason" style="border: none; background: transparent;"></td>
+												<td>
+												<button class="objectionbtn"
+														onclick="insertDissent(this);">이의신청</button>
+												</td>
 											</c:when>
 											<c:otherwise>
-												<button class="objectionbtn"
-											onclick="insertDissent('${c.className }','${c.professorName}','${c.credit}');">이의신청</button>
+												<td><input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;' readonly></td>
+												<td>진행중</td>
 											</c:otherwise>
-									</c:choose>
-								</c:forEach> --%>
-								
-								<button class="objectionbtn"
-										onclick="insertDissent('${c.className }','${c.professorName}','${c.credit}');">이의신청</button>
-								</td>
+										</c:choose>
+									</c:otherwise>
+								</c:choose>
+								<td style="display: none;">${c.professorNo }</td>
 							</tr>
 						</c:forEach>
 					</tbody>
@@ -359,19 +393,25 @@
 		                innerHtml2 += '<td>' + data.commList[i].professorName + '</td>';
 		                innerHtml2 += '<td>' + data.commList[i].credit + '</td>';
 		                var text1 = "";    
-		                var text2 = "";    
-	                    for (var j = 0; j < data.list.length; j++) {
-	                    	if(data.commList[i].className == data.list[j].className){
-	                    		text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;' readonly>";
-	                    		text2 = "진행중";
-	                    		break;
-	                    	}else{
-	                    		text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;'>";
-	                    		text2 = "<button class='objectionbtn' onclick='insertDissent(this);'>이의신청</button>";
-	                    	}
-	                    }
+		                var text2 = "";
+		                if(data.list.length == 0) {
+		                	text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;'>";
+                    		text2 = "<button class='objectionbtn' onclick='insertDissent(this);'>이의신청</button>";
+		                } else {
+		                    for (var j = 0; j < data.list.length; j++) {
+		                    	if(data.commList[i].className == data.list[j].className){
+		                    		text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;' readonly>";
+		                    		text2 = "진행중";
+		                    		break;
+		                    	}else{
+		                    		text1 = "<input type='text' class='reasonText' id='reason' name='reason' style='border: none; background: transparent;'>";
+		                    		text2 = "<button class='objectionbtn' onclick='insertDissent(this);'>이의신청</button>";
+		                    	}
+		                    }
+		                }
 		                innerHtml2 += '<td>' + text1 + '</td>';
 		                innerHtml2 += '<td>' + text2 + '</td>';
+		                innerHtml2 += '<td style="display: none;">' + data.commList[i].professorNo + '</td>';
 		                innerHtml2 += '</tr>';
 		            }
 					$("#studentObjection>tbody").html(innerHtml2);
@@ -395,6 +435,7 @@
 				var professorName = tr.children().eq(2).text();
 				var credit = tr.children().eq(3).text();
 				var reason = tr.children().eq(4).children().val();
+				var professorNo = tr.children().eq(6).text();
 
 				$.ajax({
 					url : "insertReport.st",
@@ -403,20 +444,16 @@
 						className : className,
 						professorName : professorName,
 						credit : credit,
-						reason : reason
+						reason : reason,
+						professorNo : professorNo,
+						studentName : '${loginUser.studentName}'
 					},
 					method : "post",
 					success : function(result) {
 						if (result == 'Y') {
 							alert("이의신청에 성공하였습니다.");
 							reasonRequest();
-							/* for(var i=0;i<$("#studentObjection>tbody").children('tr').length;i++) {
-								if($("#studentObjection>tbody").children('tr').eq(i).children().eq(1).text() == className) {
-									$("#studentObjection>tbody").children('tr').eq(i).find('button').prop('disabled', true);
-								}
-							} */
-// 							$(e).prop("disabled",true);
-							/* socket.send('reportRequest,'+); */
+ 							socket.send('reportRequest,' + professorNo + ',${loginUser.studentName}');
 
 						} else {
 							alert("이의신청에 실패하였습니다.");

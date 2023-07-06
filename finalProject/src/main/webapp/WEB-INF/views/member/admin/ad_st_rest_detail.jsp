@@ -120,7 +120,7 @@
 								<td>등록여부</td>
 								<td>
 									<c:choose>
-										<c:when test="${rp.inputPay>=rp.mustPay}">
+										<c:when test="${not empty rp and rp.inputPay>=rp.mustPay}">
 											<input type="text" value="등록휴학" readonly>
 										</c:when>
 										<c:otherwise>

@@ -4,7 +4,19 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>학생_강의평가</title>
+<style>
+	#ratingForm>table th,#ratingForm>table>tbody td{
+		text-align:center;
+	}
+	#ratingForm>table>tbody .question{
+		text-align:left;
+	}
+	#ratingForm>table>tbody>tr {
+		height:30px;
+	}
+	
+</style>
 </head>
 <body>
     <div class="wrap">
@@ -73,18 +85,18 @@
                             </tbody>
                         </table>
                     </div>
-                    <hr><br>
-
+                    <hr style="margin:10px;">
+                    
                     <div id="ratingForm" class="hide">
-                    	<div>
+                    	<div style="margin-left:20px;">
                     		<input id="hiddenClassNo" type="hidden" name="classNo" value="">
                     		<span>강의명 : </span><span id="cn"></span> <span>/ 교수명 : </span><span id="pn"></span>
                     	</div>
-                        <table border="1">
+                        <table border="1" align="center" style="border:lightgray;">
                             <thead>
                                 <tr>
                                     <td colspan="6" style="background-color:lightgray;">
-                                		본 강의평가 설문지는 익명으로 작성되며 , <br>
+                                		본 강의평가 설문지는 익명으로 작성되며 작성완료시 수정 불가합니다. <br>
                                 		이번학기 교과목의 수업진행에 대한 학생들의 솔직한 의견을 파악하여 , 앞으로 보다 나은 강의를 하기 위한 목적으로 실시되는 것입니다.<br> 
                                 		따라서 학생 여러분은 각 평가 문항에 대하여 성실하고, 진지하게 답변해주시기 바랍니다.
                                     </td>
@@ -101,7 +113,7 @@
                             <tbody style="background-color: #CCFFFF;">
                                 <!--sample-->
                                 <tr id="q1Head">
-                                    <td> 1. 수업은 강의계획서에 따라 체계적으로 진행되었다.</td>
+                                    <td class="question"> 1. 수업은 강의계획서에 따라 체계적으로 진행되었다.</td>
                                     <td><input type="radio" name="q1" value="5"></td>
                                     <td><input type="radio" name="q1" value="4"></td>
                                     <td><input type="radio" name="q1" value="3"></td>
@@ -109,7 +121,7 @@
                                     <td><input type="radio" name="q1" value="1"></td>
                                 </tr>
                                 <tr id="q2Head">
-                                    <td> 2. 수업내용이 명확하고 효과적으로 제시되었다.</td>
+                                    <td class="question"> 2. 수업내용이 명확하고 효과적으로 제시되었다.</td>
                                     <td><input type="radio" name="q2" value="5"></td>
                                     <td><input type="radio" name="q2" value="4"></td>
                                     <td><input type="radio" name="q2" value="3"></td>
@@ -117,7 +129,7 @@
                                     <td><input type="radio" name="q2" value="1"></td>
                                 </tr>
                                 <tr id="q3Head">
-                                    <td> 3. 수업은 학생의 학습동기와 흥미를 유발시켰다.</td>
+                                    <td class="question"> 3. 수업은 학생의 학습동기와 흥미를 유발시켰다.</td>
                                     <td><input type="radio" name="q3" value="5"></td>
                                     <td><input type="radio" name="q3" value="4"></td>
                                     <td><input type="radio" name="q3" value="3"></td>
@@ -125,7 +137,7 @@
                                     <td><input type="radio" name="q3" value="1"></td>
                                 </tr>
                                 <tr id="q4Head">
-                                    <td> 4. 학생의 발표,토의,질문 등이 적극적으로 권장되었다.</td>
+                                    <td class="question"> 4. 학생의 발표,토의,질문 등이 적극적으로 권장되었다.</td>
                                     <td><input type="radio" name="q4" value="5"></td>
                                     <td><input type="radio" name="q4" value="4"></td>
                                     <td><input type="radio" name="q4" value="3"></td>
@@ -133,7 +145,7 @@
                                     <td><input type="radio" name="q4" value="1"></td>
                                 </tr>
                                 <tr id="q5Head">
-                                    <td> 5. 수업시간이 전반적으로 잘 준수되었다.</td>
+                                    <td class="question"> 5. 수업시간이 전반적으로 잘 준수되었다.</td>
                                     <td><input type="radio" name="q5" value="5"></td>
                                     <td><input type="radio" name="q5" value="4"></td>
                                     <td><input type="radio" name="q5" value="3"></td>
@@ -141,7 +153,7 @@
                                     <td><input type="radio" name="q5" value="1"></td>
                                 </tr>
                                 <tr id="q6Head">
-                                    <td> 6. 성적평가의 기준과 방법이 합리적으로 제시되었다.</td>
+                                    <td class="question"> 6. 성적평가의 기준과 방법이 합리적으로 제시되었다.</td>
                                     <td><input type="radio" name="q6" value="5"></td>
                                     <td><input type="radio" name="q6" value="4"></td>
                                     <td><input type="radio" name="q6" value="3"></td>
@@ -149,7 +161,7 @@
                                     <td><input type="radio" name="q6" value="1"></td>
                                 </tr>
                                 <tr id="q7Head">
-                                    <td> 7. 이 수업의 수강인원은 적절하였다.</td>
+                                    <td class="question"> 7. 이 수업의 수강인원은 적절하였다.</td>
                                     <td><input type="radio" name="q7" value="5"></td>
                                     <td><input type="radio" name="q7" value="4"></td>
                                     <td><input type="radio" name="q7" value="3"></td>
@@ -157,7 +169,7 @@
                                     <td><input type="radio" name="q7" value="1"></td>
                                 </tr>
                                 <tr id="q8Head">
-                                    <td> 8. 나는 수업에 적극적으로 참여하였다.</td>
+                                    <td class="question"> 8. 나는 수업에 적극적으로 참여하였다.</td>
                                     <td><input type="radio" name="q8" value="5"></td>
                                     <td><input type="radio" name="q8" value="4"></td>
                                     <td><input type="radio" name="q8" value="3"></td>
@@ -170,15 +182,19 @@
                                     <td colspan="6">교수님께 하고싶은 말이나 기타 건의사항이 있다면 아래에 작성 바랍니다.</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="6">
-                                        <textarea name="etcText" id="etcText" cols="90" rows="4" style="resize: none;"></textarea>
-                                    </td>
+                                    <td colspan="6" style="border:0px;height:5px;"></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="6"><button id="submitBtn" class="btn btn-outline-primary btn-sm" type="button">제출</button></td>
+                                    <td colspan="6" style="border:0px;">
+                                        <textarea name="etcText" id="etcText" cols="90" rows="4" style="resize: none;width:100%;" placeholder="360자  이내로 작성"></textarea>
+                                    </td>
                                 </tr>
+                                
                             </tfoot>
                         </table>
+                        <div align="center">
+	                        <button id="submitBtn" class="btn btn-outline-primary btn-sm" type="button">제출</button>
+                        </div>
                     </div>
 					
 					<script>

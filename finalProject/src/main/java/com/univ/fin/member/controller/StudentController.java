@@ -3,9 +3,6 @@ package com.univ.fin.member.controller;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -14,7 +11,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +23,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.univ.fin.common.model.vo.AlarmVo;
 import com.univ.fin.common.model.vo.Bucket;
 import com.univ.fin.common.model.vo.CalendarVo;
 import com.univ.fin.common.model.vo.ClassRating;
@@ -464,9 +459,17 @@ public class StudentController {
 		String studentNo = loginUser.getStudentNo();
 		
 		ArrayList<String> classTerm = memberService.selectStudentClassTerm(studentNo); // 수강한 학년도, 학기
+		String year = classTerm.get(0).substring(0, 4);
+		String term = classTerm.get(0).substring(5);
+		obj.setClassYear(year);
+		obj.setClassTerm(term);
+		obj.setStudentNo(studentNo);
+		
 
 		ArrayList<Objection> list = memberService.studentGradeReport(obj);
 		Objection objc = new Objection();
+		objc.setClassYear(year);
+		objc.setClassTerm(term);
 		objc.setStudentNo(studentNo);
 		ArrayList<Objection> resultList = memberService.studentGradeView(objc);
 		
@@ -501,8 +504,15 @@ public class StudentController {
 	@ResponseBody
 	@PostMapping(value = "insertReport.st")
 	public String insertGradeRequest(HttpSession session, Objection obj) {
+		System.out.println("!@#@#%$%&&^**&(%@#!@@#%"+obj);
+		
+		HashMap<String, String> alarm = new HashMap<>();
+		alarm.put("cmd", "reportRequest");
+		alarm.put("receiverNo", obj.getProfessorNo());
+		alarm.put("senderName", obj.getStudentName());
+		System.out.println(alarm);
 
-		int result = memberService.studentGradeRequest(obj);
+		int result = memberService.studentGradeRequest(obj, alarm);
 
 		if (result > 0) {
 			return "Y";
@@ -765,6 +775,7 @@ public class StudentController {
 			termGrade.put("totalRank", totalRank);
 
 			gList.add(termGrade);
+			
 		}
 		HashMap<String, String> scoreAB = memberService.selectScoreAB(studentNo); // 증명신청학점, 증명취득학점
 		double scoreC = memberService.selectScoreC(studentNo); // 증명평점평균
@@ -833,34 +844,4 @@ public class StudentController {
 		}
 	}
 	
-	// 알람 수신
-	@ResponseBody
-	@RequestMapping(value = "alarmReceive.me", produces = "application/json; charset=UTF-8;")
-	public String alarmReceive(HttpSession session) {
-		Student s = (Student)session.getAttribute("loginUser");
-		String studentNo = s.getStudentNo();
-		
-		ArrayList<AlarmVo> aList = memberService.alarmReceive(studentNo);
-		return new Gson().toJson(aList);
-	}
-	
-	// 알람 전체확인
-	@ResponseBody
-	@RequestMapping(value = "alarmAllCheck.me")
-	public String alarmAllCheck(HttpSession session) {
-		Student s = (Student)session.getAttribute("loginUser");
-		String studentNo = s.getStudentNo();
-		
-		int result = memberService.alarmAllCheck(studentNo);
-		return (result>0)? "Y" : "N";
-	}
-	
-	// 알람 확인
-	@ResponseBody
-	@RequestMapping(value = "alarmCheck.me")
-	public String alarmCheck(String aNo) {
-		int alarmNo = Integer.parseInt(aNo);
-		int result = memberService.alarmCheck(alarmNo);
-		return (result>0)? "Y" : "N";
-	}
 }
