@@ -136,7 +136,7 @@
 						str += "</span>";
 						$("#alarm-area2").html(str);
 						
-						setTimeout(function() {
+						setTimeout(function() { // 말풍선 띄우기
 							$("#alarm-area2").removeClass("alarm-remove");
 						}, 500);
 						
@@ -145,10 +145,7 @@
 						}
 						
 						setTimeout(function() {
-							$("#alarm-area2").addClass("alarm-remove");
-							if($("#alarmDiv").html() == "<span>새로운 알람이 없습니다.</span>") {
-								$("#alarmImg").css("filter", "grayscale(100%)");
-							}
+							$("#alarm-area2").addClass("alarm-remove"); // 말풍선 지우기
 							$("#alarmImg").attr("src", $("#alarmImg").data("static"));
 							
 						}, 8000); // 8초동안 보여줌
