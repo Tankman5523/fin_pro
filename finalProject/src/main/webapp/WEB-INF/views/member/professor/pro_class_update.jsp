@@ -122,7 +122,7 @@
 	                                	</c:otherwise>
                                 	</c:choose>
 								    	<label for="file">파일찾기</label> 
-								    	<input type="file" name="reUpfile" id="file" required>
+								    	<input type="file" name="reUpfile" id="file">
                         			</div>
                                 </td>
                             </tr>

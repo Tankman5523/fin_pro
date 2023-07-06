@@ -84,7 +84,9 @@
         </div>
     </div>
     <script >
-    	$("#datepicker1").datepicker();
+	    $("#datepicker1").datepicker({
+	    	minDate:"+1D" //오늘 이전은 못 고르게 하기
+	    });
     	
     	function retireDate(){
     		var today = new Date($("#datepicker1").val());//현재 날짜

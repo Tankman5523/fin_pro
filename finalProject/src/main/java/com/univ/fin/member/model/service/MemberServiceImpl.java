@@ -1112,6 +1112,12 @@ public class MemberServiceImpl implements MemberService{
 	public ArrayList<NoticeAttachment> detailNoticeFile(String noticeNo) {
 		return memberDao.detailNoticeFile(sqlSession, noticeNo);
 	}
+
+	// 낮 12시 퇴직예정 직원 퇴직처리
+	@Override
+	public void updateAutoRetire() {
+		memberDao.updateAutoRetire(sqlSession);
+	}
 	
 
 }
