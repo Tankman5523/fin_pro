@@ -94,7 +94,7 @@
 	    });
         jb('.note-insert').css('display', 'none')
         jb('.note-table').css('display', 'none')
-        jb('.note-view').css('display', 'none')
+//         jb('.note-view').css('display', 'none')
 	});
 	
 	

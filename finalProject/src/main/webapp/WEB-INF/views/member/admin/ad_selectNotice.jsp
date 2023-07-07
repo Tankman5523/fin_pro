@@ -109,7 +109,7 @@
 						if(result.field == 0){
 							str +="<td>"+"공지사항"+"</td>"
 								+"<td>"+result.categoryName+"</td>"
-								+"<td>"+result.noticeTitle+"</td>";							
+								+"<td id='noticeTitleTd'>"+result.noticeTitle+"</td>";							
 						}else{
 							str +="<td>"+"FAQ"+"</td>"
 								+"<td>"+result.categoryName+"</td>"

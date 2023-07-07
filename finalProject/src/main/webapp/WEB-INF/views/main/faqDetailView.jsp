@@ -39,7 +39,7 @@
 					</ul>
 				</c:if>
 				<div id="notice_content">
-					<div id="summernote">${n.noticeContent }</div>
+					<div id="summernote">${f.noticeContent }</div>
 				</div>
 			</div>
 		</div>

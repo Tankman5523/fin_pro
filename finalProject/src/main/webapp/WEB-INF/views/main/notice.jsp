@@ -168,8 +168,8 @@
                 	for(var i=0; i<result.length; i++){
 	                	str += "<div class='faq_content'>"
 	                		+"<form action='faqDetail.mp' method='get'>"
+                	   		+"<button type='submit' class='allView'>"+"전체보기>>"+"</button>"
                 	   		+"<span class='thumb_title'>"+result[i].noticeTitle
-                	   		+"<button type='submit'>"+"전체보기>>"+"</button>"
                 	   		+"</span>"
 	                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
 	                   		+"<input type='hidden' name='faqNo' value='"+result[i].noticeNo+"'>"
@@ -212,10 +212,10 @@
 	                	switch (result[0].noticeCategory) {
 						case 1:
 							for(var i=0; i<result.length; i++){
-			                	str += "<div class='faq_content'>"
+								str += "<div class='faq_content'>"
 			                		+"<form action='faqDetail.mp' method='get'>"
+		                	   		+"<button type='submit' class='allView'>"+"전체보기>>"+"</button>"
 		                	   		+"<span class='thumb_title'>"+result[i].noticeTitle
-		                	   		+"<button type='submit'>"+"전체보기>>"+"</button>"
 		                	   		+"</span>"
 			                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
 			                   		+"<input type='hidden' name='faqNo' value='"+result[i].noticeNo+"'>"
@@ -225,10 +225,10 @@
 							break;
 						case 2:
 							for(var i=0; i<result.length; i++){
-			                	str += "<div class='faq_content'>"
+								str += "<div class='faq_content'>"
 			                		+"<form action='faqDetail.mp' method='get'>"
+		                	   		+"<button type='submit' class='allView'>"+"전체보기>>"+"</button>"
 		                	   		+"<span class='thumb_title'>"+result[i].noticeTitle
-		                	   		+"<button type='submit'>"+"전체보기>>"+"</button>"
 		                	   		+"</span>"
 			                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
 			                   		+"<input type='hidden' name='faqNo' value='"+result[i].noticeNo+"'>"
@@ -238,10 +238,10 @@
 							break;
 						case 3:
 							for(var i=0; i<result.length; i++){
-			                	str += "<div class='faq_content'>"
+								str += "<div class='faq_content'>"
 			                		+"<form action='faqDetail.mp' method='get'>"
+		                	   		+"<button type='submit' class='allView'>"+"전체보기>>"+"</button>"
 		                	   		+"<span class='thumb_title'>"+result[i].noticeTitle
-		                	   		+"<button type='submit'>"+"전체보기>>"+"</button>"
 		                	   		+"</span>"
 			                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
 			                   		+"<input type='hidden' name='faqNo' value='"+result[i].noticeNo+"'>"
@@ -251,10 +251,10 @@
 							break;
 						case 4:
 							for(var i=0; i<result.length; i++){
-			                	str += "<div class='faq_content'>"
+								str += "<div class='faq_content'>"
 			                		+"<form action='faqDetail.mp' method='get'>"
+		                	   		+"<button type='submit' class='allView'>"+"전체보기>>"+"</button>"
 		                	   		+"<span class='thumb_title'>"+result[i].noticeTitle
-		                	   		+"<button type='submit'>"+"전체보기>>"+"</button>"
 		                	   		+"</span>"
 			                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
 			                   		+"<input type='hidden' name='faqNo' value='"+result[i].noticeNo+"'>"
@@ -264,10 +264,10 @@
 							break;
 						case 5:
 							for(var i=0; i<result.length; i++){
-			                	str += "<div class='faq_content'>"
+								str += "<div class='faq_content'>"
 			                		+"<form action='faqDetail.mp' method='get'>"
+		                	   		+"<button type='submit' class='allView'>"+"전체보기>>"+"</button>"
 		                	   		+"<span class='thumb_title'>"+result[i].noticeTitle
-		                	   		+"<button type='submit'>"+"전체보기>>"+"</button>"
 		                	   		+"</span>"
 			                   		+"<span class='thumb_content'>"+result[i].noticeContent+"</span>"
 			                   		+"<input type='hidden' name='faqNo' value='"+result[i].noticeNo+"'>"

@@ -6,7 +6,7 @@
 }
 .wrap{
     width: 100vw;
-    height: 1000px;
+    height: auto;
     margin: auto;
 }
 .wrap>div{
@@ -22,7 +22,7 @@
 /*=================content 세부 영역 설정=================*/
 .img-wrap{
 	width: 100vw;
-	height: 529.7px;
+	height:100%;
 	position: relative;
 	overflow: hidden;
 }
@@ -46,5 +46,6 @@
 }
 .main-img img{
 	width: 100%;
+	height: 810px;
 }
 

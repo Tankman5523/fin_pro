@@ -359,7 +359,7 @@
   	
   	<!-- 수강신청 - 수강신청내역조회 (로그인 학생의 수강신청 년도/학기 추출) -->
   	<select id="searchRegYear" parameterType="classes" resultMap="classResultMap">
-	  	SELECT DISTINCT CLASS_YEAR, CLASS_TERM
+	  	SELECT DISTINCT CLASS_YEAR
 		FROM SCHEDULE S
 		JOIN CLASS C USING (CLASS_NO)
 		WHERE STUDENT_NO = #{studentNo}
