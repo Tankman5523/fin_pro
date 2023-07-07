@@ -214,23 +214,33 @@
 	                		},
 	                		success: function(cList) {
 								for(var i=0;i<cList.length;i++) {
-									$classSet.add(cList[i].classNo);
+									$classSet.add(cList[i].classNo); // 강의번호 중복없이 저장하기 위해 Set에 저장
 								}
-								$classArr = Array.from($classSet);
+								$classArr = Array.from($classSet); // Array로 변환
 								
 								var str = "";
 								var tmp = 0;
 								for(var i=0;i<cList.length;i++) {
 									var $index = $classArr.indexOf(cList[i].classNo);
 									
-									/* top: 66.7*(period-1), left: 186*(day-1) */
+									/* top: 70*(period-1), left: 186*(day-1) */
 									if(cList[i].classNo == tmp) { // 2시간 강의
-										str += "<div class='stClass_class" + $index + "' style='top:" + 70*(cList[i-1].period-1) + "px; left:" + 186*(cList[i].day-1)
-										+ "px; width:185px; height:139px;'><span style='margin: 20px auto;'>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
+										str += "<div class='stClass_class" + $index + "' " /*색깔담고있는 class*/
+											+ "style='top:" + 70*(cList[i-1].period-1) + "px; "
+											+ "left:" + 186*(cList[i].day-1) + "px; "
+											+ "width:185px; height:139px;'>"
+											+ "<span style='margin: 20px auto;'>"
+											+ cList[i].className + "<br>" + cList[i].professorNo + "<br>"
+											+ cList[i].classroom + "</span></div>";
 									}
 									else { // 1시간 강의
-										str += "<div class='stClass_class" + $index + "' style='top:" + 70*(cList[i].period-1) + "px; left:" + 186*(cList[i].day-1)
-												+ "px; width:185px; height:69px;'><span style='margin: 5px auto; line-height: 130%;'>" + cList[i].className + "<br>" + cList[i].professorNo + "<br>" + cList[i].classroom + "</span></div>";
+										str += "<div class='stClass_class" + $index + "' " /*색깔담고있는 class*/
+											+ "style='top:" + 70*(cList[i].period-1) + "px; "
+											+ "left:" + 186*(cList[i].day-1)+ "px; "
+											+ "width:185px; height:69px;'>"
+											+ "<span style='margin: 5px auto; line-height: 130%;'>" 
+											+ cList[i].className + "<br>" + cList[i].professorNo + "<br>" 
+											+ cList[i].classroom + "</span></div>";
 									}
 									tmp = cList[i].classNo;
 								}
