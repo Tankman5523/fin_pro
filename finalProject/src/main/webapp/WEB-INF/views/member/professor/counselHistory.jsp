@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>상담이력조회</title>
 <link rel="stylesheet" href="resources/css/counselHistory.css">
 </head>
 <body>

@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>상담상세보기</title>
 <link rel="stylesheet" href="resources/css/counselHistoryDetail.css">
 </head>
 <body>
@@ -17,7 +17,7 @@
 				<span style="margin: 0 auto;">상담관리</span>
 			</div>
 			<div class="child_title">
-				<a href="counselHistory.pr" class="childBtn">상담이력조회</a>
+				<a href="counselHistory.pr" class="childBtn" style="color:#00aeff; font-weight: 550;">상담이력조회</a>
 			</div>
 		</div>
 		<div id="content_1">

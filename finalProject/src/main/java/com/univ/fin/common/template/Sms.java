@@ -157,7 +157,7 @@ public class Sms {
         JSONObject toJson = new JSONObject();
         JSONArray  toArr = new JSONArray();
         
-        toJson.put("to","01000000000"); //보내는사람
+        toJson.put("to","01027552324"); //보내는사람
         toArr.add(toJson);
         
         bodyJson.put("type","sms");

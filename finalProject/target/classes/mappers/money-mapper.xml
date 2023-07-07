@@ -647,7 +647,7 @@
   		AND CLASS_TERM = #{classTerm}
   	</update>
   	<!-- (관리자) 등록금 삭제 전 장학금 유무 판단 -->
-  	<select id="countScholarship" resultSets="_int">
+  	<select id="countScholarship" resultType="_int" >
   		SELECT COUNT(*)
   		FROM SCHOLARSHIP
   		WHERE STATUS = 'Y'

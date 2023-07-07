@@ -768,17 +768,21 @@ public class AdminController {
 			
 			if(result1 > 0) {
 				alertMsg = "게시글이 수정되었습니다.";
+				session.setAttribute("alertMsg", alertMsg);
 				mv.setViewName("member/admin/ad_selectNotice");
 			}else {
 				alertMsg = "게시글 수정을 실패했습니다.";
+				session.setAttribute("alertMsg", alertMsg);
 				mv.setViewName("member/admin/ad_selectNotice");
 			}
 		}else {
 			if(result > 0) {
 				alertMsg = "게시글이 수정되었습니다.";
+				session.setAttribute("alertMsg", alertMsg);
 				mv.setViewName("member/admin/ad_selectNotice");
 			}else {
 				String msg = "게시글 수정을 실패했습니다.";
+				session.setAttribute("alertMsg", alertMsg);
 				mv.setViewName("member/admin/ad_selectNotice");
 			}
 		}

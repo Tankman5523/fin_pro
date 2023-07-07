@@ -81,8 +81,9 @@
 				                                <td>${r.studentNo}</td>
 				                                <td class="studentName">${r.studentName}</td>
 				                                <td class="nonPaidAmount">
-				                                	<fmt:formatNumber type="number" maxFractionDigits="3" value="${r.nonPaidAmount}"/>
-				                                 	원
+				                                	<%-- <fmt:formatNumber type="number" maxFractionDigits="3" value="${r.nonPaidAmount}"/> --%>
+				                                 	<!-- 원 -->
+				                                 	${r.nonPaidAmount}
 				                                </td>
 				                                <td>
 				                                	<c:choose>

@@ -171,8 +171,8 @@ public class RegistController {
 	@PostMapping("dunning.rg")
 	public String dunningToNonPaid(String studentName,int nonPaidAmount ,String phone,String email) throws MessagingException {//독촉문자,이메일 발송
 		//등록금 독촉 이메일
-		String setFrom = ""; //보내는 계정
-		String toMail = ""; //받는계정  /* email */
+		String setFrom = "jungwoo343@naver.com"; //보내는 계정
+		String toMail = "jungwoo343@naver.com"; //받는계정  /* email */
 		String title = "[FEASIBLE UNIVERSITY]미납 등록금 납부 부탁드립니다.";
 		String content = "귀하의 등록금이 미납 혹은 미달되어 연락 드립니다."
 					   + "<br>"
@@ -193,7 +193,7 @@ public class RegistController {
 		
 		//SMS 문자전송
 		Sms smsMessage = new Sms();
-		int result = smsMessage.dunningMsg("01000000000", nonPaidAmount, studentName);
+		int result = smsMessage.dunningMsg("01027552324", nonPaidAmount, studentName);
 		//문자 완료
 		
 		if(result>0) {
@@ -234,7 +234,7 @@ public class RegistController {
 	}
 	
 	@GetMapping("deactivate.rg") //나중에 스케줄러 고장나면 버튼으로 처리
-	@Scheduled(cron = "30/60 1 * * * *")//1분 30초마다 실행
+	//@Scheduled(cron = "30/60 1 * * * *")//1분 30초마다 실행
 	//@Scheduled(cron = "0 0 1 * * *")//매일 새벽 1시마다 실행
 	@Async
 	public void deactivateRegistPay() {//스케쥴러에 의해 등록금 비활성화 개시 
