@@ -50,7 +50,7 @@
 				<table id="field-area">
 					<tr>
 						<c:choose>
-							<c:when test="${b.field eq 0}">
+							<c:when test="${n.field eq 0}">
 								<td><input type="text" class="field" value="공지사항" readonly="readonly"></td>
 							</c:when>
 							<c:otherwise>

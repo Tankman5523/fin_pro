@@ -45,7 +45,7 @@
 	<div class="wrap">
 		<%@include file="../common/mainPageHeader.jsp" %>
 		
-		<div id="content">
+		<div id="content" style="height: 810px;">
 			<div class="img-wrap">
 				<ul class="img-container">
 					<li class="main-img">
