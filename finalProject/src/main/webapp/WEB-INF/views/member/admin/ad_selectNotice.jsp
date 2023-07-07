@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>공지사항 관리</title>
 <link rel="stylesheet" href="/fin/resources/css/adminSelectNotice.css">
 <script src="https://kit.fontawesome.com/7f4a340891.js" crossorigin="anonymous"></script>
 </head>
